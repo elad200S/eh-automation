@@ -34,22 +34,29 @@ export default {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
           glow: "hsl(var(--primary-glow))",
+          light: "hsl(var(--primary-light))",
         },
         secondary: {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
+          light: "hsl(var(--secondary-light))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+          light: "hsl(var(--accent-light))",
         },
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
         },
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          light: "hsl(var(--success-light))",
+        },
         muted: {
           DEFAULT: "hsl(var(--muted))",
           foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
         },
         popover: {
           DEFAULT: "hsl(var(--popover))",
@@ -84,6 +91,14 @@ export default {
           "0%": { transform: "translateX(-20px)", opacity: "0" },
           "100%": { transform: "translateX(0)", opacity: "1" },
         },
+        "expand": {
+          "0%": { height: "0", opacity: "0" },
+          "100%": { height: "var(--expand-height)", opacity: "1" },
+        },
+        "collapse": {
+          "0%": { height: "var(--expand-height)", opacity: "1" },
+          "100%": { height: "0", opacity: "0" },
+        },
         pulse: {
           "0%, 100%": { opacity: "1" },
           "50%": { opacity: "0.5" },
@@ -93,6 +108,8 @@ export default {
         "fade-up": "fade-up 0.6s ease-out forwards",
         "fade-in": "fade-in 0.5s ease-out forwards",
         "slide-in-right": "slide-in-right 0.5s ease-out forwards",
+        "expand": "expand 0.3s ease-out forwards",
+        "collapse": "collapse 0.3s ease-out forwards",
         pulse: "pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite",
       },
     },

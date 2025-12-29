@@ -6,23 +6,24 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
       {/* Subtle grid pattern */}
-      <div className="absolute inset-0 grid-pattern opacity-30" />
+      <div className="absolute inset-0 grid-pattern opacity-40" />
       
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/50 to-background" />
+      {/* Decorative circles */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       
       <div className="container relative z-10">
         <div className="max-w-3xl">
           {/* Technical label */}
           <div className="text-technical mb-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.1s' }}>
-            <span className="text-primary">//</span> Business Automation & AI Systems
+            <span className="text-primary font-semibold">//</span> Business Automation & AI Systems
           </div>
           
           {/* Main heading */}
           <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            EH Automation
+            EH <span className="gradient-text">Automation</span>
           </h1>
           
           {/* Subtitle */}
@@ -40,7 +41,7 @@ const HeroSection = () => {
           {/* CTA Button */}
           <button
             onClick={scrollToForm}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground rounded-lg font-medium text-lg hover:glow-primary transition-all duration-300 opacity-0 animate-fade-up"
+            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-primary to-primary/90 text-primary-foreground rounded-xl font-medium text-lg shadow-lg glow-primary hover:shadow-xl transition-all duration-300 opacity-0 animate-fade-up"
             style={{ animationDelay: '0.5s' }}
           >
             איפיון ראשוני ללא התחייבות
