@@ -32,9 +32,6 @@ const ContactSection = () => {
   return (
     <Section id="contact" withSeparator={false}>
       <div className="max-w-2xl mx-auto">
-        <div className="text-technical mb-4 text-center">
-          <span className="text-primary font-semibold">//</span> 10
-        </div>
         
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
           שיחת איפיון לאוטומציה עסקית

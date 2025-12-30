@@ -145,19 +145,19 @@ const ToolsSection = () => {
                 {category.name}
               </h3>
               
-              <div className="grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {category.tools.map((tool, toolIndex) => (
                   <div
                     key={toolIndex}
                     className="relative group"
                   >
-                    <div className="bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex items-center gap-3">
+                    <div className="bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex items-center gap-3 min-w-0">
                       <div className="flex-shrink-0">
                         <tool.Logo />
                       </div>
-                      <div>
-                        <span className="text-sm font-medium text-foreground block">{tool.name}</span>
-                        <span className="text-xs text-muted-foreground line-clamp-1">{tool.usage}</span>
+                      <div className="min-w-0 flex-1">
+                        <span className="text-sm font-medium text-foreground block truncate">{tool.name}</span>
+                        <span className="text-xs text-muted-foreground line-clamp-2 break-words">{tool.usage}</span>
                       </div>
                     </div>
                   </div>
