@@ -9,6 +9,7 @@ import AISection from '@/components/sections/AISection';
 import WhyNowSection from '@/components/sections/WhyNowSection';
 import ProcessSection from '@/components/sections/ProcessSection';
 import QualificationSection from '@/components/sections/QualificationSection';
+import AboutSection from '@/components/sections/AboutSection';
 import ContactSection from '@/components/sections/ContactSection';
 import Footer from '@/components/sections/Footer';
 
@@ -37,6 +38,7 @@ const Index = () => {
         <WhyNowSection />
         <ProcessSection />
         <QualificationSection />
+        <AboutSection />
         <ContactSection />
         <Footer />
       </main>
