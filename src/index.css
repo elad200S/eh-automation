@@ -154,3 +154,25 @@
     mask-composite: exclude;
   }
 }
+
+/* Accessibility: Highlight links */
+html.highlight-links a {
+  outline: 2px solid hsl(var(--primary)) !important;
+  outline-offset: 2px;
+  background-color: hsl(var(--primary-light)) !important;
+}
+
+/* Accessibility: Big cursor */
+html.big-cursor,
+html.big-cursor * {
+  cursor: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M4 0l16 12.279-6.78 1.138 4.256 8.676-3.902 1.907-4.281-8.758-5.293 4.581z'/%3E%3C/svg%3E"), auto !important;
+}
+
+/* Accessibility: High contrast mode */
+html.high-contrast {
+  filter: contrast(1.2);
+}
+
+html.high-contrast img {
+  filter: contrast(0.85);
+}
