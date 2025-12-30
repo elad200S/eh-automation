@@ -36,11 +36,7 @@ const ProblemSection = () => {
   return (
     <Section id="problem">
       <div className="max-w-3xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 02
-        </div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           איפה עסקים נתקעים
         </h2>
         

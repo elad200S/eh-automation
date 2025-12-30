@@ -58,11 +58,7 @@ const AISection = () => {
   return (
     <Section id="ai">
       <div className="max-w-4xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 06
-        </div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           איך אוטומציה ובינה מלאכותית התחברו למהפכה אחת
         </h2>
         

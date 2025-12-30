@@ -124,11 +124,7 @@ const QualificationSection = () => {
   return (
     <Section id="qualification">
       <div className="max-w-3xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 09
-        </div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           לפני שמדברים – נבדוק התאמה
         </h2>
         

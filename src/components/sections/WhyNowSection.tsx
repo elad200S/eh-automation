@@ -27,21 +27,17 @@ const WhyNowSection = () => {
   return (
     <Section id="why-now">
       <div className="max-w-3xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 07
-        </div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           למה אוטומציה בשילוב בינה מלאכותית היא הכלי היעיל ביותר היום
         </h2>
         
-        <div className="space-y-6">
+        <div className="space-y-4">
           {reasons.map((reason, index) => (
-            <div key={index} className="flex items-start gap-6 group">
-              <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
-                <span className="font-mono text-sm font-semibold text-primary">0{index + 1}</span>
+            <div key={index} className="flex items-start gap-4 group">
+              <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                <span className="font-mono text-sm font-semibold text-primary">{index + 1}</span>
               </div>
-              <div className="pt-1">
+              <div className="pt-0.5">
                 <h3 className="text-lg font-medium text-foreground mb-1">
                   {reason.title}
                 </h3>
