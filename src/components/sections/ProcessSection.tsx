@@ -1,158 +1,159 @@
 import Section from '@/components/Section';
-import { FileSearch, GitBranch, Link2, TestTube, Rocket, ArrowLeft, ArrowDown } from 'lucide-react';
+import { FileSearch, GitBranch, Link2, TestTube, Rocket } from 'lucide-react';
 
 const steps = [
-  { 
-    title: 'איפיון', 
-    description: 'הבנת התהליכים הקיימים והצרכים העסקיים',
-    Icon: FileSearch
+  {
+    title: 'איפיון',
+    description: 'שיחה ראשונית להבנת התהליכים הקיימים והצרכים',
+    Icon: FileSearch,
   },
-  { 
-    title: 'תכנון תהליך', 
-    description: 'מיפוי זרימות העבודה והגדרת אוטומציות',
-    Icon: GitBranch
+  {
+    title: 'תכנון תהליך',
+    description: 'מיפוי הזרימה, בחירת כלים והגדרת לוגיקה',
+    Icon: GitBranch,
   },
-  { 
-    title: 'חיבור מערכות', 
-    description: 'אינטגרציה בין הכלים הקיימים והחדשים',
-    Icon: Link2
+  {
+    title: 'חיבור מערכות',
+    description: 'בניית האינטגרציות והאוטומציות בפועל',
+    Icon: Link2,
   },
-  { 
-    title: 'בדיקות', 
-    description: 'וידוא פעולה תקינה בתנאי אמת',
-    Icon: TestTube
+  {
+    title: 'בדיקות',
+    description: 'וידוא שהכל עובד כמצופה לפני עלייה לאוויר',
+    Icon: TestTube,
   },
-  { 
-    title: 'הטמעה', 
-    description: 'הרצה חיה ותמיכה בשלב ההסתגלות',
-    Icon: Rocket
+  {
+    title: 'הטמעה',
+    description: 'העלאה לפעולה והדרכה לשימוש שוטף',
+    Icon: Rocket,
   },
 ];
 
 const ProcessSection = () => {
   return (
     <Section id="process">
-      <div className="max-w-6xl">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
+      <div className="max-w-5xl">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8 text-center">
           איך זה עובד
         </h2>
         
-        {/* Desktop: Zig-zag flow */}
-        <div className="hidden md:block">
+        {/* Desktop: Zig-zag flow diagram */}
+        <div className="hidden md:block relative">
+          {/* Flow container */}
           <div className="relative">
-            {/* Row 1: Steps 1, 2, 3 */}
-            <div className="flex items-start justify-between gap-4 mb-4">
-              {steps.slice(0, 3).map((step, index) => (
-                <div key={index} className="flex items-center flex-1">
-                  <div className="bg-card rounded-xl border border-border p-5 flex-1 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group">
-                    <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
-                      <step.Icon className="w-6 h-6 text-primary" />
+            {steps.map((step, index) => {
+              const isEven = index % 2 === 0;
+              const isLast = index === steps.length - 1;
+              
+              return (
+                <div key={index} className="relative">
+                  {/* Step row */}
+                  <div className={`flex items-center ${isEven ? 'justify-start' : 'justify-end'} mb-4`}>
+                    {/* Card */}
+                    <div 
+                      className={`relative bg-card rounded-xl border border-border p-5 shadow-sm hover:shadow-lg hover:border-primary/30 transition-all duration-300 w-[320px] ${
+                        isEven ? 'mr-auto' : 'ml-auto'
+                      }`}
+                    >
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                          <step.Icon className="w-6 h-6 text-foreground/80" />
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="text-xs font-mono text-muted-foreground">{String(index + 1).padStart(2, '0')}</span>
+                            <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
+                          </div>
+                          <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                        </div>
+                      </div>
                     </div>
-                    <h3 className="text-lg font-semibold text-foreground mb-1">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                   </div>
-                  {index < 2 && (
-                    <div className="flex-shrink-0 px-3">
-                      <ArrowLeft className="w-6 h-6 text-primary/60" />
+                  
+                  {/* Arrow connector */}
+                  {!isLast && (
+                    <div className="flex justify-center mb-4">
+                      <svg 
+                        width="200" 
+                        height="60" 
+                        viewBox="0 0 200 60" 
+                        className={`text-secondary ${isEven ? '' : 'scale-x-[-1]'}`}
+                      >
+                        {/* Curved arrow path */}
+                        <path
+                          d={isEven 
+                            ? "M 40 5 Q 100 5, 100 30 Q 100 55, 160 55"
+                            : "M 160 5 Q 100 5, 100 30 Q 100 55, 40 55"
+                          }
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2"
+                          strokeDasharray="6 4"
+                          className="opacity-50"
+                        />
+                        {/* Arrow head */}
+                        <polygon
+                          points={isEven 
+                            ? "155,50 165,55 155,60"
+                            : "45,50 35,55 45,60"
+                          }
+                          fill="currentColor"
+                          className="opacity-50"
+                        />
+                      </svg>
                     </div>
                   )}
                 </div>
-              ))}
-            </div>
-            
-            {/* Connecting arrow down-left */}
-            <div className="flex justify-start pr-[33%] mb-4">
-              <div className="flex items-center gap-2 text-secondary/60">
-                <ArrowDown className="w-6 h-6" />
-              </div>
-            </div>
-            
-            {/* Row 2: Steps 4, 5 (reversed order for RTL zig-zag) */}
-            <div className="flex items-start justify-start gap-4">
-              <div className="flex items-center" style={{ width: 'calc(66.666% - 0.5rem)' }}>
-                {(() => {
-                  const Step4Icon = steps[3].Icon;
-                  const Step5Icon = steps[4].Icon;
-                  return (
-                    <>
-                      <div className="bg-card rounded-xl border border-border p-5 flex-1 hover:border-primary/30 hover:shadow-lg transition-all duration-300 group">
-                        <div className="w-12 h-12 rounded-xl bg-secondary/10 flex items-center justify-center mb-3 group-hover:bg-secondary/20 transition-colors">
-                          <Step4Icon className="w-6 h-6 text-secondary" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-foreground mb-1">{steps[3].title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{steps[3].description}</p>
-                      </div>
-                      <div className="flex-shrink-0 px-3">
-                        <ArrowLeft className="w-6 h-6 text-secondary/60" />
-                      </div>
-                      <div className="bg-gradient-to-br from-primary/10 to-secondary/10 rounded-xl border-2 border-primary/30 p-5 flex-1 hover:shadow-xl transition-all duration-300 group">
-                        <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center mb-3">
-                          <Step5Icon className="w-6 h-6 text-primary-foreground" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-foreground mb-1">{steps[4].title}</h3>
-                        <p className="text-sm text-muted-foreground leading-relaxed">{steps[4].description}</p>
-                        <div className="mt-3 flex items-center gap-2 text-success text-sm">
-                          <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                          <span>אוטומציה פעילה</span>
-                        </div>
-                      </div>
-                    </>
-                  );
-                })()}
-              </div>
-            </div>
+              );
+            })}
           </div>
         </div>
         
         {/* Mobile: Vertical flow */}
-        <div className="md:hidden space-y-3">
-          {steps.map((step, index) => (
-            <div key={index} className="relative">
-              <div className={`bg-card rounded-xl border p-4 transition-all duration-300 ${
-                index === steps.length - 1 
-                  ? 'border-primary/30 bg-gradient-to-br from-primary/5 to-secondary/5' 
-                  : 'border-border'
-              }`}>
-                <div className="flex items-start gap-4">
-                  <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${
-                    index === steps.length - 1 
-                      ? 'bg-gradient-to-br from-primary to-secondary' 
-                      : 'bg-primary/10'
-                  }`}>
-                    <step.Icon className={`w-5 h-5 ${
-                      index === steps.length - 1 ? 'text-primary-foreground' : 'text-primary'
-                    }`} />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-semibold text-foreground mb-1">{step.title}</h3>
-                    <p className="text-sm text-muted-foreground">{step.description}</p>
-                    {index === steps.length - 1 && (
-                      <div className="mt-2 flex items-center gap-2 text-success text-sm">
-                        <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
-                        <span>אוטומציה פעילה</span>
+        <div className="md:hidden space-y-4">
+          {steps.map((step, index) => {
+            const isLast = index === steps.length - 1;
+            
+            return (
+              <div key={index} className="relative">
+                {/* Card */}
+                <div className="bg-card rounded-xl border border-border p-5 shadow-sm">
+                  <div className="flex items-start gap-4">
+                    <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                      <step.Icon className="w-6 h-6 text-foreground/80" />
+                    </div>
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="text-xs font-mono text-muted-foreground">{String(index + 1).padStart(2, '0')}</span>
+                        <h3 className="text-lg font-medium text-foreground">{step.title}</h3>
                       </div>
-                    )}
+                      <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
+                    </div>
                   </div>
                 </div>
+                
+                {/* Vertical arrow connector */}
+                {!isLast && (
+                  <div className="flex justify-center py-2">
+                    <svg width="24" height="32" viewBox="0 0 24 32" className="text-secondary">
+                      <line x1="12" y1="0" x2="12" y2="24" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" className="opacity-50" />
+                      <polygon points="6,22 12,30 18,22" fill="currentColor" className="opacity-50" />
+                    </svg>
+                  </div>
+                )}
               </div>
-              {index < steps.length - 1 && (
-                <div className="flex justify-center py-1">
-                  <ArrowDown className="w-5 h-5 text-primary/40" />
-                </div>
-              )}
-            </div>
-          ))}
+            );
+          })}
         </div>
         
-        {/* Progress bar */}
-        <div className="mt-10 relative">
-          <div className="h-1 bg-muted rounded-full overflow-hidden">
-            <div className="h-full w-full bg-gradient-to-l from-primary via-secondary to-accent" />
-          </div>
-          <div className="flex justify-between mt-2">
-            <span className="text-xs text-muted-foreground">התחלה</span>
-            <span className="text-xs text-success font-medium">אוטומציה פעילה</span>
-          </div>
+        {/* Progress indicator */}
+        <div className="mt-12 flex items-center justify-center gap-2">
+          {steps.map((_, index) => (
+            <div
+              key={index}
+              className="w-2 h-2 rounded-full bg-secondary/50"
+            />
+          ))}
         </div>
       </div>
     </Section>
