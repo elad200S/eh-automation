@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import Section from '@/components/Section';
-import { ArrowLeft, Play, ChevronDown, Users, FileText, Calendar, Database, Sparkles } from 'lucide-react';
+import { ArrowLeft, CircleDot, ChevronDown, Users, FileText, CalendarDays, Database, Cog } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const useCases = [
@@ -34,7 +34,7 @@ const useCases = [
       process: 'סנכרון יומן',
       result: 'תזכורות אוטומטיות'
     },
-    icon: Calendar,
+    icon: CalendarDays,
     color: 'accent'
   },
   {
@@ -79,45 +79,45 @@ const UseCasesSection = () => {
           {useCases.map((useCase, index) => (
             <div
               key={index}
-              className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all group"
+              className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all group flex flex-col h-full"
             >
               <div className="flex items-start gap-4 mb-4">
-                <div className={`w-12 h-12 rounded-xl bg-${useCase.color}/10 flex items-center justify-center flex-shrink-0`}>
-                  <useCase.icon className={`w-6 h-6 text-${useCase.color}`} />
+                <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center flex-shrink-0">
+                  <useCase.icon className="w-6 h-6 text-foreground/80" />
                 </div>
-                <div>
+                <div className="flex-1 min-h-[72px]">
                   <h3 className="text-lg font-medium text-foreground mb-1">
                     {useCase.title}
                   </h3>
-                  <p className="text-sm text-muted-foreground">
+                  <p className="text-sm text-muted-foreground line-clamp-2">
                     {useCase.description}
                   </p>
                 </div>
               </div>
               
               {/* Flow diagram */}
-              <div className="flex items-center justify-between gap-2 p-4 bg-muted/50 rounded-lg">
+              <div className="flex items-center justify-between gap-2 p-4 bg-muted/50 rounded-lg mt-auto">
                 <div className="text-center flex-1">
                   <div className="w-10 h-10 rounded-lg bg-card border border-border mx-auto mb-2 flex items-center justify-center">
-                    <Play className="w-4 h-4 text-primary" />
+                    <CircleDot className="w-4 h-4 text-foreground/60" />
                   </div>
                   <span className="text-xs text-muted-foreground">{useCase.flow.source}</span>
                 </div>
                 
-                <ArrowLeft className="w-5 h-5 text-border flex-shrink-0" />
+                <ArrowLeft className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
                 
                 <div className="text-center flex-1">
-                  <div className={`w-10 h-10 rounded-lg bg-${useCase.color}/10 border border-${useCase.color}/20 mx-auto mb-2 flex items-center justify-center`}>
-                    <Sparkles className={`w-4 h-4 text-${useCase.color}`} />
+                  <div className="w-10 h-10 rounded-lg bg-muted border border-border mx-auto mb-2 flex items-center justify-center">
+                    <Cog className="w-4 h-4 text-foreground/60" />
                   </div>
                   <span className="text-xs text-muted-foreground">{useCase.flow.process}</span>
                 </div>
                 
-                <ArrowLeft className="w-5 h-5 text-border flex-shrink-0" />
+                <ArrowLeft className="w-5 h-5 text-muted-foreground/50 flex-shrink-0" />
                 
                 <div className="text-center flex-1">
-                  <div className="w-10 h-10 rounded-lg bg-success/10 border border-success/20 mx-auto mb-2 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-success" />
+                  <div className="w-10 h-10 rounded-lg bg-card border border-border mx-auto mb-2 flex items-center justify-center">
+                    <div className="w-2.5 h-2.5 rounded-full bg-foreground/40" />
                   </div>
                   <span className="text-xs text-muted-foreground">{useCase.flow.result}</span>
                 </div>
@@ -129,8 +129,8 @@ const UseCasesSection = () => {
         {/* Interactive Builder Card */}
         <div className="p-8 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-2xl border border-primary/20">
           <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-primary-foreground" />
+            <div className="w-12 h-12 rounded-xl bg-muted flex items-center justify-center">
+              <Cog className="w-6 h-6 text-foreground/80" />
             </div>
             <div>
               <h3 className="text-xl font-semibold text-foreground">בנייה עצמית</h3>

@@ -51,8 +51,8 @@ const ProblemSection = () => {
               onClick={() => setExpandedIndex(expandedIndex === index ? null : index)}
             >
               <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
-                  <AlertTriangle className="w-5 h-5 text-primary" />
+                <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center flex-shrink-0">
+                  <AlertTriangle className="w-5 h-5 text-foreground/70" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">

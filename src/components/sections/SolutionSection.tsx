@@ -1,11 +1,11 @@
 import Section from '@/components/Section';
-import { Workflow, Link, Zap, Shield } from 'lucide-react';
+import { Settings, Link2, ArrowRightLeft, ShieldCheck } from 'lucide-react';
 
 const concepts = [
-  { icon: Workflow, label: 'אוטומציות', color: 'primary' },
-  { icon: Link, label: 'חיבור מערכות', color: 'secondary' },
-  { icon: Zap, label: 'זרימת מידע אוטומטית', color: 'accent' },
-  { icon: Shield, label: 'שליטה ובקרה', color: 'primary' },
+  { Icon: Settings, label: 'אוטומציות' },
+  { Icon: Link2, label: 'חיבור מערכות' },
+  { Icon: ArrowRightLeft, label: 'זרימת מידע אוטומטית' },
+  { Icon: ShieldCheck, label: 'שליטה ובקרה' },
 ];
 
 const SolutionSection = () => {
@@ -28,8 +28,8 @@ const SolutionSection = () => {
               key={index}
               className="p-6 bg-card rounded-xl border border-border text-center hover:border-primary/50 hover:shadow-lg transition-all duration-300 group"
             >
-              <div className={`w-14 h-14 rounded-xl bg-${concept.color}/10 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform`}>
-                <concept.icon className={`w-7 h-7 text-${concept.color}`} />
+              <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
+                <concept.Icon className="w-7 h-7 text-foreground/80" />
               </div>
               <span className="text-sm font-medium text-foreground">{concept.label}</span>
             </div>
