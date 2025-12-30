@@ -1,5 +1,6 @@
 import { Helmet } from 'react-helmet-async';
 import AccessibilityButton from '@/components/AccessibilityButton';
+import CookieConsent from '@/components/CookieConsent';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 import SolutionSection from '@/components/sections/SolutionSection';
@@ -30,6 +31,7 @@ const Index = () => {
       
       <main className="bg-background min-h-screen">
         <HeroSection />
+        <AboutSection />
         <ProblemSection />
         <SolutionSection />
         <ToolsSection />
@@ -38,12 +40,12 @@ const Index = () => {
         <WhyNowSection />
         <ProcessSection />
         <QualificationSection />
-        <AboutSection />
         <ContactSection />
         <Footer />
       </main>
       
       <AccessibilityButton />
+      <CookieConsent />
     </>
   );
 };
