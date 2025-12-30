@@ -5,9 +5,16 @@ import {
   Contrast, 
   MousePointer2, 
   Link2, 
-  ZoomIn,
   RotateCcw,
-  X
+  X,
+  Pause,
+  ImageOff,
+  AlignLeft,
+  Minus,
+  Plus,
+  BookOpen,
+  Space,
+  ArrowUpDown
 } from 'lucide-react';
 
 interface AccessibilitySettings {
@@ -15,6 +22,12 @@ interface AccessibilitySettings {
   highContrast: boolean;
   highlightLinks: boolean;
   bigCursor: boolean;
+  textSpacing: boolean;
+  pauseAnimations: boolean;
+  hideImages: boolean;
+  dyslexiaFont: boolean;
+  lineHeight: number;
+  textAlign: 'right' | 'center' | 'left';
 }
 
 const defaultSettings: AccessibilitySettings = {
@@ -22,6 +35,12 @@ const defaultSettings: AccessibilitySettings = {
   highContrast: false,
   highlightLinks: false,
   bigCursor: false,
+  textSpacing: false,
+  pauseAnimations: false,
+  hideImages: false,
+  dyslexiaFont: false,
+  lineHeight: 100,
+  textAlign: 'right',
 };
 
 const AccessibilityButton = () => {
@@ -29,13 +48,12 @@ const AccessibilityButton = () => {
   const [settings, setSettings] = useState<AccessibilitySettings>(defaultSettings);
 
   useEffect(() => {
-    // Load saved settings
     const saved = localStorage.getItem('accessibility-settings');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        setSettings(parsed);
-        applySettings(parsed);
+        setSettings({ ...defaultSettings, ...parsed });
+        applySettings({ ...defaultSettings, ...parsed });
       } catch {
         // Use defaults
       }
@@ -56,14 +74,8 @@ const AccessibilityButton = () => {
     
     // High contrast
     if (s.highContrast) {
-      root.style.setProperty('--foreground', '0 0% 0%');
-      root.style.setProperty('--background', '0 0% 100%');
-      root.style.setProperty('--muted-foreground', '0 0% 20%');
       root.classList.add('high-contrast');
     } else {
-      root.style.setProperty('--foreground', '220 30% 15%');
-      root.style.setProperty('--background', '210 20% 98%');
-      root.style.setProperty('--muted-foreground', '220 15% 45%');
       root.classList.remove('high-contrast');
     }
 
@@ -80,6 +92,48 @@ const AccessibilityButton = () => {
     } else {
       root.classList.remove('big-cursor');
     }
+
+    // Text spacing
+    if (s.textSpacing) {
+      root.classList.add('text-spacing');
+    } else {
+      root.classList.remove('text-spacing');
+    }
+
+    // Pause animations
+    if (s.pauseAnimations) {
+      root.classList.add('pause-animations');
+    } else {
+      root.classList.remove('pause-animations');
+    }
+
+    // Hide images
+    if (s.hideImages) {
+      root.classList.add('hide-images');
+    } else {
+      root.classList.remove('hide-images');
+    }
+
+    // Dyslexia font
+    if (s.dyslexiaFont) {
+      root.classList.add('dyslexia-font');
+    } else {
+      root.classList.remove('dyslexia-font');
+    }
+
+    // Line height
+    root.style.setProperty('--a11y-line-height', `${s.lineHeight / 100}`);
+    if (s.lineHeight !== 100) {
+      root.classList.add('custom-line-height');
+    } else {
+      root.classList.remove('custom-line-height');
+    }
+
+    // Text alignment
+    root.classList.remove('text-align-right', 'text-align-center', 'text-align-left');
+    if (s.textAlign !== 'right') {
+      root.classList.add(`text-align-${s.textAlign}`);
+    }
   };
 
   const adjustFontSize = (delta: number) => {
@@ -87,20 +141,32 @@ const AccessibilityButton = () => {
     saveSettings({ ...settings, fontSize: newSize });
   };
 
-  const toggleHighContrast = () => {
-    saveSettings({ ...settings, highContrast: !settings.highContrast });
+  const adjustLineHeight = (delta: number) => {
+    const newHeight = Math.min(200, Math.max(100, settings.lineHeight + delta));
+    saveSettings({ ...settings, lineHeight: newHeight });
   };
 
-  const toggleHighlightLinks = () => {
-    saveSettings({ ...settings, highlightLinks: !settings.highlightLinks });
+  const cycleTextAlign = () => {
+    const alignments: ('right' | 'center' | 'left')[] = ['right', 'center', 'left'];
+    const currentIndex = alignments.indexOf(settings.textAlign);
+    const nextIndex = (currentIndex + 1) % alignments.length;
+    saveSettings({ ...settings, textAlign: alignments[nextIndex] });
   };
 
-  const toggleBigCursor = () => {
-    saveSettings({ ...settings, bigCursor: !settings.bigCursor });
+  const toggleSetting = (key: keyof AccessibilitySettings) => {
+    if (typeof settings[key] === 'boolean') {
+      saveSettings({ ...settings, [key]: !settings[key] });
+    }
   };
 
   const resetAll = () => {
     saveSettings(defaultSettings);
+  };
+
+  const alignLabels = {
+    right: 'ימין',
+    center: 'מרכז',
+    left: 'שמאל',
   };
 
   return (
@@ -145,7 +211,7 @@ const AccessibilityButton = () => {
             </div>
 
             {/* Content */}
-            <div className="p-4 space-y-4 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 space-y-3 max-h-[70vh] overflow-y-auto">
               {/* Font Size */}
               <div className="space-y-2">
                 <div className="flex items-center gap-2 text-sm font-medium text-foreground">
@@ -155,77 +221,114 @@ const AccessibilityButton = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => adjustFontSize(-10)}
-                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1"
                     aria-label="הקטן טקסט"
                   >
-                    A-
+                    <Minus className="w-3 h-3" />
+                    A
                   </button>
-                  <span className="w-16 text-center text-sm font-mono text-muted-foreground">
+                  <span className="w-14 text-center text-sm font-mono text-muted-foreground">
                     {settings.fontSize}%
                   </span>
                   <button
                     onClick={() => adjustFontSize(10)}
-                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors flex items-center justify-center gap-1"
                     aria-label="הגדל טקסט"
                   >
-                    A+
+                    <Plus className="w-3 h-3" />
+                    A
                   </button>
                 </div>
               </div>
 
-              {/* High Contrast */}
-              <button
-                onClick={toggleHighContrast}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
-                  settings.highContrast 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted hover:bg-primary/10'
-                }`}
-              >
-                <Contrast className="w-5 h-5" />
-                <span>ניגודיות גבוהה</span>
-                {settings.highContrast && (
-                  <span className="mr-auto text-xs bg-white/20 px-2 py-0.5 rounded">פעיל</span>
-                )}
-              </button>
-
-              {/* Highlight Links */}
-              <button
-                onClick={toggleHighlightLinks}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
-                  settings.highlightLinks 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted hover:bg-primary/10'
-                }`}
-              >
-                <Link2 className="w-5 h-5" />
-                <span>הדגש קישורים</span>
-                {settings.highlightLinks && (
-                  <span className="mr-auto text-xs bg-white/20 px-2 py-0.5 rounded">פעיל</span>
-                )}
-              </button>
-
-              {/* Big Cursor */}
-              <button
-                onClick={toggleBigCursor}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
-                  settings.bigCursor 
-                    ? 'bg-primary text-primary-foreground' 
-                    : 'bg-muted hover:bg-primary/10'
-                }`}
-              >
-                <MousePointer2 className="w-5 h-5" />
-                <span>סמן גדול</span>
-                {settings.bigCursor && (
-                  <span className="mr-auto text-xs bg-white/20 px-2 py-0.5 rounded">פעיל</span>
-                )}
-              </button>
-
-              {/* Zoom indicator */}
-              <div className="flex items-center gap-3 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
-                <ZoomIn className="w-5 h-5" />
-                <span>השתמש ב-Ctrl+/- לזום</span>
+              {/* Line Height */}
+              <div className="space-y-2">
+                <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+                  <ArrowUpDown className="w-4 h-4" />
+                  <span>גובה שורה</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <button
+                    onClick={() => adjustLineHeight(-25)}
+                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="הקטן גובה שורה"
+                  >
+                    <Minus className="w-3 h-3 mx-auto" />
+                  </button>
+                  <span className="w-14 text-center text-sm font-mono text-muted-foreground">
+                    {settings.lineHeight}%
+                  </span>
+                  <button
+                    onClick={() => adjustLineHeight(25)}
+                    className="flex-1 py-2 bg-muted rounded-lg text-sm font-medium hover:bg-primary hover:text-primary-foreground transition-colors"
+                    aria-label="הגדל גובה שורה"
+                  >
+                    <Plus className="w-3 h-3 mx-auto" />
+                  </button>
+                </div>
               </div>
+
+              {/* Toggle Options */}
+              <ToggleButton
+                active={settings.highContrast}
+                onClick={() => toggleSetting('highContrast')}
+                icon={<Contrast className="w-5 h-5" />}
+                label="ניגודיות גבוהה"
+              />
+
+              <ToggleButton
+                active={settings.highlightLinks}
+                onClick={() => toggleSetting('highlightLinks')}
+                icon={<Link2 className="w-5 h-5" />}
+                label="הדגש קישורים"
+              />
+
+              <ToggleButton
+                active={settings.textSpacing}
+                onClick={() => toggleSetting('textSpacing')}
+                icon={<Space className="w-5 h-5" />}
+                label="ריווח טקסט"
+              />
+
+              <ToggleButton
+                active={settings.dyslexiaFont}
+                onClick={() => toggleSetting('dyslexiaFont')}
+                icon={<BookOpen className="w-5 h-5" />}
+                label="גופן דיסלקציה"
+              />
+
+              <ToggleButton
+                active={settings.bigCursor}
+                onClick={() => toggleSetting('bigCursor')}
+                icon={<MousePointer2 className="w-5 h-5" />}
+                label="סמן גדול"
+              />
+
+              <ToggleButton
+                active={settings.pauseAnimations}
+                onClick={() => toggleSetting('pauseAnimations')}
+                icon={<Pause className="w-5 h-5" />}
+                label="עצור אנימציות"
+              />
+
+              <ToggleButton
+                active={settings.hideImages}
+                onClick={() => toggleSetting('hideImages')}
+                icon={<ImageOff className="w-5 h-5" />}
+                label="הסתר תמונות"
+              />
+
+              {/* Text Alignment */}
+              <button
+                onClick={cycleTextAlign}
+                className="w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium bg-muted hover:bg-primary/10 transition-colors"
+              >
+                <AlignLeft className="w-5 h-5" />
+                <span>יישור טקסט</span>
+                <span className="mr-auto text-xs bg-primary/10 px-2 py-0.5 rounded">
+                  {alignLabels[settings.textAlign]}
+                </span>
+              </button>
 
               {/* Reset */}
               <button
@@ -249,5 +352,29 @@ const AccessibilityButton = () => {
     </>
   );
 };
+
+interface ToggleButtonProps {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ReactNode;
+  label: string;
+}
+
+const ToggleButton = ({ active, onClick, icon, label }: ToggleButtonProps) => (
+  <button
+    onClick={onClick}
+    className={`w-full flex items-center gap-3 p-3 rounded-lg text-sm font-medium transition-colors ${
+      active 
+        ? 'bg-primary text-primary-foreground' 
+        : 'bg-muted hover:bg-primary/10'
+    }`}
+  >
+    {icon}
+    <span>{label}</span>
+    {active && (
+      <span className="mr-auto text-xs bg-white/20 px-2 py-0.5 rounded">פעיל</span>
+    )}
+  </button>
+);
 
 export default AccessibilityButton;

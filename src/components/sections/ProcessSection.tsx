@@ -29,13 +29,13 @@ const steps = [
   },
 ];
 
-const StepCard = ({ step, isHighlighted = false }: { step: typeof steps[0]; isHighlighted?: boolean }) => {
+const StepCard = ({ step }: { step: typeof steps[0] }) => {
   const StepIcon = step.Icon;
   return (
-    <div className={`bg-background rounded-xl p-5 shadow-lg border border-border/20 ${isHighlighted ? 'ring-2 ring-secondary/50' : ''}`}>
+    <div className="bg-background rounded-xl p-5 shadow-lg border border-border/20 h-full">
       <div className="flex flex-col items-center text-center">
-        <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 ${isHighlighted ? 'bg-secondary/20' : 'bg-muted'}`}>
-          <StepIcon className={`w-6 h-6 ${isHighlighted ? 'text-secondary' : 'text-foreground/80'}`} />
+        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-secondary/20">
+          <StepIcon className="w-6 h-6 text-secondary" />
         </div>
         <h3 className="text-base font-medium text-foreground mb-1">{step.title}</h3>
         <p className="text-xs text-muted-foreground">{step.description}</p>
@@ -44,9 +44,66 @@ const StepCard = ({ step, isHighlighted = false }: { step: typeof steps[0]; isHi
   );
 };
 
-const ArrowRight = () => (
-  <svg className="absolute -right-6 top-1/2 -translate-y-1/2 w-6 h-6 text-secondary" viewBox="0 0 24 24" fill="none">
-    <path d="M5 12H19M19 12L13 6M19 12L13 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+// Curved arrow pointing right then down
+const CurvedArrowRightDown = () => (
+  <svg className="w-12 h-16 text-secondary" viewBox="0 0 48 64" fill="none">
+    <path 
+      d="M4 8 C 24 8, 40 16, 40 40" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    <path 
+      d="M35 35 L40 45 L45 35" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      fill="none" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Curved arrow pointing left
+const CurvedArrowLeft = () => (
+  <svg className="w-16 h-8 text-secondary" viewBox="0 0 64 32" fill="none">
+    <path 
+      d="M56 8 C 40 8, 24 16, 8 16" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    <path 
+      d="M14 10 L6 16 L14 22" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      fill="none" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Curved horizontal arrow
+const CurvedArrowHorizontal = () => (
+  <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
+    <path 
+      d="M4 16 C 16 8, 32 24, 44 16" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    <path 
+      d="M38 10 L46 16 L38 22" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      fill="none" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
   </svg>
 );
 
@@ -62,42 +119,42 @@ const ProcessSection = () => {
         <div className="bg-foreground rounded-2xl p-6 md:p-10">
           
           {/* Desktop: Zig-zag flow diagram */}
-          <div className="hidden md:block relative">
-            <div className="grid grid-cols-3 gap-6">
-              {/* Row 1: First 3 steps */}
+          <div className="hidden md:block">
+            {/* Row 1: First 3 steps RTL order */}
+            <div className="grid grid-cols-5 items-center gap-2">
               <StepCard step={steps[0]} />
               
-              <div className="relative">
-                <StepCard step={steps[1]} />
-                <ArrowRight />
+              <div className="flex justify-center">
+                <CurvedArrowHorizontal />
               </div>
               
-              <div className="relative">
-                <StepCard step={steps[2]} />
-                <ArrowRight />
+              <StepCard step={steps[1]} />
+              
+              <div className="flex justify-center">
+                <CurvedArrowHorizontal />
               </div>
+              
+              <StepCard step={steps[2]} />
             </div>
             
-            {/* Curved arrow down */}
-            <div className="flex justify-end pr-16 py-4">
-              <svg className="w-10 h-10 text-secondary" viewBox="0 0 40 40" fill="none">
-                <path d="M5 5 Q35 5, 35 35" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" fill="none"/>
-                <path d="M30 30 L35 38 L40 30" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
-              </svg>
+            {/* Transition arrow from row 1 to row 2 */}
+            <div className="flex justify-start pr-[calc(20%-1rem)] py-3">
+              <CurvedArrowRightDown />
             </div>
             
-            {/* Row 2: Last 2 steps (right-aligned for zig-zag) */}
-            <div className="grid grid-cols-3 gap-6">
+            {/* Row 2: Last 2 steps */}
+            <div className="grid grid-cols-5 items-center gap-2">
               <div></div>
               
-              <div className="relative">
-                <StepCard step={steps[3]} />
+              <div className="flex justify-center">
+                <CurvedArrowLeft />
               </div>
               
-              <div className="relative">
-                <StepCard step={steps[4]} isHighlighted />
-                <ArrowRight />
-              </div>
+              <StepCard step={steps[3]} />
+              
+              <div></div>
+              
+              <StepCard step={steps[4]} />
             </div>
           </div>
           
@@ -109,10 +166,10 @@ const ProcessSection = () => {
               
               return (
                 <div key={index} className="relative">
-                  <div className={`bg-background rounded-xl p-4 shadow-lg ${isLast ? 'ring-2 ring-secondary/50' : ''}`}>
+                  <div className="bg-background rounded-xl p-4 shadow-lg">
                     <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 ${isLast ? 'bg-secondary/20' : 'bg-muted'}`}>
-                        <StepIcon className={`w-5 h-5 ${isLast ? 'text-secondary' : 'text-foreground/80'}`} />
+                      <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-secondary/20">
+                        <StepIcon className="w-5 h-5 text-secondary" />
                       </div>
                       <div>
                         <h3 className="text-sm font-medium text-foreground">{step.title}</h3>
@@ -124,8 +181,8 @@ const ProcessSection = () => {
                   {!isLast && (
                     <div className="flex justify-center py-2">
                       <svg width="20" height="24" viewBox="0 0 20 24" className="text-secondary">
-                        <line x1="10" y1="0" x2="10" y2="18" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" />
-                        <polygon points="5,16 10,22 15,16" fill="currentColor" />
+                        <path d="M10 2 C 6 8, 14 14, 10 20" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" fill="none" />
+                        <polygon points="5,18 10,24 15,18" fill="currentColor" />
                       </svg>
                     </div>
                   )}

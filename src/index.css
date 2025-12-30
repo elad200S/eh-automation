@@ -176,3 +176,67 @@ html.high-contrast {
 html.high-contrast img {
   filter: contrast(0.85);
 }
+
+/* Accessibility: Text spacing */
+html.text-spacing p,
+html.text-spacing li,
+html.text-spacing span,
+html.text-spacing div {
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.16em !important;
+}
+
+/* Accessibility: Pause animations */
+html.pause-animations *,
+html.pause-animations *::before,
+html.pause-animations *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+/* Accessibility: Hide images */
+html.hide-images img,
+html.hide-images svg:not(.a11y-icon),
+html.hide-images [role="img"],
+html.hide-images picture {
+  visibility: hidden !important;
+}
+
+/* Accessibility: Dyslexia-friendly font */
+html.dyslexia-font {
+  font-family: 'OpenDyslexic', 'Comic Sans MS', sans-serif !important;
+}
+
+html.dyslexia-font * {
+  font-family: inherit !important;
+}
+
+/* Accessibility: Custom line height */
+html.custom-line-height p,
+html.custom-line-height li,
+html.custom-line-height span {
+  line-height: calc(1.5 * var(--a11y-line-height, 1)) !important;
+}
+
+/* Accessibility: Text alignment */
+html.text-align-center p,
+html.text-align-center li,
+html.text-align-center h1,
+html.text-align-center h2,
+html.text-align-center h3,
+html.text-align-center h4,
+html.text-align-center h5,
+html.text-align-center h6 {
+  text-align: center !important;
+}
+
+html.text-align-left p,
+html.text-align-left li,
+html.text-align-left h1,
+html.text-align-left h2,
+html.text-align-left h3,
+html.text-align-left h4,
+html.text-align-left h5,
+html.text-align-left h6 {
+  text-align: left !important;
+}
