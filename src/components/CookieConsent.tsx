@@ -1,46 +1,209 @@
 import { useState, useEffect } from 'react';
-import { Cookie } from 'lucide-react';
+import { X, Settings } from 'lucide-react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
+
+interface ConsentState {
+  essential: boolean;
+  analytics: boolean;
+  marketing: boolean;
+}
 
 const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
+  const [showPreferences, setShowPreferences] = useState(false);
+  const [preferences, setPreferences] = useState<ConsentState>({
+    essential: true,
+    analytics: false,
+    marketing: false,
+  });
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
     if (!consent) {
       setIsVisible(true);
+    } else {
+      try {
+        const stored = JSON.parse(consent);
+        setPreferences(stored);
+      } catch {
+        setIsVisible(true);
+      }
     }
   }, []);
 
-  const handleAccept = () => {
-    localStorage.setItem('cookie-consent', 'accepted');
+  const saveConsent = (state: ConsentState) => {
+    localStorage.setItem('cookie-consent', JSON.stringify(state));
     setIsVisible(false);
+    setShowPreferences(false);
+  };
+
+  const handleAcceptAll = () => {
+    const allEnabled: ConsentState = {
+      essential: true,
+      analytics: true,
+      marketing: true,
+    };
+    setPreferences(allEnabled);
+    saveConsent(allEnabled);
+  };
+
+  const handleDeny = () => {
+    const essentialOnly: ConsentState = {
+      essential: true,
+      analytics: false,
+      marketing: false,
+    };
+    setPreferences(essentialOnly);
+    saveConsent(essentialOnly);
+  };
+
+  const handleSavePreferences = () => {
+    saveConsent(preferences);
+  };
+
+  const handleClose = () => {
+    // Close without choosing defaults to essential only
+    const essentialOnly: ConsentState = {
+      essential: true,
+      analytics: false,
+      marketing: false,
+    };
+    saveConsent(essentialOnly);
   };
 
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 animate-fade-up">
-      <div className="max-w-4xl mx-auto bg-card border border-border rounded-xl shadow-lg p-4 flex flex-col sm:flex-row items-center gap-4">
-        <div className="flex items-center gap-3 flex-1">
-          <Cookie className="w-5 h-5 text-muted-foreground flex-shrink-0" />
-          <p className="text-sm text-muted-foreground">
-            האתר משתמש בעוגיות לשיפור חווית השימוש.{' '}
-            <a 
-              href="/privacy" 
-              className="text-primary hover:underline"
-            >
-              מדיניות פרטיות
-            </a>
-          </p>
+    <>
+      {/* Top Sticky Banner */}
+      <div className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border shadow-md">
+        <div className="max-w-7xl mx-auto px-4 py-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            {/* Text Content */}
+            <p className="text-sm text-muted-foreground text-center sm:text-right flex-1">
+              אנו משתמשים בעוגיות כדי לשפר את חווית הגלישה שלך. בלחיצה על "אשר", אתה מסכים לשימוש בעוגיות.{' '}
+              <a 
+                href="/privacy" 
+                className="text-primary hover:underline font-medium"
+              >
+                מדיניות פרטיות
+              </a>
+            </p>
+
+            {/* Buttons */}
+            <div className="flex items-center gap-2 flex-shrink-0">
+              <button
+                onClick={() => setShowPreferences(true)}
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors flex items-center gap-2"
+              >
+                <Settings className="w-4 h-4" />
+                העדפות
+              </button>
+              <button
+                onClick={handleDeny}
+                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+              >
+                דחה
+              </button>
+              <button
+                onClick={handleAcceptAll}
+                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+              >
+                אשר
+              </button>
+              <button
+                onClick={handleClose}
+                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+                aria-label="סגור"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+          </div>
         </div>
-        <button
-          onClick={handleAccept}
-          className="px-6 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors flex-shrink-0"
-        >
-          מאשר
-        </button>
       </div>
-    </div>
+
+      {/* Preferences Modal */}
+      <Dialog open={showPreferences} onOpenChange={setShowPreferences}>
+        <DialogContent className="sm:max-w-md" dir="rtl">
+          <DialogHeader>
+            <DialogTitle className="text-right">העדפות עוגיות</DialogTitle>
+          </DialogHeader>
+          
+          <div className="space-y-4 py-4">
+            {/* Essential Cookies */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div className="flex-1">
+                <h4 className="font-medium text-foreground">עוגיות חיוניות</h4>
+                <p className="text-sm text-muted-foreground mt-1">
+                  עוגיות אלו נדרשות לתפקוד האתר ואינן ניתנות לכיבוי.
+                </p>
+              </div>
+              <Switch 
+                checked={true} 
+                disabled 
+                className="mr-4"
+              />
+            </div>
+
+            {/* Analytics Cookies */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div className="flex-1">
+                <h4 className="font-medium text-foreground">עוגיות אנליטיקה</h4>
+                <p className="text-sm text-muted-foreground mt-1">
+                  עוזרות לנו להבין כיצד מבקרים משתמשים באתר.
+                </p>
+              </div>
+              <Switch 
+                checked={preferences.analytics}
+                onCheckedChange={(checked) => 
+                  setPreferences(prev => ({ ...prev, analytics: checked }))
+                }
+                className="mr-4"
+              />
+            </div>
+
+            {/* Marketing Cookies */}
+            <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+              <div className="flex-1">
+                <h4 className="font-medium text-foreground">עוגיות שיווק</h4>
+                <p className="text-sm text-muted-foreground mt-1">
+                  משמשות להצגת פרסומות רלוונטיות עבורך.
+                </p>
+              </div>
+              <Switch 
+                checked={preferences.marketing}
+                onCheckedChange={(checked) => 
+                  setPreferences(prev => ({ ...prev, marketing: checked }))
+                }
+                className="mr-4"
+              />
+            </div>
+          </div>
+
+          <div className="flex gap-2 justify-end pt-2">
+            <button
+              onClick={() => setShowPreferences(false)}
+              className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+            >
+              ביטול
+            </button>
+            <button
+              onClick={handleSavePreferences}
+              className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              שמור העדפות
+            </button>
+          </div>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
