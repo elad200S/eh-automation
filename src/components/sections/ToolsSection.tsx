@@ -1,146 +1,164 @@
-import { useState } from 'react';
 import Section from '@/components/Section';
+
+// SVG Brand Logos as components
+const MakeLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#6D00CC" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4zm-5.5 28.5l-7-7 7-7 2.8 2.8-4.2 4.2 4.2 4.2-2.8 2.8zm11 0l-2.8-2.8 4.2-4.2-4.2-4.2 2.8-2.8 7 7-7 7z"/>
+  </svg>
+);
+
+const AirtableLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#FCB400" d="M23.06 6.24L4.65 14.13c-.91.39-.89 1.68.03 2.04l18.48 7.59c.52.21 1.11.21 1.63 0l18.48-7.59c.92-.36.94-1.65.03-2.04L24.9 6.24a2.21 2.21 0 00-1.84 0z"/>
+    <path fill="#18BFFF" d="M25.09 26.63V44.4c0 .85.88 1.42 1.65 1.07l17.54-7.74c.47-.21.77-.67.77-1.18V18.78c0-.85-.88-1.42-1.65-1.07l-17.54 7.74a1.3 1.3 0 00-.77 1.18z"/>
+    <path fill="#F82B60" d="M22.91 26.63V44.4c0 .85-.88 1.42-1.65 1.07L3.72 37.73a1.3 1.3 0 01-.77-1.18V18.78c0-.85.88-1.42 1.65-1.07l17.54 7.74c.47.21.77.67.77 1.18z"/>
+  </svg>
+);
+
+const GoogleSheetsLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#43A047" d="M37 45H11c-1.66 0-3-1.34-3-3V6c0-1.66 1.34-3 3-3h19l10 10v29c0 1.66-1.34 3-3 3z"/>
+    <path fill="#C8E6C9" d="M40 13H30V3l10 10z"/>
+    <path fill="#2E7D32" d="M30 13l10 10V13z"/>
+    <path fill="#E8F5E9" d="M31 23H17v14h14V23zm-12 2h4v4h-4v-4zm0 6h4v4h-4v-4zm6-6h4v4h-4v-4zm0 6h4v4h-4v-4z"/>
+  </svg>
+);
+
+const WhatsAppLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#25D366" d="M24 4C12.95 4 4 12.95 4 24c0 3.54.93 6.87 2.55 9.76L4 44l10.56-2.77A19.88 19.88 0 0024 44c11.05 0 20-8.95 20-20S35.05 4 24 4z"/>
+    <path fill="#fff" d="M34.55 29.25c-.45-.22-2.65-1.31-3.06-1.46-.41-.15-.71-.22-1.01.22-.3.45-1.16 1.46-1.42 1.76-.26.3-.52.34-.97.11-.45-.22-1.9-.7-3.62-2.24-1.34-1.19-2.24-2.67-2.5-3.12-.26-.45-.03-.69.2-.91.2-.2.45-.52.67-.78.22-.26.3-.45.45-.75.15-.3.08-.56-.04-.78-.11-.22-1.01-2.44-1.39-3.34-.37-.88-.74-.76-1.01-.78-.26-.01-.56-.01-.86-.01-.3 0-.78.11-1.19.56-.41.45-1.56 1.53-1.56 3.72 0 2.2 1.6 4.32 1.82 4.62.22.3 3.14 4.79 7.61 6.72 1.06.46 1.89.73 2.54.94.85.27 1.62.23 2.23.14.68-.1 2.09-.86 2.39-1.68.3-.82.3-1.53.21-1.68-.09-.15-.34-.24-.71-.41z"/>
+  </svg>
+);
+
+const TelegramLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#29B6F6" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
+    <path fill="#fff" d="M33.95 15l-3.75 19.38c-.28 1.26-1.03 1.57-2.09.98l-5.78-4.26-2.78 2.68c-.31.31-.57.57-1.16.57l.41-5.83 10.59-9.57c.46-.41-.1-.64-.71-.23L16.5 27.32l-5.64-1.76c-1.23-.38-1.25-1.23.26-1.82l22.04-8.5c1.02-.38 1.91.23 1.58 1.82l-.79 1.94z"/>
+  </svg>
+);
+
+const HubSpotLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#FF7A59" d="M36.5 19.9v-5.65a3.25 3.25 0 10-2.6 0v5.65a7.8 7.8 0 00-4.15 2.35l-10.9-7.1a4.7 4.7 0 10-1.5 2.3l10.9 7.1a7.8 7.8 0 101.5 9.15l-10.9 7.1a4.7 4.7 0 101.5 2.3l10.9-7.1a7.8 7.8 0 004.15 2.35v5.65a3.25 3.25 0 102.6 0v-5.65a7.8 7.8 0 000-13.45z"/>
+    <circle cx="35.2" cy="26.6" r="5.2" fill="#FF7A59"/>
+  </svg>
+);
+
+const CalendlyLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#006BFF" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
+    <path fill="#fff" d="M32 16H16c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V18c0-1.1-.9-2-2-2zm-2 4v2h-4v-2h4zm-6 0v2h-4v-2h4zm-6 0v2h-2v-2h2zm0 4v2h-2v-2h2zm0 4v2h-2v-2h2zm4-4v2h-4v-2h4zm0 4v2h-4v-2h4zm6-4v2h-4v-2h4zm0 4v2h-4v-2h4zm4-4v2h-2v-2h2zm0 4v2h-2v-2h2z"/>
+  </svg>
+);
+
+const NotionLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#000" d="M10.5 6.5c-.83 0-1.5.67-1.5 1.5v32c0 .83.67 1.5 1.5 1.5h27c.83 0 1.5-.67 1.5-1.5V15l-9-8.5H10.5z"/>
+    <path fill="#fff" d="M14 12h12v3H14v-3zm0 6h20v2H14v-2zm0 5h20v2H14v-2zm0 5h20v2H14v-2zm0 5h12v2H14v-2z"/>
+  </svg>
+);
+
+const GmailLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#4285F4" d="M8 12v24c0 2.2 1.8 4 4 4h4V18l8 6 8-6v22h4c2.2 0 4-1.8 4-4V12L32 4H16L8 12z"/>
+    <path fill="#34A853" d="M16 22v18h-4c-2.2 0-4-1.8-4-4V12l12 10z"/>
+    <path fill="#FBBC04" d="M40 12v24c0 2.2-1.8 4-4 4h-4V22l12-10z"/>
+    <path fill="#EA4335" d="M40 12l-16 12L8 12l8-8h16l8 8z"/>
+  </svg>
+);
+
+const MondayLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <circle cx="12" cy="32" r="6" fill="#FF3D57"/>
+    <circle cx="24" cy="24" r="6" fill="#FFCB00"/>
+    <circle cx="36" cy="16" r="6" fill="#00CA72"/>
+  </svg>
+);
+
+const StripeLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <path fill="#635BFF" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
+    <path fill="#fff" d="M23 20c0-.83 1.1-1.5 2.5-1.5 2.2 0 5 .9 7.5 2.5V15c-2.5-1-5-1.5-7.5-1.5-6 0-10 3-10 8 0 7.5 10 6.5 10 10 0 1-1.2 1.5-2.8 1.5-2.5 0-5.5-1-8.2-2.5v6c2.8 1.2 5.5 1.8 8.2 1.8 6 0 10.3-3 10.3-8 0-8-10-7-10-10z"/>
+  </svg>
+);
+
+const PipedriveLogo = () => (
+  <svg viewBox="0 0 48 48" className="w-8 h-8">
+    <circle cx="24" cy="24" r="20" fill="#25292C"/>
+    <path fill="#fff" d="M24 12c-6.6 0-12 5.4-12 12s5.4 12 12 12 12-5.4 12-12-5.4-12-12-12zm0 18c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
+  </svg>
+);
 
 const toolCategories = [
   {
     name: 'תקשורת',
     tools: [
-      { 
-        name: 'WhatsApp', 
-        color: '#25D366',
-        usage: 'שליחת הודעות אוטומטיות ללקוחות, תזכורות ועדכוני סטטוס'
-      },
-      { 
-        name: 'Telegram', 
-        color: '#0088cc',
-        usage: 'התראות פנימיות לצוות, בוטים לניהול משימות'
-      },
-      { 
-        name: 'Gmail', 
-        color: '#EA4335',
-        usage: 'אוטומציה של מיילים, מעקב ומענה אוטומטי'
-      },
+      { name: 'WhatsApp', Logo: WhatsAppLogo, usage: 'שליחת הודעות אוטומטיות ללקוחות, תזכורות ועדכוני סטטוס' },
+      { name: 'Telegram', Logo: TelegramLogo, usage: 'התראות פנימיות לצוות, בוטים לניהול משימות' },
+      { name: 'Gmail', Logo: GmailLogo, usage: 'אוטומציה של מיילים, מעקב ומענה אוטומטי' },
     ]
   },
   {
     name: 'נתונים',
     tools: [
-      { 
-        name: 'Airtable', 
-        color: '#18BFFF',
-        usage: 'בסיס נתונים גמיש לניהול לידים, פרויקטים ותהליכים'
-      },
-      { 
-        name: 'Google Sheets', 
-        color: '#34A853',
-        usage: 'דוחות אוטומטיים, סנכרון נתונים בין מערכות'
-      },
-      { 
-        name: 'Notion', 
-        color: '#000000',
-        usage: 'מרכז ידע ותיעוד תהליכים, ניהול פרויקטים'
-      },
+      { name: 'Airtable', Logo: AirtableLogo, usage: 'בסיס נתונים גמיש לניהול לידים, פרויקטים ותהליכים' },
+      { name: 'Google Sheets', Logo: GoogleSheetsLogo, usage: 'דוחות אוטומטיים, סנכרון נתונים בין מערכות' },
+      { name: 'Notion', Logo: NotionLogo, usage: 'מרכז ידע ותיעוד תהליכים, ניהול פרויקטים' },
     ]
   },
   {
     name: 'תפעול',
     tools: [
-      { 
-        name: 'Make', 
-        color: '#6D00CC',
-        usage: 'בניית זרימות עבודה מורכבות וחיבור בין מערכות'
-      },
-      { 
-        name: 'Calendly', 
-        color: '#006BFF',
-        usage: 'קביעת פגישות אוטומטית וסנכרון יומנים'
-      },
-      { 
-        name: 'Stripe', 
-        color: '#635BFF',
-        usage: 'תשלומים אוטומטיים, חשבוניות ומעקב הכנסות'
-      },
+      { name: 'Make', Logo: MakeLogo, usage: 'בניית זרימות עבודה מורכבות וחיבור בין מערכות' },
+      { name: 'Calendly', Logo: CalendlyLogo, usage: 'קביעת פגישות אוטומטית וסנכרון יומנים' },
+      { name: 'Stripe', Logo: StripeLogo, usage: 'תשלומים אוטומטיים, חשבוניות ומעקב הכנסות' },
     ]
   },
   {
     name: 'CRM',
     tools: [
-      { 
-        name: 'HubSpot', 
-        color: '#FF7A59',
-        usage: 'ניהול לקוחות, משפכי מכירות ואוטומציה שיווקית'
-      },
-      { 
-        name: 'Monday', 
-        color: '#FF3D57',
-        usage: 'ניהול פרויקטים, משימות ותהליכי עבודה'
-      },
-      { 
-        name: 'Pipedrive', 
-        color: '#25292C',
-        usage: 'מעקב דילים, ניהול צינור מכירות אוטומטי'
-      },
+      { name: 'HubSpot', Logo: HubSpotLogo, usage: 'ניהול לקוחות, משפכי מכירות ואוטומציה שיווקית' },
+      { name: 'Monday', Logo: MondayLogo, usage: 'ניהול פרויקטים, משימות ותהליכי עבודה' },
+      { name: 'Pipedrive', Logo: PipedriveLogo, usage: 'מעקב דילים, ניהול צינור מכירות אוטומטי' },
     ]
   },
 ];
 
 const ToolsSection = () => {
-  const [hoveredTool, setHoveredTool] = useState<string | null>(null);
-
   return (
     <Section id="tools">
       <div className="max-w-5xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 04
-        </div>
-        
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
           כלים ופלטפורמות לאוטומציה עסקית
         </h2>
         
-        <p className="text-lg text-muted-foreground mb-12">
+        <p className="text-lg text-muted-foreground mb-8">
           אלו הכלים והמערכות שמהם נבנית תשתית האוטומציה בפועל.
         </p>
         
-        <div className="space-y-8">
+        <div className="space-y-6">
           {toolCategories.map((category, categoryIndex) => (
             <div key={categoryIndex}>
-              <h3 className="text-sm font-medium text-muted-foreground mb-4 flex items-center gap-2">
-                <span className="w-8 h-px bg-border" />
+              <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
+                <span className="w-6 h-px bg-border" />
                 {category.name}
               </h3>
               
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-3 gap-3">
                 {category.tools.map((tool, toolIndex) => (
                   <div
                     key={toolIndex}
                     className="relative group"
-                    onMouseEnter={() => setHoveredTool(`${categoryIndex}-${toolIndex}`)}
-                    onMouseLeave={() => setHoveredTool(null)}
                   >
-                    <div className="bg-card rounded-xl border border-border p-5 hover:border-primary/30 hover:shadow-lg transition-all duration-300">
-                      <div 
-                        className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 transition-transform group-hover:scale-110"
-                        style={{ backgroundColor: `${tool.color}15` }}
-                      >
-                        <span 
-                          className="text-xl font-bold"
-                          style={{ color: tool.color }}
-                        >
-                          {tool.name[0]}
-                        </span>
+                    <div className="bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex items-center gap-3">
+                      <div className="flex-shrink-0">
+                        <tool.Logo />
                       </div>
-                      <span className="text-sm font-medium text-foreground block">{tool.name}</span>
-                    </div>
-                    
-                    {/* Hover tooltip */}
-                    <div className={`absolute z-20 bottom-full mb-2 right-0 w-64 p-3 bg-card rounded-lg border border-border shadow-xl transition-all duration-200 ${
-                      hoveredTool === `${categoryIndex}-${toolIndex}` 
-                        ? 'opacity-100 translate-y-0' 
-                        : 'opacity-0 translate-y-2 pointer-events-none'
-                    }`}>
-                      <p className="text-sm text-foreground font-medium mb-1">{tool.name}</p>
-                      <p className="text-xs text-muted-foreground">{tool.usage}</p>
+                      <div>
+                        <span className="text-sm font-medium text-foreground block">{tool.name}</span>
+                        <span className="text-xs text-muted-foreground line-clamp-1">{tool.usage}</span>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -148,10 +166,6 @@ const ToolsSection = () => {
             </div>
           ))}
         </div>
-        
-        <p className="text-muted-foreground text-center max-w-2xl mx-auto mt-12">
-          עבודה עם פלטפורמות אוטומציה מובילות מאפשרת בניית תהליכים יציבים, סקיילביליים ומבוססי דאטה.
-        </p>
       </div>
     </Section>
   );

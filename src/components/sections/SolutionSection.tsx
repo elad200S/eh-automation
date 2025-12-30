@@ -12,19 +12,11 @@ const SolutionSection = () => {
   return (
     <Section id="solution">
       <div className="max-w-3xl">
-        <div className="text-technical mb-4">
-          <span className="text-primary font-semibold">//</span> 03
-        </div>
-        
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
           מה מחליף עובדים? תהליך בנוי נכון
         </h2>
         
-        <p className="text-lg text-muted-foreground leading-relaxed mb-4">
-          אלו הכלים והמערכות שמהם נבנית תשתית האוטומציה בפועל.
-        </p>
-        
-        <p className="text-lg text-muted-foreground leading-relaxed mb-12">
+        <p className="text-lg text-muted-foreground leading-relaxed mb-8">
           אוטומציה עסקית מאפשרת חיבור בין מערכות, ייעול תהליכים,
           והעברת מידע אוטומטית בין כלים דיגיטליים –
           ללא התערבות אנושית וללא נקודות כשל מיותרות.

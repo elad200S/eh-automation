@@ -18,7 +18,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         ref={ref as React.RefObject<HTMLElement>}
         id={id}
         className={cn(
-          'py-24 md:py-32',
+          'py-16 md:py-20',
           'section-reveal',
           isVisible && 'visible',
           className
@@ -28,7 +28,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
           {children}
         </div>
         {withSeparator && (
-          <div className="container mt-24 md:mt-32">
+          <div className="container mt-16 md:mt-20">
             <div className="section-separator" />
           </div>
         )}
