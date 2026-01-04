@@ -144,7 +144,7 @@ const ProcessSection = () => {
             
             {/* Row 2: Last 2 steps */}
             <div className="grid grid-cols-5 items-center gap-2">
-              <div></div>
+              <StepCard step={steps[4]} />
               
               <div className="flex justify-center">
                 <CurvedArrowLeft />
@@ -154,7 +154,7 @@ const ProcessSection = () => {
               
               <div></div>
               
-              <StepCard step={steps[4]} />
+              <div></div>
             </div>
           </div>
           
