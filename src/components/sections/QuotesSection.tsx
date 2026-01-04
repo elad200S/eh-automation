@@ -1,5 +1,12 @@
 import Section from '@/components/Section';
-import { Quote } from 'lucide-react';
+import { Quote, ChevronLeft, ChevronRight } from 'lucide-react';
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselPrevious,
+  CarouselNext,
+} from '@/components/ui/carousel';
 
 const quotes = [
   {
@@ -27,35 +34,48 @@ const quotes = [
 const QuotesSection = () => {
   return (
     <Section id="quotes" className="bg-muted/30">
-      <div className="max-w-5xl">
+      <div className="max-w-3xl">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12 text-center">
           מה אומרים המומחים
         </h2>
 
-        <div className="grid md:grid-cols-2 gap-6">
-          {quotes.map((quote, index) => (
-            <div
-              key={index}
-              className="bg-card border border-border rounded-xl p-6 relative"
-            >
-              <Quote className="w-8 h-8 text-primary/20 absolute top-4 right-4" />
-              
-              <div className="pr-6">
-                <p className="text-foreground font-medium mb-3 text-sm leading-relaxed italic">
-                  {quote.originalQuote}
-                </p>
-                
-                <p className="text-muted-foreground text-sm leading-relaxed mb-4">
-                  {quote.hebrewTranslation}
-                </p>
-                
-                <p className="text-primary font-semibold text-sm">
-                  — {quote.name}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <Carousel
+          opts={{
+            align: "center",
+            loop: true,
+            direction: "rtl",
+          }}
+          className="w-full"
+        >
+          <CarouselContent>
+            {quotes.map((quote, index) => (
+              <CarouselItem key={index}>
+                <div className="bg-card border border-border rounded-xl p-8 relative mx-4">
+                  <Quote className="w-10 h-10 text-primary/20 absolute top-6 right-6" />
+                  
+                  <div className="pr-8">
+                    <p className="text-foreground font-medium mb-4 text-base leading-relaxed italic">
+                      {quote.originalQuote}
+                    </p>
+                    
+                    <p className="text-muted-foreground text-base leading-relaxed mb-6">
+                      {quote.hebrewTranslation}
+                    </p>
+                    
+                    <p className="text-primary font-semibold text-base">
+                      — {quote.name}
+                    </p>
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <CarouselPrevious className="static translate-y-0 h-10 w-10" />
+            <CarouselNext className="static translate-y-0 h-10 w-10" />
+          </div>
+        </Carousel>
       </div>
     </Section>
   );

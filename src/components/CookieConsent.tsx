@@ -82,7 +82,7 @@ const CookieConsent = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Text Content */}
             <p className="text-sm text-muted-foreground text-center sm:text-right flex-1">
-              אנו משתמשים בעוגיות כדי לשפר את חווית הגלישה שלך.{' '}
+              אנו משתמשים ב-Cookies כדי לשפר את חווית הגלישה שלך.{' '}
               <a 
                 href="/privacy" 
                 className="text-primary hover:underline font-medium"
@@ -94,7 +94,7 @@ const CookieConsent = () => {
                 href="/cookies" 
                 className="text-primary hover:underline font-medium"
               >
-                מדיניות עוגיות
+                מדיניות Cookies
               </a>
             </p>
 
@@ -135,16 +135,16 @@ const CookieConsent = () => {
       <Dialog open={showPreferences} onOpenChange={setShowPreferences}>
         <DialogContent className="sm:max-w-md" dir="rtl">
           <DialogHeader>
-            <DialogTitle className="text-right">העדפות עוגיות</DialogTitle>
+            <DialogTitle className="text-right">העדפות Cookies</DialogTitle>
           </DialogHeader>
           
           <div className="space-y-4 py-4">
             {/* Essential Cookies */}
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">עוגיות חיוניות</h4>
+                <h4 className="font-medium text-foreground">Cookies חיוניים</h4>
                 <p className="text-sm text-muted-foreground mt-1">
-                  עוגיות אלו נדרשות לתפקוד האתר ואינן ניתנות לכיבוי.
+                  Cookies אלו נדרשים לתפקוד האתר ואינם ניתנים לכיבוי.
                 </p>
               </div>
               <Switch 
@@ -157,9 +157,9 @@ const CookieConsent = () => {
             {/* Analytics Cookies */}
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">עוגיות אנליטיקה</h4>
+                <h4 className="font-medium text-foreground">Cookies אנליטיקה</h4>
                 <p className="text-sm text-muted-foreground mt-1">
-                  עוזרות לנו להבין כיצד מבקרים משתמשים באתר.
+                  עוזרים לנו להבין כיצד מבקרים משתמשים באתר.
                 </p>
               </div>
               <Switch 
@@ -174,9 +174,9 @@ const CookieConsent = () => {
             {/* Marketing Cookies */}
             <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
               <div className="flex-1">
-                <h4 className="font-medium text-foreground">עוגיות שיווק</h4>
+                <h4 className="font-medium text-foreground">Cookies שיווק</h4>
                 <p className="text-sm text-muted-foreground mt-1">
-                  משמשות להצגת פרסומות רלוונטיות עבורך.
+                  משמשים להצגת פרסומות רלוונטיות עבורך.
                 </p>
               </div>
               <Switch 
