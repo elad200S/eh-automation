@@ -68,13 +68,8 @@ const CookieConsent = () => {
   };
 
   const handleClose = () => {
-    // Close without choosing defaults to essential only
-    const essentialOnly: ConsentState = {
-      essential: true,
-      analytics: false,
-      marketing: false,
-    };
-    saveConsent(essentialOnly);
+    // Close without choosing - just hide temporarily, will reappear on refresh
+    setIsVisible(false);
   };
 
   if (!isVisible) return null;
@@ -87,12 +82,19 @@ const CookieConsent = () => {
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             {/* Text Content */}
             <p className="text-sm text-muted-foreground text-center sm:text-right flex-1">
-              אנו משתמשים בעוגיות כדי לשפר את חווית הגלישה שלך. בלחיצה על "אשר", אתה מסכים לשימוש בעוגיות.{' '}
+              אנו משתמשים בעוגיות כדי לשפר את חווית הגלישה שלך.{' '}
               <a 
                 href="/privacy" 
                 className="text-primary hover:underline font-medium"
               >
                 מדיניות פרטיות
+              </a>
+              {' · '}
+              <a 
+                href="/cookies" 
+                className="text-primary hover:underline font-medium"
+              >
+                מדיניות עוגיות
               </a>
             </p>
 

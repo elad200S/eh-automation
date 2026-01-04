@@ -6,7 +6,7 @@ import ProblemSection from '@/components/sections/ProblemSection';
 import SolutionSection from '@/components/sections/SolutionSection';
 import ToolsSection from '@/components/sections/ToolsSection';
 import UseCasesSection from '@/components/sections/UseCasesSection';
-import AISection from '@/components/sections/AISection';
+import QuotesSection from '@/components/sections/QuotesSection';
 import WhyNowSection from '@/components/sections/WhyNowSection';
 import ProcessSection from '@/components/sections/ProcessSection';
 import QualificationSection from '@/components/sections/QualificationSection';
@@ -36,7 +36,7 @@ const Index = () => {
         <SolutionSection />
         <ToolsSection />
         <UseCasesSection />
-        <AISection />
+        <QuotesSection />
         <WhyNowSection />
         <ProcessSection />
         <QualificationSection />
