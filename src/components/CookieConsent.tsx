@@ -25,9 +25,11 @@ const CookieConsent = () => {
 
   useEffect(() => {
     const consent = localStorage.getItem('cookie-consent');
-    if (!consent) {
+    const dismissed = sessionStorage.getItem('cookie-banner-dismissed');
+    
+    if (!consent && !dismissed) {
       setIsVisible(true);
-    } else {
+    } else if (consent) {
       try {
         const stored = JSON.parse(consent);
         setPreferences(stored);
@@ -68,7 +70,8 @@ const CookieConsent = () => {
   };
 
   const handleClose = () => {
-    // Close without choosing - just hide temporarily, will reappear on refresh
+    // Close without choosing - hide for this session only, reappear on refresh
+    sessionStorage.setItem('cookie-banner-dismissed', 'true');
     setIsVisible(false);
   };
 
