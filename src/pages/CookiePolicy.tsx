@@ -6,8 +6,8 @@ const CookiePolicy = () => {
   return (
     <>
       <Helmet>
-        <title>מדיניות עוגיות | EH Automation</title>
-        <meta name="description" content="מדיניות העוגיות של EH Automation - מידע על השימוש בעוגיות באתר" />
+        <title>מדיניות Cookies | EH Automation</title>
+        <meta name="description" content="מדיניות ה-Cookies של EH Automation - מידע על השימוש ב-Cookies באתר" />
         <html lang="he" dir="rtl" />
       </Helmet>
 
@@ -21,42 +21,42 @@ const CookiePolicy = () => {
             חזרה לעמוד הראשי
           </Link>
 
-          <h1 className="text-4xl font-bold text-foreground mb-8">מדיניות עוגיות</h1>
+          <h1 className="text-4xl font-bold text-foreground mb-8">מדיניות Cookies</h1>
 
           <div className="prose prose-lg max-w-none text-foreground space-y-8">
             
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">1. מהן עוגיות?</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">1. מהם Cookies?</h2>
               <p className="text-muted-foreground leading-relaxed">
-                עוגיות (Cookies) הן קבצי טקסט קטנים המאוחסנים במכשיר שלך (מחשב, טלפון נייד, טאבלט) 
-                כאשר אתה מבקר באתר אינטרנט. עוגיות מאפשרות לאתר לזכור את העדפותיך ולשפר את חוויית הגלישה שלך.
+                Cookies הם קבצי טקסט קטנים המאוחסנים במכשיר שלך (מחשב, טלפון נייד, טאבלט) 
+                כאשר אתה מבקר באתר אינטרנט. Cookies מאפשרים לאתר לזכור את העדפותיך ולשפר את חוויית הגלישה שלך.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">2. סוגי העוגיות שאנו משתמשים בהן</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">2. סוגי ה-Cookies שאנו משתמשים בהם</h2>
               
               <div className="space-y-4">
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-medium text-foreground mb-2">עוגיות חיוניות</h3>
+                  <h3 className="text-lg font-medium text-foreground mb-2">Cookies חיוניים</h3>
                   <p className="text-muted-foreground text-sm">
-                    עוגיות אלו נדרשות לתפקוד הבסיסי של האתר. הן מאפשרות ניווט באתר ושימוש בתכונות בסיסיות 
-                    כגון שמירת העדפות עוגיות. ללא עוגיות אלו, האתר לא יכול לפעול כראוי.
+                    Cookies אלו נדרשים לתפקוד הבסיסי של האתר. הם מאפשרים ניווט באתר ושימוש בתכונות בסיסיות 
+                    כגון שמירת העדפות Cookies. ללא Cookies אלו, האתר לא יכול לפעול כראוי.
                   </p>
                 </div>
 
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-medium text-foreground mb-2">עוגיות אנליטיקה</h3>
+                  <h3 className="text-lg font-medium text-foreground mb-2">Cookies אנליטיקה</h3>
                   <p className="text-muted-foreground text-sm">
-                    עוגיות אלו עוזרות לנו להבין כיצד מבקרים משתמשים באתר. הן אוספות מידע אנונימי 
+                    Cookies אלו עוזרים לנו להבין כיצד מבקרים משתמשים באתר. הם אוספים מידע אנונימי 
                     על דפים שנצפו, זמן שהייה באתר ודרכי הגעה לאתר. מידע זה עוזר לנו לשפר את האתר.
                   </p>
                 </div>
 
                 <div className="bg-muted/50 p-4 rounded-lg">
-                  <h3 className="text-lg font-medium text-foreground mb-2">עוגיות שיווק</h3>
+                  <h3 className="text-lg font-medium text-foreground mb-2">Cookies שיווק</h3>
                   <p className="text-muted-foreground text-sm">
-                    עוגיות אלו משמשות להצגת פרסומות רלוונטיות עבורך. הן עוקבות אחר הפעילות שלך 
+                    Cookies אלו משמשים להצגת פרסומות רלוונטיות עבורך. הם עוקבים אחר הפעילות שלך 
                     באתרים שונים כדי להציג תוכן פרסומי מותאם אישית.
                   </p>
                 </div>
@@ -64,26 +64,26 @@ const CookiePolicy = () => {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">3. ניהול העדפות עוגיות</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">3. ניהול העדפות Cookies</h2>
               <p className="text-muted-foreground leading-relaxed">
-                בעת ביקורך הראשון באתר, תוצג לך הודעה המבקשת את הסכמתך לשימוש בעוגיות. 
-                תוכל לבחור לאשר את כל העוגיות, לדחות עוגיות לא חיוניות, או לנהל את ההעדפות שלך באופן מפורט.
+                בעת ביקורך הראשון באתר, תוצג לך הודעה המבקשת את הסכמתך לשימוש ב-Cookies. 
+                תוכל לבחור לאשר את כל ה-Cookies, לדחות Cookies לא חיוניים, או לנהל את ההעדפות שלך באופן מפורט.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-3">
-                ניתן לשנות את העדפות העוגיות בכל עת על ידי לחיצה על כפתור "העדפות" בסרגל ההסכמה לעוגיות 
+                ניתן לשנות את העדפות ה-Cookies בכל עת על ידי לחיצה על כפתור "העדפות" בסרגל ההסכמה 
                 או דרך הגדרות הדפדפן שלך.
               </p>
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">4. ניהול עוגיות בדפדפן</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">4. ניהול Cookies בדפדפן</h2>
               <p className="text-muted-foreground leading-relaxed">
-                רוב הדפדפנים מאפשרים לך לנהל את העדפות העוגיות שלך. תוכל להגדיר את הדפדפן לחסום עוגיות, 
-                למחוק עוגיות קיימות או להתריע לפני שמירת עוגייה חדשה. שים לב שחסימת עוגיות עלולה לפגוע 
+                רוב הדפדפנים מאפשרים לך לנהל את העדפות ה-Cookies שלך. תוכל להגדיר את הדפדפן לחסום Cookies, 
+                למחוק Cookies קיימים או להתריע לפני שמירת Cookie חדש. שים לב שחסימת Cookies עלולה לפגוע 
                 בחוויית הגלישה ובתפקוד חלק מהתכונות באתר.
               </p>
               <p className="text-muted-foreground leading-relaxed mt-3">
-                להלן קישורים להוראות ניהול עוגיות בדפדפנים הנפוצים:
+                להלן קישורים להוראות ניהול Cookies בדפדפנים הנפוצים:
               </p>
               <ul className="list-disc list-inside text-muted-foreground mt-2 space-y-1">
                 <li>Google Chrome</li>
@@ -94,9 +94,9 @@ const CookiePolicy = () => {
             </section>
 
             <section>
-              <h2 className="text-2xl font-semibold text-foreground mb-4">5. עוגיות צד שלישי</h2>
+              <h2 className="text-2xl font-semibold text-foreground mb-4">5. Cookies צד שלישי</h2>
               <p className="text-muted-foreground leading-relaxed">
-                חלק מהעוגיות באתר מוגדרות על ידי ספקי שירות חיצוניים (צד שלישי) כגון Google Analytics 
+                חלק מה-Cookies באתר מוגדרים על ידי ספקי שירות חיצוניים (צד שלישי) כגון Google Analytics 
                 לצורכי אנליטיקה. לספקים אלו יש מדיניות פרטיות משלהם המסדירה את השימוש במידע שנאסף.
               </p>
             </section>
@@ -112,7 +112,7 @@ const CookiePolicy = () => {
             <section>
               <h2 className="text-2xl font-semibold text-foreground mb-4">7. יצירת קשר</h2>
               <p className="text-muted-foreground leading-relaxed">
-                לשאלות או בירורים בנוגע למדיניות העוגיות שלנו, ניתן ליצור קשר:
+                לשאלות או בירורים בנוגע למדיניות ה-Cookies שלנו, ניתן ליצור קשר:
               </p>
               <p className="text-muted-foreground mt-2">
                 אימייל: [להשלמה]<br />
