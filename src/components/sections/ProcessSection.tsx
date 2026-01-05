@@ -197,10 +197,6 @@ const ProcessSection = () => {
               <StepCard step={steps[2]} />
             </div>
             
-            {/* U-shaped arrow connecting חיבור מערכות to בדיקות */}
-            <div className="flex justify-center">
-              <UShapedArrowConnector />
-            </div>
             
             {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
             <div className="grid grid-cols-5 items-center gap-2">
