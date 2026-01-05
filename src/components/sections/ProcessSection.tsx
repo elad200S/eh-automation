@@ -87,7 +87,7 @@ const CurvedArrowLeft = () => (
 );
 
 // Curved horizontal arrow pointing RIGHT to LEFT (arrowhead on left)
-const CurvedArrowHorizontal = () => (
+const CurvedArrowRTL = () => (
   <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
     <path 
       d="M44 16 C 32 8, 16 24, 4 16" 
@@ -98,6 +98,27 @@ const CurvedArrowHorizontal = () => (
     />
     <path 
       d="M10 10 L2 16 L10 22" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      fill="none" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
+// Curved horizontal arrow pointing LEFT to RIGHT (arrowhead on right)
+const CurvedArrowLTR = () => (
+  <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
+    <path 
+      d="M4 16 C 16 8, 32 24, 44 16" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    <path 
+      d="M38 10 L46 16 L38 22" 
       stroke="currentColor" 
       strokeWidth="2" 
       fill="none" 
@@ -125,13 +146,13 @@ const ProcessSection = () => {
               <StepCard step={steps[0]} />
               
               <div className="flex justify-center">
-                <CurvedArrowHorizontal />
+                <CurvedArrowRTL />
               </div>
               
               <StepCard step={steps[1]} />
               
               <div className="flex justify-center">
-                <CurvedArrowHorizontal />
+                <CurvedArrowRTL />
               </div>
               
               <StepCard step={steps[2]} />
@@ -147,7 +168,7 @@ const ProcessSection = () => {
               <StepCard step={steps[4]} />
               
               <div className="flex justify-center">
-                <CurvedArrowHorizontal />
+                <CurvedArrowLTR />
               </div>
               
               <StepCard step={steps[3]} />
