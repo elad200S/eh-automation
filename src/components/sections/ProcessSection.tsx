@@ -142,17 +142,15 @@ const ProcessSection = () => {
               <CurvedArrowRightDown />
             </div>
             
-            {/* Row 2: Last 2 steps */}
+            {/* Row 2: Last 2 steps - positioned to avoid being under Integration */}
             <div className="grid grid-cols-5 items-center gap-2">
+              <div></div>
+              
               <StepCard step={steps[4]} />
               
-              <div className="flex justify-center">
-                <CurvedArrowLeft />
-              </div>
+              <div></div>
               
               <StepCard step={steps[3]} />
-              
-              <div></div>
               
               <div></div>
             </div>
