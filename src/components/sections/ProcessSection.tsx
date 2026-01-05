@@ -128,28 +128,28 @@ const CurvedArrowLTR = () => (
   </svg>
 );
 
-// L-shaped arrow: down then left (arrowhead on left)
-const LShapedArrowDownLeft = () => (
+// L-shaped arrow: up then right (arrowhead on right, pointing into חיבור מערכות)
+const LShapedArrowUpRight = () => (
   <svg className="w-16 h-16 text-secondary" viewBox="0 0 64 64" fill="none">
-    {/* Vertical segment going down */}
+    {/* Horizontal segment from left */}
     <path 
-      d="M56 4 L56 48" 
+      d="M8 48 L56 48" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
-    {/* Horizontal segment going left */}
+    {/* Vertical segment going up */}
     <path 
-      d="M56 48 L12 48" 
+      d="M56 48 L56 12" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
-    {/* Arrowhead pointing left */}
+    {/* Arrowhead pointing up */}
     <path 
-      d="M18 42 L8 48 L18 54" 
+      d="M50 18 L56 6 L62 18" 
       stroke="currentColor" 
       strokeWidth="2" 
       fill="none" 
@@ -191,7 +191,7 @@ const ProcessSection = () => {
             
             {/* L-shaped arrow connecting חיבור מערכות to בדיקות */}
             <div className="flex justify-end pr-4">
-              <LShapedArrowDownLeft />
+              <LShapedArrowUpRight />
             </div>
             
             {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
