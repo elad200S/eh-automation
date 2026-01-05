@@ -30,7 +30,7 @@ const KeyPointsSection = () => {
             href="#contact"
             className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-l from-primary via-primary to-primary/90 text-primary-foreground rounded-xl text-lg font-medium hover:opacity-90 transition-opacity shadow-lg"
           >
-            בוא נבדוק התאמה
+            Let's turn action into automation
             <ArrowLeft className="w-5 h-5" />
           </a>
         </div>
