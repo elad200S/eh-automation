@@ -148,18 +148,17 @@ const ProcessSection = () => {
               </div>
             </div>
             
-            {/* Row 2: בדיקות below חיבור מערכות, then arrow to הטמעה */}
+            {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
             <div className="grid grid-cols-5 items-center gap-2">
-              <div></div>
               <div></div>
               
               <StepCard step={steps[4]} />
               
-              <div className="flex justify-center">
-                <CurvedArrowLeft />
-              </div>
+              <div></div>
               
               <StepCard step={steps[3]} />
+              
+              <div></div>
             </div>
           </div>
           
