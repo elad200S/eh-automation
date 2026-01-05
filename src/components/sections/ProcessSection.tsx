@@ -130,23 +130,13 @@ const ProcessSection = () => {
               
               <StepCard step={steps[1]} />
               
-              <div className="flex justify-center">
-                <CurvedArrowHorizontal />
-              </div>
+              <div></div>
               
               <StepCard step={steps[2]} />
             </div>
             
-            {/* Straight arrow from חיבור מערכות down to בדיקות */}
-            <div className="grid grid-cols-5 items-center py-3">
-              <div></div>
-              <div></div>
-              <div></div>
-              <div></div>
-              <div className="flex justify-center">
-                <StraightArrowDown />
-              </div>
-            </div>
+            {/* Spacing between rows */}
+            <div className="py-3"></div>
             
             {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
             <div className="grid grid-cols-5 items-center gap-2">
