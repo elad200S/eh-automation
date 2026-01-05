@@ -128,28 +128,36 @@ const CurvedArrowLTR = () => (
   </svg>
 );
 
-// L-shaped arrow: up then right (arrowhead on right, pointing into חיבור מערכות)
-const LShapedArrowUpRight = () => (
-  <svg className="w-16 h-16 text-secondary" viewBox="0 0 64 64" fill="none">
-    {/* Horizontal segment from left */}
+// U-shaped arrow: down from חיבור מערכות, across, then up into בדיקות
+const UShapedArrowConnector = () => (
+  <svg className="w-32 h-12 text-secondary" viewBox="0 0 128 48" fill="none">
+    {/* Down segment from חיבור מערכות */}
     <path 
-      d="M8 48 L56 48" 
+      d="M108 4 L108 24" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
-    {/* Vertical segment going up */}
+    {/* Horizontal segment across */}
     <path 
-      d="M56 48 L56 12" 
+      d="M108 24 L20 24" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
-    {/* Arrowhead pointing up */}
+    {/* Up segment into בדיקות */}
     <path 
-      d="M50 18 L56 6 L62 18" 
+      d="M20 24 L20 12" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    {/* Arrowhead pointing up into בדיקות */}
+    <path 
+      d="M14 16 L20 4 L26 16" 
       stroke="currentColor" 
       strokeWidth="2" 
       fill="none" 
@@ -189,9 +197,9 @@ const ProcessSection = () => {
               <StepCard step={steps[2]} />
             </div>
             
-            {/* L-shaped arrow connecting חיבור מערכות to בדיקות */}
-            <div className="flex justify-end pr-4">
-              <LShapedArrowUpRight />
+            {/* U-shaped arrow connecting חיבור מערכות to בדיקות */}
+            <div className="flex justify-center">
+              <UShapedArrowConnector />
             </div>
             
             {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
