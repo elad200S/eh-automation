@@ -86,18 +86,18 @@ const CurvedArrowLeft = () => (
   </svg>
 );
 
-// Curved horizontal arrow
+// Curved horizontal arrow pointing RIGHT to LEFT (arrowhead on left)
 const CurvedArrowHorizontal = () => (
   <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
     <path 
-      d="M4 16 C 16 8, 32 24, 44 16" 
+      d="M44 16 C 32 8, 16 24, 4 16" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
     <path 
-      d="M38 10 L46 16 L38 22" 
+      d="M10 10 L2 16 L10 22" 
       stroke="currentColor" 
       strokeWidth="2" 
       fill="none" 
