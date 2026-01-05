@@ -128,6 +128,37 @@ const CurvedArrowLTR = () => (
   </svg>
 );
 
+// L-shaped arrow: down then left (arrowhead on left)
+const LShapedArrowDownLeft = () => (
+  <svg className="w-16 h-16 text-secondary" viewBox="0 0 64 64" fill="none">
+    {/* Vertical segment going down */}
+    <path 
+      d="M56 4 L56 48" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    {/* Horizontal segment going left */}
+    <path 
+      d="M56 48 L12 48" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeDasharray="4 3" 
+      fill="none"
+    />
+    {/* Arrowhead pointing left */}
+    <path 
+      d="M18 42 L8 48 L18 54" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      fill="none" 
+      strokeLinecap="round" 
+      strokeLinejoin="round"
+    />
+  </svg>
+);
+
 const ProcessSection = () => {
   return (
     <Section id="process">
@@ -158,8 +189,10 @@ const ProcessSection = () => {
               <StepCard step={steps[2]} />
             </div>
             
-            {/* Spacing between rows */}
-            <div className="py-3"></div>
+            {/* L-shaped arrow connecting חיבור מערכות to בדיקות */}
+            <div className="flex justify-end pr-4">
+              <LShapedArrowDownLeft />
+            </div>
             
             {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
             <div className="grid grid-cols-5 items-center gap-2">
