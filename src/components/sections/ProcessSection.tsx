@@ -130,7 +130,9 @@ const ProcessSection = () => {
               
               <StepCard step={steps[1]} />
               
-              <div></div>
+              <div className="flex justify-center">
+                <CurvedArrowHorizontal />
+              </div>
               
               <StepCard step={steps[2]} />
             </div>
