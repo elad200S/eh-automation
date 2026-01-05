@@ -44,18 +44,18 @@ const StepCard = ({ step }: { step: typeof steps[0] }) => {
   );
 };
 
-// Curved arrow pointing right then down
-const CurvedArrowRightDown = () => (
-  <svg className="w-12 h-16 text-secondary" viewBox="0 0 48 64" fill="none">
+// Straight arrow pointing down
+const StraightArrowDown = () => (
+  <svg className="w-8 h-12 text-secondary" viewBox="0 0 32 48" fill="none">
     <path 
-      d="M4 8 C 24 8, 40 16, 40 40" 
+      d="M16 4 L16 36" 
       stroke="currentColor" 
       strokeWidth="2" 
       strokeDasharray="4 3" 
       fill="none"
     />
     <path 
-      d="M35 35 L40 45 L45 35" 
+      d="M10 30 L16 42 L22 30" 
       stroke="currentColor" 
       strokeWidth="2" 
       fill="none" 
@@ -137,24 +137,29 @@ const ProcessSection = () => {
               <StepCard step={steps[2]} />
             </div>
             
-            {/* Transition arrow from System Integration down to Testing */}
-            <div className="flex justify-end pl-[calc(10%)] py-3">
-              <CurvedArrowRightDown />
+            {/* Straight arrow from חיבור מערכות down to בדיקות */}
+            <div className="grid grid-cols-5 items-center py-3">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div className="flex justify-center">
+                <StraightArrowDown />
+              </div>
             </div>
             
-            {/* Row 2: Testing and Deployment - Testing below System Integration, Deployment to its right */}
+            {/* Row 2: בדיקות below חיבור מערכות, then arrow to הטמעה */}
             <div className="grid grid-cols-5 items-center gap-2">
+              <div></div>
               <div></div>
               
               <StepCard step={steps[4]} />
               
               <div className="flex justify-center">
-                <CurvedArrowHorizontal />
+                <CurvedArrowLeft />
               </div>
               
               <StepCard step={steps[3]} />
-              
-              <div></div>
             </div>
           </div>
           
