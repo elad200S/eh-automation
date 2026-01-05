@@ -137,18 +137,20 @@ const ProcessSection = () => {
               <StepCard step={steps[2]} />
             </div>
             
-            {/* Transition arrow from row 1 to row 2 */}
-            <div className="flex justify-start pr-[calc(20%-1rem)] py-3">
+            {/* Transition arrow from System Integration down to Testing */}
+            <div className="flex justify-end pl-[calc(10%)] py-3">
               <CurvedArrowRightDown />
             </div>
             
-            {/* Row 2: Last 2 steps - positioned to avoid being under Integration */}
+            {/* Row 2: Testing and Deployment - Testing below System Integration, Deployment to its right */}
             <div className="grid grid-cols-5 items-center gap-2">
               <div></div>
               
               <StepCard step={steps[4]} />
               
-              <div></div>
+              <div className="flex justify-center">
+                <CurvedArrowHorizontal />
+              </div>
               
               <StepCard step={steps[3]} />
               
