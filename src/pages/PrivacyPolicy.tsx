@@ -132,10 +132,10 @@ const PrivacyPolicy = () => {
                   <strong>EH Automation</strong>
                 </p>
                 <p className="text-muted-foreground mt-1">
-                  דוא"ל: <span className="text-primary">[להשלמה]</span>
+                  דוא"ל: <a href="mailto:eladauto66@gmail.com" className="text-primary hover:underline">eladauto66@gmail.com</a>
                 </p>
                 <p className="text-muted-foreground">
-                  טלפון: <span className="text-primary">[להשלמה]</span>
+                  טלפון: <a href="tel:0547108219" className="text-primary hover:underline">054-710-8219</a>
                 </p>
               </div>
             </section>

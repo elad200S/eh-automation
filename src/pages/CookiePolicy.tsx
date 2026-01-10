@@ -115,8 +115,8 @@ const CookiePolicy = () => {
                 לשאלות או בירורים בנוגע למדיניות ה-Cookies שלנו, ניתן ליצור קשר:
               </p>
               <p className="text-muted-foreground mt-2">
-                אימייל: [להשלמה]<br />
-                טלפון: [להשלמה]
+                אימייל: <a href="mailto:eladauto66@gmail.com" className="text-primary hover:underline">eladauto66@gmail.com</a><br />
+                טלפון: <a href="tel:0547108219" className="text-primary hover:underline">054-710-8219</a>
               </p>
             </section>
 
