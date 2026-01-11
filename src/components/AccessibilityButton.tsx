@@ -174,31 +174,26 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0077C8] text-white shadow-lg flex items-center justify-center hover:bg-[#0066B0] hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#0077C8] focus:ring-offset-2"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-black border-2 border-white text-white shadow-lg flex items-center justify-center hover:bg-gray-900 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
-        {/* Dynamic wheelchair accessibility icon */}
+        {/* Simple accessibility person icon */}
         <svg 
-          viewBox="0 0 100 100" 
+          viewBox="0 0 24 24" 
           fill="currentColor" 
-          className="w-8 h-8"
+          className="w-7 h-7"
           aria-hidden="true"
         >
           {/* Head */}
-          <circle cx="58" cy="22" r="10"/>
-          {/* Body leaning forward with arms spread */}
-          <path d="M35 38 L58 48 L75 35" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
-          {/* Torso */}
-          <path d="M58 48 L52 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-          {/* Leg to wheel */}
-          <path d="M52 70 L62 82" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
-          {/* Wheelchair wheel */}
-          <circle cx="38" cy="72" r="18" fill="none" stroke="currentColor" strokeWidth="8"/>
-          {/* Small front wheel */}
-          <circle cx="68" cy="85" r="6" fill="currentColor"/>
-          {/* Wheelchair frame */}
-          <path d="M52 70 L38 72" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round"/>
+          <circle cx="12" cy="4" r="2.5"/>
+          {/* Arms spread horizontally */}
+          <path d="M4 10h16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          {/* Body */}
+          <path d="M12 8v6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          {/* Legs spread */}
+          <path d="M12 14l-4 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          <path d="M12 14l4 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
         </svg>
       </button>
 
