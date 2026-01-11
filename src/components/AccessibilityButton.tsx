@@ -180,15 +180,25 @@ const AccessibilityButton = () => {
       >
         {/* Dynamic wheelchair accessibility icon */}
         <svg 
-          viewBox="0 0 24 24" 
+          viewBox="0 0 100 100" 
           fill="currentColor" 
-          className="w-7 h-7"
+          className="w-8 h-8"
           aria-hidden="true"
         >
-          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9H15V22H13V16H11V22H9V9H3V7H21V9ZM12 9.5C9.79 9.5 8 11.29 8 13.5C8 15.71 9.79 17.5 12 17.5C14.21 17.5 16 15.71 16 13.5C16 11.29 14.21 9.5 12 9.5Z" transform="translate(0,0)"/>
-          <circle cx="8" cy="17" r="4" fill="none" stroke="currentColor" strokeWidth="2"/>
-          <path d="M12 8V12L16 14L18 20H21" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-          <circle cx="12" cy="5" r="2.5"/>
+          {/* Head */}
+          <circle cx="58" cy="22" r="10"/>
+          {/* Body leaning forward with arms spread */}
+          <path d="M35 38 L58 48 L75 35" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"/>
+          {/* Torso */}
+          <path d="M58 48 L52 70" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
+          {/* Leg to wheel */}
+          <path d="M52 70 L62 82" fill="none" stroke="currentColor" strokeWidth="8" strokeLinecap="round"/>
+          {/* Wheelchair wheel */}
+          <circle cx="38" cy="72" r="18" fill="none" stroke="currentColor" strokeWidth="8"/>
+          {/* Small front wheel */}
+          <circle cx="68" cy="85" r="6" fill="currentColor"/>
+          {/* Wheelchair frame */}
+          <path d="M52 70 L38 72" fill="none" stroke="currentColor" strokeWidth="6" strokeLinecap="round"/>
         </svg>
       </button>
 
