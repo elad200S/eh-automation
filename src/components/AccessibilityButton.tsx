@@ -174,75 +174,34 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0077C8] text-white shadow-lg flex items-center justify-center hover:bg-[#0066B0] hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#0077C8] focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
-        {/* Accessibility person icon - matching reference design */}
+        {/* Dynamic wheelchair accessibility icon - Accessible Icon Project style */}
         <svg 
-          viewBox="0 0 32 32" 
+          viewBox="0 0 24 24" 
           fill="currentColor" 
           className="w-7 h-7"
           aria-hidden="true"
         >
-          {/* Head - positioned with neck gap */}
-          <circle cx="16" cy="6" r="3"/>
-          {/* Arms - curved slightly upward, connected to body */}
-          <path 
-            d="M5 13 Q8 11.5 12 12 L12 14 Q8 13.5 6 15 Z" 
-            fill="currentColor"
-          />
-          <path 
-            d="M27 13 Q24 11.5 20 12 L20 14 Q24 13.5 26 15 Z" 
-            fill="currentColor"
-          />
-          {/* Body - thicker, rounded */}
-          <path 
-            d="M13 11 L19 11 Q20 11 20 12 L20 19 Q20 20 19 20 L17 20 L17 12 L15 12 L15 20 L13 20 Q12 20 12 19 L12 12 Q12 11 13 11 Z" 
-            fill="currentColor"
-          />
-          {/* Simplified body and arms */}
-          <ellipse cx="16" cy="14" rx="5" ry="2.5"/>
-          {/* Left arm curve */}
-          <path 
-            d="M11 14 Q7 13 5 15" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            fill="none"
-          />
-          {/* Right arm curve */}
-          <path 
-            d="M21 14 Q25 13 27 15" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            fill="none"
-          />
-          {/* Torso */}
-          <path 
-            d="M16 16 L16 21" 
-            stroke="currentColor" 
-            strokeWidth="3" 
-            strokeLinecap="round" 
-            fill="none"
-          />
-          {/* Left leg - slight curve */}
-          <path 
-            d="M16 21 Q14 24 10 28" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            fill="none"
-          />
-          {/* Right leg - slight curve */}
-          <path 
-            d="M16 21 Q18 24 22 28" 
-            stroke="currentColor" 
-            strokeWidth="2.5" 
-            strokeLinecap="round" 
-            fill="none"
-          />
+          {/* Head */}
+          <circle cx="14.5" cy="3.8" r="2.2"/>
+          {/* Arm reaching forward */}
+          <path d="M9 9.5 L13.5 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+          {/* Back arm */}
+          <path d="M16 7 L18.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+          {/* Body leaning forward */}
+          <path d="M13.5 8 L12 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+          {/* Leg */}
+          <path d="M12 14.5 L15.5 17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+          {/* Wheelchair wheel */}
+          <circle cx="9" cy="16" r="5" fill="none" stroke="currentColor" strokeWidth="1.8"/>
+          {/* Footrest / small wheel */}
+          <circle cx="17" cy="19" r="1.5"/>
+          {/* Wheelchair frame connecting to wheel */}
+          <path d="M12 14.5 L9 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <path d="M15.5 17 L17 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
         </svg>
       </button>
 
