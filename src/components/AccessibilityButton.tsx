@@ -174,26 +174,75 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-black border-2 border-white text-white shadow-lg flex items-center justify-center hover:bg-gray-900 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-black"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
-        {/* Simple accessibility person icon */}
+        {/* Accessibility person icon - matching reference design */}
         <svg 
-          viewBox="0 0 24 24" 
+          viewBox="0 0 32 32" 
           fill="currentColor" 
           className="w-7 h-7"
           aria-hidden="true"
         >
-          {/* Head */}
-          <circle cx="12" cy="4" r="2.5"/>
-          {/* Arms spread horizontally */}
-          <path d="M4 10h16" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-          {/* Body */}
-          <path d="M12 8v6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-          {/* Legs spread */}
-          <path d="M12 14l-4 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
-          <path d="M12 14l4 7" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+          {/* Head - positioned with neck gap */}
+          <circle cx="16" cy="6" r="3"/>
+          {/* Arms - curved slightly upward, connected to body */}
+          <path 
+            d="M5 13 Q8 11.5 12 12 L12 14 Q8 13.5 6 15 Z" 
+            fill="currentColor"
+          />
+          <path 
+            d="M27 13 Q24 11.5 20 12 L20 14 Q24 13.5 26 15 Z" 
+            fill="currentColor"
+          />
+          {/* Body - thicker, rounded */}
+          <path 
+            d="M13 11 L19 11 Q20 11 20 12 L20 19 Q20 20 19 20 L17 20 L17 12 L15 12 L15 20 L13 20 Q12 20 12 19 L12 12 Q12 11 13 11 Z" 
+            fill="currentColor"
+          />
+          {/* Simplified body and arms */}
+          <ellipse cx="16" cy="14" rx="5" ry="2.5"/>
+          {/* Left arm curve */}
+          <path 
+            d="M11 14 Q7 13 5 15" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+          {/* Right arm curve */}
+          <path 
+            d="M21 14 Q25 13 27 15" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+          {/* Torso */}
+          <path 
+            d="M16 16 L16 21" 
+            stroke="currentColor" 
+            strokeWidth="3" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+          {/* Left leg - slight curve */}
+          <path 
+            d="M16 21 Q14 24 10 28" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            fill="none"
+          />
+          {/* Right leg - slight curve */}
+          <path 
+            d="M16 21 Q18 24 22 28" 
+            stroke="currentColor" 
+            strokeWidth="2.5" 
+            strokeLinecap="round" 
+            fill="none"
+          />
         </svg>
       </button>
 
