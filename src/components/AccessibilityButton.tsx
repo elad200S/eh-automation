@@ -174,11 +174,22 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0077C8] text-white shadow-lg flex items-center justify-center hover:bg-[#0066B0] hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#0077C8] focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
-        <Accessibility className="w-6 h-6" />
+        {/* Dynamic wheelchair accessibility icon */}
+        <svg 
+          viewBox="0 0 24 24" 
+          fill="currentColor" 
+          className="w-7 h-7"
+          aria-hidden="true"
+        >
+          <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9H15V22H13V16H11V22H9V9H3V7H21V9ZM12 9.5C9.79 9.5 8 11.29 8 13.5C8 15.71 9.79 17.5 12 17.5C14.21 17.5 16 15.71 16 13.5C16 11.29 14.21 9.5 12 9.5Z" transform="translate(0,0)"/>
+          <circle cx="8" cy="17" r="4" fill="none" stroke="currentColor" strokeWidth="2"/>
+          <path d="M12 8V12L16 14L18 20H21" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+          <circle cx="12" cy="5" r="2.5"/>
+        </svg>
       </button>
 
       {/* Accessibility Panel */}
