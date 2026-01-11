@@ -180,28 +180,27 @@ const AccessibilityButton = () => {
       >
         {/* Dynamic wheelchair accessibility icon - Accessible Icon Project style */}
         <svg 
-          viewBox="0 0 24 24" 
+          viewBox="0 0 50 50" 
           fill="currentColor" 
-          className="w-7 h-7"
+          className="w-8 h-8"
           aria-hidden="true"
         >
           {/* Head */}
-          <circle cx="14.5" cy="3.8" r="2.2"/>
-          {/* Arm reaching forward */}
-          <path d="M9 9.5 L13.5 8" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-          {/* Back arm */}
-          <path d="M16 7 L18.5 5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-          {/* Body leaning forward */}
-          <path d="M13.5 8 L12 14.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-          {/* Leg */}
-          <path d="M12 14.5 L15.5 17" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
-          {/* Wheelchair wheel */}
-          <circle cx="9" cy="16" r="5" fill="none" stroke="currentColor" strokeWidth="1.8"/>
-          {/* Footrest / small wheel */}
-          <circle cx="17" cy="19" r="1.5"/>
-          {/* Wheelchair frame connecting to wheel */}
-          <path d="M12 14.5 L9 16" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
-          <path d="M15.5 17 L17 19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" fill="none"/>
+          <circle cx="30" cy="8" r="5"/>
+          {/* Arm pushing wheel forward */}
+          <path d="M13 23 L25 19" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
+          {/* Body leaning forward dynamically */}
+          <path d="M25 19 L22 33" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
+          {/* Arm reaching back */}
+          <path d="M28 15 L35 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
+          {/* Leg on footrest */}
+          <path d="M22 33 L32 38" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
+          {/* Main wheel */}
+          <circle cx="16" cy="35" r="12" fill="none" stroke="currentColor" strokeWidth="4"/>
+          {/* Small front wheel */}
+          <circle cx="38" cy="42" r="4"/>
+          {/* Footrest connection */}
+          <path d="M32 38 L38 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none"/>
         </svg>
       </button>
 
