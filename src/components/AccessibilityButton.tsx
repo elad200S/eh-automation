@@ -174,34 +174,11 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-[#0077C8] text-white shadow-lg flex items-center justify-center hover:bg-[#0066B0] hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-[#0077C8] focus:ring-offset-2"
+        className="fixed bottom-6 left-6 z-50 w-14 h-14 rounded-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
-        {/* Dynamic wheelchair accessibility icon - Accessible Icon Project style */}
-        <svg 
-          viewBox="0 0 50 50" 
-          fill="currentColor" 
-          className="w-8 h-8"
-          aria-hidden="true"
-        >
-          {/* Head */}
-          <circle cx="30" cy="8" r="5"/>
-          {/* Arm pushing wheel forward */}
-          <path d="M13 23 L25 19" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
-          {/* Body leaning forward dynamically */}
-          <path d="M25 19 L22 33" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
-          {/* Arm reaching back */}
-          <path d="M28 15 L35 10" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
-          {/* Leg on footrest */}
-          <path d="M22 33 L32 38" stroke="currentColor" strokeWidth="4" strokeLinecap="round" fill="none"/>
-          {/* Main wheel */}
-          <circle cx="16" cy="35" r="12" fill="none" stroke="currentColor" strokeWidth="4"/>
-          {/* Small front wheel */}
-          <circle cx="38" cy="42" r="4"/>
-          {/* Footrest connection */}
-          <path d="M32 38 L38 42" stroke="currentColor" strokeWidth="3" strokeLinecap="round" fill="none"/>
-        </svg>
+        <Accessibility className="w-6 h-6" />
       </button>
 
       {/* Accessibility Panel */}
