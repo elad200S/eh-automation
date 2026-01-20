@@ -11,7 +11,8 @@ const highlights = [
 
 const AboutSection = () => {
   return (
-    <Section id="about">
+    <Section id="about" className="pt-8 md:pt-12">
+    
       <div className="max-w-4xl mx-auto">
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content - on the left (right in RTL) */}
