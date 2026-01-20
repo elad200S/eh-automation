@@ -6,7 +6,7 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="min-h-screen flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
+    <section className="min-h-[70vh] md:min-h-[75vh] flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background pb-8 md:pb-12">
       {/* Subtle grid pattern */}
       <div className="absolute inset-0 grid-pattern opacity-40" />
       
