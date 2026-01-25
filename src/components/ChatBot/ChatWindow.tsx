@@ -1,6 +1,5 @@
-import { useRef, useEffect, useState, KeyboardEvent } from 'react';
-import { X, Send, Bot } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
+import { useRef, useEffect, useState, KeyboardEvent, useCallback } from 'react';
+import { X, Send, Bot, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ChatMessage from './ChatMessage';
@@ -17,26 +16,55 @@ interface ChatWindowProps {
 
 const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLength }: ChatWindowProps) => {
   const [inputValue, setInputValue] = useState('');
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const [stickToBottom, setStickToBottom] = useState(true);
+  const [showScrollButton, setShowScrollButton] = useState(false);
 
-  // Auto-scroll to bottom on new messages
-  useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+  // Check if user is near bottom
+  const checkIfNearBottom = useCallback(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return true;
+    const threshold = 100;
+    return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
+  }, []);
+
+  // Handle scroll events
+  const handleScroll = useCallback(() => {
+    const isNearBottom = checkIfNearBottom();
+    setStickToBottom(isNearBottom);
+    setShowScrollButton(!isNearBottom);
+  }, [checkIfNearBottom]);
+
+  // Scroll to bottom function
+  const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
+    if (bottomRef.current) {
+      bottomRef.current.scrollIntoView({ behavior, block: 'end' });
     }
-  }, [messages, isLoading]);
+  }, []);
+
+  // Auto-scroll when messages change or during streaming
+  useEffect(() => {
+    if (stickToBottom) {
+      scrollToBottom('smooth');
+    }
+  }, [messages, isLoading, stickToBottom, scrollToBottom]);
 
   // Focus input on open
   useEffect(() => {
     inputRef.current?.focus();
-  }, []);
+    // Initial scroll to bottom
+    scrollToBottom('instant');
+  }, [scrollToBottom]);
 
   const handleSend = () => {
     const trimmed = inputValue.trim();
     if (trimmed && !isLoading) {
       onSendMessage(trimmed);
       setInputValue('');
+      // Force stick to bottom when sending
+      setStickToBottom(true);
     }
   };
 
@@ -50,7 +78,13 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   const handleQuickReply = (text: string) => {
     if (!isLoading) {
       onSendMessage(text);
+      setStickToBottom(true);
     }
+  };
+
+  const handleScrollToBottomClick = () => {
+    setStickToBottom(true);
+    scrollToBottom('smooth');
   };
 
   return (
@@ -62,7 +96,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
         <div className="flex items-center gap-2">
           <Bot className="w-5 h-5" />
-          <span className="font-medium text-sm">EH Automation Bot</span>
+          <span className="font-medium text-sm">הבוט של אלעד</span>
         </div>
         <button
           onClick={onClose}
@@ -74,7 +108,11 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       </div>
 
       {/* Messages */}
-      <ScrollArea className="flex-1 p-4" ref={scrollRef}>
+      <div 
+        ref={scrollContainerRef}
+        onScroll={handleScroll}
+        className="flex-1 overflow-y-auto p-4 scroll-smooth"
+      >
         <div className="space-y-1">
           {messages.map((message) => (
             <ChatMessage
@@ -87,8 +125,21 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
             />
           ))}
           {isLoading && <TypingIndicator />}
+          {/* Bottom anchor for scrolling */}
+          <div ref={bottomRef} className="h-1" />
         </div>
-      </ScrollArea>
+      </div>
+
+      {/* Scroll to bottom button */}
+      {showScrollButton && (
+        <button
+          onClick={handleScrollToBottomClick}
+          className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1 hover:bg-primary/90 transition-all animate-in fade-in slide-in-from-bottom-2"
+        >
+          <ChevronDown className="w-4 h-4" />
+          להודעה האחרונה
+        </button>
+      )}
 
       {/* Input */}
       <div className="p-3 border-t border-border">
