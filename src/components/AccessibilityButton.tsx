@@ -174,7 +174,7 @@ const AccessibilityButton = () => {
       {/* Floating Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-0 top-1/2 -translate-y-1/2 z-[9999] w-14 h-14 rounded-r-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center pr-1 hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="fixed left-0 top-[60%] -translate-y-1/2 z-[9999] w-14 h-14 rounded-r-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center pr-1 hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
