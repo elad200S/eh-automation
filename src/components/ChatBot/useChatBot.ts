@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 
 export interface Message {
   id: string;
@@ -10,11 +10,18 @@ export interface Message {
 const INITIAL_MESSAGE: Message = {
   id: 'welcome',
   role: 'assistant',
-  content: 'היי! אני הבוט של EH Automation.\nאשמח לענות על שאלות בנושא אוטומציה עסקית.',
+  content: 'היי! אני הבוט של אלעד.\nאפשר לשאול אותי שאלות על אוטומציה עסקית, תהליכים, וחיסכון בזמן וכסף.',
   showQuickReplies: true,
 };
 
-const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', 'reset', 'new chat'];
+const NUDGE_MESSAGE: Message = {
+  id: 'nudge',
+  role: 'assistant',
+  content: 'רוב העסקים שמגיעים לפה מבזבזים זמן על תהליכים ידניים.\nרוצה לבדוק אם זה גם המצב אצלך?',
+  showQuickReplies: true,
+};
+
+const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', 'reset', 'new chat', 'פתיחת שיחה חדשה'];
 const MAX_MESSAGES_PER_MINUTE = 10;
 const MAX_INPUT_LENGTH = 1500;
 const MAX_HISTORY = 30;
@@ -25,7 +32,36 @@ export function useChatBot() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  const [hasBeenOpened, setHasBeenOpened] = useState(false);
+  const [showNudge, setShowNudge] = useState(false);
   const messageTimestamps = useRef<number[]>([]);
+  const nudgeTimerRef = useRef<number | null>(null);
+
+  // Setup nudge timer - show after 20-30 seconds if chat not opened
+  useEffect(() => {
+    if (!hasBeenOpened && !showNudge) {
+      const delay = 20000 + Math.random() * 10000; // 20-30 seconds
+      nudgeTimerRef.current = window.setTimeout(() => {
+        if (!hasBeenOpened) {
+          setShowNudge(true);
+          // Add nudge message to chat (will be visible when opened)
+          setMessages(prev => {
+            // Only add if not already there
+            if (!prev.some(m => m.id === 'nudge')) {
+              return [...prev, { ...NUDGE_MESSAGE, id: `nudge-${Date.now()}` }];
+            }
+            return prev;
+          });
+        }
+      }, delay);
+    }
+
+    return () => {
+      if (nudgeTimerRef.current) {
+        clearTimeout(nudgeTimerRef.current);
+      }
+    };
+  }, [hasBeenOpened, showNudge]);
 
   const checkRateLimit = useCallback((): boolean => {
     const now = Date.now();
@@ -211,16 +247,36 @@ export function useChatBot() {
   }, [messages, isLoading, checkRateLimit, isResetCommand, resetChat]);
 
   const toggleOpen = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen(prev => {
+      const newState = !prev;
+      if (newState) {
+        setHasBeenOpened(true);
+        // Clear nudge timer when opened
+        if (nudgeTimerRef.current) {
+          clearTimeout(nudgeTimerRef.current);
+        }
+      }
+      return newState;
+    });
+  }, []);
+
+  const openChat = useCallback(() => {
+    setIsOpen(true);
+    setHasBeenOpened(true);
+    if (nudgeTimerRef.current) {
+      clearTimeout(nudgeTimerRef.current);
+    }
   }, []);
 
   return {
     messages,
     isLoading,
     isOpen,
+    hasBeenOpened,
     sendMessage,
     resetChat,
     toggleOpen,
+    openChat,
     maxInputLength: MAX_INPUT_LENGTH,
   };
 }
