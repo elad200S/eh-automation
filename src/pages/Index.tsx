@@ -1,6 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 import AccessibilityButton from '@/components/AccessibilityButton';
 import CookieConsent from '@/components/CookieConsent';
+import ChatBot from '@/components/ChatBot/ChatBot';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 import SolutionSection from '@/components/sections/SolutionSection';
@@ -44,6 +45,7 @@ const Index = () => {
         <Footer />
       </main>
       
+      <ChatBot />
       <AccessibilityButton />
       <CookieConsent />
     </>
