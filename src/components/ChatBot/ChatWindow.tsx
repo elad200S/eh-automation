@@ -111,7 +111,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
         <div className="flex items-center gap-2">
           <Bot className="w-5 h-5" />
-          <span className="font-medium text-sm">הבוט של אלעד</span>
+          <span className="font-medium text-sm">EH Automation</span>
         </div>
         <button
           onClick={onClose}

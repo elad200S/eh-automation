@@ -70,6 +70,20 @@
     @apply bg-background text-foreground font-primary antialiased;
     font-feature-settings: "kern" 1;
   }
+
+  /* Typography rhythm - consistent spacing */
+  h1, h2, h3, h4, h5, h6 {
+    margin-bottom: 0.75rem; /* 12px heading to paragraph */
+  }
+
+  p + p {
+    margin-top: 1rem; /* 16px between paragraphs */
+  }
+
+  section {
+    padding-top: 3rem; /* 48px section spacing */
+    padding-bottom: 3rem;
+  }
 }
 
 @layer components {
