@@ -129,16 +129,6 @@
     @apply border-primary/40 shadow-xl shadow-primary/10;
   }
   
-  /* Flow diagram line */
-  .flow-line {
-    @apply absolute bg-gradient-to-b from-primary via-secondary to-accent;
-  }
-  
-  /* Step indicator */
-  .step-indicator {
-    @apply w-14 h-14 rounded-xl bg-gradient-to-br from-primary to-secondary flex items-center justify-center;
-    @apply text-primary-foreground font-mono font-semibold text-sm;
-  }
 }
 
 @layer utilities {
