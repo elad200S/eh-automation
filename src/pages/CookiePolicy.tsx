@@ -121,7 +121,7 @@ const CookiePolicy = () => {
             </section>
 
             <p className="text-sm text-muted-foreground border-t border-border pt-6 mt-8">
-              עדכון אחרון: ינואר 2026
+              עדכון אחרון: יולי 2025
             </p>
           </div>
         </div>
