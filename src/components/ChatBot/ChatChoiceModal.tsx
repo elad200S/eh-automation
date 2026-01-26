@@ -11,7 +11,9 @@ interface ChatChoiceModalProps {
 }
 
 const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: ChatChoiceModalProps) => {
-  const isMobile = useIsMobile();
+  const isMobileHook = useIsMobile();
+  // Default to false during SSR/initial render, use hook value once available
+  const isMobile = isMobileHook ?? false;
 
   if (!isOpen) return null;
 
