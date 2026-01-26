@@ -61,10 +61,11 @@ const NotionLogo = () => (
 
 const GmailLogo = () => (
   <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <path fill="#4285F4" d="M8 12v24c0 2.2 1.8 4 4 4h4V18l8 6 8-6v22h4c2.2 0 4-1.8 4-4V12L32 4H16L8 12z"/>
-    <path fill="#34A853" d="M16 22v18h-4c-2.2 0-4-1.8-4-4V12l12 10z"/>
-    <path fill="#FBBC04" d="M40 12v24c0 2.2-1.8 4-4 4h-4V22l12-10z"/>
-    <path fill="#EA4335" d="M40 12l-16 12L8 12l8-8h16l8 8z"/>
+    <path fill="#EA4335" d="M6 12v24c0 2.2 1.8 4 4 4h4V18L24 28l10-10v22h4c2.2 0 4-1.8 4-4V12c0-2.2-1.8-4-4-4H10c-2.2 0-4 1.8-4 4z"/>
+    <path fill="#FBBC04" d="M42 12l-18 14L6 12"/>
+    <path fill="#34A853" d="M6 12v2l18 14 18-14v-2c0-2.2-1.8-4-4-4H10c-2.2 0-4 1.8-4 4z"/>
+    <path fill="#C5221F" d="M6 14v-2c0-2.2 1.8-4 4-4h28c2.2 0 4 1.8 4 4v2l-18 14L6 14z"/>
+    <path fill="#fff" fillOpacity=".05" d="M6 12v24c0 2.2 1.8 4 4 4h4V18L24 28l10-10v22h4c2.2 0 4-1.8 4-4V12L24 26 6 12z"/>
   </svg>
 );
 
