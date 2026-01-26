@@ -143,7 +143,7 @@ const PrivacyPolicy = () => {
             {/* Last updated */}
             <div className="pt-8 border-t border-border">
               <p className="text-sm text-muted-foreground">
-                מדיניות זו עודכנה לאחרונה: דצמבר 2024
+                מדיניות זו עודכנה לאחרונה: יולי 2025
               </p>
             </div>
           </div>
