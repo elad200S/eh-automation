@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { cn } from '@/lib/utils';
 import QuickReplies from './QuickReplies';
 
@@ -9,7 +10,7 @@ interface ChatMessageProps {
   isLoading?: boolean;
 }
 
-const ChatMessage = ({ role, content, showQuickReplies, onQuickReply, isLoading }: ChatMessageProps) => {
+const ChatMessage = memo(({ role, content, showQuickReplies, onQuickReply, isLoading }: ChatMessageProps) => {
   const isUser = role === 'user';
 
   return (
@@ -29,6 +30,8 @@ const ChatMessage = ({ role, content, showQuickReplies, onQuickReply, isLoading 
       </div>
     </div>
   );
-};
+});
+
+ChatMessage.displayName = 'ChatMessage';
 
 export default ChatMessage;
