@@ -192,7 +192,7 @@ const AccessibilityButton = () => {
           
           {/* Menu Panel */}
           <div 
-            className="fixed left-14 top-[75%] -translate-y-1/2 z-[9999] w-80 bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-fade-up"
+            className="fixed left-14 top-4 z-[9999] w-80 max-h-[calc(100vh-32px)] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-fade-up flex flex-col"
             dir="rtl"
           >
             {/* Header */}
