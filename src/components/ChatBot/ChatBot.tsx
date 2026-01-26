@@ -67,7 +67,7 @@ const ChatBot = () => {
 
   const handleChooseWhatsApp = () => {
     setShowChoiceModal(false);
-    window.open('http://wa.me/972547108219?text=היי%20אלעד%20אשמח%20לשמוע%20פרטים%20על%20אוטומציה%20לעסק%20שלי%0A', '_blank');
+    window.open('http://wa.me/972547108219', '_blank');
   };
 
   return (
