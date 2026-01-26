@@ -67,7 +67,7 @@ const ChatBot = () => {
 
   const handleChooseWhatsApp = () => {
     setShowChoiceModal(false);
-    window.open('https://wa.link/w4v3qa', '_blank');
+    window.open('https://wa.link/3h01ni', '_blank');
   };
 
   return (
