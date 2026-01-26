@@ -67,13 +67,9 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group"
             >
               <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                <svg viewBox="0 0 44 44" className="w-10 h-10">
-                  {/* White ring border */}
-                  <circle cx="22" cy="22" r="21" fill="none" stroke="#E5E7EB" strokeWidth="1.5" />
-                  {/* Green WhatsApp circle */}
-                  <circle cx="22" cy="22" r="17" fill="#25D366" />
-                  {/* WhatsApp phone icon */}
-                  <path fill="#fff" d="M29.5 27.1c-.3-.15-1.8-.9-2.1-1-.3-.1-.5-.15-.7.15-.2.3-.8 1-1 1.2-.18.2-.36.23-.66.08-.3-.15-1.3-.48-2.45-1.52-.9-.81-1.52-1.8-1.7-2.11-.18-.3-.02-.47.13-.62.14-.14.3-.36.46-.53.15-.18.2-.3.3-.51.1-.2.05-.38-.03-.53-.08-.15-.7-1.65-.94-2.26-.25-.6-.5-.52-.7-.53l-.58-.01c-.2 0-.54.08-.82.38-.28.3-1.07 1.04-1.07 2.55s1.1 2.96 1.25 3.16c.15.2 2.15 3.28 5.22 4.6.73.32 1.3.5 1.74.65.73.23 1.4.2 1.92.12.59-.09 1.8-.74 2.06-1.45.26-.71.26-1.32.18-1.45-.08-.13-.28-.2-.58-.36z"/>
+                <svg viewBox="0 0 32 32" className="w-9 h-9">
+                  <path fill="#25D366" d="M16 0C7.163 0 0 7.163 0 16c0 2.837.739 5.499 2.032 7.812L.105 31.4a.75.75 0 0 0 .916.917l7.71-1.937A15.94 15.94 0 0 0 16 32c8.837 0 16-7.163 16-16S24.837 0 16 0z"/>
+                  <path fill="#fff" d="M23.79 19.32c-.35-.175-2.07-1.02-2.39-1.135-.32-.117-.553-.175-.786.175-.233.35-.903 1.135-1.108 1.368-.204.233-.408.263-.758.088-.35-.175-1.477-.544-2.813-1.735-1.04-.927-1.742-2.072-1.946-2.422-.204-.35-.022-.54.153-.714.157-.157.35-.408.525-.612.175-.204.233-.35.35-.583.117-.233.058-.437-.03-.612-.087-.175-.785-1.893-1.075-2.593-.284-.68-.572-.588-.786-.599l-.67-.012c-.233 0-.612.088-.932.437-.32.35-1.224 1.197-1.224 2.918s1.253 3.385 1.428 3.618c.175.233 2.466 3.765 5.975 5.28.835.36 1.486.576 1.994.737.838.266 1.6.228 2.202.138.672-.1 2.07-.846 2.362-1.663.292-.817.292-1.517.204-1.663-.088-.146-.32-.233-.67-.408z"/>
                 </svg>
               </div>
               <div className="text-right">
@@ -92,7 +88,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group"
             >
               <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
-                <img src={botIcon} alt="Bot" className="w-10 h-10 object-contain" />
+                <img src={botIcon} alt="Bot" className="w-9 h-9 object-contain" />
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
