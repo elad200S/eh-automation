@@ -21,6 +21,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   const inputRef = useRef<HTMLInputElement>(null);
   const [stickToBottom, setStickToBottom] = useState(true);
   const [showScrollButton, setShowScrollButton] = useState(false);
+  const [hasNewMessage, setHasNewMessage] = useState(false);
 
   // Check if user is near bottom
   const checkIfNearBottom = useCallback(() => {
@@ -48,8 +49,22 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   useEffect(() => {
     if (stickToBottom) {
       scrollToBottom('smooth');
+      setHasNewMessage(false);
+    } else if (messages.length > 0) {
+      // Check if the last message is from the bot (new message indicator)
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage?.role === 'assistant') {
+        setHasNewMessage(true);
+      }
     }
   }, [messages, isLoading, stickToBottom, scrollToBottom]);
+
+  // Clear new message indicator when user scrolls to bottom
+  useEffect(() => {
+    if (stickToBottom) {
+      setHasNewMessage(false);
+    }
+  }, [stickToBottom]);
 
   // Focus input on open
   useEffect(() => {
@@ -130,14 +145,18 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
         </div>
       </div>
 
-      {/* Scroll to bottom button */}
-      {showScrollButton && (
+      {/* Scroll to bottom / New message indicator */}
+      {(showScrollButton || hasNewMessage) && (
         <button
           onClick={handleScrollToBottomClick}
-          className="absolute bottom-20 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-3 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1 hover:bg-primary/90 transition-all animate-in fade-in slide-in-from-bottom-2"
+          className={`absolute bottom-20 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1 transition-all animate-in fade-in slide-in-from-bottom-2 ${
+            hasNewMessage 
+              ? 'bg-secondary text-secondary-foreground' 
+              : 'bg-primary text-primary-foreground hover:bg-primary/90'
+          }`}
         >
           <ChevronDown className="w-4 h-4" />
-          להודעה האחרונה
+          {hasNewMessage ? '↓ הודעה חדשה' : 'להודעה האחרונה'}
         </button>
       )}
 

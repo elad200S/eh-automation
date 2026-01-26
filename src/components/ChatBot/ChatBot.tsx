@@ -24,14 +24,14 @@ const ChatBot = () => {
       }
     }, 4000);
 
-    // Repeat animation every 8-10 seconds
+    // Repeat animation every 10-15 seconds (subtle, non-aggressive)
     const intervalId = setInterval(() => {
       if (!hasBeenOpened) {
         setShowAnimation(true);
         // Animation lasts ~2 seconds, then reset
         setTimeout(() => setShowAnimation(false), 2000);
       }
-    }, 8000 + Math.random() * 2000);
+    }, 10000 + Math.random() * 5000);
 
     return () => {
       clearTimeout(initialTimer);
@@ -67,7 +67,7 @@ const ChatBot = () => {
 
   const handleChooseWhatsApp = () => {
     setShowChoiceModal(false);
-    window.open('https://wa.link/k7sej6', '_blank');
+    window.open('https://wa.link/n5zlil', '_blank');
   };
 
   return (

@@ -171,10 +171,10 @@ const AccessibilityButton = () => {
 
   return (
     <>
-      {/* Floating Button */}
+      {/* Floating Button - positioned to avoid overlap with chat button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed left-0 top-[75%] -translate-y-1/2 scale-[0.85] origin-left z-[9999] w-14 h-14 rounded-r-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center pr-1 hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
+        className="fixed left-0 top-[60%] -translate-y-1/2 scale-[0.85] origin-left z-[9999] w-14 h-14 rounded-r-full bg-primary text-primary-foreground shadow-lg flex items-center justify-center pr-1 hover:bg-primary/90 hover:shadow-xl transition-all focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         aria-label="תפריט נגישות"
         aria-expanded={isOpen}
       >
@@ -190,9 +190,9 @@ const AccessibilityButton = () => {
             onClick={() => setIsOpen(false)}
           />
           
-          {/* Menu Panel */}
+          {/* Menu Panel - positioned independently for full visibility */}
           <div 
-            className="fixed left-14 top-4 z-[9999] w-80 max-h-[calc(100vh-32px)] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-fade-up flex flex-col"
+            className="fixed left-4 top-4 z-[9999] w-80 max-w-[calc(100vw-32px)] max-h-[calc(100vh-32px)] bg-card border border-border rounded-2xl shadow-2xl overflow-hidden animate-fade-up flex flex-col"
             dir="rtl"
           >
             {/* Header */}
