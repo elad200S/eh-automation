@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -17,16 +18,34 @@ const ContactSection = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    toast({
-      title: 'הטופס נשלח בהצלחה',
-      description: 'ניצור איתך קשר בהקדם.',
-    });
-    
-    setFormData({ name: '', phone: '', business: '', automationType: '' });
-    setIsSubmitting(false);
+    try {
+      const { error } = await supabase
+        .from('contact_submissions')
+        .insert({
+          name: formData.name.trim(),
+          phone: formData.phone.trim(),
+          business: formData.business.trim(),
+          automation_type: formData.automationType,
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: 'הטופס נשלח בהצלחה',
+        description: 'ניצור איתך קשר בהקדם.',
+      });
+      
+      setFormData({ name: '', phone: '', business: '', automationType: '' });
+    } catch (error) {
+      console.error('Contact form error:', error);
+      toast({
+        title: 'שגיאה בשליחת הטופס',
+        description: 'אנא נסה שוב מאוחר יותר.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
