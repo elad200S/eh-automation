@@ -28,11 +28,32 @@ const ContactSection = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Client-side validation
+    const trimmedName = formData.name.trim();
+    const trimmedBusiness = formData.business.trim();
+    
+    // Client-side validation matching database constraints
+    if (trimmedName.length < 2 || trimmedName.length > 100) {
+      toast({
+        title: 'שם לא תקין',
+        description: 'השם חייב להכיל בין 2 ל-100 תווים',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     if (!isValidPhone(formData.phone)) {
       toast({
         title: 'מספר טלפון לא תקין',
         description: 'נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
+    if (trimmedBusiness.length < 2 || trimmedBusiness.length > 200) {
+      toast({
+        title: 'סוג עיסוק לא תקין',
+        description: 'סוג העיסוק חייב להכיל בין 2 ל-200 תווים',
         variant: 'destructive',
       });
       return;
@@ -92,6 +113,8 @@ const ContactSection = () => {
                 type="text"
                 id="name"
                 required
+                minLength={2}
+                maxLength={100}
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
@@ -125,6 +148,8 @@ const ContactSection = () => {
                 type="text"
                 id="business"
                 required
+                minLength={2}
+                maxLength={200}
                 value={formData.business}
                 onChange={(e) => setFormData({ ...formData, business: e.target.value })}
                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
