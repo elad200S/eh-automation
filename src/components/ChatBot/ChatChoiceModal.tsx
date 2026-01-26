@@ -87,8 +87,8 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               onClick={onChooseBot}
               className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group"
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0">
-                <img src={botIcon} alt="Bot" className="w-7 h-7 object-contain" />
+              <div className="w-12 h-12 flex items-center justify-center flex-shrink-0">
+                <img src={botIcon} alt="Bot" className="w-9 h-9 object-contain" />
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
