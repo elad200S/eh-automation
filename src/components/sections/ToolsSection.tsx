@@ -61,7 +61,7 @@ const NotionLogo = () => (
 );
 
 const GmailLogo = () => (
-  <img src={gmailIcon} alt="Gmail" className="w-9 h-9 object-contain" />
+  <img src={gmailIcon} alt="Gmail" className="w-8 h-8 object-contain" />
 );
 
 const MondayLogo = () => (
