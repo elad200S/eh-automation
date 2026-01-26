@@ -34,7 +34,7 @@ const ProblemSection = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <Section id="problem">
+    <Section id="problem" className="pt-8 md:pt-10">
       <div className="max-w-3xl">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           איפה עסקים נתקעים
