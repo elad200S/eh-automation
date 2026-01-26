@@ -14,8 +14,30 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Validate Israeli phone number format
+  const isValidPhone = (phone: string): boolean => {
+    const phoneRegex = /^0[5-9][0-9]-?[0-9]{7}$/;
+    return phoneRegex.test(phone.trim());
+  };
+
+  // Normalize phone number (remove dashes)
+  const normalizePhone = (phone: string): string => {
+    return phone.trim().replace(/-/g, '');
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Client-side validation
+    if (!isValidPhone(formData.phone)) {
+      toast({
+        title: 'מספר טלפון לא תקין',
+        description: 'נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)',
+        variant: 'destructive',
+      });
+      return;
+    }
+    
     setIsSubmitting(true);
     
     try {
@@ -23,7 +45,7 @@ const ContactSection = () => {
         .from('contact_submissions')
         .insert({
           name: formData.name.trim(),
-          phone: formData.phone.trim(),
+          phone: normalizePhone(formData.phone),
           business: formData.business.trim(),
           automation_type: formData.automationType,
         });
@@ -85,10 +107,12 @@ const ContactSection = () => {
                 type="tel"
                 id="phone"
                 required
+                pattern="^0[5-9][0-9]-?[0-9]{7}$"
+                title="נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                 className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="050-0000000"
+                placeholder="050-1234567"
                 dir="ltr"
               />
             </div>
