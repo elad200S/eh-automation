@@ -1,8 +1,33 @@
 import { ArrowLeft } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 const HeroSection = () => {
+  const [mounted, setMounted] = useState(false);
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    // Check for reduced motion preference
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+    
+    // Trigger animation after mount
+    setMounted(true);
+  }, []);
+
   const scrollToForm = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  // Base animation classes
+  const getAnimationClasses = (delayMs: number) => {
+    if (prefersReducedMotion) {
+      return 'opacity-100 translate-x-0';
+    }
+    return `transition-all duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+      mounted 
+        ? 'opacity-100 translate-x-0 blur-0' 
+        : 'opacity-0 translate-x-6 blur-[2px]'
+    } delay-[${delayMs}ms]`;
   };
 
   return (
@@ -17,22 +42,34 @@ const HeroSection = () => {
       <div className="container relative z-10">
         <div className="max-w-3xl">
           {/* Technical label */}
-          <div className="text-technical mb-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.1s' }}>
+          <div 
+            className={`text-technical mb-6 ${getAnimationClasses(0)}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '0ms' }}
+          >
             <span className="text-primary font-semibold">//</span> Business Automation & AI Systems
           </div>
           
           {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6 opacity-0 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+          <h1 
+            className={`text-5xl md:text-7xl font-bold text-foreground mb-6 ${getAnimationClasses(90)}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '90ms' }}
+          >
             EH <span className="gradient-text">Automation</span>
           </h1>
           
           {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-foreground font-light mb-8 opacity-0 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+          <p 
+            className={`text-xl md:text-2xl text-foreground font-light mb-8 ${getAnimationClasses(180)}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '180ms' }}
+          >
             אוטומציה עסקית שמאפשרת לגדול בלי להגדיל כוח אדם
           </p>
           
           {/* Description */}
-          <p className="text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl opacity-0 animate-fade-up" style={{ animationDelay: '0.4s' }}>
+          <p 
+            className={`text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl ${getAnimationClasses(270)}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '270ms' }}
+          >
             אני עוזר לבעלי עסקים וסטארטאפים להרוויח יותר כסף בפחות זמן
             באמצעות אוטומציות מתקדמות ושילוב בינה מלאכותית
             שמחליפים תלות בעובדים בתהליכים חכמים ומבוססי מערכות.
@@ -41,8 +78,8 @@ const HeroSection = () => {
           {/* CTA Button */}
           <button
             onClick={scrollToForm}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] transition-all duration-300 opacity-0 animate-fade-up"
-            style={{ animationDelay: '0.5s' }}
+            className={`group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] ${getAnimationClasses(360)}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '360ms' }}
           >
             איפיון ראשוני ללא התחייבות
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
