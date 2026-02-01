@@ -2,10 +2,10 @@ import Section from '@/components/Section';
 import { Settings, Link2, ArrowRightLeft, ShieldCheck } from 'lucide-react';
 
 const concepts = [
-  { Icon: Settings, label: 'אוטומציות' },
-  { Icon: Link2, label: 'חיבור מערכות' },
-  { Icon: ArrowRightLeft, label: 'זרימת מידע אוטומטית' },
-  { Icon: ShieldCheck, label: 'שליטה ובקרה' },
+  { Icon: Settings, label: 'אוטומציות', variant: 'primary' as const },
+  { Icon: Link2, label: 'חיבור מערכות', variant: 'white' as const },
+  { Icon: ArrowRightLeft, label: 'זרימת מידע אוטומטית', variant: 'primary' as const },
+  { Icon: ShieldCheck, label: 'שליטה ובקרה', variant: 'white' as const },
 ];
 
 const SolutionSection = () => {
@@ -26,12 +26,22 @@ const SolutionSection = () => {
           {concepts.map((concept, index) => (
             <div
               key={index}
-              className="p-6 bg-card rounded-xl border border-border text-center hover:border-primary/50 hover:shadow-lg transition-all duration-300 group"
+              className={`p-6 rounded-xl border text-center hover:shadow-lg transition-all duration-300 group ${
+                concept.variant === 'primary' 
+                  ? 'bg-primary border-primary hover:border-primary/80' 
+                  : 'bg-card border-border hover:border-primary/50'
+              }`}
             >
-              <div className="w-14 h-14 rounded-xl bg-muted flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <concept.Icon className="w-7 h-7 text-foreground/80" />
+              <div className={`w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform ${
+                concept.variant === 'primary' ? 'bg-primary-foreground/10' : 'bg-muted'
+              }`}>
+                <concept.Icon className={`w-7 h-7 ${
+                  concept.variant === 'primary' ? 'text-primary-foreground' : 'text-primary'
+                }`} />
               </div>
-              <span className="text-sm font-medium text-foreground">{concept.label}</span>
+              <span className={`text-sm font-medium ${
+                concept.variant === 'primary' ? 'text-primary-foreground' : 'text-foreground'
+              }`}>{concept.label}</span>
             </div>
           ))}
         </div>
