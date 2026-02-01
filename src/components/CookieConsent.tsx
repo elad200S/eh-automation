@@ -79,12 +79,22 @@ const CookieConsent = () => {
 
   return (
     <>
-      {/* Top Sticky Banner */}
-      <div className="fixed top-0 left-0 right-0 z-50 bg-card border-b border-border shadow-md">
-        <div className="max-w-7xl mx-auto px-4 py-3">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
-            {/* Text Content */}
-            <p className="text-sm text-muted-foreground text-center sm:text-right flex-1">
+      {/* Centered Modal Popup */}
+      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-foreground/20 backdrop-blur-sm">
+        <div className="bg-card border border-border rounded-xl shadow-xl max-w-md w-full p-6" dir="rtl">
+          {/* Close button */}
+          <button
+            onClick={handleClose}
+            className="absolute top-4 left-4 p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
+            aria-label="סגור"
+          >
+            <X className="w-4 h-4" />
+          </button>
+
+          {/* Text Content */}
+          <div className="text-center mb-6">
+            <h3 className="text-lg font-semibold text-foreground mb-2">הגדרות Cookies</h3>
+            <p className="text-sm text-muted-foreground">
               אנו משתמשים ב-Cookies כדי לשפר את חווית הגלישה שלך.{' '}
               <a 
                 href="/privacy" 
@@ -100,36 +110,29 @@ const CookieConsent = () => {
                 מדיניות Cookies
               </a>
             </p>
+          </div>
 
-            {/* Buttons */}
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <button
-                onClick={() => setShowPreferences(true)}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors flex items-center gap-2"
-              >
-                <Settings className="w-4 h-4" />
-                העדפות
-              </button>
-              <button
-                onClick={handleDeny}
-                className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
-              >
-                דחה
-              </button>
-              <button
-                onClick={handleAcceptAll}
-                className="px-4 py-2 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
-              >
-                אשר
-              </button>
-              <button
-                onClick={handleClose}
-                className="p-2 text-muted-foreground hover:text-foreground hover:bg-muted rounded-lg transition-colors"
-                aria-label="סגור"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
+          {/* Buttons */}
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={handleAcceptAll}
+              className="w-full px-4 py-3 bg-primary text-primary-foreground rounded-lg text-sm font-medium hover:bg-primary/90 transition-colors"
+            >
+              אשר את כל ה-Cookies
+            </button>
+            <button
+              onClick={handleDeny}
+              className="w-full px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors"
+            >
+              דחה (חיוניים בלבד)
+            </button>
+            <button
+              onClick={() => setShowPreferences(true)}
+              className="w-full px-4 py-3 text-sm font-medium text-muted-foreground hover:text-foreground border border-border rounded-lg hover:bg-muted transition-colors flex items-center justify-center gap-2"
+            >
+              <Settings className="w-4 h-4" />
+              התאמה אישית
+            </button>
           </div>
         </div>
       </div>
