@@ -42,6 +42,15 @@ const socialLinks = [
 ];
 
 const Footer = () => {
+  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    e.preventDefault();
+    const targetId = href.replace('#', '');
+    const element = document.getElementById(targetId);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  };
+
   return (
     <footer className="bg-muted/50 border-t border-border">
       <div className="container py-12">
@@ -54,7 +63,8 @@ const Footer = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  onClick={(e) => handleSmoothScroll(e, link.href)}
+                  className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer"
                 >
                   {link.label}
                 </a>
