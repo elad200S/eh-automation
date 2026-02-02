@@ -10,8 +10,9 @@ const HeroSection = () => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
     
-    // Trigger animation after mount
-    setMounted(true);
+    // Trigger animation after a short delay for a more cinematic feel
+    const timer = setTimeout(() => setMounted(true), 250);
+    return () => clearTimeout(timer);
   }, []);
 
   const scrollToForm = () => {
@@ -23,7 +24,7 @@ const HeroSection = () => {
     if (prefersReducedMotion) {
       return '';
     }
-    return `transition-all duration-[1800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+    return `transition-[transform,opacity] duration-[2600ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
       mounted 
         ? 'opacity-100 translate-x-0' 
         : 'opacity-0 translate-x-[60px]'
