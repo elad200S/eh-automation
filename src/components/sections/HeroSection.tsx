@@ -24,10 +24,10 @@ const HeroSection = () => {
     if (prefersReducedMotion) {
       return '';
     }
-    return `transition-[transform,opacity] duration-[2200ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
+    return `transition-[transform,opacity] duration-[8000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
       mounted 
-        ? 'opacity-100 scale-100' 
-        : 'opacity-0 scale-[0.97]'
+        ? 'opacity-100 translate-x-0' 
+        : 'opacity-0 translate-x-[60px]'
     }`;
   };
 
