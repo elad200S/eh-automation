@@ -18,16 +18,16 @@ const HeroSection = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Base animation classes
-  const getAnimationClasses = (delayMs: number) => {
+  // Base animation classes - slower, calmer entrance
+  const getAnimationClasses = () => {
     if (prefersReducedMotion) {
       return 'opacity-100 translate-x-0';
     }
-    return `transition-all duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] ${
+    return `transition-all duration-[1800ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
       mounted 
-        ? 'opacity-100 translate-x-0 blur-0' 
-        : 'opacity-0 translate-x-6 blur-[2px]'
-    } delay-[${delayMs}ms]`;
+        ? 'opacity-100 translate-x-0' 
+        : 'opacity-0 translate-x-12'
+    }`;
   };
 
   return (
@@ -43,32 +43,32 @@ const HeroSection = () => {
         <div className="max-w-3xl">
           {/* Technical label */}
           <div 
-            className={`text-technical mb-6 ${getAnimationClasses(0)}`}
-            style={{ transitionDelay: prefersReducedMotion ? undefined : '0ms' }}
+            className={`text-technical mb-6 ${getAnimationClasses()}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '250ms' }}
           >
             <span className="text-primary font-semibold">//</span> Business Automation & AI Systems
           </div>
           
           {/* Main heading */}
           <h1 
-            className={`text-5xl md:text-7xl font-bold text-foreground mb-6 ${getAnimationClasses(90)}`}
-            style={{ transitionDelay: prefersReducedMotion ? undefined : '90ms' }}
+            className={`text-5xl md:text-7xl font-bold text-foreground mb-6 ${getAnimationClasses()}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '470ms' }}
           >
             EH <span className="gradient-text">Automation</span>
           </h1>
           
           {/* Subtitle */}
           <p 
-            className={`text-xl md:text-2xl text-foreground font-light mb-8 ${getAnimationClasses(180)}`}
-            style={{ transitionDelay: prefersReducedMotion ? undefined : '180ms' }}
+            className={`text-xl md:text-2xl text-foreground font-light mb-8 ${getAnimationClasses()}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '690ms' }}
           >
             אוטומציה עסקית שמאפשרת לגדול בלי להגדיל כוח אדם
           </p>
           
           {/* Description */}
           <p 
-            className={`text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl ${getAnimationClasses(270)}`}
-            style={{ transitionDelay: prefersReducedMotion ? undefined : '270ms' }}
+            className={`text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl ${getAnimationClasses()}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '690ms' }}
           >
             אני עוזר לבעלי עסקים וסטארטאפים להרוויח יותר כסף בפחות זמן
             באמצעות אוטומציות מתקדמות ושילוב בינה מלאכותית
@@ -78,8 +78,8 @@ const HeroSection = () => {
           {/* CTA Button */}
           <button
             onClick={scrollToForm}
-            className={`group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] ${getAnimationClasses(360)}`}
-            style={{ transitionDelay: prefersReducedMotion ? undefined : '360ms' }}
+            className={`group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] ${getAnimationClasses()}`}
+            style={{ transitionDelay: prefersReducedMotion ? undefined : '910ms' }}
           >
             איפיון ראשוני ללא התחייבות
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
