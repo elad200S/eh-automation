@@ -8,6 +8,10 @@ import Index from "./pages/Index";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
 import NotFound from "./pages/NotFound";
+import Chatbots from "./pages/services/Chatbots";
+import CRM from "./pages/services/CRM";
+import Automation from "./pages/services/Automation";
+import AIAgents from "./pages/services/AIAgents";
 
 const queryClient = new QueryClient();
 
@@ -20,6 +24,10 @@ const App = () => (
         <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
           <Routes>
             <Route path="/" element={<Index />} />
+            <Route path="/services/chatbots" element={<Chatbots />} />
+            <Route path="/services/crm" element={<CRM />} />
+            <Route path="/services/automation" element={<Automation />} />
+            <Route path="/services/ai-agents" element={<AIAgents />} />
             <Route path="/privacy" element={<PrivacyPolicy />} />
             <Route path="/cookies" element={<CookiePolicy />} />
             <Route path="*" element={<NotFound />} />
