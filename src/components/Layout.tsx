@@ -1,7 +1,7 @@
 import { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
-import ChatBot from '@/components/ChatBot/ChatBot';
+
 import AccessibilityButton from '@/components/AccessibilityButton';
 import CookieConsent from '@/components/CookieConsent';
 
