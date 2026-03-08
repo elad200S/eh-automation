@@ -1,4 +1,5 @@
 import { Helmet } from 'react-helmet-async';
+import Navbar from '@/components/Navbar';
 import AccessibilityButton from '@/components/AccessibilityButton';
 import CookieConsent from '@/components/CookieConsent';
 import ChatBot from '@/components/ChatBot/ChatBot';
@@ -30,6 +31,7 @@ const Index = () => {
         <html lang="he" dir="rtl" />
       </Helmet>
       
+      <Navbar />
       <main className="bg-background min-h-screen">
         <HeroSection />
         <AboutSection />
