@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Users, GraduationCap, Home, ShoppingCart } from 'lucide-react';
+import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -9,14 +9,14 @@ const industries = [
   {
     icon: Building2,
     title: 'סוכנויות דיגיטל ושיווק',
-    description: 'ניהול לקוחות, אונבורדינג, דוחות ומעקב פרויקטים – הכל אוטומטי. ככה סוכנויות לוקחות יותר לקוחות בלי להגדיל צוות.',
+    description: 'ניהול לקוחות, אונבורדינג, דוחות ומעקב פרויקטים – הכל אוטומטי.',
     href: '/industries/agencies',
     challenges: ['ניהול מספר לקוחות במקביל', 'דוחות ביצועים', 'אונבורדינג'],
   },
   {
     icon: Users,
     title: 'יועצים עסקיים',
-    description: 'תיאום פגישות, מעקב לקוחות, שליחת הצעות מחיר ודוחות – הכל רץ אוטומטית כדי שתוכלו להתמקד בייעוץ.',
+    description: 'תיאום פגישות, מעקב לקוחות, שליחת הצעות מחיר ודוחות – הכל רץ אוטומטית.',
     href: '/industries/consultants',
     challenges: ['תיאום פגישות', 'מעקב לקוחות', 'הצעות מחיר'],
   },
@@ -37,7 +37,7 @@ const industries = [
   {
     icon: ShoppingCart,
     title: 'מסחר אלקטרוני',
-    description: 'מניהול הזמנות ומלאי ועד שיווק אוטומטי ושירות לקוחות – מערכות לחנויות שרוצות לצמוח.',
+    description: 'מניהול הזמנות ומלאי ועד שיווק אוטומטי ושירות לקוחות.',
     href: '/industries/ecommerce',
     challenges: ['ניהול הזמנות', 'מלאי', 'שיווק אוטומטי'],
   },
@@ -46,11 +46,11 @@ const industries = [
 const Industries = () => {
   return (
     <>
-      <Helmet>
-        <title>תעשיות | EH Automation</title>
-        <meta name="description" content="פתרונות אוטומציה מותאמים לתעשיות: סוכנויות, יועצים, מאמנים, נדל״ן ומסחר אלקטרוני." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="אוטומציה לפי תעשייה | EH Automation"
+        description="פתרונות אוטומציה מותאמים לתעשיות: סוכנויות, יועצים, מאמנים, נדל״ן ומסחר אלקטרוני."
+        path="/industries"
+      />
 
       <Navbar />
 
@@ -86,6 +86,18 @@ const Industries = () => {
                 </Link>
               ))}
             </div>
+
+            {/* Cross-links to solutions */}
+            <nav aria-label="קישורים קשורים" className="mt-12 p-6 bg-muted/30 rounded-xl border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">מחפשים פתרון לפי סוג?</h3>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/solutions/ai-agents" className="text-sm text-primary hover:underline">סוכני AI</Link>
+                <Link to="/solutions/business-automation" className="text-sm text-primary hover:underline">אוטומציה עסקית</Link>
+                <Link to="/solutions/whatsapp-automation" className="text-sm text-primary hover:underline">אוטומציית WhatsApp</Link>
+                <Link to="/solutions/crm-automation" className="text-sm text-primary hover:underline">אוטומציית CRM</Link>
+                <Link to="/solutions/workflow-automation" className="text-sm text-primary hover:underline">תהליכי עבודה</Link>
+              </div>
+            </nav>
           </div>
         </Section>
 

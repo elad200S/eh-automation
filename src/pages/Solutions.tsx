@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow } from 'lucide-react';
+import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -46,11 +46,11 @@ const solutions = [
 const Solutions = () => {
   return (
     <>
-      <Helmet>
-        <title>פתרונות אוטומציה | EH Automation</title>
-        <meta name="description" content="פתרונות אוטומציה עסקית ובינה מלאכותית: סוכני AI, אוטומציית WhatsApp, CRM, תהליכי עבודה ומערכות עסקיות מותאמות." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="פתרונות אוטומציה עסקית | EH Automation"
+        description="פתרונות אוטומציה עסקית ובינה מלאכותית: סוכני AI, אוטומציית WhatsApp, CRM, תהליכי עבודה ומערכות עסקיות מותאמות."
+        path="/solutions"
+      />
 
       <Navbar />
 
@@ -105,6 +105,18 @@ const Solutions = () => {
                 </Link>
               ))}
             </div>
+
+            {/* Cross-links to industries */}
+            <nav aria-label="קישורים קשורים" className="mt-12 p-6 bg-muted/30 rounded-xl border border-border">
+              <h3 className="text-sm font-semibold text-foreground mb-3">מחפשים פתרון לפי תעשייה?</h3>
+              <div className="flex flex-wrap gap-3">
+                <Link to="/industries/agencies" className="text-sm text-primary hover:underline">סוכנויות</Link>
+                <Link to="/industries/consultants" className="text-sm text-primary hover:underline">יועצים</Link>
+                <Link to="/industries/coaches" className="text-sm text-primary hover:underline">מאמנים</Link>
+                <Link to="/industries/real-estate" className="text-sm text-primary hover:underline">נדל"ן</Link>
+                <Link to="/industries/ecommerce" className="text-sm text-primary hover:underline">מסחר אלקטרוני</Link>
+              </div>
+            </nav>
           </div>
         </Section>
 

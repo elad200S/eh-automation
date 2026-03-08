@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Zap, Bot, Settings, BookOpen } from 'lucide-react';
+import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -36,11 +36,11 @@ const placeholderArticles = [
 const Blog = () => {
   return (
     <>
-      <Helmet>
-        <title>בלוג | EH Automation</title>
-        <meta name="description" content="מאמרים, מדריכים וטיפים על אוטומציה עסקית, סוכני AI, מערכות CRM ותהליכי עבודה חכמים." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="בלוג אוטומציה עסקית | EH Automation"
+        description="מאמרים, מדריכים וטיפים על אוטומציה עסקית, סוכני AI, מערכות CRM ותהליכי עבודה חכמים."
+        path="/blog"
+      />
 
       <Navbar />
 
@@ -58,20 +58,18 @@ const Blog = () => {
           </div>
         </section>
 
-        {/* Categories */}
         <Section id="categories">
           <div className="max-w-4xl">
             <h2 className="text-xl font-semibold text-foreground mb-6">קטגוריות</h2>
             <div className="flex flex-wrap gap-3 mb-12">
               {categories.map((cat, i) => (
-                <div key={i} className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card cursor-default`}>
+                <div key={i} className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-border bg-card cursor-default">
                   <cat.icon className={`w-4 h-4 ${cat.color.split(' ')[1]}`} />
                   <span className="text-sm font-medium text-foreground">{cat.label}</span>
                 </div>
               ))}
             </div>
 
-            {/* Articles */}
             <h2 className="text-xl font-semibold text-foreground mb-6">מאמרים אחרונים</h2>
             <div className="space-y-6">
               {placeholderArticles.map((article, index) => (
@@ -89,10 +87,15 @@ const Blog = () => {
               ))}
             </div>
 
-            <div className="mt-12 p-8 bg-muted/30 rounded-xl border border-border text-center">
-              <p className="text-muted-foreground mb-2">מאמרים חדשים מתווספים באופן שוטף.</p>
-              <p className="text-sm text-muted-foreground">בינתיים, אפשר ליצור קשר ולשאול כל שאלה ישירות.</p>
-            </div>
+            {/* Cross-links */}
+            <nav aria-label="קישורים קשורים" className="mt-12 p-8 bg-muted/30 rounded-xl border border-border">
+              <p className="text-muted-foreground mb-4">מאמרים חדשים מתווספים באופן שוטף.</p>
+              <div className="flex flex-wrap gap-4">
+                <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
+                <Link to="/case-studies" className="text-sm text-primary hover:underline">מקרי בוחן →</Link>
+                <Link to="/contact" className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</Link>
+              </div>
+            </nav>
           </div>
         </Section>
 
