@@ -1,9 +1,10 @@
-import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, CheckCircle2, Users, Zap, Target } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { SEOHead, BreadcrumbSchema, FAQSchema } from '@/lib/seo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -52,12 +53,12 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
 
   return (
     <>
-      <Helmet>
-        <title>{data.metaTitle}</title>
-        <meta name="description" content={data.metaDescription} />
-        <link rel="canonical" href={`https://ehautomation.co.il/${data.slug}`} />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title={data.metaTitle}
+        description={data.metaDescription}
+        path={`/${data.slug}`}
+      />
+      <FAQSchema items={data.faq.items} />
 
       <Navbar />
 
@@ -68,6 +69,11 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="container relative z-10">
             <div className="max-w-3xl">
+              <Breadcrumbs items={[
+                { label: 'בית', href: '/' },
+                { label: 'פתרונות', href: '/solutions' },
+                { label: data.hero.headline },
+              ]} />
               <p className="text-sm font-medium text-primary mb-3">{data.hero.label}</p>
               <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
