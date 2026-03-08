@@ -100,8 +100,9 @@ const UseCasesSection = () => {
   return (
     <Section id="use-cases">
       <div className="max-w-5xl">
+        <p className="text-sm font-medium text-primary mb-2">דוגמאות מהשטח</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
-          אוטומציות בפועל
+          אוטומציות שאנחנו בונים לעסקים
         </h2>
         
         <div className="grid md:grid-cols-2 gap-6">

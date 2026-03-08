@@ -6,11 +6,8 @@ const HeroSection = () => {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    // Check for reduced motion preference
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    
-    // Trigger animation after a short delay for a more cinematic feel
     const timer = setTimeout(() => setMounted(true), 250);
     return () => clearTimeout(timer);
   }, []);
@@ -19,15 +16,10 @@ const HeroSection = () => {
     document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Unified animation for the entire content block
   const getAnimationClasses = () => {
-    if (prefersReducedMotion) {
-      return '';
-    }
+    if (prefersReducedMotion) return '';
     return `transition-[transform,opacity] duration-[8000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-      mounted 
-        ? 'opacity-100 translate-x-0' 
-        : 'opacity-0 translate-x-[60px]'
+      mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[60px]'
     }`;
   };
 
@@ -41,11 +33,10 @@ const HeroSection = () => {
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       
       <div className="container relative z-10">
-        {/* Unified animated wrapper - entire content slides in as one block */}
         <div className={`max-w-3xl ${getAnimationClasses()}`}>
           {/* Technical label */}
           <div className="text-technical mb-6">
-            <span className="text-primary font-semibold">//</span> Business Automation & AI Systems
+            <span className="text-primary font-semibold">//</span> AI Automation Studio
           </div>
           
           {/* Main heading */}
@@ -53,26 +44,34 @@ const HeroSection = () => {
             EH <span className="gradient-text">Automation</span>
           </h1>
           
-          {/* Subtitle */}
-          <p className="text-xl md:text-2xl text-foreground font-light mb-8">
-            אוטומציה עסקית שמאפשרת לגדול בלי להגדיל כוח אדם
+          {/* Subtitle - sharper, outcome-focused */}
+          <p className="text-xl md:text-2xl text-foreground font-light mb-4">
+            סטודיו לאוטומציה עסקית ובינה מלאכותית
           </p>
           
-          {/* Description */}
+          {/* Description - clearer value prop */}
           <p className="text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl">
-            אני עוזר לבעלי עסקים וסטארטאפים להרוויח יותר כסף בפחות זמן
-            באמצעות אוטומציות מתקדמות ושילוב בינה מלאכותית
-            שמחליפים תלות בעובדים בתהליכים חכמים ומבוססי מערכות.
+            אנחנו בונים מערכות אוטומציה חכמות לעסקים קטנים, סוכנויות ויועצים.
+            סוכני AI, תהליכי CRM, אוטומציית WhatsApp ותשתיות שעובדות 24/7 – 
+            כדי שתוכלו לצמוח בלי להגדיל צוות.
           </p>
           
-          {/* CTA Button */}
-          <button
-            onClick={scrollToForm}
-            className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] transition-all"
-          >
-            איפיון ראשוני ללא התחייבות
-            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          </button>
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4">
+            <button
+              onClick={scrollToForm}
+              className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] transition-all"
+            >
+              שיחת אסטרטגיה
+              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+            </button>
+            <a
+              href="#solutions-overview"
+              className="inline-flex items-center justify-center gap-2 px-6 py-4 text-foreground font-medium rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-all"
+            >
+              איך אנחנו עוזרים
+            </a>
+          </div>
         </div>
       </div>
       

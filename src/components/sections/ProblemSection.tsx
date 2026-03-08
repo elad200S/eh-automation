@@ -34,10 +34,11 @@ const ProblemSection = () => {
   const [expandedIndex, setExpandedIndex] = useState<number | null>(null);
 
   return (
-    <Section id="problem" className="pt-8 md:pt-10">
+    <Section id="problem">
       <div className="max-w-3xl">
+        <p className="text-sm font-medium text-primary mb-2">למה עסקים צריכים אוטומציה</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
-          איפה עסקים נתקעים
+          4 סימנים שהעסק שלך צריך מערכת חכמה יותר
         </h2>
         
         <div className="space-y-4">

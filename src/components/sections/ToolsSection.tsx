@@ -125,8 +125,9 @@ const ToolsSection = () => {
   return (
     <Section id="tools">
       <div className="max-w-5xl">
+        <p className="text-sm font-medium text-primary mb-2">הטכנולוגיה</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-          כלים ופלטפורמות לאוטומציה עסקית
+          כלים ופלטפורמות שאנחנו משתמשים בהם
         </h2>
         
         <p className="text-lg text-muted-foreground mb-8">
