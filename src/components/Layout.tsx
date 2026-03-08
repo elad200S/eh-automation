@@ -9,7 +9,7 @@ interface LayoutProps {
   children: ReactNode;
 }
 
-const Layout = ({ children, showChat = false }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Navbar />
@@ -17,7 +17,6 @@ const Layout = ({ children, showChat = false }: LayoutProps) => {
         {children}
       </main>
       <Footer />
-      {showChat && <ChatBot />}
       <AccessibilityButton />
       <CookieConsent />
     </>

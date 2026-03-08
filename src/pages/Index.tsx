@@ -42,7 +42,7 @@ const Index = () => {
         <Footer />
       </main>
       
-      <ChatBot />
+      
       <AccessibilityButton />
       <CookieConsent />
     </>
