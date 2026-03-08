@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FAQSchema } from '@/lib/seo';
 import Section from '@/components/Section';
 
 const faqs = [
