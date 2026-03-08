@@ -7,7 +7,6 @@ import CookieConsent from '@/components/CookieConsent';
 
 interface LayoutProps {
   children: ReactNode;
-  showChat?: boolean;
 }
 
 const Layout = ({ children, showChat = false }: LayoutProps) => {
