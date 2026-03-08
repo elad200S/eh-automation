@@ -1,16 +1,15 @@
 import { ReactNode } from 'react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
-import ChatBot from '@/components/ChatBot/ChatBot';
+
 import AccessibilityButton from '@/components/AccessibilityButton';
 import CookieConsent from '@/components/CookieConsent';
 
 interface LayoutProps {
   children: ReactNode;
-  showChat?: boolean;
 }
 
-const Layout = ({ children, showChat = false }: LayoutProps) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <>
       <Navbar />
@@ -18,7 +17,6 @@ const Layout = ({ children, showChat = false }: LayoutProps) => {
         {children}
       </main>
       <Footer />
-      {showChat && <ChatBot />}
       <AccessibilityButton />
       <CookieConsent />
     </>

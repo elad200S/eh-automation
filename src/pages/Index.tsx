@@ -2,7 +2,7 @@ import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import AccessibilityButton from '@/components/AccessibilityButton';
 import CookieConsent from '@/components/CookieConsent';
-import ChatBot from '@/components/ChatBot/ChatBot';
+
 import HeroSection from '@/components/sections/HeroSection';
 import ValuePropositionSection from '@/components/sections/ValuePropositionSection';
 import SolutionsOverviewSection from '@/components/sections/SolutionsOverviewSection';
@@ -42,7 +42,7 @@ const Index = () => {
         <Footer />
       </main>
       
-      <ChatBot />
+      
       <AccessibilityButton />
       <CookieConsent />
     </>
