@@ -31,7 +31,9 @@ const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <Section id="faq">
+    <>
+      <FAQSchema items={faqs} />
+      <Section id="faq">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
           <p className="text-sm font-medium text-primary mb-2">שאלות נפוצות</p>
