@@ -76,6 +76,7 @@ const FAQSection = () => {
         </div>
       </div>
     </Section>
+    </>
   );
 };
 
