@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { SEOHead } from '@/lib/seo';
 import eladHeadshot from '@/assets/elad-headshot.png';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -36,16 +36,15 @@ const highlights = [
 const About = () => {
   return (
     <>
-      <Helmet>
-        <title>אודות | EH Automation</title>
-        <meta name="description" content="הכירו את EH Automation – סטודיו לאוטומציה עסקית ובינה מלאכותית שעוזר לעסקים לצמוח חכם יותר." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="אודות EH Automation | סטודיו לאוטומציה עסקית"
+        description="הכירו את EH Automation – סטודיו לאוטומציה עסקית ובינה מלאכותית שעוזר לעסקים לצמוח חכם יותר."
+        path="/about"
+      />
 
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -61,15 +60,12 @@ const About = () => {
           </div>
         </section>
 
-        {/* Founder */}
         <Section id="founder">
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               <div className="order-1">
                 <p className="text-sm font-medium text-primary mb-2">המייסד</p>
-                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">
-                  אלעד חנינה
-                </h2>
+                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">אלעד חנינה</h2>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
                   פועל בעולמות ה-B2B ועוזר לעסקים לבנות תשתית אוטומטית יציבה.
                   הגישה פשוטה: לבנות אוטומציות חכמות שמחליפות תהליכים ידניים,
@@ -87,7 +83,7 @@ const About = () => {
               <div className="order-2">
                 <div className="relative">
                   <div className="aspect-square max-w-[320px] mx-auto rounded-2xl bg-muted border border-border overflow-hidden shadow-lg">
-                    <img src={eladHeadshot} alt="אלעד חנינה - EH Automation" className="w-full h-full object-cover object-top" />
+                    <img src={eladHeadshot} alt="אלעד חנינה - מייסד EH Automation, סטודיו לאוטומציה עסקית" className="w-full h-full object-cover object-top" loading="lazy" />
                   </div>
                   <div className="absolute -bottom-3 -left-3 w-full h-full rounded-2xl border border-primary/20 -z-10" />
                 </div>
@@ -96,7 +92,6 @@ const About = () => {
           </div>
         </Section>
 
-        {/* Values */}
         <Section id="values" className="bg-muted/30">
           <div className="max-w-4xl">
             <p className="text-sm font-medium text-primary mb-2">הגישה שלנו</p>
@@ -115,7 +110,27 @@ const About = () => {
           </div>
         </Section>
 
-        {/* CTA */}
+        {/* Cross-links */}
+        <Section id="explore">
+          <div className="max-w-4xl">
+            <h2 className="text-2xl font-semibold text-foreground mb-6">גלו עוד</h2>
+            <div className="grid sm:grid-cols-3 gap-4">
+              <Link to="/solutions" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 transition-all text-center">
+                <h3 className="font-medium text-foreground mb-1">פתרונות</h3>
+                <p className="text-xs text-muted-foreground">סוכני AI, אוטומציה, CRM</p>
+              </Link>
+              <Link to="/case-studies" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 transition-all text-center">
+                <h3 className="font-medium text-foreground mb-1">מקרי בוחן</h3>
+                <p className="text-xs text-muted-foreground">פרויקטים אמיתיים</p>
+              </Link>
+              <Link to="/blog" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 transition-all text-center">
+                <h3 className="font-medium text-foreground mb-1">בלוג</h3>
+                <p className="text-xs text-muted-foreground">תובנות ומדריכים</p>
+              </Link>
+            </div>
+          </div>
+        </Section>
+
         <section className="py-20 bg-gradient-to-b from-background to-primary-light/30">
           <div className="container text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">מוכנים לדבר?</h2>

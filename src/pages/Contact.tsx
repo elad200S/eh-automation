@@ -1,34 +1,22 @@
 import { useState } from 'react';
-import { Helmet } from 'react-helmet-async';
 import { ArrowLeft, CheckCircle2, Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { SEOHead, LocalBusinessSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
 
 const Contact = () => {
   const { toast } = useToast();
-  const [formData, setFormData] = useState({
-    name: '',
-    phone: '',
-    business: '',
-    automationType: '',
-  });
+  const [formData, setFormData] = useState({ name: '', phone: '', business: '', automationType: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const isValidPhone = (phone: string): boolean => {
-    const phoneRegex = /^0[5-9][0-9]-?[0-9]{7}$/;
-    return phoneRegex.test(phone.trim());
-  };
-
-  const normalizePhone = (phone: string): string => {
-    return phone.trim().replace(/-/g, '');
-  };
+  const isValidPhone = (phone: string): boolean => /^0[5-9][0-9]-?[0-9]{7}$/.test(phone.trim());
+  const normalizePhone = (phone: string): string => phone.trim().replace(/-/g, '');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     const trimmedName = formData.name.trim();
     const trimmedBusiness = formData.business.trim();
     
@@ -36,31 +24,24 @@ const Contact = () => {
       toast({ title: 'שם לא תקין', description: 'השם חייב להכיל בין 2 ל-100 תווים', variant: 'destructive' });
       return;
     }
-    
     if (!isValidPhone(formData.phone)) {
       toast({ title: 'מספר טלפון לא תקין', description: 'נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)', variant: 'destructive' });
       return;
     }
-    
     if (trimmedBusiness.length < 2 || trimmedBusiness.length > 200) {
       toast({ title: 'סוג עיסוק לא תקין', description: 'סוג העיסוק חייב להכיל בין 2 ל-200 תווים', variant: 'destructive' });
       return;
     }
     
     setIsSubmitting(true);
-    
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert({
-          name: formData.name.trim(),
-          phone: normalizePhone(formData.phone),
-          business: formData.business.trim(),
-          automation_type: formData.automationType,
-        });
-
+      const { error } = await supabase.from('contact_submissions').insert({
+        name: formData.name.trim(),
+        phone: normalizePhone(formData.phone),
+        business: formData.business.trim(),
+        automation_type: formData.automationType,
+      });
       if (error) throw error;
-
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
     } catch (error) {
@@ -73,16 +54,16 @@ const Contact = () => {
 
   return (
     <>
-      <Helmet>
-        <title>צור קשר | EH Automation</title>
-        <meta name="description" content="רוצים לדבר על אוטומציה לעסק? השאירו פרטים ונחזור אליכם תוך 24 שעות. שיחת אפיון ראשונית ללא עלות." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="צור קשר | EH Automation"
+        description="רוצים לדבר על אוטומציה לעסק? השאירו פרטים ונחזור אליכם תוך 24 שעות. שיחת אפיון ראשונית ללא עלות."
+        path="/contact"
+      />
+      <LocalBusinessSchema />
 
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="py-16 md:py-24 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -99,7 +80,6 @@ const Contact = () => {
         <Section id="contact-form">
           <div className="max-w-5xl mx-auto">
             <div className="grid md:grid-cols-5 gap-10">
-              {/* Form */}
               <div className="md:col-span-3">
                 <div className="bg-card rounded-2xl border border-border p-8 shadow-lg">
                   <h2 className="text-xl font-semibold text-foreground mb-6">השאירו פרטים</h2>
@@ -147,9 +127,7 @@ const Contact = () => {
                 </div>
               </div>
 
-              {/* Sidebar */}
-              <div className="md:col-span-2 space-y-6">
-                {/* WhatsApp */}
+              <aside className="md:col-span-2 space-y-6">
                 <div className="bg-card rounded-xl border border-border p-6">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="w-10 h-10 rounded-lg bg-[#25D366]/10 flex items-center justify-center">
@@ -165,54 +143,33 @@ const Contact = () => {
                   </a>
                 </div>
 
-                {/* Contact details */}
                 <div className="bg-card rounded-xl border border-border p-6">
                   <h3 className="text-sm font-semibold text-foreground mb-4">פרטי קשר</h3>
                   <ul className="space-y-3">
-                    <li>
-                      <a href="tel:0547108219" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                        <Phone className="w-4 h-4 flex-shrink-0" />
-                        <span dir="ltr">054-710-8219</span>
-                      </a>
-                    </li>
-                    <li>
-                      <a href="mailto:eladauto66@gmail.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors">
-                        <Mail className="w-4 h-4 flex-shrink-0" />
-                        <span>eladauto66@gmail.com</span>
-                      </a>
-                    </li>
-                    <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                      <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                      <span>חיים לסקוב 22, נתניה</span>
-                    </li>
+                    <li><a href="tel:0547108219" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"><Phone className="w-4 h-4 flex-shrink-0" /><span dir="ltr">054-710-8219</span></a></li>
+                    <li><a href="mailto:eladauto66@gmail.com" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-primary transition-colors"><Mail className="w-4 h-4 flex-shrink-0" /><span>eladauto66@gmail.com</span></a></li>
+                    <li className="flex items-start gap-3 text-sm text-muted-foreground"><MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" /><span>חיים לסקוב 22, נתניה</span></li>
                   </ul>
                 </div>
 
-                {/* Trust */}
                 <div className="bg-muted/30 rounded-xl border border-border p-6">
                   <h3 className="text-sm font-semibold text-foreground mb-3">מה קורה אחרי שתשלחו?</h3>
-                  <ul className="space-y-2.5">
+                  <ol className="space-y-2.5">
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs font-bold text-primary">1</span>
-                      </span>
+                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-xs font-bold text-primary">1</span></span>
                       נקרא את הפנייה ונבין את הצרכים
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs font-bold text-primary">2</span>
-                      </span>
+                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-xs font-bold text-primary">2</span></span>
                       ניצור קשר תוך 24 שעות לקביעת שיחה
                     </li>
                     <li className="flex items-start gap-2 text-sm text-muted-foreground">
-                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                        <span className="text-xs font-bold text-primary">3</span>
-                      </span>
+                      <span className="w-5 h-5 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5"><span className="text-xs font-bold text-primary">3</span></span>
                       בשיחה נמפה את התהליכים ונראה אם יש התאמה
                     </li>
-                  </ul>
+                  </ol>
                 </div>
-              </div>
+              </aside>
             </div>
           </div>
         </Section>

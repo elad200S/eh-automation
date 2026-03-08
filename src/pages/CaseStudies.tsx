@@ -1,6 +1,6 @@
-import { Helmet } from 'react-helmet-async';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Building2, Target, Zap, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Building2, Target, Zap } from 'lucide-react';
+import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -38,11 +38,11 @@ const caseStudies = [
 const CaseStudies = () => {
   return (
     <>
-      <Helmet>
-        <title>מקרי בוחן | EH Automation</title>
-        <meta name="description" content="מקרי בוחן מפרויקטי אוטומציה עסקית ובינה מלאכותית – ראו איך עסקים אמיתיים שיפרו תהליכים עם EH Automation." />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="מקרי בוחן | EH Automation"
+        description="מקרי בוחן מפרויקטי אוטומציה עסקית ובינה מלאכותית – ראו איך עסקים אמיתיים שיפרו תהליכים עם EH Automation."
+        path="/case-studies"
+      />
 
       <Navbar />
 
@@ -54,7 +54,7 @@ const CaseStudies = () => {
               <p className="text-sm font-medium text-primary mb-3">מקרי בוחן</p>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">פרויקטים אמיתיים, תוצאות אמיתיות</h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                מקרי בוחן מפורטים שמראים איך בנינו מערכות אוטומציה לעסקים מתעשיות שונות. כל פרויקט מתחיל מאפיון ומסתיים במערכת שעובדת.
+                מקרי בוחן מפורטים שמראים איך בנינו מערכות אוטומציה לעסקים מתעשיות שונות.
               </p>
             </div>
           </div>
@@ -64,7 +64,7 @@ const CaseStudies = () => {
           <div className="max-w-4xl">
             <div className="space-y-8">
               {caseStudies.map((study, index) => (
-                <div key={index} className="bg-card rounded-xl border border-border overflow-hidden">
+                <article key={index} className="bg-card rounded-xl border border-border overflow-hidden">
                   <div className="p-6 md:p-8">
                     <div className="flex items-center gap-3 mb-4">
                       <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center">
@@ -78,42 +78,42 @@ const CaseStudies = () => {
                         {study.status}
                       </span>
                     </div>
-
                     <div className="grid md:grid-cols-3 gap-6 mt-6">
                       <div>
                         <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
-                          האתגר
+                          <span className="w-1.5 h-1.5 rounded-full bg-destructive" />האתגר
                         </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">{study.challenge}</p>
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />
-                          הפתרון
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary" />הפתרון
                         </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed">{study.solution}</p>
                       </div>
                       <div>
                         <h3 className="text-sm font-semibold text-foreground mb-2 flex items-center gap-2">
-                          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
-                          תוצאה
+                          <span className="w-1.5 h-1.5 rounded-full bg-accent" />תוצאה
                         </h3>
                         <p className="text-sm text-muted-foreground leading-relaxed italic">{study.outcome}</p>
                       </div>
                     </div>
                   </div>
-                </div>
+                </article>
               ))}
             </div>
 
-            <div className="mt-12 p-8 bg-muted/30 rounded-xl border border-border text-center">
-              <p className="text-muted-foreground mb-4">מקרי בוחן נוספים יתווספו בקרוב ככל שפרויקטים נוספים יושלמו.</p>
-              <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors">
-                רוצים להיות מקרה הבוחן הבא?
-                <ArrowLeft className="w-4 h-4" />
-              </Link>
-            </div>
+            {/* Cross-links */}
+            <nav aria-label="קישורים קשורים" className="mt-12 p-8 bg-muted/30 rounded-xl border border-border text-center">
+              <p className="text-muted-foreground mb-4">מקרי בוחן נוספים יתווספו בקרוב.</p>
+              <div className="flex flex-wrap justify-center gap-4">
+                <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors">
+                  רוצים להיות מקרה הבוחן הבא?
+                  <ArrowLeft className="w-4 h-4" />
+                </Link>
+                <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
+              </div>
+            </nav>
           </div>
         </Section>
 

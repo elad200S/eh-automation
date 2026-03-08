@@ -1,8 +1,7 @@
-import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, CheckCircle2, ChevronDown } from 'lucide-react';
+import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { cn } from '@/lib/utils';
+import { SEOHead } from '@/lib/seo';
+import Breadcrumbs from '@/components/Breadcrumbs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -41,12 +40,11 @@ const scrollToContact = () => {
 const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
   return (
     <>
-      <Helmet>
-        <title>{data.metaTitle}</title>
-        <meta name="description" content={data.metaDescription} />
-        <link rel="canonical" href={`https://ehautomation.co.il/${data.slug}`} />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title={data.metaTitle}
+        description={data.metaDescription}
+        path={`/${data.slug}`}
+      />
 
       <Navbar />
 
@@ -56,6 +54,11 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
             <div className="max-w-3xl">
+              <Breadcrumbs items={[
+                { label: 'בית', href: '/' },
+                { label: 'תעשיות', href: '/industries' },
+                { label: data.hero.headline },
+              ]} />
               <p className="text-sm font-medium text-primary mb-3">{data.hero.label}</p>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
