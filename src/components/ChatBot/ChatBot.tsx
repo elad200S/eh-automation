@@ -1,14 +1,72 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { MessageCircle, X } from 'lucide-react';
 import { useChatBot } from './useChatBot';
 import ChatWindow from './ChatWindow';
 import ChatChoiceModal from './ChatChoiceModal';
+import ProactiveBubble from './ProactiveBubble';
+
+const PROACTIVE_MSG_1 = 'היי 👋\nרוצה לראות איזה אוטומציות יכולות לעבוד בעסק שלך?';
+const PROACTIVE_MSG_2 = 'רוצה לראות דוגמה לאוטומציה שיכולה לחסוך שעות עבודה לעסק?';
+const QUICK_REPLIES_1 = ['כן, תראה לי', 'יש לי שאלה'];
+const MAX_PROACTIVE = 2;
+const TIME_TRIGGER_MS = 8000;
+const SCROLL_THRESHOLD = 0.5;
 
 const ChatBot = () => {
   const { messages, isLoading, isOpen, hasBeenOpened, sendMessage, toggleOpen, openChat, maxInputLength } = useChatBot();
   const [showAnimation, setShowAnimation] = useState(false);
   const [showChoiceModal, setShowChoiceModal] = useState(false);
   const [hasShownModal, setHasShownModal] = useState(false);
+
+  // Proactive bubble state
+  const [proactiveBubble, setProactiveBubble] = useState<{
+    message: string;
+    quickReplies?: string[];
+  } | null>(null);
+  const proactiveCountRef = useRef(0);
+  const userInteractedRef = useRef(false);
+  const dismissedRef = useRef(false);
+
+  // Track if user has interacted with chat
+  useEffect(() => {
+    if (hasBeenOpened || isOpen) {
+      userInteractedRef.current = true;
+      setProactiveBubble(null);
+    }
+  }, [hasBeenOpened, isOpen]);
+
+  // Time-based trigger (8s)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!userInteractedRef.current && !dismissedRef.current && proactiveCountRef.current < MAX_PROACTIVE) {
+        setProactiveBubble({ message: PROACTIVE_MSG_1, quickReplies: QUICK_REPLIES_1 });
+        proactiveCountRef.current += 1;
+      }
+    }, TIME_TRIGGER_MS);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Scroll-based trigger (50% of page)
+  useEffect(() => {
+    const handleScroll = () => {
+      if (userInteractedRef.current || dismissedRef.current) return;
+      if (proactiveCountRef.current >= MAX_PROACTIVE) return;
+      // Only trigger second message after first was shown and dismissed/ignored
+      if (proactiveCountRef.current < 1) return;
+      // Don't show if bubble is already visible
+      if (proactiveBubble) return;
+
+      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPercent >= SCROLL_THRESHOLD) {
+        setProactiveBubble({ message: PROACTIVE_MSG_2, quickReplies: QUICK_REPLIES_1 });
+        proactiveCountRef.current += 1;
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [proactiveBubble]);
 
   // Attention animation logic
   useEffect(() => {
@@ -17,18 +75,13 @@ const ChatBot = () => {
       return;
     }
 
-    // Start animation after 4 seconds
     const initialTimer = setTimeout(() => {
-      if (!hasBeenOpened) {
-        setShowAnimation(true);
-      }
+      if (!hasBeenOpened) setShowAnimation(true);
     }, 4000);
 
-    // Repeat animation every 10-15 seconds (subtle, non-aggressive)
     const intervalId = setInterval(() => {
       if (!hasBeenOpened) {
         setShowAnimation(true);
-        // Animation lasts ~2 seconds, then reset
         setTimeout(() => setShowAnimation(false), 2000);
       }
     }, 10000 + Math.random() * 5000);
@@ -39,7 +92,7 @@ const ChatBot = () => {
     };
   }, [hasBeenOpened]);
 
-  // Scroll-triggered modal for "איפה עסקים נתקעים" section
+  // Scroll-triggered choice modal
   useEffect(() => {
     if (hasShownModal) return;
 
@@ -70,6 +123,19 @@ const ChatBot = () => {
     window.open('https://wa.link/iuolab', '_blank');
   };
 
+  const handleProactiveDismiss = useCallback(() => {
+    setProactiveBubble(null);
+    dismissedRef.current = true;
+  }, []);
+
+  const handleProactiveReply = useCallback((text: string) => {
+    setProactiveBubble(null);
+    userInteractedRef.current = true;
+    openChat();
+    // Small delay so chat window renders before sending
+    setTimeout(() => sendMessage(text), 300);
+  }, [openChat, sendMessage]);
+
   return (
     <>
       {/* Chat Window */}
@@ -80,6 +146,16 @@ const ChatBot = () => {
           onSendMessage={sendMessage}
           onClose={toggleOpen}
           maxInputLength={maxInputLength}
+        />
+      )}
+
+      {/* Proactive Bubble */}
+      {proactiveBubble && !isOpen && (
+        <ProactiveBubble
+          message={proactiveBubble.message}
+          quickReplies={proactiveBubble.quickReplies}
+          onQuickReply={handleProactiveReply}
+          onDismiss={handleProactiveDismiss}
         />
       )}
 
