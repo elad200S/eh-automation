@@ -1,13 +1,72 @@
-import PlaceholderPage from '@/components/PlaceholderPage';
+import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageLayout';
 
-const WhatsAppAutomation = () => (
-  <PlaceholderPage
-    title="פתרונות / אוטומציית WhatsApp"
-    metaTitle="אוטומציית WhatsApp | EH Automation"
-    metaDescription="אוטומציית WhatsApp עסקית – מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות ללקוחות."
-    headline="הפכו את ה-WhatsApp למכונת מכירות"
-    description="מערכת WhatsApp אוטומטית שמנהלת לידים, שולחת תזכורות, עוקבת אחרי לקוחות ומספקת מענה מיידי – הכל אוטומטית."
-  />
-);
+const data: SolutionPageData = {
+  slug: 'solutions/whatsapp-automation',
+  metaTitle: 'אוטומציית WhatsApp לעסקים | EH Automation',
+  metaDescription: 'אוטומציית WhatsApp עסקית – מענה אוטומטי, ניהול לידים, שליחת תזכורות והודעות מותאמות ללקוחות.',
+  hero: {
+    label: 'פתרונות / אוטומציית WhatsApp',
+    headline: 'הפכו את ה-WhatsApp למנוע מכירות ושירות',
+    subtext: 'מערכת WhatsApp אוטומטית שמנהלת לידים, שולחת תזכורות, עוקבת אחרי לקוחות ומספקת מענה מיידי – הכל אוטומטית ובהתאמה אישית.',
+  },
+  whoIsItFor: {
+    title: 'למי זה מתאים',
+    audiences: [
+      'עסקים שמקבלים פניות דרך WhatsApp',
+      'צוותי מכירות שצריכים מעקב שיטתי',
+      'עסקי שירות שרוצים לשלוח תזכורות אוטומטיות',
+      'חנויות שרוצות לעדכן לקוחות על הזמנות',
+      'יועצים ומאמנים שמתאמים פגישות דרך WhatsApp',
+      'עסקים שמנהלים תקשורת יומית עם לקוחות',
+    ],
+  },
+  problems: {
+    title: 'בעיות שאוטומציית WhatsApp פותרת',
+    items: [
+      { title: 'הודעות שנשארות ללא מענה', description: 'לידים ולקוחות שולחים הודעות ולא מקבלים תשובה מיידית – ועוברים למתחרה.' },
+      { title: 'מעקב ידני אחרי שיחות', description: 'קשה לעקוב אחרי מאות שיחות ולזכור מי צריך חזרה ומתי.' },
+      { title: 'שליחת תזכורות ידנית', description: 'תזכורות לפגישות, תשלומים או אספקה – הכל נעשה ידנית ולעתים נשכח.' },
+      { title: 'חוסר עקביות בתקשורת', description: 'כל עובד עונה בסגנון אחר. אין תסריט אחיד ואין מדידה.' },
+    ],
+  },
+  useCases: {
+    title: 'דוגמאות לשימוש',
+    cases: [
+      { title: 'מענה אוטומטי ללידים', description: 'ליד שולח הודעה → מקבל תשובה מיידית עם מידע רלוונטי → נשמר במערכת → מקבל הודעת מעקב לאחר 24 שעות.' },
+      { title: 'תזכורות פגישות', description: 'לקוח שקבע פגישה מקבל תזכורת 24 שעות לפני, ותזכורת נוספת שעה לפני – אוטומטית.' },
+      { title: 'עדכוני סטטוס הזמנות', description: 'לקוח שהזמין מוצר מקבל עדכונים אוטומטיים: אישור הזמנה → בהכנה → נשלח → הגיע.' },
+    ],
+  },
+  whatWeDeliver: {
+    title: 'מה אנחנו בונים בפועל',
+    items: [
+      'מערכת מענה אוטומטי ב-WhatsApp Business API',
+      'זרימות שיחה מותאמות לתרחישים שלך',
+      'חיבור ל-CRM לשמירת כל השיחות והלידים',
+      'מערכת תזכורות ומעקבים אוטומטית',
+      'דאשבורד לניטור שיחות וזמני תגובה',
+      'תבניות הודעות מוכנות לאישור מ-Meta',
+    ],
+  },
+  process: {
+    title: 'תהליך העבודה',
+    steps: [
+      { label: 'אפיון', description: 'מיפוי תרחישי שיחה וצרכים' },
+      { label: 'תכנון', description: 'עיצוב זרימות והודעות' },
+      { label: 'בנייה', description: 'הקמת המערכת וחיבורים' },
+      { label: 'בדיקות', description: 'בדיקת תרחישים ואישור תבניות' },
+      { label: 'הטמעה', description: 'עלייה לאוויר והדרכה' },
+    ],
+  },
+  faq: {
+    title: 'שאלות נפוצות',
+    items: [
+      { question: 'האם צריך WhatsApp Business API?', answer: 'כן. אנחנו עובדים עם ה-API הרשמי של WhatsApp Business שמאפשר אוטומציה מלאה, שליחת תבניות ואינטגרציה עם מערכות.' },
+      { question: 'האם זה חוקי לשלוח הודעות אוטומטיות?', answer: 'כן, כל עוד הלקוח נתן הסכמה ואתם משתמשים בתבניות מאושרות. אנחנו מוודאים שהכל עובד לפי הכללים של Meta.' },
+      { question: 'האם אפשר לחבר את זה ל-CRM?', answer: 'בהחלט. כל מערכת WhatsApp שאנחנו בונים מחוברת ל-CRM שלכם כדי שכל שיחה נשמרת ומתועדת.' },
+    ],
+  },
+};
 
+const WhatsAppAutomation = () => <SolutionPageLayout data={data} />;
 export default WhatsAppAutomation;
