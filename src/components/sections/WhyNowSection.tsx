@@ -27,8 +27,9 @@ const WhyNowSection = () => {
   return (
     <Section id="why-now">
       <div className="max-w-3xl">
+        <p className="text-sm font-medium text-primary mb-2">למה עכשיו</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
-          למה אוטומציה בשילוב בינה מלאכותית היא הכלי היעיל ביותר היום
+          למה אוטומציה בשילוב AI היא הכלי היעיל ביותר היום
         </h2>
         
         <div className="space-y-4">

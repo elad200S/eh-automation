@@ -12,8 +12,9 @@ const KeyPointsSection = () => {
   return (
     <Section id="key-points">
       <div className="max-w-3xl">
+        <p className="text-sm font-medium text-primary mb-2">תובנות</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
-          נקודות מפתח
+          למה AI + אוטומציה זה שינוי כללי המשחק
         </h2>
         
         <div className="space-y-4">
@@ -28,9 +29,9 @@ const KeyPointsSection = () => {
         <div className="mt-10 text-center">
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-l from-primary via-primary to-primary/90 text-primary-foreground rounded-xl text-lg font-medium hover:opacity-90 transition-opacity shadow-lg"
+            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-xl text-lg font-medium hover:opacity-90 transition-opacity shadow-lg"
           >
-            Let's turn action into automation
+            בואו נבנה את המערכת שלכם
             <ArrowLeft className="w-5 h-5" />
           </a>
         </div>
