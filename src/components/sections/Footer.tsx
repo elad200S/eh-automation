@@ -1,14 +1,36 @@
+import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 
-const navigationLinks = [
-  { label: 'איך עסקים נתקעים', href: '#problem' },
-  { label: 'מה מחליף עובדים', href: '#solution' },
-  { label: 'כלים ופלטפורמות', href: '#tools' },
-  { label: 'אוטומציות בפעולה', href: '#use-cases' },
-  { label: 'איך זה עובד', href: '#process' },
-  { label: 'לפני שנדבר', href: '#qualification' },
-  { label: 'נקודת מפנה', href: '#why-now' },
-  { label: 'צור קשר', href: '#contact' },
+const footerNav = [
+  {
+    title: 'פתרונות',
+    links: [
+      { label: 'סוכני AI חכמים', href: '/solutions/ai-agents' },
+      { label: 'אוטומציה עסקית', href: '/solutions/business-automation' },
+      { label: 'אוטומציית WhatsApp', href: '/solutions/whatsapp-automation' },
+      { label: 'אוטומציית CRM', href: '/solutions/crm-automation' },
+      { label: 'אוטומציית תהליכי עבודה', href: '/solutions/workflow-automation' },
+    ],
+  },
+  {
+    title: 'תעשיות',
+    links: [
+      { label: 'סוכנויות', href: '/industries/agencies' },
+      { label: 'יועצים', href: '/industries/consultants' },
+      { label: 'מאמנים', href: '/industries/coaches' },
+      { label: 'נדל"ן', href: '/industries/real-estate' },
+      { label: 'מסחר אלקטרוני', href: '/industries/ecommerce' },
+    ],
+  },
+  {
+    title: 'החברה',
+    links: [
+      { label: 'אודות', href: '/about' },
+      { label: 'מקרי בוחן', href: '/case-studies' },
+      { label: 'בלוג', href: '/blog' },
+      { label: 'צור קשר', href: '/contact' },
+    ],
+  },
 ];
 
 const socialLinks = [
@@ -42,54 +64,29 @@ const socialLinks = [
 ];
 
 const Footer = () => {
-  const handleSmoothScroll = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
-    e.preventDefault();
-    const targetId = href.replace('#', '');
-    const element = document.getElementById(targetId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  };
-
   return (
     <footer className="bg-muted/50 border-t border-border">
       <div className="container py-12">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-10 md:gap-8">
-          {/* Section 1: Navigation Links */}
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">ניווט מהיר</h4>
-            <nav className="grid grid-cols-2 gap-2">
-              {navigationLinks.map((link) => (
-                <a
-                  key={link.href}
-                  href={link.href}
-                  onClick={(e) => handleSmoothScroll(e, link.href)}
-                  className="text-sm text-muted-foreground hover:text-primary transition-colors cursor-pointer"
-                >
-                  {link.label}
-                </a>
-              ))}
-            </nav>
-          </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-8">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <Link to="/" className="text-xl font-bold text-foreground">
+              EH <span className="gradient-text">Automation</span>
+            </Link>
+            <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
+              סטודיו לאוטומציה עסקית ובינה מלאכותית. אנחנו עוזרים לעסקים קטנים, סוכנויות ויועצים לבנות מערכות חכמות שעובדות בשבילם 24/7.
+            </p>
 
-          {/* Section 2: Contact Information */}
-          <div>
-            <h4 className="text-sm font-semibold text-foreground mb-4">יצירת קשר</h4>
-            <ul className="space-y-3">
+            {/* Contact */}
+            <ul className="mt-5 space-y-2">
               <li>
-                <a
-                  href="tel:0547108219"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
+                <a href="tel:0547108219" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                   <Phone className="w-4 h-4 flex-shrink-0" />
                   <span dir="ltr">054-710-8219</span>
                 </a>
               </li>
               <li>
-                <a
-                  href="mailto:eladauto66@gmail.com"
-                  className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors"
-                >
+                <a href="mailto:eladauto66@gmail.com" className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors">
                   <Mail className="w-4 h-4 flex-shrink-0" />
                   <span>eladauto66@gmail.com</span>
                 </a>
@@ -99,19 +96,9 @@ const Footer = () => {
                 <span>חיים לסקוב 22, נתניה</span>
               </li>
             </ul>
-          </div>
 
-          {/* Section 3: Brand + Social */}
-          <div>
-            <div className="mb-4">
-              <h3 className="text-xl font-semibold text-foreground">EH Automation</h3>
-              <p className="text-sm text-muted-foreground mt-1">
-                אוטומציה עסקית ובינה מלאכותית
-              </p>
-            </div>
-            
-            {/* Social Links */}
-            <div className="flex items-center gap-3">
+            {/* Social */}
+            <div className="flex items-center gap-3 mt-5">
               {socialLinks.map((social) => (
                 <a
                   key={social.name}
@@ -126,16 +113,47 @@ const Footer = () => {
               ))}
             </div>
           </div>
+
+          {/* Nav columns */}
+          {footerNav.map((group) => (
+            <div key={group.title}>
+              <h4 className="text-sm font-semibold text-foreground mb-4">{group.title}</h4>
+              <nav className="flex flex-col gap-2">
+                {group.links.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
+          ))}
+        </div>
+
+        {/* CTA row */}
+        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-sm text-muted-foreground">
+            מוכנים לבנות מערכת אוטומציה חכמה?
+          </p>
+          <Link
+            to="/contact"
+            className="px-5 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+          >
+            שיחת אסטרטגיה →
+          </Link>
         </div>
 
         {/* Bottom bar */}
-        <div className="mt-10 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="mt-6 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
             © {new Date().getFullYear()} EH Automation. כל הזכויות שמורות.
           </p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
-            <a href="/privacy" className="hover:text-primary transition-colors">מדיניות פרטיות</a>
-            <a href="/cookies" className="hover:text-primary transition-colors">מדיניות Cookies</a>
+            <Link to="/privacy" className="hover:text-primary transition-colors">מדיניות פרטיות</Link>
+            <Link to="/cookies" className="hover:text-primary transition-colors">מדיניות Cookies</Link>
           </div>
         </div>
       </div>
