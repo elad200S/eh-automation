@@ -121,12 +121,42 @@
   
   /* Interactive card styles */
   .interactive-card {
-    @apply bg-card border border-border rounded-xl p-6 transition-all duration-300 cursor-pointer;
+    @apply bg-card border border-border rounded-xl p-6 transition-all duration-200 cursor-pointer;
     @apply hover:border-primary/50 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1;
   }
   
   .interactive-card.expanded {
     @apply border-primary/40 shadow-xl shadow-primary/10;
+  }
+
+  /* Info card - subtle hover for non-link cards */
+  .info-card {
+    @apply bg-card border border-border rounded-xl transition-all duration-200;
+    @apply hover:border-primary/20 hover:shadow-md hover:shadow-primary/5;
+  }
+
+  /* CTA gradient button */
+  .cta-gradient {
+    @apply inline-flex items-center gap-3 px-8 py-4 rounded-lg font-medium text-lg;
+    @apply shadow-lg transition-all duration-200;
+    @apply hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97];
+    background: linear-gradient(to left, hsl(var(--primary)), hsl(210 100% 45%), hsl(210 100% 38%));
+    color: hsl(var(--primary-foreground));
+  }
+
+  /* Outline button */
+  .btn-outline {
+    @apply inline-flex items-center justify-center gap-2 px-6 py-4 font-medium rounded-lg;
+    @apply border border-border transition-all duration-200;
+    @apply hover:border-primary/30 hover:bg-muted/50 hover:-translate-y-0.5 active:scale-[0.97];
+    color: hsl(var(--foreground));
+  }
+
+  /* Badge/tag with hover */
+  .tag-hover {
+    @apply px-4 py-2 rounded-full bg-card border border-border text-sm font-medium transition-all duration-200;
+    @apply hover:border-primary/30 hover:bg-primary/5;
+    color: hsl(var(--foreground));
   }
   
 }
