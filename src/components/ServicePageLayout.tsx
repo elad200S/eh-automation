@@ -78,7 +78,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
               </p>
               <button
                 onClick={scrollToContact}
-                className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-primary via-primary to-primary/80 text-primary-foreground rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all"
+                className="cta-gradient group"
               >
                 {ctaLabel}
                 <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -94,7 +94,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
           </h2>
           <div className="grid md:grid-cols-2 gap-4 max-w-3xl">
             {data.results.items.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
+              <div key={i} className="flex items-start gap-3 p-4 rounded-xl info-card">
                 <CheckCircle2 className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                 <span className="text-foreground">{item}</span>
               </div>
@@ -136,7 +136,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
             {data.integrations.platforms.map((p, i) => (
               <span
                 key={i}
-                className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium text-foreground"
+                className="tag-hover"
               >
                 {p}
               </span>
@@ -199,7 +199,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
             </p>
             <button
               onClick={scrollToContact}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-primary via-primary to-primary/80 text-primary-foreground rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all"
+              className="cta-gradient group"
             >
               {ctaLabel}
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />

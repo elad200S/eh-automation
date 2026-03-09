@@ -63,11 +63,11 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={scrollToContact} className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
+                <button onClick={scrollToContact} className="cta-gradient group">
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
-                <Link to="/industries" className="inline-flex items-center justify-center gap-2 px-6 py-4 text-foreground font-medium rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-all">
+                <Link to="/industries" className="btn-outline">
                   כל התעשיות
                 </Link>
               </div>
@@ -81,7 +81,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">{data.painPoints.title}</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {data.painPoints.items.map((item, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border">
+                <div key={i} className="p-6 info-card rounded-xl">
                   <h3 className="text-lg font-medium text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                 </div>
@@ -114,7 +114,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">{data.howWeHelp.title}</h2>
             <div className="space-y-3">
               {data.howWeHelp.points.map((point, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-card rounded-xl border border-border">
+                <div key={i} className="flex items-start gap-3 p-4 info-card rounded-xl">
                   <CheckCircle2 className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
                   <span className="text-foreground">{point}</span>
                 </div>
@@ -144,7 +144,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <p className="text-sm font-medium text-primary mb-3">הצעד הבא</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">מוכנים לבנות מערכת שעובדת בשבילכם?</h2>
             <p className="text-lg text-muted-foreground mb-8">שיחת אפיון ללא עלות – נבין מה העסק צריך ונתחיל לבנות.</p>
-            <button onClick={scrollToContact} className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
+            <button onClick={scrollToContact} className="cta-gradient group">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
