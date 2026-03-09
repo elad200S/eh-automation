@@ -120,7 +120,7 @@ const ChatBot = () => {
 
   const handleChooseWhatsApp = () => {
     setShowChoiceModal(false);
-    window.open('https://wa.link/iuolab', '_blank');
+    window.open('https://wa.link/kw53y2', '_blank');
   };
 
   const handleProactiveDismiss = useCallback(() => {
