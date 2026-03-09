@@ -129,7 +129,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">{data.relatedSolutions.title}</h2>
             <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
               {data.relatedSolutions.links.map((link, i) => (
-                <Link key={i} to={link.href} className="group p-5 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all text-center">
+                <Link key={i} to={link.href} className="group p-5 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300 text-center">
                   <span className="text-foreground font-medium group-hover:text-primary transition-colors">{link.label}</span>
                   <ArrowLeft className="w-4 h-4 mx-auto mt-2 text-muted-foreground group-hover:text-primary transition-colors" />
                 </Link>
