@@ -135,7 +135,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
             </div>
             <div className="grid md:grid-cols-3 gap-6">
               {data.useCases.cases.map((c, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 transition-colors">
+                <div key={i} className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
                   <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
                     <span className="font-mono text-sm font-bold text-primary">0{i + 1}</span>
                   </div>
