@@ -60,7 +60,7 @@ const SolutionsOverviewSection = () => {
             <Link
               key={index}
               to={solution.href}
-              className="group p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all"
+              className="group p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300"
             >
               <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
                 <solution.icon className="w-6 h-6 text-primary" />
