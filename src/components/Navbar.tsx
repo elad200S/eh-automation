@@ -73,7 +73,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
                   className={cn(
-                    'flex items-center gap-1 text-sm transition-colors',
+                    'flex items-center gap-1 text-sm transition-all duration-200',
                     location.pathname.startsWith(item.href)
                       ? 'text-primary font-medium'
                       : 'text-muted-foreground hover:text-foreground'
