@@ -32,8 +32,15 @@ const navItems = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 10);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
@@ -51,7 +58,7 @@ const Navbar = () => {
   }, [location.pathname]);
 
   return (
-    <nav className="fixed top-0 right-0 left-0 z-50 bg-background/90 backdrop-blur-md border-b border-border">
+    <nav className={cn("fixed top-0 right-0 left-0 z-50 bg-background/90 backdrop-blur-md border-b border-border transition-shadow duration-300", scrolled && "shadow-md")}>
       <div className="container flex items-center justify-between h-16">
         {/* Logo */}
         <Link to="/" className="text-xl font-bold text-foreground">
