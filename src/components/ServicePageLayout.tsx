@@ -94,7 +94,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
           </h2>
           <div className="grid md:grid-cols-2 gap-4 max-w-3xl">
             {data.results.items.map((item, i) => (
-              <div key={i} className="flex items-start gap-3 p-4 rounded-xl bg-card border border-border">
+              <div key={i} className="flex items-start gap-3 p-4 rounded-xl info-card">
                 <CheckCircle2 className="w-5 h-5 text-accent mt-0.5 flex-shrink-0" />
                 <span className="text-foreground">{item}</span>
               </div>
