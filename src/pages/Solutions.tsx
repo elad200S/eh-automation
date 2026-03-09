@@ -79,7 +79,7 @@ const Solutions = () => {
                 <Link
                   key={index}
                   to={solution.href}
-                  className="group block p-6 md:p-8 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all"
+                  className="group block p-6 md:p-8 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300"
                 >
                   <div className="flex flex-col md:flex-row md:items-start gap-6">
                     <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">

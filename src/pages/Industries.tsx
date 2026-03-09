@@ -72,7 +72,7 @@ const Industries = () => {
           <div className="max-w-5xl">
             <div className="grid md:grid-cols-2 gap-6">
               {industries.map((industry, index) => (
-                <Link key={index} to={industry.href} className="group p-6 md:p-8 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all">
+                <Link key={index} to={industry.href} className="group p-6 md:p-8 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300">
                   <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-5 group-hover:bg-primary/20 transition-colors">
                     <industry.icon className="w-6 h-6 text-primary" />
                   </div>
