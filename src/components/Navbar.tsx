@@ -110,7 +110,7 @@ const Navbar = () => {
                 key={item.href}
                 to={item.href}
                 className={cn(
-                  'text-sm transition-colors',
+                  'text-sm transition-all duration-200',
                   location.pathname === item.href
                     ? 'text-primary font-medium'
                     : 'text-muted-foreground hover:text-foreground'
