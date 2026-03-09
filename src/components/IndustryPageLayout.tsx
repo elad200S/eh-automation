@@ -81,7 +81,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">{data.painPoints.title}</h2>
             <div className="grid md:grid-cols-2 gap-6">
               {data.painPoints.items.map((item, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border">
+                <div key={i} className="p-6 info-card rounded-xl">
                   <h3 className="text-lg font-medium text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                 </div>
