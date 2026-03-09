@@ -125,7 +125,7 @@ const Solutions = () => {
           <div className="container text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">לא בטוחים מה מתאים לכם?</h2>
             <p className="text-muted-foreground mb-8">בשיחת אפיון קצרה נבין מה העסק צריך ונתאים את הפתרון המדויק.</p>
-            <Link to="/contact" className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
+            <Link to="/contact" className="cta-gradient group">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </Link>

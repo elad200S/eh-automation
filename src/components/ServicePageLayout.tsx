@@ -199,7 +199,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
             </p>
             <button
               onClick={scrollToContact}
-              className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-primary via-primary to-primary/80 text-primary-foreground rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all"
+              className="cta-gradient group"
             >
               {ctaLabel}
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
