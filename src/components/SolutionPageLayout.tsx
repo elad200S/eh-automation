@@ -78,7 +78,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
               <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={scrollToContact} className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
+                <button onClick={scrollToContact} className="cta-gradient group">
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
