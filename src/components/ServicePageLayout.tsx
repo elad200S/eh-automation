@@ -136,7 +136,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
             {data.integrations.platforms.map((p, i) => (
               <span
                 key={i}
-                className="px-4 py-2 rounded-full bg-card border border-border text-sm font-medium text-foreground"
+                className="tag-hover"
               >
                 {p}
               </span>
