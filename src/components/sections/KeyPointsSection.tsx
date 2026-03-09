@@ -29,10 +29,10 @@ const KeyPointsSection = () => {
         <div className="mt-10 text-center">
           <a
             href="#contact"
-            className="inline-flex items-center gap-2 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-xl text-lg font-medium hover:opacity-90 transition-opacity shadow-lg"
+            className="cta-gradient group"
           >
             בואו נבנה את המערכת שלכם
-            <ArrowLeft className="w-5 h-5" />
+            <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </a>
         </div>
       </div>
