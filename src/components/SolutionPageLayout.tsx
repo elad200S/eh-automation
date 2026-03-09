@@ -117,7 +117,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
             </div>
             <div className="grid md:grid-cols-2 gap-6">
               {data.problems.items.map((item, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border">
+                <div key={i} className="p-6 info-card rounded-xl">
                   <h3 className="text-lg font-medium text-foreground mb-2">{item.title}</h3>
                   <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
                 </div>
