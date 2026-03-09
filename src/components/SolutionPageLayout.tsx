@@ -82,7 +82,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
-                <Link to="/solutions" className="inline-flex items-center justify-center gap-2 px-6 py-4 text-foreground font-medium rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-all">
+                <Link to="/solutions" className="btn-outline">
                   כל הפתרונות
                 </Link>
               </div>
