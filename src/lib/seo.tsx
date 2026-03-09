@@ -64,9 +64,9 @@ export const OrganizationSchema = () => (
         availableLanguage: ['Hebrew', 'English'],
       },
       sameAs: [
-        'https://www.facebook.com/share/1DDQJvZcaA/',
+        'https://www.facebook.com/share/1BzC7fVZH5/?mibextid=wwXIfr',
         'https://www.linkedin.com/company/elad-automation',
-        'https://www.instagram.com/elad.archive',
+        'https://www.instagram.com/elad.archive?igsh=czhjYWgzZDJpdXgx&utm_source=qr',
       ],
     })}</script>
   </Helmet>
