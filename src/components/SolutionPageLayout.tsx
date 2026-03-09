@@ -99,7 +99,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
             </div>
             <div className="grid sm:grid-cols-2 gap-3">
               {data.whoIsItFor.audiences.map((a, i) => (
-                <div key={i} className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border">
+                <div key={i} className="flex items-center gap-3 p-4 rounded-xl info-card">
                   <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0" />
                   <span className="text-foreground">{a}</span>
                 </div>
