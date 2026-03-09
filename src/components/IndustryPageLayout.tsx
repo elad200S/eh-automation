@@ -67,7 +67,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
-                <Link to="/industries" className="inline-flex items-center justify-center gap-2 px-6 py-4 text-foreground font-medium rounded-lg border border-border hover:border-primary/30 hover:bg-muted/50 transition-all">
+                <Link to="/industries" className="btn-outline">
                   כל התעשיות
                 </Link>
               </div>
