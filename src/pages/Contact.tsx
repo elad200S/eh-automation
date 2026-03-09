@@ -138,7 +138,7 @@ const Contact = () => {
                       <p className="text-xs text-muted-foreground">מענה מהיר</p>
                     </div>
                   </div>
-                  <a href="https://wa.me/972547108219" target="_blank" rel="noopener noreferrer" className="block w-full text-center px-4 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] font-medium text-sm hover:bg-[#25D366]/20 transition-colors">
+                  <a href="https://wa.link/kw53y2" target="_blank" rel="noopener noreferrer" className="block w-full text-center px-4 py-2.5 rounded-lg bg-[#25D366]/10 text-[#25D366] font-medium text-sm hover:bg-[#25D366]/20 transition-colors">
                     שלחו הודעה ב-WhatsApp
                   </a>
                 </div>
