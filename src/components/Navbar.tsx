@@ -179,6 +179,7 @@ const Navbar = () => {
                 ) : (
                   <Link
                     to={item.href}
+                    onClick={() => setMobileOpen(false)}
                     className={cn(
                       'block py-2.5 text-sm',
                       location.pathname === item.href ? 'text-primary font-medium' : 'text-foreground'
