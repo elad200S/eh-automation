@@ -57,18 +57,32 @@
     --font-mono: 'IBM Plex Mono', monospace;
   }
 
-  * {
+  *, *::before, *::after {
+    box-sizing: border-box;
     @apply border-border;
   }
 
   html {
     direction: rtl;
     scroll-behavior: smooth;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
   }
 
   body {
     @apply bg-background text-foreground font-primary antialiased;
     font-feature-settings: "kern" 1;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  img, video, iframe {
+    max-width: 100%;
+    height: auto;
   }
 
   /* Typography rhythm - consistent spacing */
