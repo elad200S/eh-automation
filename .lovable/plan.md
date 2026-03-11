@@ -1,31 +1,69 @@
 
 
-# Update Chatbot System Prompt
+## מה הבעיה כרגע (למה זה עדיין מרגיש “מהיר”)
+למרות שהגדרנו `duration-[1800ms]`, בפועל תחושת המהירות יכולה להישאר “קופצנית” בגלל שני דברים נפוצים:
+1) **האנימציה מתחילה מיד אחרי ה-mount** (כמעט בלי “נשימה” לפני התנועה), אז היא נתפסת כחדה גם אם היא ארוכה.
+2) שימוש ב-`transition-all` עלול “לערבב” מעבר על עוד פרופרטיז (גם אם לא משתנים), וזה לפעמים גורם לתחושה פחות נשלטת לעומת הגדרה ממוקדת רק ל-`transform` ו-`opacity`.
 
-## What Changes
+המטרה: לגרום לזה להרגיש ממש כמו “הבלוק מחליק פנימה אל תוך העמוד”, רגוע, עם התחלה מאוחרת מעט.
 
-**Single file:** `supabase/functions/chat/index.ts`
+---
 
-### 1. Replace `SYSTEM_PROMPT` (lines 38-73)
+## מה נשנה (בלי לשנות שום Layout / Copy / גדלים)
+נשאיר בדיוק את אותו מבנה DOM, אותם classNames של טיפוגרפיה/ריווחים, ואותה נקודת סיום ויזואלית. נשנה רק את האנימציה של ה-wrapper (הבלוק כולו).
 
-New prompt implements the full conversation flow from the user's spec:
-- Step 1: Understand the business (open question)
-- Step 2: Clarify the workflow (one follow-up)
-- Step 3: Suggest realistic automation direction
-- Step 4: CTA — 15-minute discovery call via WhatsApp
-- Pricing handler, objection handling, security/anti-injection rules
-- Hebrew-only responses, 2-5 lines max
+### 1) נוסיף “דיליי אמיתי” לפני תחילת האנימציה (250ms)
+במקום `setMounted(true)` מיד ב-`useEffect`, נפעיל אותו אחרי 250ms באמצעות `setTimeout`.
 
-### 2. Expand `TRIGGER_PHRASES` (lines 75-81)
+- זה לא משנה layout, רק מתי האנימציה מתחילה.
+- זה גם נותן זמן לרינדור הראשוני “להתיישב” ואז התנועה מרגישה יותר קולנועית ופחות “פלאש”.
 
-Add: `"שיחה"`, `"לקבוע"`, `"פגישה"`, `"אפיון"`, `"רק בודק"`, `"אין לי זמן"`
+### 2) נגדיר Transition ממוקד רק ל-transform + opacity (לא `transition-all`)
+נחליף ל:
+- `transition-[transform,opacity]`
 
-### 3. Update buying intent enhancement (line ~150)
+זה עומד בדרישה שלך (transform+opacity בלבד) וגם מרגיש יותר מדויק.
 
-Simplify the intent-detected system prompt addition to align with the new flow — nudge toward discovery call instead of mini-diagnosis.
+### 3) נאריך עוד קצת את משך האנימציה כדי שיהיה “ניכר” איטי ורגוע
+כרגע זה 1800ms. אם עדיין מרגיש מהיר, נעלה ל:
+- `duration-[2600ms]` או `duration-[2800ms]`
 
-### What stays the same
-- Edge function structure (CORS, rate limiting, streaming, error handling)
-- Client-side chatbot UI, quick replies, proactive bubbles
-- All other files untouched
+(לא משנה את הסוף, רק את הזמן להגיע אליו.)
+
+### 4) נשמור על כיוון RTL “ימין -> שמאל” עם מרחק כניסה משמעותי
+נשאיר/נדייק את:
+- התחלה: `opacity-0 translate-x-[60px]` (ואפשר להגדיל ל-`[72px]` אם תרצה עוד “החלקה”)
+- סוף: `opacity-100 translate-x-0`
+
+### 5) נוודא ש-prefers-reduced-motion מכבה את הכל
+אם `prefersReducedMotion`:
+- נחזיר `''` (כמו עכשיו), כך שלא יהיו שינויי opacity/transform בכלל.
+
+---
+
+## שינויים ספציפיים בקוד (קובץ אחד)
+**קובץ:** `src/components/sections/HeroSection.tsx`
+
+### A) עדכון ה-useEffect להתחלה עם דיליי
+- נחליף את `setMounted(true)` ל-`setTimeout(() => setMounted(true), 250)`
+- נוסיף cleanup כדי למנוע memory leak אם הקומפוננטה מתפרקת מהר.
+
+### B) עדכון `getAnimationClasses`
+- `transition-all` -> `transition-[transform,opacity]`
+- `duration-[1800ms]` -> `duration-[2600ms]` (או 2800ms)
+- נשמור את easing: `ease-[cubic-bezier(0.16,1,0.3,1)]`
+- נשאיר את הטרנספורם: `translate-x-[60px]` (או נגדיל אם נרצה)
+
+---
+
+## למה זה ירגיש “מחליק אל תוך העמוד”
+- הדיליי של 250ms יוצר “כניסה” יותר קולנועית.
+- משך ארוך יותר + easing רך + תנועה רציפה של הבלוק כיחידה אחת = תחושת “החלקה לתוך העמוד” ולא “הופעה מהירה”.
+
+---
+
+## בדיקות לאחר השינוי
+1) רענון עמוד: לוודא שהבלוק מתחיל להופיע רק אחרי ~250ms ואז מחליק לאט פנימה.
+2) לבדוק שאין שינוי בסידור/מרווחים/יישור לפני ואחרי האנימציה (הסוף חייב להיות זהה לחלוטין).
+3) להפעיל prefers-reduced-motion במערכת ולהבטיח שאין אנימציה בכלל.
 
