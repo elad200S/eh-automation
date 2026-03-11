@@ -193,6 +193,7 @@ const Navbar = () => {
 
             <Link
               to="/contact"
+              onClick={() => setMobileOpen(false)}
               className="mt-3 text-center px-4 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground"
             >
               שיחת אסטרטגיה →
