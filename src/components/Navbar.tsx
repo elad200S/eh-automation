@@ -157,13 +157,14 @@ const Navbar = () => {
                     </button>
                     {openDropdown === item.href && (
                       <div className="pr-4 pb-2 flex flex-col gap-1">
-                        <Link to={item.href} className="py-2 text-sm text-primary font-medium">
+                        <Link to={item.href} onClick={() => setMobileOpen(false)} className="py-2 text-sm text-primary font-medium">
                           כל ה{item.label}
                         </Link>
                         {item.children.map((child) => (
                           <Link
                             key={child.href}
                             to={child.href}
+                            onClick={() => setMobileOpen(false)}
                             className={cn(
                               'py-2 text-sm',
                               location.pathname === child.href ? 'text-primary font-medium' : 'text-muted-foreground'
