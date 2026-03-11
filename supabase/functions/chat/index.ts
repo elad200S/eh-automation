@@ -173,7 +173,7 @@ serve(async (req) => {
     // Enhanced system prompt if buying intent detected
     let systemPrompt = SYSTEM_PROMPT;
     if (hasBuyingIntent) {
-      systemPrompt += "\n\nהמשתמש הביע כוונת קנייה/יישום. התחל במיני-אבחון אם עוד לא התחלת.";
+      systemPrompt += "\n\nThe user expressed buying intent or interest. Move toward suggesting a realistic automation direction and encourage scheduling a 15-minute discovery call via WhatsApp: https://wa.link/kw53y2";
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
