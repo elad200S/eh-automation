@@ -6,16 +6,14 @@ const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
+  const { openPopup } = useContactPopup();
+
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
     const timer = setTimeout(() => setMounted(true), 250);
     return () => clearTimeout(timer);
   }, []);
-
-  const scrollToForm = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const getAnimationClasses = () => {
     if (prefersReducedMotion) return '';
