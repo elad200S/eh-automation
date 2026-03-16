@@ -49,9 +49,7 @@ export interface ServicePageData {
 const ctaLabel = 'קבעו שיחת אסטרטגיה';
 
 const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
-  const scrollToContact = () => {
-    window.location.href = '/#contact';
-  };
+  const { openPopup } = useContactPopup();
 
   return (
     <>
