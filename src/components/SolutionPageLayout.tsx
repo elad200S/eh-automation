@@ -45,12 +45,9 @@ export interface SolutionPageData {
   };
 }
 
-const scrollToContact = () => {
-  window.location.href = '/contact';
-};
-
 const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
+  const { openPopup } = useContactPopup();
 
   return (
     <>
