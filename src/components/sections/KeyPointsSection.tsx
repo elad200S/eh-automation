@@ -10,6 +10,7 @@ const keyPoints = [
 ];
 
 const KeyPointsSection = () => {
+  const { openPopup } = useContactPopup();
   return (
     <Section id="key-points">
       <div className="max-w-3xl">
