@@ -36,6 +36,7 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
+  const { openPopup } = useContactPopup();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 10);
