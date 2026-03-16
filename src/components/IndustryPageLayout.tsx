@@ -61,7 +61,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={scrollToContact} className="cta-gradient group">
+                <button onClick={openPopup} className="cta-gradient group">
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
