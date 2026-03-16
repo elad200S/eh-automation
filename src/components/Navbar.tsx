@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const solutions = [
   { label: 'סוכני AI חכמים', href: '/solutions/ai-agents' },
