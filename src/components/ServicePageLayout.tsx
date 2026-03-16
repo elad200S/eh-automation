@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import Section from '@/components/Section';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import {
   Accordion,
   AccordionContent,
