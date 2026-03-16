@@ -13,6 +13,7 @@ interface PlaceholderPageProps {
 }
 
 const PlaceholderPage = ({ title, metaTitle, metaDescription, headline, description, showCTA = true }: PlaceholderPageProps) => {
+  const { openPopup } = useContactPopup();
   return (
     <Layout>
       <Helmet>
