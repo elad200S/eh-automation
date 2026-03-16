@@ -1,10 +1,9 @@
 import { ArrowLeft } from 'lucide-react';
 import Section from '@/components/Section';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const CTASection = () => {
-  const scrollToContact = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
+  const { openPopup } = useContactPopup();
 
   return (
     <Section id="cta" withSeparator={false} className="py-12 md:py-16">
