@@ -142,7 +142,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <p className="text-sm font-medium text-primary mb-3">הצעד הבא</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">מוכנים לבנות מערכת שעובדת בשבילכם?</h2>
             <p className="text-lg text-muted-foreground mb-8">שיחת אפיון ללא עלות – נבין מה העסק צריך ונתחיל לבנות.</p>
-            <button onClick={scrollToContact} className="cta-gradient group">
+            <button onClick={openPopup} className="cta-gradient group">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>

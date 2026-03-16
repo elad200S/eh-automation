@@ -138,8 +138,8 @@ const Footer = () => {
           <p className="text-sm text-muted-foreground">
             מוכנים לבנות מערכת אוטומציה חכמה?
           </p>
-          <Link
-            to="/contact"
+          <button
+            onClick={openPopup}
             className="px-5 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             שיחת אסטרטגיה →

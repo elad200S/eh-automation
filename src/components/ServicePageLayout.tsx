@@ -197,7 +197,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
               בואו נדבר על איך לייעל את העסק שלכם
             </p>
             <button
-              onClick={scrollToContact}
+              onClick={openPopup}
               className="cta-gradient group"
             >
               {ctaLabel}

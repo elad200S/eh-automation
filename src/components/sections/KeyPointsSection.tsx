@@ -35,7 +35,7 @@ const KeyPointsSection = () => {
           >
             בואו נבנה את המערכת שלכם
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          </a>
+          </button>
         </div>
       </div>
     </Section>

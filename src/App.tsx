@@ -6,6 +6,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
+import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
+import ContactPopup from "@/components/ContactPopup";
 import Index from "./pages/Index";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
@@ -42,51 +44,54 @@ const queryClient = new QueryClient();
 const App = () => (
   <HelmetProvider>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-          <ScrollToTop />
-          <Routes>
-            <Route path="/" element={<Index />} />
+      <ContactPopupProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+            <ScrollToTop />
+            <Routes>
+              <Route path="/" element={<Index />} />
 
-            {/* Solutions */}
-            <Route path="/solutions" element={<Solutions />} />
-            <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
-            <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
-            <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
-            <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
-            <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
+              {/* Solutions */}
+              <Route path="/solutions" element={<Solutions />} />
+              <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
+              <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
+              <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
+              <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
+              <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
 
-            {/* Industries */}
-            <Route path="/industries" element={<Industries />} />
-            <Route path="/industries/agencies" element={<Agencies />} />
-            <Route path="/industries/consultants" element={<Consultants />} />
-            <Route path="/industries/coaches" element={<Coaches />} />
-            <Route path="/industries/real-estate" element={<RealEstate />} />
-            <Route path="/industries/ecommerce" element={<Ecommerce />} />
+              {/* Industries */}
+              <Route path="/industries" element={<Industries />} />
+              <Route path="/industries/agencies" element={<Agencies />} />
+              <Route path="/industries/consultants" element={<Consultants />} />
+              <Route path="/industries/coaches" element={<Coaches />} />
+              <Route path="/industries/real-estate" element={<RealEstate />} />
+              <Route path="/industries/ecommerce" element={<Ecommerce />} />
 
-            {/* Top-level pages */}
-            <Route path="/case-studies" element={<CaseStudies />} />
-            <Route path="/blog" element={<Blog />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+              {/* Top-level pages */}
+              <Route path="/case-studies" element={<CaseStudies />} />
+              <Route path="/blog" element={<Blog />} />
+              <Route path="/about" element={<About />} />
+              <Route path="/contact" element={<Contact />} />
 
-            {/* Legacy service pages */}
-            <Route path="/services/chatbots" element={<Chatbots />} />
-            <Route path="/services/crm" element={<CRM />} />
-            <Route path="/services/automation" element={<Automation />} />
-            <Route path="/services/ai-agents" element={<AIAgents />} />
+              {/* Legacy service pages */}
+              <Route path="/services/chatbots" element={<Chatbots />} />
+              <Route path="/services/crm" element={<CRM />} />
+              <Route path="/services/automation" element={<Automation />} />
+              <Route path="/services/ai-agents" element={<AIAgents />} />
 
-            {/* Legal */}
-            <Route path="/privacy" element={<PrivacyPolicy />} />
-            <Route path="/cookies" element={<CookiePolicy />} />
+              {/* Legal */}
+              <Route path="/privacy" element={<PrivacyPolicy />} />
+              <Route path="/cookies" element={<CookiePolicy />} />
 
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-          <ChatBot />
-        </BrowserRouter>
-      </TooltipProvider>
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+            <ChatBot />
+            <ContactPopup />
+          </BrowserRouter>
+        </TooltipProvider>
+      </ContactPopupProvider>
     </QueryClientProvider>
   </HelmetProvider>
 );

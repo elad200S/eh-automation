@@ -145,21 +145,21 @@ const Navbar = () => {
       {/* Mobile menu */}
       {mobileOpen && (
         <div className="lg:hidden border-t border-border bg-background pb-4 animate-fade-in max-h-[80vh] overflow-y-auto">
-          <div className="container flex flex-col gap-1 pt-4">
+          <div className="container flex flex-col gap-0.5 pt-3">
             {navItems.map((item) => (
               <div key={item.href}>
                 {item.children ? (
                   <>
                     <button
                       onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
-                      className="flex items-center justify-between w-full py-2.5 text-sm font-medium text-foreground"
+                      className="flex items-center justify-between w-full min-h-[48px] py-3 px-2 text-base font-medium text-foreground active:bg-muted/50 rounded-lg transition-colors"
                     >
                       {item.label}
                       <ChevronDown className={cn('w-4 h-4 transition-transform', openDropdown === item.href && 'rotate-180')} />
                     </button>
                     {openDropdown === item.href && (
-                      <div className="pr-4 pb-2 flex flex-col gap-1">
-                        <Link to={item.href} onClick={() => setMobileOpen(false)} className="py-2 text-sm text-primary font-medium">
+                      <div className="pr-4 pb-2 flex flex-col gap-0.5">
+                        <Link to={item.href} onClick={() => setMobileOpen(false)} className="min-h-[44px] flex items-center py-2.5 px-2 text-base text-primary font-medium active:bg-muted/50 rounded-lg transition-colors">
                           כל ה{item.label}
                         </Link>
                         {item.children.map((child) => (
@@ -168,7 +168,7 @@ const Navbar = () => {
                             to={child.href}
                             onClick={() => setMobileOpen(false)}
                             className={cn(
-                              'py-2 text-sm',
+                              'min-h-[44px] flex items-center py-2.5 px-2 text-base active:bg-muted/50 rounded-lg transition-colors',
                               location.pathname === child.href ? 'text-primary font-medium' : 'text-muted-foreground'
                             )}
                           >
@@ -183,7 +183,7 @@ const Navbar = () => {
                     to={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'block py-2.5 text-sm',
+                      'block min-h-[48px] flex items-center py-3 px-2 text-base active:bg-muted/50 rounded-lg transition-colors',
                       location.pathname === item.href ? 'text-primary font-medium' : 'text-foreground'
                     )}
                   >
@@ -193,13 +193,12 @@ const Navbar = () => {
               </div>
             ))}
 
-            <Link
-              to="/contact"
-              onClick={() => setMobileOpen(false)}
-              className="mt-3 text-center px-4 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground"
+            <button
+              onClick={() => { setMobileOpen(false); openPopup(); }}
+              className="mt-3 text-center px-4 py-3.5 text-base font-medium rounded-lg bg-primary text-primary-foreground active:scale-[0.97] transition-all"
             >
               שיחת אסטרטגיה →
-            </Link>
+            </button>
           </div>
         </div>
       )}
