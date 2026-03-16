@@ -34,11 +34,8 @@ export interface IndustryPageData {
   };
 }
 
-const scrollToContact = () => {
-  window.location.href = '/contact';
-};
-
 const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
