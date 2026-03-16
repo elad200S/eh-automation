@@ -1,5 +1,6 @@
 import Section from '@/components/Section';
 import { ArrowLeft } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const keyPoints = [
   'הבינה המלאכותית לא מחליפה את האוטומציה — היא משדרגת אותה',
