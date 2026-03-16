@@ -1,5 +1,6 @@
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
