@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import eladHeadshot from '@/assets/elad-headshot.png';
 import Navbar from '@/components/Navbar';

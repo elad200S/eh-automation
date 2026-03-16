@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Target, Zap } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';

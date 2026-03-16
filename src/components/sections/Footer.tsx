@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const footerNav = [
   {
