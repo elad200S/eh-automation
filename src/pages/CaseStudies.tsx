@@ -37,6 +37,7 @@ const caseStudies = [
 ];
 
 const CaseStudies = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead

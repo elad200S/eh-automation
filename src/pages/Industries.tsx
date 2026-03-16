@@ -45,6 +45,7 @@ const industries = [
 ];
 
 const Industries = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead

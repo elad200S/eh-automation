@@ -35,6 +35,7 @@ const highlights = [
 ];
 
 const About = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead

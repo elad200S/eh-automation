@@ -65,6 +65,7 @@ const socialLinks = [
 ];
 
 const Footer = () => {
+  const { openPopup } = useContactPopup();
   return (
     <footer className="bg-muted/50 border-t border-border">
       <div className="container py-12">

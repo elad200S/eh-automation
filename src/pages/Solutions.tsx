@@ -45,6 +45,7 @@ const solutions = [
 ];
 
 const Solutions = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
