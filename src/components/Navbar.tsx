@@ -124,12 +124,12 @@ const Navbar = () => {
           )}
 
           {/* CTA */}
-          <Link
-            to="/contact"
+          <button
+            onClick={openPopup}
             className="mr-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-200"
           >
             שיחת אסטרטגיה →
-          </Link>
+          </button>
         </div>
 
         {/* Mobile toggle */}
