@@ -29,8 +29,8 @@ const KeyPointsSection = () => {
 
         {/* CTA Button */}
         <div className="mt-10 text-center">
-          <a
-            href="#contact"
+          <button
+            onClick={openPopup}
             className="cta-gradient group"
           >
             בואו נבנה את המערכת שלכם
