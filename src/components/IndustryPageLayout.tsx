@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 export interface IndustryPageData {
   slug: string;
