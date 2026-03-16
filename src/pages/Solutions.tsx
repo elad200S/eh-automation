@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -44,6 +45,7 @@ const solutions = [
 ];
 
 const Solutions = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
@@ -125,10 +127,10 @@ const Solutions = () => {
           <div className="container text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">לא בטוחים מה מתאים לכם?</h2>
             <p className="text-muted-foreground mb-8">בשיחת אפיון קצרה נבין מה העסק צריך ונתאים את הפתרון המדויק.</p>
-            <Link to="/contact" className="cta-gradient group">
+            <button onClick={openPopup} className="cta-gradient group">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            </Link>
+            </button>
           </div>
         </section>
 

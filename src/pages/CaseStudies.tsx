@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Target, Zap } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -36,6 +37,7 @@ const caseStudies = [
 ];
 
 const CaseStudies = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
@@ -107,10 +109,10 @@ const CaseStudies = () => {
             <nav aria-label="קישורים קשורים" className="mt-12 p-8 bg-muted/30 rounded-xl border border-border text-center">
               <p className="text-muted-foreground mb-4">מקרי בוחן נוספים יתווספו בקרוב.</p>
               <div className="flex flex-wrap justify-center gap-4">
-                <Link to="/contact" className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors">
+                <button onClick={openPopup} className="inline-flex items-center gap-2 text-primary font-medium hover:text-primary/80 transition-colors">
                   רוצים להיות מקרה הבוחן הבא?
                   <ArrowLeft className="w-4 h-4" />
-                </Link>
+                </button>
                 <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
               </div>
             </nav>

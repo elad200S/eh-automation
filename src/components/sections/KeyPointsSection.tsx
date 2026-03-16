@@ -1,5 +1,6 @@
 import Section from '@/components/Section';
 import { ArrowLeft } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const keyPoints = [
   'הבינה המלאכותית לא מחליפה את האוטומציה — היא משדרגת אותה',
@@ -9,6 +10,7 @@ const keyPoints = [
 ];
 
 const KeyPointsSection = () => {
+  const { openPopup } = useContactPopup();
   return (
     <Section id="key-points">
       <div className="max-w-3xl">
@@ -27,13 +29,13 @@ const KeyPointsSection = () => {
 
         {/* CTA Button */}
         <div className="mt-10 text-center">
-          <a
-            href="#contact"
+          <button
+            onClick={openPopup}
             className="cta-gradient group"
           >
             בואו נבנה את המערכת שלכם
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          </a>
+          </button>
         </div>
       </div>
     </Section>

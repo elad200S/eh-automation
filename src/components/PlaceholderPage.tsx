@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import Layout from '@/components/Layout';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 interface PlaceholderPageProps {
   title: string;
@@ -13,6 +13,7 @@ interface PlaceholderPageProps {
 }
 
 const PlaceholderPage = ({ title, metaTitle, metaDescription, headline, description, showCTA = true }: PlaceholderPageProps) => {
+  const { openPopup } = useContactPopup();
   return (
     <Layout>
       <Helmet>
@@ -33,13 +34,13 @@ const PlaceholderPage = ({ title, metaTitle, metaDescription, headline, descript
               {description}
             </p>
             {showCTA && (
-              <Link
-                to="/contact"
+              <button
+                onClick={openPopup}
                 className="inline-flex items-center gap-2 px-6 py-3 rounded-lg bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors"
               >
                 שיחת אסטרטגיה
                 <ArrowLeft className="w-4 h-4" />
-              </Link>
+              </button>
             )}
           </div>
         </div>

@@ -4,6 +4,7 @@ import { ReactNode } from 'react';
 import Section from '@/components/Section';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import {
   Accordion,
   AccordionContent,
@@ -48,9 +49,7 @@ export interface ServicePageData {
 const ctaLabel = 'קבעו שיחת אסטרטגיה';
 
 const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
-  const scrollToContact = () => {
-    window.location.href = '/#contact';
-  };
+  const { openPopup } = useContactPopup();
 
   return (
     <>
@@ -77,7 +76,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
                 {data.hero.subtext}
               </p>
               <button
-                onClick={scrollToContact}
+                onClick={openPopup}
                 className="cta-gradient group"
               >
                 {ctaLabel}
@@ -198,7 +197,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
               בואו נדבר על איך לייעל את העסק שלכם
             </p>
             <button
-              onClick={scrollToContact}
+              onClick={openPopup}
               className="cta-gradient group"
             >
               {ctaLabel}

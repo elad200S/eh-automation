@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import eladHeadshot from '@/assets/elad-headshot.png';
 import Navbar from '@/components/Navbar';
@@ -34,6 +35,7 @@ const highlights = [
 ];
 
 const About = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
@@ -135,10 +137,10 @@ const About = () => {
           <div className="container text-center">
             <h2 className="text-3xl font-bold text-foreground mb-4">מוכנים לדבר?</h2>
             <p className="text-muted-foreground mb-8">שיחת אפיון ראשונית ללא עלות. נבין מה העסק צריך ונראה אם אנחנו הכתובת הנכונה.</p>
-            <Link to="/contact" className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
+            <button onClick={openPopup} className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl transition-all">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            </Link>
+            </button>
           </div>
         </section>
 

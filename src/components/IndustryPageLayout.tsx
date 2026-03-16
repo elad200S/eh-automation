@@ -5,6 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 export interface IndustryPageData {
   slug: string;
@@ -33,11 +34,8 @@ export interface IndustryPageData {
   };
 }
 
-const scrollToContact = () => {
-  window.location.href = '/contact';
-};
-
 const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
@@ -63,7 +61,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
               <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
               <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={scrollToContact} className="cta-gradient group">
+                <button onClick={openPopup} className="cta-gradient group">
                   שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
@@ -144,7 +142,7 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
             <p className="text-sm font-medium text-primary mb-3">הצעד הבא</p>
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">מוכנים לבנות מערכת שעובדת בשבילכם?</h2>
             <p className="text-lg text-muted-foreground mb-8">שיחת אפיון ללא עלות – נבין מה העסק צריך ונתחיל לבנות.</p>
-            <button onClick={scrollToContact} className="cta-gradient group">
+            <button onClick={openPopup} className="cta-gradient group">
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>

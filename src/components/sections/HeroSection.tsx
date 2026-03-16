@@ -1,9 +1,12 @@
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  const { openPopup } = useContactPopup();
 
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
@@ -11,10 +14,6 @@ const HeroSection = () => {
     const timer = setTimeout(() => setMounted(true), 250);
     return () => clearTimeout(timer);
   }, []);
-
-  const scrollToForm = () => {
-    document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const getAnimationClasses = () => {
     if (prefersReducedMotion) return '';
@@ -59,7 +58,7 @@ const HeroSection = () => {
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row gap-4">
             <button
-              onClick={scrollToForm}
+              onClick={openPopup}
               className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] transition-all"
             >
               שיחת אסטרטגיה
