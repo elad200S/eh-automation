@@ -76,7 +76,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
                 {data.hero.subtext}
               </p>
               <button
-                onClick={scrollToContact}
+                onClick={openPopup}
                 className="cta-gradient group"
               >
                 {ctaLabel}
