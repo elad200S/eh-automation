@@ -35,6 +35,7 @@ const placeholderArticles = [
 ];
 
 const Blog = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
