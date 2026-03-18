@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Zap, Bot, Settings, BookOpen } from 'lucide-react';
+import { Zap, Bot, Settings, BookOpen } from 'lucide-react';
+import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -34,6 +35,7 @@ const placeholderArticles = [
 ];
 
 const Blog = () => {
+  const { openPopup } = useContactPopup();
   return (
     <>
       <SEOHead
@@ -93,7 +95,7 @@ const Blog = () => {
               <div className="flex flex-wrap gap-4">
                 <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
                 <Link to="/case-studies" className="text-sm text-primary hover:underline">מקרי בוחן →</Link>
-                <Link to="/contact" className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</Link>
+                <button onClick={openPopup} className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</button>
               </div>
             </nav>
           </div>

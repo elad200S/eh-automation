@@ -17,8 +17,7 @@ const linkifyContent = (text: string) => {
   if (parts.length === 1) return text;
 
   return parts.map((part, i) => {
-    if (URL_REGEX.test(part)) {
-      URL_REGEX.lastIndex = 0;
+    if (i % 2 === 1) {
       return (
         <a
           key={i}
