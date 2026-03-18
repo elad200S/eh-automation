@@ -185,7 +185,7 @@ const Navbar = () => {
                     to={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      'block min-h-[48px] flex items-center py-3 px-2 text-base active:bg-muted/50 rounded-lg transition-colors',
+                      'min-h-[48px] flex items-center py-3 px-2 text-base active:bg-muted/50 rounded-lg transition-colors',
                       location.pathname === item.href ? 'text-primary font-medium' : 'text-foreground'
                     )}
                   >
