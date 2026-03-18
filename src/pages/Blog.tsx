@@ -95,7 +95,7 @@ const Blog = () => {
               <div className="flex flex-wrap gap-4">
                 <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
                 <Link to="/case-studies" className="text-sm text-primary hover:underline">מקרי בוחן →</Link>
-                <Link to="/contact" className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</Link>
+                <button onClick={openPopup} className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</button>
               </div>
             </nav>
           </div>
