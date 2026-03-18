@@ -144,7 +144,9 @@ const Navbar = () => {
 
       {/* Mobile menu */}
       {mobileOpen && (
-        <div className="lg:hidden border-t border-border bg-background pb-4 animate-fade-in max-h-[80vh] overflow-y-auto">
+        <>
+          <div className="fixed inset-0 bg-black/40 z-[9998] lg:hidden" onClick={() => setMobileOpen(false)} />
+          <div className="lg:hidden border-t border-border bg-background pb-4 animate-fade-in max-h-[80vh] overflow-y-auto relative z-[9999]">
           <div className="container flex flex-col gap-0.5 pt-3">
             {navItems.map((item) => (
               <div key={item.href}>
