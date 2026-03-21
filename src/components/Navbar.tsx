@@ -30,6 +30,68 @@ const navItems = [
   { label: 'צור קשר', href: '/contact' },
 ];
 
+/* ── Desktop dropdown with hover ── */
+const DesktopDropdownItem = ({
+  item,
+  pathname,
+}: {
+  item: (typeof navItems)[number];
+  pathname: string;
+}) => {
+  const [open, setOpen] = useState(false);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const handleEnter = () => {
+    clearTimeout(timeoutRef.current);
+    setOpen(true);
+  };
+
+  const handleLeave = () => {
+    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+  };
+
+  useEffect(() => () => clearTimeout(timeoutRef.current), []);
+
+  return (
+    <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
+      <Link
+        to={item.href}
+        className={cn(
+          'flex items-center gap-1 text-sm transition-all duration-200 py-2',
+          pathname.startsWith(item.href) ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
+        )}
+      >
+        {item.label}
+        <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', open && 'rotate-180')} />
+      </Link>
+
+      {open && item.children && (
+        <div className="absolute top-full right-0 mt-1 w-56 bg-popover border border-border rounded-lg shadow-lg py-2 animate-fade-in">
+          <Link
+            to={item.href}
+            className="block px-4 py-2 text-sm font-medium text-primary hover:bg-muted transition-colors border-b border-border mb-1"
+          >
+            כל ה{item.label}
+          </Link>
+          {item.children.map((child) => (
+            <Link
+              key={child.href}
+              to={child.href}
+              className={cn(
+                'block px-4 py-2.5 text-sm hover:bg-muted transition-colors',
+                pathname === child.href ? 'text-primary font-medium' : 'text-foreground'
+              )}
+            >
+              {child.label}
+            </Link>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/* ── Main Navbar ── */
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -46,28 +108,8 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    const handlePointerDownOutside = (event: MouseEvent | TouchEvent) => {
-      if (navRef.current && !navRef.current.contains(event.target as Node)) {
-        setOpenDropdown(null);
-      }
-    };
-
-    document.addEventListener('mousedown', handlePointerDownOutside);
-    document.addEventListener('touchstart', handlePointerDownOutside, { passive: true });
-
-    return () => {
-      document.removeEventListener('mousedown', handlePointerDownOutside);
-      document.removeEventListener('touchstart', handlePointerDownOutside);
-    };
-  }, []);
-
-  useEffect(() => {
-    const originalOverflow = document.body.style.overflow;
     document.body.style.overflow = mobileOpen ? 'hidden' : '';
-
-    return () => {
-      document.body.style.overflow = originalOverflow;
-    };
+    return () => { document.body.style.overflow = ''; };
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -82,7 +124,6 @@ const Navbar = () => {
 
   const handleMobileNavigate = (href: string) => {
     closeMobileMenu();
-
     if (location.pathname !== href) {
       navigate(href);
     }
@@ -102,47 +143,11 @@ const Navbar = () => {
           EH <span className="gradient-text">Automation</span>
         </Link>
 
+        {/* ── Desktop nav ── */}
         <div className="hidden lg:flex items-center gap-5">
           {navItems.map((item) =>
             item.children ? (
-              <div key={item.href} className="relative">
-                <button
-                  type="button"
-                  onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
-                  className={cn(
-                    'flex items-center gap-1 text-sm transition-all duration-200',
-                    location.pathname.startsWith(item.href)
-                      ? 'text-primary font-medium'
-                      : 'text-muted-foreground hover:text-foreground'
-                  )}
-                >
-                  {item.label}
-                  <ChevronDown className={cn('w-3.5 h-3.5 transition-transform', openDropdown === item.href && 'rotate-180')} />
-                </button>
-
-                {openDropdown === item.href && (
-                  <div className="absolute top-full right-0 mt-2 w-56 bg-popover border border-border rounded-lg shadow-lg py-2 animate-fade-in">
-                    <Link
-                      to={item.href}
-                      className="block px-4 py-2 text-sm font-medium text-primary hover:bg-muted transition-colors border-b border-border mb-1"
-                    >
-                      כל ה{item.label}
-                    </Link>
-                    {item.children.map((child) => (
-                      <Link
-                        key={child.href}
-                        to={child.href}
-                        className={cn(
-                          'block px-4 py-2.5 text-sm hover:bg-muted transition-colors',
-                          location.pathname === child.href ? 'text-primary font-medium' : 'text-foreground'
-                        )}
-                      >
-                        {child.label}
-                      </Link>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <DesktopDropdownItem key={item.href} item={item} pathname={location.pathname} />
             ) : (
               <Link
                 key={item.href}
@@ -168,50 +173,52 @@ const Navbar = () => {
           </button>
         </div>
 
+        {/* ── Mobile toggle ── */}
         <button
           type="button"
           onClick={() => setMobileOpen((prev) => !prev)}
           className="lg:hidden p-2 text-foreground"
           aria-label="Toggle menu"
           aria-expanded={mobileOpen}
-          aria-controls="mobile-navigation"
         >
           {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
         </button>
       </div>
 
+      {/* ── Mobile menu ── */}
       {mobileOpen && (
         <>
           <div className="fixed inset-0 top-16 bg-black/40 z-[10000] lg:hidden" onClick={closeMobileMenu} />
 
-          <div
-            id="mobile-navigation"
-            className="fixed top-16 right-0 left-0 bottom-0 lg:hidden border-t border-border bg-background overflow-y-auto pb-4 z-[10001]"
-          >
+          <div className="fixed top-16 right-0 left-0 bottom-0 lg:hidden border-t border-border bg-background overflow-y-auto pb-4 z-[10001]">
             <div className="container flex flex-col gap-1 pt-3">
               {navItems.map((item) => (
                 <div key={item.href}>
                   {item.children ? (
                     <>
-                      <button
-                        type="button"
-                        onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
-                        className="flex items-center justify-between w-full min-h-14 py-3.5 px-3 text-base font-medium text-foreground active:bg-muted/50 rounded-lg transition-colors"
-                      >
-                        {item.label}
-                        <ChevronDown className={cn('w-4 h-4 transition-transform', openDropdown === item.href && 'rotate-180')} />
-                      </button>
+                      {/* Parent row: label navigates, chevron toggles submenu */}
+                      <div className="flex items-center min-h-14 rounded-lg">
+                        <button
+                          type="button"
+                          onClick={() => handleMobileNavigate(item.href)}
+                          className="flex-1 text-right py-3.5 px-3 text-base font-medium text-foreground active:bg-muted/50 rounded-r-lg transition-colors"
+                        >
+                          {item.label}
+                        </button>
 
+                        <button
+                          type="button"
+                          onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
+                          className="flex items-center justify-center w-14 h-14 text-muted-foreground active:bg-muted/50 rounded-l-lg transition-colors"
+                          aria-label={`${openDropdown === item.href ? 'סגור' : 'פתח'} תפריט ${item.label}`}
+                        >
+                          <ChevronDown className={cn('w-5 h-5 transition-transform', openDropdown === item.href && 'rotate-180')} />
+                        </button>
+                      </div>
+
+                      {/* Submenu */}
                       {openDropdown === item.href && (
                         <div className="pr-4 pb-2 flex flex-col gap-1">
-                          <button
-                            type="button"
-                            onClick={() => handleMobileNavigate(item.href)}
-                            className="min-h-12 w-full flex items-center py-3 px-3 text-base text-primary font-medium active:bg-muted/50 rounded-lg transition-colors text-right"
-                          >
-                            כל ה{item.label}
-                          </button>
-
                           {item.children.map((child) => (
                             <button
                               key={child.href}
@@ -245,10 +252,7 @@ const Navbar = () => {
 
               <button
                 type="button"
-                onClick={() => {
-                  closeMobileMenu();
-                  openPopup();
-                }}
+                onClick={() => { closeMobileMenu(); openPopup(); }}
                 className="mt-3 text-center px-4 py-3.5 text-base font-medium rounded-lg bg-primary text-primary-foreground active:scale-[0.97] transition-all"
               >
                 שיחת אסטרטגיה →
