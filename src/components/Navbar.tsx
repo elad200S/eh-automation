@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -28,48 +29,51 @@ const navItems = [
   { label: 'בלוג', href: '/blog' },
   { label: 'אודות', href: '/about' },
   { label: 'צור קשר', href: '/contact' },
-];
+] as const;
 
-/* ── Desktop dropdown with hover ── */
-const DesktopDropdownItem = ({
-  item,
-  pathname,
-}: {
-  item: (typeof navItems)[number];
-  pathname: string;
-}) => {
+type NavItem = (typeof navItems)[number];
+
+const DesktopDropdownItem = ({ item, pathname }: { item: NavItem; pathname: string }) => {
   const [open, setOpen] = useState(false);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout>>();
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleEnter = () => {
-    clearTimeout(timeoutRef.current);
+    if (closeTimeoutRef.current) {
+      clearTimeout(closeTimeoutRef.current);
+    }
     setOpen(true);
   };
 
   const handleLeave = () => {
-    timeoutRef.current = setTimeout(() => setOpen(false), 150);
+    closeTimeoutRef.current = setTimeout(() => setOpen(false), 120);
   };
 
-  useEffect(() => () => clearTimeout(timeoutRef.current), []);
+  useEffect(() => {
+    return () => {
+      if (closeTimeoutRef.current) {
+        clearTimeout(closeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   return (
     <div className="relative" onMouseEnter={handleEnter} onMouseLeave={handleLeave}>
       <Link
         to={item.href}
         className={cn(
-          'flex items-center gap-1 text-sm transition-all duration-200 py-2',
+          'flex items-center gap-1 py-2 text-sm transition-all duration-200',
           pathname.startsWith(item.href) ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
         )}
       >
         {item.label}
-        <ChevronDown className={cn('w-3.5 h-3.5 transition-transform duration-200', open && 'rotate-180')} />
+        <ChevronDown className={cn('h-3.5 w-3.5 transition-transform duration-200', open && 'rotate-180')} />
       </Link>
 
       {open && item.children && (
-        <div className="absolute top-full right-0 mt-1 w-56 bg-popover border border-border rounded-lg shadow-lg py-2 animate-fade-in">
+        <div className="absolute top-full right-0 mt-1 w-56 rounded-lg border border-border bg-popover py-2 shadow-lg animate-fade-in">
           <Link
             to={item.href}
-            className="block px-4 py-2 text-sm font-medium text-primary hover:bg-muted transition-colors border-b border-border mb-1"
+            className="mb-1 block border-b border-border px-4 py-2 text-sm font-medium text-primary transition-colors hover:bg-muted"
           >
             כל ה{item.label}
           </Link>
@@ -78,7 +82,7 @@ const DesktopDropdownItem = ({
               key={child.href}
               to={child.href}
               className={cn(
-                'block px-4 py-2.5 text-sm hover:bg-muted transition-colors',
+                'block px-4 py-2.5 text-sm transition-colors hover:bg-muted',
                 pathname === child.href ? 'text-primary font-medium' : 'text-foreground'
               )}
             >
@@ -91,12 +95,128 @@ const DesktopDropdownItem = ({
   );
 };
 
-/* ── Main Navbar ── */
+const MobileMenuPortal = ({
+  mobileOpen,
+  pathname,
+  openDropdown,
+  setOpenDropdown,
+  onClose,
+  onNavigate,
+  onOpenPopup,
+}: {
+  mobileOpen: boolean;
+  pathname: string;
+  openDropdown: string | null;
+  setOpenDropdown: React.Dispatch<React.SetStateAction<string | null>>;
+  onClose: () => void;
+  onNavigate: (href: string) => void;
+  onOpenPopup: () => void;
+}) => {
+  if (!mobileOpen || typeof document === 'undefined') return null;
+
+  return createPortal(
+    <div className="fixed inset-0 z-[10050] lg:hidden bg-background/98 backdrop-blur-md">
+      <div className="flex h-full flex-col">
+        <div className="border-b border-border">
+          <div className="container flex h-16 items-center justify-between gap-3">
+            <button
+              type="button"
+              onClick={onClose}
+              className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground transition-colors active:bg-muted/50"
+              aria-label="Close menu"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            <Link to="/" onClick={onClose} className="text-xl font-bold text-foreground">
+              EH <span className="gradient-text">Automation</span>
+            </Link>
+          </div>
+        </div>
+
+        <div className="container flex-1 overflow-y-auto overscroll-contain py-4">
+          <div className="flex flex-col gap-1">
+            {navItems.map((item) => (
+              <div key={item.href}>
+                {item.children ? (
+                  <>
+                    <div className="flex items-stretch rounded-xl border border-transparent">
+                      <button
+                        type="button"
+                        onClick={() => onNavigate(item.href)}
+                        className={cn(
+                          'flex min-h-14 flex-1 items-center rounded-r-xl px-4 py-4 text-right text-base font-medium transition-colors active:bg-muted/50',
+                          pathname.startsWith(item.href) ? 'text-primary' : 'text-foreground'
+                        )}
+                      >
+                        {item.label}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setOpenDropdown((current) => (current === item.href ? null : item.href))}
+                        className="flex h-14 w-14 items-center justify-center rounded-l-xl text-muted-foreground transition-colors active:bg-muted/50"
+                        aria-label={`${openDropdown === item.href ? 'Close' : 'Open'} ${item.label} submenu`}
+                        aria-expanded={openDropdown === item.href}
+                      >
+                        <ChevronDown className={cn('h-5 w-5 transition-transform duration-200', openDropdown === item.href && 'rotate-180')} />
+                      </button>
+                    </div>
+
+                    {openDropdown === item.href && (
+                      <div className="flex flex-col gap-1 pr-4 pb-2 pt-1">
+                        {item.children.map((child) => (
+                          <button
+                            key={child.href}
+                            type="button"
+                            onClick={() => onNavigate(child.href)}
+                            className={cn(
+                              'flex min-h-12 w-full items-center rounded-lg px-4 py-3 text-right text-base transition-colors active:bg-muted/50',
+                              pathname === child.href ? 'font-medium text-primary' : 'text-muted-foreground'
+                            )}
+                          >
+                            {child.label}
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => onNavigate(item.href)}
+                    className={cn(
+                      'flex min-h-14 w-full items-center rounded-xl px-4 py-4 text-right text-base transition-colors active:bg-muted/50',
+                      pathname === item.href ? 'font-medium text-primary' : 'text-foreground'
+                    )}
+                  >
+                    {item.label}
+                  </button>
+                )}
+              </div>
+            ))}
+
+            <button
+              type="button"
+              onClick={() => {
+                onClose();
+                onOpenPopup();
+              }}
+              className="mt-3 rounded-xl bg-primary px-4 py-4 text-base font-medium text-primary-foreground transition-all active:scale-[0.97]"
+            >
+              שיחת אסטרטגיה →
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>,
+    document.body
+  );
+};
+
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const navRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { openPopup } = useContactPopup();
@@ -108,8 +228,21 @@ const Navbar = () => {
   }, []);
 
   useEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : '';
-    return () => { document.body.style.overflow = ''; };
+    const originalBodyOverflow = document.body.style.overflow;
+    const originalHtmlOverflow = document.documentElement.style.overflow;
+
+    if (mobileOpen) {
+      document.body.style.overflow = 'hidden';
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    }
+
+    return () => {
+      document.body.style.overflow = originalBodyOverflow;
+      document.documentElement.style.overflow = originalHtmlOverflow;
+    };
   }, [mobileOpen]);
 
   useEffect(() => {
@@ -130,138 +263,68 @@ const Navbar = () => {
   };
 
   return (
-    <nav
-      ref={navRef}
-      className={cn(
-        'fixed top-0 right-0 left-0 bg-background/90 backdrop-blur-md border-b border-border transition-shadow duration-300',
-        mobileOpen ? 'z-[10002]' : 'z-50',
-        scrolled && 'shadow-md'
-      )}
-    >
-      <div className="container flex items-center justify-between h-16">
-        <Link to="/" className="text-xl font-bold text-foreground">
-          EH <span className="gradient-text">Automation</span>
-        </Link>
+    <>
+      <nav
+        className={cn(
+          'fixed top-0 right-0 left-0 border-b border-border bg-background/90 backdrop-blur-md transition-shadow duration-300',
+          scrolled && 'shadow-md',
+          mobileOpen ? 'z-[10040]' : 'z-50'
+        )}
+      >
+        <div className="container flex h-16 items-center justify-between">
+          <Link to="/" className="text-xl font-bold text-foreground">
+            EH <span className="gradient-text">Automation</span>
+          </Link>
 
-        {/* ── Desktop nav ── */}
-        <div className="hidden lg:flex items-center gap-5">
-          {navItems.map((item) =>
-            item.children ? (
-              <DesktopDropdownItem key={item.href} item={item} pathname={location.pathname} />
-            ) : (
-              <Link
-                key={item.href}
-                to={item.href}
-                className={cn(
-                  'text-sm transition-all duration-200',
-                  location.pathname === item.href
-                    ? 'text-primary font-medium'
-                    : 'text-muted-foreground hover:text-foreground'
-                )}
-              >
-                {item.label}
-              </Link>
-            )
-          )}
+          <div className="hidden items-center gap-5 lg:flex">
+            {navItems.map((item) =>
+              item.children ? (
+                <DesktopDropdownItem key={item.href} item={item} pathname={location.pathname} />
+              ) : (
+                <Link
+                  key={item.href}
+                  to={item.href}
+                  className={cn(
+                    'text-sm transition-all duration-200',
+                    location.pathname === item.href ? 'font-medium text-primary' : 'text-muted-foreground hover:text-foreground'
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
+
+            <button
+              type="button"
+              onClick={openPopup}
+              className="mr-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 active:scale-[0.97]"
+            >
+              שיחת אסטרטגיה →
+            </button>
+          </div>
 
           <button
             type="button"
-            onClick={openPopup}
-            className="mr-2 px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 hover:-translate-y-0.5 active:scale-[0.97] transition-all duration-200"
+            onClick={() => setMobileOpen((current) => !current)}
+            className="flex h-11 w-11 items-center justify-center rounded-lg text-foreground transition-colors active:bg-muted/50 lg:hidden"
+            aria-label="Toggle menu"
+            aria-expanded={mobileOpen}
           >
-            שיחת אסטרטגיה →
+            {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+      </nav>
 
-        {/* ── Mobile toggle ── */}
-        <button
-          type="button"
-          onClick={() => setMobileOpen((prev) => !prev)}
-          className="lg:hidden p-2 text-foreground"
-          aria-label="Toggle menu"
-          aria-expanded={mobileOpen}
-        >
-          {mobileOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-        </button>
-      </div>
-
-      {/* ── Mobile menu ── */}
-      {mobileOpen && (
-        <>
-          <div className="fixed inset-0 top-16 bg-black/40 z-[10000] lg:hidden" onClick={closeMobileMenu} />
-
-          <div className="fixed top-16 right-0 left-0 bottom-0 lg:hidden border-t border-border bg-background overflow-y-auto pb-4 z-[10001]">
-            <div className="container flex flex-col gap-1 pt-3">
-              {navItems.map((item) => (
-                <div key={item.href}>
-                  {item.children ? (
-                    <>
-                      {/* Parent row: label navigates, chevron toggles submenu */}
-                      <div className="flex items-center min-h-14 rounded-lg">
-                        <button
-                          type="button"
-                          onClick={() => handleMobileNavigate(item.href)}
-                          className="flex-1 text-right py-3.5 px-3 text-base font-medium text-foreground active:bg-muted/50 rounded-r-lg transition-colors"
-                        >
-                          {item.label}
-                        </button>
-
-                        <button
-                          type="button"
-                          onClick={() => setOpenDropdown(openDropdown === item.href ? null : item.href)}
-                          className="flex items-center justify-center w-14 h-14 text-muted-foreground active:bg-muted/50 rounded-l-lg transition-colors"
-                          aria-label={`${openDropdown === item.href ? 'סגור' : 'פתח'} תפריט ${item.label}`}
-                        >
-                          <ChevronDown className={cn('w-5 h-5 transition-transform', openDropdown === item.href && 'rotate-180')} />
-                        </button>
-                      </div>
-
-                      {/* Submenu */}
-                      {openDropdown === item.href && (
-                        <div className="pr-4 pb-2 flex flex-col gap-1">
-                          {item.children.map((child) => (
-                            <button
-                              key={child.href}
-                              type="button"
-                              onClick={() => handleMobileNavigate(child.href)}
-                              className={cn(
-                                'min-h-12 w-full flex items-center py-3 px-3 text-base active:bg-muted/50 rounded-lg transition-colors text-right',
-                                location.pathname === child.href ? 'text-primary font-medium' : 'text-muted-foreground'
-                              )}
-                            >
-                              {child.label}
-                            </button>
-                          ))}
-                        </div>
-                      )}
-                    </>
-                  ) : (
-                    <button
-                      type="button"
-                      onClick={() => handleMobileNavigate(item.href)}
-                      className={cn(
-                        'min-h-14 w-full flex items-center py-3.5 px-3 text-base active:bg-muted/50 rounded-lg transition-colors text-right',
-                        location.pathname === item.href ? 'text-primary font-medium' : 'text-foreground'
-                      )}
-                    >
-                      {item.label}
-                    </button>
-                  )}
-                </div>
-              ))}
-
-              <button
-                type="button"
-                onClick={() => { closeMobileMenu(); openPopup(); }}
-                className="mt-3 text-center px-4 py-3.5 text-base font-medium rounded-lg bg-primary text-primary-foreground active:scale-[0.97] transition-all"
-              >
-                שיחת אסטרטגיה →
-              </button>
-            </div>
-          </div>
-        </>
-      )}
-    </nav>
+      <MobileMenuPortal
+        mobileOpen={mobileOpen}
+        pathname={location.pathname}
+        openDropdown={openDropdown}
+        setOpenDropdown={setOpenDropdown}
+        onClose={closeMobileMenu}
+        onNavigate={handleMobileNavigate}
+        onOpenPopup={openPopup}
+      />
+    </>
   );
 };
 
