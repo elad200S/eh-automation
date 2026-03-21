@@ -90,6 +90,8 @@ const App = () => (
               <Route path="*" element={<NotFound />} />
             </Routes>
             <ChatBot />
+            <AccessibilityButton />
+            <CookieConsent />
             <ContactPopup />
           </BrowserRouter>
         </TooltipProvider>

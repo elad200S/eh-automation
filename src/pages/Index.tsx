@@ -39,10 +39,6 @@ const Index = () => {
         <ContactSection />
         <Footer />
       </main>
-      
-      
-      <AccessibilityButton />
-      <CookieConsent />
     </>
   );
 };
