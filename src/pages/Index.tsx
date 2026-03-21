@@ -11,7 +11,7 @@ import SolutionsOverviewSection from '@/components/sections/SolutionsOverviewSec
 import ToolsSection from '@/components/sections/ToolsSection';
 import FAQSection from '@/components/sections/FAQSection';
 import AboutSection from '@/components/sections/AboutSection';
-import CTASection from '@/components/sections/CTASection';
+
 import ContactSection from '@/components/sections/ContactSection';
 import Footer from '@/components/sections/Footer';
 
