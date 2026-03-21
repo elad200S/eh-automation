@@ -9,18 +9,17 @@ const CTASection = () => {
     <Section id="cta" withSeparator={false} className="py-12 md:py-16">
       <div className="max-w-3xl mx-auto text-center">
         <div className="bg-gradient-to-br from-primary/5 via-secondary/5 to-accent/5 rounded-2xl border border-border p-10 md:p-14">
-          <p className="text-sm font-medium text-primary mb-3">הצעד הבא</p>
           <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-            מוכנים לבנות מערכת שעובדת בשבילכם?
+            רוצה לבדוק אם זה מתאים לעסק שלך?
           </h2>
           <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">
-            שיחת אפיון ראשונית ללא עלות. נבין מה העסק צריך ונראה אם אני הכתובת הנכונה.
+            שיחת היכרות קצרה, בלי התחייבות. נבין מה העסק צריך ונראה אם אפשר לעזור.
           </p>
           <button
             onClick={openPopup}
             className="cta-gradient group"
           >
-            שיחת אסטרטגיה
+            לתיאום שיחת היכרות
             <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
           </button>
         </div>

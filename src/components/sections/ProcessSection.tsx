@@ -1,251 +1,60 @@
 import Section from '@/components/Section';
-import { FileSearch, GitBranch, Link2, TestTube, Rocket } from 'lucide-react';
+import { MessageCircle, Lightbulb, Rocket } from 'lucide-react';
 
 const steps = [
   {
-    title: 'איפיון',
-    description: 'הבנת תהליכים וצרכים',
-    Icon: FileSearch,
+    title: 'שיחת היכרות קצרה',
+    description: 'מבינים איך העסק שלך עובד ומה הצרכים',
+    Icon: MessageCircle,
+    number: '01',
   },
   {
-    title: 'תכנון תהליך',
-    description: 'מיפוי ובחירת כלים',
-    Icon: GitBranch,
+    title: 'בניית כיוון לפתרון',
+    description: 'מראים איך אוטומציה יכולה להשתלב בתהליך שלך',
+    Icon: Lightbulb,
+    number: '02',
   },
   {
-    title: 'חיבור מערכות',
-    description: 'בניית אינטגרציות',
-    Icon: Link2,
-  },
-  {
-    title: 'בדיקות',
-    description: 'וידוא תקינות',
-    Icon: TestTube,
-  },
-  {
-    title: 'הטמעה',
-    description: 'עלייה לאוויר והדרכה',
+    title: 'הטמעה והפעלה',
+    description: 'בונים מערכת שעובדת בצורה מסודרת לאורך זמן',
     Icon: Rocket,
+    number: '03',
   },
 ];
-
-const StepCard = ({ step }: { step: typeof steps[0] }) => {
-  const StepIcon = step.Icon;
-  return (
-    <div className="bg-background rounded-xl p-5 shadow-lg border border-border/20 h-full">
-      <div className="flex flex-col items-center text-center">
-        <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-3 bg-secondary/20">
-          <StepIcon className="w-6 h-6 text-secondary" />
-        </div>
-        <h3 className="text-base font-medium text-foreground mb-1">{step.title}</h3>
-        <p className="text-xs text-muted-foreground">{step.description}</p>
-      </div>
-    </div>
-  );
-};
-
-// Straight arrow pointing down
-const StraightArrowDown = () => (
-  <svg className="w-8 h-12 text-secondary" viewBox="0 0 32 48" fill="none">
-    <path 
-      d="M16 4 L16 36" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    <path 
-      d="M10 30 L16 42 L22 30" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      fill="none" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// Curved arrow pointing left
-const CurvedArrowLeft = () => (
-  <svg className="w-16 h-8 text-secondary" viewBox="0 0 64 32" fill="none">
-    <path 
-      d="M56 8 C 40 8, 24 16, 8 16" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    <path 
-      d="M14 10 L6 16 L14 22" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      fill="none" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// Curved horizontal arrow pointing RIGHT to LEFT (arrowhead on left)
-const CurvedArrowRTL = () => (
-  <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
-    <path 
-      d="M44 16 C 32 8, 16 24, 4 16" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    <path 
-      d="M10 10 L2 16 L10 22" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      fill="none" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// Curved horizontal arrow pointing LEFT to RIGHT (arrowhead on right)
-const CurvedArrowLTR = () => (
-  <svg className="w-12 h-8 text-secondary" viewBox="0 0 48 32" fill="none">
-    <path 
-      d="M4 16 C 16 8, 32 24, 44 16" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    <path 
-      d="M38 10 L46 16 L38 22" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      fill="none" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
-);
-
-// U-shaped arrow: down from חיבור מערכות, across, then up into בדיקות
-const UShapedArrowConnector = () => (
-  <svg className="w-32 h-12 text-secondary" viewBox="0 0 128 48" fill="none">
-    {/* Down segment from חיבור מערכות */}
-    <path 
-      d="M108 4 L108 24" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    {/* Horizontal segment across */}
-    <path 
-      d="M108 24 L20 24" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    {/* Up segment into בדיקות */}
-    <path 
-      d="M20 24 L20 12" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeDasharray="4 3" 
-      fill="none"
-    />
-    {/* Arrowhead pointing up into בדיקות */}
-    <path 
-      d="M14 16 L20 4 L26 16" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      fill="none" 
-      strokeLinecap="round" 
-      strokeLinejoin="round"
-    />
-  </svg>
-);
 
 const ProcessSection = () => {
   return (
     <Section id="process">
-      <div className="max-w-5xl">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8 text-center">
+      <div className="max-w-4xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
           איך זה עובד
         </h2>
         
-        {/* Dark background container */}
-        <div className="bg-foreground rounded-2xl p-6 md:p-10">
-          
-          {/* Desktop: Zig-zag flow diagram */}
-          <div className="hidden md:block">
-            {/* Row 1: First 3 steps RTL order */}
-            <div className="grid grid-cols-5 items-center gap-2">
-              <StepCard step={steps[0]} />
-              
-              <div className="flex justify-center">
-                <CurvedArrowRTL />
-              </div>
-              
-              <StepCard step={steps[1]} />
-              
-              <div className="flex justify-center">
-                <CurvedArrowRTL />
-              </div>
-              
-              <StepCard step={steps[2]} />
-            </div>
-            
-            
-            {/* Row 2: הטמעה between אפיון/תכנון, בדיקות between תכנון/חיבור */}
-            <div className="grid grid-cols-5 items-center gap-2">
-              <div></div>
-              
-              <StepCard step={steps[4]} />
-              
-              <div className="flex justify-center">
-                <CurvedArrowLTR />
-              </div>
-              
-              <StepCard step={steps[3]} />
-              
-              <div></div>
-            </div>
-          </div>
-          
-          {/* Mobile: Vertical flow */}
-          <div className="md:hidden space-y-3">
-            {steps.map((step, index) => {
-              const isLast = index === steps.length - 1;
-              const StepIcon = step.Icon;
-              
-              return (
-                <div key={index} className="relative">
-                  <div className="bg-background rounded-xl p-4 shadow-lg">
-                    <div className="flex items-center gap-4">
-                      <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0 bg-secondary/20">
-                        <StepIcon className="w-5 h-5 text-secondary" />
-                      </div>
-                      <div>
-                        <h3 className="text-sm font-medium text-foreground">{step.title}</h3>
-                        <p className="text-xs text-muted-foreground">{step.description}</p>
-                      </div>
-                    </div>
+        <div className="grid md:grid-cols-3 gap-6">
+          {steps.map((step, index) => {
+            const StepIcon = step.Icon;
+            return (
+              <div key={index} className="relative">
+                <div className="bg-card rounded-xl p-6 border border-border h-full text-center">
+                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 bg-secondary/10">
+                    <StepIcon className="w-7 h-7 text-secondary" />
                   </div>
-                  
-                  {!isLast && (
-                    <div className="flex justify-center py-2">
-                      <svg width="20" height="24" viewBox="0 0 20 24" className="text-secondary">
-                        <path d="M10 2 C 6 8, 14 14, 10 20" stroke="currentColor" strokeWidth="2" strokeDasharray="4 3" fill="none" />
-                        <polygon points="5,18 10,24 15,18" fill="currentColor" />
-                      </svg>
-                    </div>
-                  )}
+                  <span className="text-xs font-mono text-muted-foreground mb-2 block">{step.number}</span>
+                  <h3 className="text-lg font-medium text-foreground mb-2">{step.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
-              );
-            })}
-          </div>
+                
+                {/* Arrow between cards on desktop */}
+                {index < steps.length - 1 && (
+                  <div className="hidden md:block absolute top-1/2 -left-3 -translate-y-1/2 -translate-x-full">
+                    <svg width="24" height="24" viewBox="0 0 24 24" className="text-border rotate-180">
+                      <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     </Section>

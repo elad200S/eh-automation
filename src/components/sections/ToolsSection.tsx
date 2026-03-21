@@ -125,13 +125,12 @@ const ToolsSection = () => {
   return (
     <Section id="tools">
       <div className="max-w-5xl">
-        <p className="text-sm font-medium text-primary mb-2">הטכנולוגיה</p>
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-          כלים ופלטפורמות שאנחנו משתמשים בהם
+          עבודה עם כלים מתקדמים
         </h2>
         
         <p className="text-lg text-muted-foreground mb-8">
-          אלו הכלים והמערכות שמהם נבנית תשתית האוטומציה בפועל.
+          המערכות מבוססות על טכנולוגיות מובילות בתחום האוטומציה וה-AI, כולל חיבור ל־CRM, WhatsApp, וסוכנים חכמים.
         </p>
         
         <div className="space-y-6">

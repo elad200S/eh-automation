@@ -5,7 +5,6 @@ import { useContactPopup } from '@/contexts/ContactPopupContext';
 const HeroSection = () => {
   const [mounted, setMounted] = useState(false);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
-
   const { openPopup } = useContactPopup();
 
   useEffect(() => {
@@ -18,7 +17,7 @@ const HeroSection = () => {
   const getAnimationClasses = () => {
     if (prefersReducedMotion) return '';
     return `transition-[transform,opacity] duration-[8000ms] ease-[cubic-bezier(0.16,1,0.3,1)] ${
-      mounted ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-[60px]'
+      mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
     }`;
   };
 
@@ -32,36 +31,29 @@ const HeroSection = () => {
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       
       <div className="container relative z-10">
-        <div className={`max-w-3xl ${getAnimationClasses()}`}>
+        <div className={`max-w-3xl mx-auto text-center ${getAnimationClasses()}`}>
           {/* Technical label */}
           <div className="text-technical mb-6">
             <span className="text-primary font-semibold">//</span> AI Automation Studio
           </div>
           
           {/* Main heading */}
-          <h1 className="text-5xl md:text-7xl font-bold text-foreground mb-6">
-            EH <span className="gradient-text">Automation</span>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
+            מערכות אוטומציה ו-AI שמפשטות תהליכים ועוזרות לעסק לעבוד בצורה מסודרת ויעילה יותר
           </h1>
           
-          {/* Subtitle - sharper, outcome-focused */}
-          <p className="text-xl md:text-2xl text-foreground font-light mb-4">
-            סטודיו לאוטומציה עסקית ובינה מלאכותית
-          </p>
-          
-          {/* Description - clearer value prop */}
-          <p className="text-lg text-muted-foreground leading-relaxed mb-12 max-w-2xl">
-            אנחנו בונים מערכות אוטומציה חכמות לעסקים קטנים, סוכנויות ויועצים.
-            סוכני AI, תהליכי CRM, אוטומציית WhatsApp ותשתיות שעובדות 24/7 – 
-            כדי שתוכלו לצמוח בלי להגדיל צוות.
+          {/* Subtitle */}
+          <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-12 max-w-2xl mx-auto">
+            פתרונות מותאמים אישית לניהול לידים, מעקב אחרי לקוחות, ואוטומציה של תהליכים — כדי שתוכל להתמקד בצמיחה של העסק
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button
               onClick={openPopup}
               className="cta-gradient group"
             >
-              שיחת אסטרטגיה
+              בוא נבחן מה יכול להתאים לעסק שלך
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
             <a
