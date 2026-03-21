@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ArrowLeft, X } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
-const POPUP_DELAY_MS = 22000;
+const POPUP_DELAY_MS = 60000;
 const STORAGE_KEY = 'timed_cta_dismissed';
 
 const TimedCTAPopup = () => {
