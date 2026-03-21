@@ -59,7 +59,7 @@ const HeroSection = () => {
           <div className="flex flex-col sm:flex-row gap-4">
             <button
               onClick={openPopup}
-              className="group inline-flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-lg font-medium text-lg shadow-lg hover:shadow-xl hover:from-[#60a5fa] hover:via-[#3b82f6] hover:to-[#2563eb] transition-all"
+              className="cta-gradient group"
             >
               שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
