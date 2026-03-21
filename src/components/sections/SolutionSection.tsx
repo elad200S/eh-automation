@@ -11,15 +11,14 @@ const concepts = [
 const SolutionSection = () => {
   return (
     <Section id="solution">
-      <div className="max-w-3xl">
+      <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-          מה מחליף עובדים? תהליך בנוי נכון
+          כאן אוטומציה נכנסת לתמונה
         </h2>
         
-        <p className="text-lg text-muted-foreground leading-relaxed mb-8">
-          אוטומציה עסקית מאפשרת חיבור בין מערכות, ייעול תהליכים,
-          והעברת מידע אוטומטית בין כלים דיגיטליים –
-          ללא התערבות אנושית וללא נקודות כשל מיותרות.
+        <p className="text-lg text-muted-foreground leading-relaxed mb-10 max-w-2xl mx-auto">
+          אנחנו בונים מערכות שמארגנות את התהליכים בעסק, עוזרות לנהל לידים בצורה חכמה, 
+          ומאפשרות שליטה מלאה בכל שלב — בצורה פשוטה ונוחה.
         </p>
         
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

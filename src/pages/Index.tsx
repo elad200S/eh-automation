@@ -2,12 +2,13 @@ import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 
 import HeroSection from '@/components/sections/HeroSection';
-import ValuePropositionSection from '@/components/sections/ValuePropositionSection';
-import SolutionsOverviewSection from '@/components/sections/SolutionsOverviewSection';
-import ProcessSection from '@/components/sections/ProcessSection';
-import UseCasesSection from '@/components/sections/UseCasesSection';
-import ToolsSection from '@/components/sections/ToolsSection';
 import ProblemSection from '@/components/sections/ProblemSection';
+import SolutionSection from '@/components/sections/SolutionSection';
+import ProcessSection from '@/components/sections/ProcessSection';
+import WhatYouGetSection from '@/components/sections/WhatYouGetSection';
+import AutomationAnimation from '@/components/sections/AutomationAnimation';
+import SolutionsOverviewSection from '@/components/sections/SolutionsOverviewSection';
+import ToolsSection from '@/components/sections/ToolsSection';
 import FAQSection from '@/components/sections/FAQSection';
 import AboutSection from '@/components/sections/AboutSection';
 import CTASection from '@/components/sections/CTASection';
@@ -18,8 +19,8 @@ const Index = () => {
   return (
     <>
       <SEOHead
-        title="EH Automation | סטודיו לאוטומציה עסקית ובינה מלאכותית"
-        description="סטודיו לאוטומציה עסקית ובינה מלאכותית. סוכני AI, אוטומציית WhatsApp, תהליכי CRM ומערכות חכמות לעסקים קטנים, סוכנויות ויועצים."
+        title="EH Automation | מערכות אוטומציה ו-AI לעסקים"
+        description="פתרונות מותאמים אישית לניהול לידים, מעקב אחרי לקוחות, ואוטומציה של תהליכים — כדי שתוכל להתמקד בצמיחה של העסק."
         path="/"
       />
       <OrganizationSchema />
@@ -27,12 +28,13 @@ const Index = () => {
       <Navbar />
       <main className="bg-background min-h-screen">
         <HeroSection />
-        <ValuePropositionSection />
-        <SolutionsOverviewSection />
-        <ProcessSection />
-        <UseCasesSection />
-        <ToolsSection />
         <ProblemSection />
+        <SolutionSection />
+        <ProcessSection />
+        <AutomationAnimation />
+        <WhatYouGetSection />
+        <SolutionsOverviewSection />
+        <ToolsSection />
         <FAQSection />
         <AboutSection />
         <CTASection />
