@@ -1,11 +1,22 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
-const solutions = [
+interface NavChild {
+  label: string;
+  href: string;
+}
+
+interface NavItem {
+  label: string;
+  href: string;
+  children?: NavChild[];
+}
+
+const solutions: NavChild[] = [
   { label: 'סוכני AI חכמים', href: '/solutions/ai-agents' },
   { label: 'אוטומציה עסקית', href: '/solutions/business-automation' },
   { label: 'אוטומציית WhatsApp', href: '/solutions/whatsapp-automation' },
@@ -13,7 +24,7 @@ const solutions = [
   { label: 'אוטומציית תהליכי עבודה', href: '/solutions/workflow-automation' },
 ];
 
-const industries = [
+const industries: NavChild[] = [
   { label: 'סוכנויות', href: '/industries/agencies' },
   { label: 'יועצים', href: '/industries/consultants' },
   { label: 'מאמנים', href: '/industries/coaches' },
@@ -21,7 +32,7 @@ const industries = [
   { label: 'מסחר אלקטרוני', href: '/industries/ecommerce' },
 ];
 
-const navItems = [
+const navItems: NavItem[] = [
   { label: 'בית', href: '/' },
   { label: 'פתרונות', href: '/solutions', children: solutions },
   { label: 'תעשיות', href: '/industries', children: industries },
@@ -29,18 +40,14 @@ const navItems = [
   { label: 'בלוג', href: '/blog' },
   { label: 'אודות', href: '/about' },
   { label: 'צור קשר', href: '/contact' },
-] as const;
-
-type NavItem = (typeof navItems)[number];
+];
 
 const DesktopDropdownItem = ({ item, pathname }: { item: NavItem; pathname: string }) => {
   const [open, setOpen] = useState(false);
   const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const handleEnter = () => {
-    if (closeTimeoutRef.current) {
-      clearTimeout(closeTimeoutRef.current);
-    }
+    if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     setOpen(true);
   };
 
@@ -50,9 +57,7 @@ const DesktopDropdownItem = ({ item, pathname }: { item: NavItem; pathname: stri
 
   useEffect(() => {
     return () => {
-      if (closeTimeoutRef.current) {
-        clearTimeout(closeTimeoutRef.current);
-      }
+      if (closeTimeoutRef.current) clearTimeout(closeTimeoutRef.current);
     };
   }, []);
 
@@ -107,7 +112,7 @@ const MobileMenuPortal = ({
   mobileOpen: boolean;
   pathname: string;
   openDropdown: string | null;
-  setOpenDropdown: React.Dispatch<React.SetStateAction<string | null>>;
+  setOpenDropdown: Dispatch<SetStateAction<string | null>>;
   onClose: () => void;
   onNavigate: (href: string) => void;
   onOpenPopup: () => void;
@@ -115,7 +120,7 @@ const MobileMenuPortal = ({
   if (!mobileOpen || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[10050] lg:hidden bg-background/98 backdrop-blur-md">
+    <div className="fixed inset-0 z-[10050] bg-background/98 backdrop-blur-md lg:hidden">
       <div className="flex h-full flex-col">
         <div className="border-b border-border">
           <div className="container flex h-16 items-center justify-between gap-3">
@@ -257,9 +262,7 @@ const Navbar = () => {
 
   const handleMobileNavigate = (href: string) => {
     closeMobileMenu();
-    if (location.pathname !== href) {
-      navigate(href);
-    }
+    if (location.pathname !== href) navigate(href);
   };
 
   return (
