@@ -93,6 +93,7 @@ const App = () => (
             <AccessibilityButton />
             <CookieConsent />
             <ContactPopup />
+            <TimedCTAPopup />
           </BrowserRouter>
         </TooltipProvider>
       </ContactPopupProvider>
