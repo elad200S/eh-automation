@@ -30,7 +30,7 @@ const TimedCTAPopup = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4" onClick={handleDismiss}>
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4" onClick={handleDismiss}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300" />
       <div
         className="relative z-10 w-full max-w-lg bg-gradient-to-br from-muted/80 via-background to-muted/60 rounded-2xl border border-border p-10 md:p-14 shadow-2xl animate-in zoom-in-95 fade-in duration-300 text-center"
