@@ -10,6 +10,7 @@ import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
 import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
 import ContactPopup from "@/components/ContactPopup";
+import TimedCTAPopup from "@/components/TimedCTAPopup";
 import Index from "./pages/Index";
 import PrivacyPolicy from "./pages/PrivacyPolicy";
 import CookiePolicy from "./pages/CookiePolicy";
