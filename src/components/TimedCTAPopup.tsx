@@ -1,43 +1,30 @@
-import { useState, useEffect } from 'react';
 import { ArrowLeft, X } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
-const POPUP_DELAY_MS = 60000;
-const STORAGE_KEY = 'timed_cta_dismissed';
+interface TimedCTAPopupProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
 
-const TimedCTAPopup = () => {
-  const [isVisible, setIsVisible] = useState(false);
+const TimedCTAPopup = ({ isOpen, onClose }: TimedCTAPopupProps) => {
   const { openPopup } = useContactPopup();
 
-  useEffect(() => {
-    const wasDismissed = sessionStorage.getItem(STORAGE_KEY);
-    if (wasDismissed) return;
-
-    const timer = setTimeout(() => setIsVisible(true), POPUP_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const handleDismiss = () => {
-    setIsVisible(false);
-    sessionStorage.setItem(STORAGE_KEY, 'true');
-  };
-
   const handleCTA = () => {
-    handleDismiss();
+    onClose();
     openPopup();
   };
 
-  if (!isVisible) return null;
+  if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4" onClick={handleDismiss}>
+    <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4" onClick={onClose}>
       <div className="absolute inset-0 bg-black/50 backdrop-blur-sm animate-in fade-in duration-300" />
       <div
         className="relative z-10 w-full max-w-lg bg-gradient-to-br from-muted/80 via-background to-muted/60 rounded-2xl border border-border p-10 md:p-14 shadow-2xl animate-in zoom-in-95 fade-in duration-300 text-center"
         onClick={(e) => e.stopPropagation()}
       >
         <button
-          onClick={handleDismiss}
+          onClick={onClose}
           className="absolute top-4 left-4 p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           aria-label="סגור"
         >
