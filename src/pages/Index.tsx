@@ -1,7 +1,5 @@
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
-import AccessibilityButton from '@/components/AccessibilityButton';
-import CookieConsent from '@/components/CookieConsent';
 
 import HeroSection from '@/components/sections/HeroSection';
 import ValuePropositionSection from '@/components/sections/ValuePropositionSection';
