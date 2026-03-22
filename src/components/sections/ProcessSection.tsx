@@ -1,22 +1,22 @@
 import Section from '@/components/Section';
-import { MessageCircle, Lightbulb, Rocket } from 'lucide-react';
+import { Search, Settings, Rocket } from 'lucide-react';
 
 const steps = [
   {
-    title: 'שיחת היכרות קצרה',
-    description: 'מבינים איך העסק שלך עובד ומה הצרכים',
-    Icon: MessageCircle,
+    title: 'הבנה של העסק והתהליך הקיים',
+    description: 'איפה הולכים לאיבוד לידים ואיפה יש בזבוז זמן',
+    Icon: Search,
     number: '01',
   },
   {
-    title: 'בניית כיוון לפתרון',
-    description: 'מראים איך אוטומציה יכולה להשתלב בתהליך שלך',
-    Icon: Lightbulb,
+    title: 'בניית אוטומציה מותאמת',
+    description: 'חיבור בין המערכות והגדרת זרימות עבודה',
+    Icon: Settings,
     number: '02',
   },
   {
-    title: 'הטמעה והפעלה',
-    description: 'בונים מערכת שעובדת בצורה מסודרת לאורך זמן',
+    title: 'הטמעה ושיפור',
+    description: 'בדיקות, התאמות ושיפור מתמשך לפי הצורך',
     Icon: Rocket,
     number: '03',
   },
@@ -27,7 +27,7 @@ const ProcessSection = () => {
     <Section id="process">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
-          איך זה עובד
+          איך אנחנו עובדים יחד
         </h2>
         
         <div className="grid md:grid-cols-3 gap-6">
@@ -44,7 +44,6 @@ const ProcessSection = () => {
                   <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
                 </div>
                 
-                {/* Arrow between cards on desktop */}
                 {index < steps.length - 1 && (
                   <div className="hidden md:block absolute top-1/2 -left-3 -translate-y-1/2 -translate-x-full">
                     <svg width="24" height="24" viewBox="0 0 24 24" className="text-border rotate-180">

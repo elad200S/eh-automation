@@ -32,13 +32,6 @@ const WhatsAppLogo = () => (
   </svg>
 );
 
-const TelegramLogo = () => (
-  <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <path fill="#29B6F6" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
-    <path fill="#fff" d="M33.95 15l-3.75 19.38c-.28 1.26-1.03 1.57-2.09.98l-5.78-4.26-2.78 2.68c-.31.31-.57.57-1.16.57l.41-5.83 10.59-9.57c.46-.41-.1-.64-.71-.23L16.5 27.32l-5.64-1.76c-1.23-.38-1.25-1.23.26-1.82l22.04-8.5c1.02-.38 1.91.23 1.58 1.82l-.79 1.94z"/>
-  </svg>
-);
-
 const HubSpotLogo = () => (
   <svg viewBox="0 0 48 48" className="w-8 h-8">
     <path fill="#FF7A59" d="M36.5 19.9v-5.65a3.25 3.25 0 10-2.6 0v5.65a7.8 7.8 0 00-4.15 2.35l-10.9-7.1a4.7 4.7 0 10-1.5 2.3l10.9 7.1a7.8 7.8 0 101.5 9.15l-10.9 7.1a4.7 4.7 0 101.5 2.3l10.9-7.1a7.8 7.8 0 004.15 2.35v5.65a3.25 3.25 0 102.6 0v-5.65a7.8 7.8 0 000-13.45z"/>
@@ -53,112 +46,40 @@ const CalendlyLogo = () => (
   </svg>
 );
 
-const NotionLogo = () => (
-  <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <path fill="#000" d="M10.5 6.5c-.83 0-1.5.67-1.5 1.5v32c0 .83.67 1.5 1.5 1.5h27c.83 0 1.5-.67 1.5-1.5V15l-9-8.5H10.5z"/>
-    <path fill="#fff" d="M14 12h12v3H14v-3zm0 6h20v2H14v-2zm0 5h20v2H14v-2zm0 5h20v2H14v-2zm0 5h12v2H14v-2z"/>
-  </svg>
-);
-
 const GmailLogo = () => (
   <img src={gmailIcon} alt="Gmail" className="w-8 h-8 object-contain" />
 );
 
-const MondayLogo = () => (
-  <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <circle cx="12" cy="32" r="6" fill="#FF3D57"/>
-    <circle cx="24" cy="24" r="6" fill="#FFCB00"/>
-    <circle cx="36" cy="16" r="6" fill="#00CA72"/>
-  </svg>
-);
-
-const StripeLogo = () => (
-  <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <path fill="#635BFF" d="M24 4C12.95 4 4 12.95 4 24s8.95 20 20 20 20-8.95 20-20S35.05 4 24 4z"/>
-    <path fill="#fff" d="M23 20c0-.83 1.1-1.5 2.5-1.5 2.2 0 5 .9 7.5 2.5V15c-2.5-1-5-1.5-7.5-1.5-6 0-10 3-10 8 0 7.5 10 6.5 10 10 0 1-1.2 1.5-2.8 1.5-2.5 0-5.5-1-8.2-2.5v6c2.8 1.2 5.5 1.8 8.2 1.8 6 0 10.3-3 10.3-8 0-8-10-7-10-10z"/>
-  </svg>
-);
-
-const PipedriveLogo = () => (
-  <svg viewBox="0 0 48 48" className="w-8 h-8">
-    <circle cx="24" cy="24" r="20" fill="#25292C"/>
-    <path fill="#fff" d="M24 12c-6.6 0-12 5.4-12 12s5.4 12 12 12 12-5.4 12-12-5.4-12-12-12zm0 18c-3.3 0-6-2.7-6-6s2.7-6 6-6 6 2.7 6 6-2.7 6-6 6z"/>
-  </svg>
-);
-
-const toolCategories = [
-  {
-    name: 'תקשורת',
-    tools: [
-      { name: 'WhatsApp', Logo: WhatsAppLogo, usage: 'שליחת הודעות אוטומטיות ללקוחות, תזכורות ועדכוני סטטוס' },
-      { name: 'Telegram', Logo: TelegramLogo, usage: 'התראות פנימיות לצוות, בוטים לניהול משימות' },
-      { name: 'Gmail', Logo: GmailLogo, usage: 'אוטומציה של מיילים, מעקב ומענה אוטומטי' },
-    ]
-  },
-  {
-    name: 'נתונים',
-    tools: [
-      { name: 'Airtable', Logo: AirtableLogo, usage: 'בסיס נתונים גמיש לניהול לידים, פרויקטים ותהליכים' },
-      { name: 'Google Sheets', Logo: GoogleSheetsLogo, usage: 'דוחות אוטומטיים, סנכרון נתונים בין מערכות' },
-      { name: 'Notion', Logo: NotionLogo, usage: 'מרכז ידע ותיעוד תהליכים, ניהול פרויקטים' },
-    ]
-  },
-  {
-    name: 'תפעול',
-    tools: [
-      { name: 'Make', Logo: MakeLogo, usage: 'בניית זרימות עבודה מורכבות וחיבור בין מערכות' },
-      { name: 'Calendly', Logo: CalendlyLogo, usage: 'קביעת פגישות אוטומטית וסנכרון יומנים' },
-      { name: 'Stripe', Logo: StripeLogo, usage: 'תשלומים אוטומטיים, חשבוניות ומעקב הכנסות' },
-    ]
-  },
-  {
-    name: 'CRM',
-    tools: [
-      { name: 'HubSpot', Logo: HubSpotLogo, usage: 'ניהול לקוחות, משפכי מכירות ואוטומציה שיווקית' },
-      { name: 'Monday', Logo: MondayLogo, usage: 'ניהול פרויקטים, משימות ותהליכי עבודה' },
-      { name: 'Pipedrive', Logo: PipedriveLogo, usage: 'מעקב דילים, ניהול צינור מכירות אוטומטי' },
-    ]
-  },
+const tools = [
+  { name: 'WhatsApp', Logo: WhatsAppLogo },
+  { name: 'Gmail', Logo: GmailLogo },
+  { name: 'HubSpot', Logo: HubSpotLogo },
+  { name: 'Google Sheets', Logo: GoogleSheetsLogo },
+  { name: 'Make', Logo: MakeLogo },
+  { name: 'Airtable', Logo: AirtableLogo },
+  { name: 'Calendly', Logo: CalendlyLogo },
 ];
 
 const ToolsSection = () => {
   return (
     <Section id="tools">
-      <div className="max-w-5xl">
+      <div className="max-w-3xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
-          עבודה עם כלים מתקדמים
+          מתחבר למערכות שכבר יש לך
         </h2>
         
-        <p className="text-lg text-muted-foreground mb-8">
-          המערכות מבוססות על טכנולוגיות מובילות בתחום האוטומציה וה-AI, כולל חיבור ל־CRM, WhatsApp, וסוכנים חכמים.
+        <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
+          אין צורך להחליף את כל מה שעובד. המערכת נבנית סביב הכלים הקיימים ומחברת ביניהם בצורה חכמה.
         </p>
         
-        <div className="space-y-6">
-          {toolCategories.map((category, categoryIndex) => (
-            <div key={categoryIndex}>
-              <h3 className="text-sm font-medium text-muted-foreground mb-3 flex items-center gap-2">
-                <span className="w-6 h-px bg-border" />
-                {category.name}
-              </h3>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
-                {category.tools.map((tool, toolIndex) => (
-                  <div
-                    key={toolIndex}
-                    className="relative group"
-                  >
-                    <div className="bg-card rounded-xl border border-border p-4 hover:border-primary/30 hover:shadow-lg transition-all duration-300 flex items-center gap-3 min-w-0">
-                      <div className="flex-shrink-0">
-                        <tool.Logo />
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <span className="text-sm font-medium text-foreground block truncate">{tool.name}</span>
-                        <span className="text-xs text-muted-foreground line-clamp-2 break-words">{tool.usage}</span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
+        <div className="flex flex-wrap items-center justify-center gap-6">
+          {tools.map((tool, index) => (
+            <div
+              key={index}
+              className="flex flex-col items-center gap-2 p-4 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 w-24"
+            >
+              <tool.Logo />
+              <span className="text-xs font-medium text-muted-foreground">{tool.name}</span>
             </div>
           ))}
         </div>

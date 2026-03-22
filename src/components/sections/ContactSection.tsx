@@ -14,13 +14,11 @@ const ContactSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Validate Israeli phone number format
   const isValidPhone = (phone: string): boolean => {
     const phoneRegex = /^0[5-9][0-9]-?[0-9]{7}$/;
     return phoneRegex.test(phone.trim());
   };
 
-  // Normalize phone number (remove dashes)
   const normalizePhone = (phone: string): string => {
     return phone.trim().replace(/-/g, '');
   };
@@ -29,33 +27,14 @@ const ContactSection = () => {
     e.preventDefault();
     
     const trimmedName = formData.name.trim();
-    const trimmedBusiness = formData.business.trim();
     
-    // Client-side validation matching database constraints
     if (trimmedName.length < 2 || trimmedName.length > 100) {
-      toast({
-        title: 'שם לא תקין',
-        description: 'השם חייב להכיל בין 2 ל-100 תווים',
-        variant: 'destructive',
-      });
+      toast({ title: 'שם לא תקין', description: 'השם חייב להכיל בין 2 ל-100 תווים', variant: 'destructive' });
       return;
     }
     
     if (!isValidPhone(formData.phone)) {
-      toast({
-        title: 'מספר טלפון לא תקין',
-        description: 'נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
-    if (trimmedBusiness.length < 2 || trimmedBusiness.length > 200) {
-      toast({
-        title: 'סוג עיסוק לא תקין',
-        description: 'סוג העיסוק חייב להכיל בין 2 ל-200 תווים',
-        variant: 'destructive',
-      });
+      toast({ title: 'מספר טלפון לא תקין', description: 'נא להזין מספר טלפון ישראלי תקין (לדוגמה: 050-1234567)', variant: 'destructive' });
       return;
     }
     
@@ -67,25 +46,17 @@ const ContactSection = () => {
         .insert({
           name: formData.name.trim(),
           phone: normalizePhone(formData.phone),
-          business: formData.business.trim(),
-          automation_type: formData.automationType,
+          business: formData.business.trim() || 'לא צוין',
+          automation_type: formData.automationType || 'general',
         });
 
       if (error) throw error;
 
-      toast({
-        title: 'הטופס נשלח בהצלחה',
-        description: 'ניצור איתך קשר בהקדם.',
-      });
-      
+      toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
     } catch (error) {
       console.error('Contact form error:', error);
-      toast({
-        title: 'שגיאה בשליחת הטופס',
-        description: 'אנא נסה שוב מאוחר יותר.',
-        variant: 'destructive',
-      });
+      toast({ title: 'שגיאה בשליחת הטופס', description: 'אנא נסה שוב מאוחר יותר.', variant: 'destructive' });
     } finally {
       setIsSubmitting(false);
     }
@@ -94,13 +65,12 @@ const ContactSection = () => {
   return (
     <Section id="contact" withSeparator={false}>
       <div className="max-w-2xl mx-auto">
-        
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
-          שיחת איפיון לאוטומציה עסקית
+          בוא נבדוק מה יכול להתאים לעסק שלך
         </h2>
         
         <p className="text-muted-foreground text-center mb-12">
-          מלאו את הפרטים ונחזור אליכם לשיחה ראשונית
+          שיחת היכרות קצרה, בלי התחייבות
         </p>
         
         <div className="bg-card rounded-2xl border border-border p-8 shadow-lg">
@@ -142,60 +112,34 @@ const ContactSection = () => {
             
             <div>
               <label htmlFor="business" className="block text-sm font-medium text-foreground mb-2">
-                סוג עיסוק *
+                מה היית רוצה לייעל בעסק?
               </label>
-              <input
-                type="text"
+              <textarea
                 id="business"
-                required
-                minLength={2}
-                maxLength={200}
+                rows={3}
                 value={formData.business}
                 onChange={(e) => setFormData({ ...formData, business: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-                placeholder="לדוגמה: חברת שירותים, מסחר אלקטרוני..."
+                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all resize-none"
+                placeholder="לדוגמה: ניהול לידים, מעקב לקוחות, תהליכי עבודה..."
               />
-            </div>
-            
-            <div>
-              <label htmlFor="automationType" className="block text-sm font-medium text-foreground mb-2">
-                סוג האוטומציה המבוקשת *
-              </label>
-              <select
-                id="automationType"
-                required
-                value={formData.automationType}
-                onChange={(e) => setFormData({ ...formData, automationType: e.target.value })}
-                className="w-full px-4 py-3 bg-background border border-border rounded-xl text-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
-              >
-                <option value="">בחרו אפשרות</option>
-                <option value="leads">אוטומציה ללידים</option>
-                <option value="quotes">אוטומציה להצעות מחיר</option>
-                <option value="scheduling">אוטומציה לקביעת תורים</option>
-                <option value="data">אוטומציה לניהול נתונים</option>
-                <option value="custom">תהליך מותאם אישית</option>
-              </select>
             </div>
             
             <button
               type="submit"
               disabled={isSubmitting}
-              className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-l from-primary to-primary/90 text-primary-foreground rounded-xl font-medium text-lg shadow-lg glow-primary hover:shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="cta-gradient group w-full"
             >
               {isSubmitting ? (
-                <>
-                  <span className="animate-pulse">שולח...</span>
-                </>
+                <span className="animate-pulse">שולח...</span>
               ) : (
                 <>
-                  קביעת שיחה
+                  קביעת שיחת אפיון
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </>
               )}
             </button>
           </form>
           
-          {/* Trust indicators */}
           <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-border">
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="w-4 h-4 text-success" />
