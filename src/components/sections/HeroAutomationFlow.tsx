@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
 const STEPS = [
@@ -8,11 +8,10 @@ const STEPS = [
   { label: 'משימה נוצרת', icon: 'check' },
 ];
 
-const CYCLE_MS = 5000;
-const STEP_DURATION = CYCLE_MS / STEPS.length;
+const CYCLE_MS = 4200;
 
 const StepIcon = ({ type, active }: { type: string; active: boolean }) => {
-  const color = active ? '#fff' : 'hsl(210 100% 50% / 0.5)';
+  const color = active ? '#ffffff' : 'hsl(210 100% 45%)';
   const size = 22;
 
   switch (type) {
@@ -49,17 +48,25 @@ const StepIcon = ({ type, active }: { type: string; active: boolean }) => {
   }
 };
 
-// Arc path helpers
-const ARC_SVG_WIDTH = 700;
-const ARC_SVG_HEIGHT = 160;
+const ARC_SVG_WIDTH = 980;
+const ARC_SVG_HEIGHT = 260;
 
-// Compute a smooth cubic bezier arc path and return points along it
 function getArcPath() {
-  const x1 = 60, y1 = 130;
-  const cx1 = 200, cy1 = -20;
-  const cx2 = 500, cy2 = -20;
-  const x2 = 640, y2 = 130;
-  return { d: `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`, x1, y1, cx1, cy1, cx2, cy2, x2, y2 };
+  const x1 = 110, y1 = 190;
+  const cx1 = 290, cy1 = 10;
+  const cx2 = 690, cy2 = 10;
+  const x2 = 870, y2 = 190;
+  return {
+    d: `M ${x1} ${y1} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${x2} ${y2}`,
+    x1,
+    y1,
+    cx1,
+    cy1,
+    cx2,
+    cy2,
+    x2,
+    y2,
+  };
 }
 
 function bezierPoint(t: number, p0: number, p1: number, p2: number, p3: number) {
@@ -75,42 +82,44 @@ function getPointOnArc(t: number) {
   };
 }
 
-// Mobile: simple vertical layout
 const MobileFlow = ({ activeStep }: { activeStep: number }) => (
-  <div className="flex items-center justify-between px-4 w-full max-w-sm mx-auto mt-8" dir="ltr">
+  <div className="flex items-center justify-between px-4 w-full max-w-md mx-auto mt-8" dir="ltr">
     {STEPS.map((step, i) => {
       const isActive = i <= activeStep;
       const isCurrent = i === activeStep;
+
       return (
         <div key={i} className="flex flex-col items-center gap-1.5 relative z-10">
           <div
-            className="w-11 h-11 rounded-xl flex items-center justify-center border transition-all duration-700"
+            className="w-12 h-12 rounded-2xl flex items-center justify-center border transition-all duration-500"
             style={{
               background: isCurrent
                 ? 'linear-gradient(135deg, hsl(210 100% 50%), hsl(210 100% 40%))'
                 : isActive
-                  ? 'hsl(210 100% 50% / 0.12)'
+                  ? 'hsl(210 100% 50% / 0.10)'
                   : 'hsl(210 20% 96%)',
               borderColor: isCurrent
                 ? 'hsl(210 100% 55%)'
                 : isActive
-                  ? 'hsl(210 100% 50% / 0.3)'
+                  ? 'hsl(210 100% 50% / 0.28)'
                   : 'hsl(210 20% 88%)',
               boxShadow: isCurrent
-                ? '0 0 20px hsl(210 100% 50% / 0.4), 0 0 40px hsl(210 100% 50% / 0.15)'
+                ? '0 0 18px hsl(210 100% 50% / 0.22)'
                 : 'none',
+              transform: isCurrent ? 'scale(1.06)' : 'scale(1)',
             }}
           >
             <StepIcon type={step.icon} active={isCurrent} />
           </div>
+
           <span
-            className="text-[9px] font-medium whitespace-nowrap transition-all duration-700"
+            className="text-[10px] font-medium whitespace-nowrap transition-all duration-500"
             style={{
               color: isCurrent
-                ? 'hsl(210 100% 50%)'
+                ? 'hsl(210 100% 46%)'
                 : isActive
-                  ? 'hsl(220 30% 35%)'
-                  : 'hsl(220 15% 60%)',
+                  ? 'hsl(220 28% 34%)'
+                  : 'hsl(220 14% 60%)',
             }}
           >
             {step.label}
@@ -121,19 +130,16 @@ const MobileFlow = ({ activeStep }: { activeStep: number }) => (
   </div>
 );
 
-// Desktop: curved arc layout
-const DesktopFlow = ({ activeStep, dotProgress }: { activeStep: number; dotProgress: number }) => {
+const DesktopFlow = ({ activeStep }: { activeStep: number }) => {
   const arcPath = getArcPath();
   const stepPositions = STEPS.map((_, i) => i / (STEPS.length - 1));
-  const dotT = Math.min((activeStep + dotProgress) / (STEPS.length - 1), 1);
-  const dotPos = getPointOnArc(dotT);
-
-  // Calculate active arc path length fraction
-  const activeT = dotT;
 
   return (
-    <div className="relative w-full max-w-2xl mx-auto mt-10" dir="ltr" style={{ height: ARC_SVG_HEIGHT + 60 }}>
-      {/* SVG Arc */}
+    <div
+      className="relative w-full max-w-5xl mx-auto mt-10"
+      dir="ltr"
+      style={{ height: ARC_SVG_HEIGHT + 110 }}
+    >
       <svg
         viewBox={`0 0 ${ARC_SVG_WIDTH} ${ARC_SVG_HEIGHT}`}
         className="absolute inset-0 w-full h-full"
@@ -141,123 +147,95 @@ const DesktopFlow = ({ activeStep, dotProgress }: { activeStep: number; dotProgr
         style={{ overflow: 'visible' }}
       >
         <defs>
-          <linearGradient id="arcGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="hsl(210 100% 50%)" stopOpacity="0.15" />
-            <stop offset="50%" stopColor="hsl(210 100% 55%)" stopOpacity="0.25" />
-            <stop offset="100%" stopColor="hsl(185 70% 50%)" stopOpacity="0.15" />
+          <linearGradient id="arcBaseGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(210 40% 82%)" stopOpacity="0.45" />
+            <stop offset="50%" stopColor="hsl(210 45% 78%)" stopOpacity="0.65" />
+            <stop offset="100%" stopColor="hsl(190 45% 76%)" stopOpacity="0.45" />
           </linearGradient>
-          <linearGradient id="arcGradientActive" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" stopColor="hsl(210 100% 50%)" />
-            <stop offset="100%" stopColor="hsl(185 70% 50%)" />
+
+          <linearGradient id="arcActiveGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(210 100% 52%)" />
+            <stop offset="50%" stopColor="hsl(205 100% 58%)" />
+            <stop offset="100%" stopColor="hsl(188 90% 54%)" />
           </linearGradient>
-          <filter id="glowFilter">
-            <feGaussianBlur stdDeviation="4" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
-          <filter id="dotGlow">
-            <feGaussianBlur stdDeviation="6" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
-        {/* Background arc */}
         <path
           d={arcPath.d}
           fill="none"
-          stroke="url(#arcGradient)"
-          strokeWidth="2.5"
+          stroke="url(#arcBaseGradient)"
+          strokeWidth="4"
           strokeLinecap="round"
         />
 
-        {/* Active arc (lit portion) */}
         <path
           d={arcPath.d}
           fill="none"
-          stroke="url(#arcGradientActive)"
-          strokeWidth="3"
+          stroke="url(#arcActiveGradient)"
+          strokeWidth="5"
           strokeLinecap="round"
-          filter="url(#glowFilter)"
-          strokeDasharray="1000"
-          strokeDashoffset={1000 - activeT * 1000}
-          style={{ transition: dotProgress < 0.05 ? 'none' : 'stroke-dashoffset 80ms linear' }}
-        />
-
-        {/* Travelling glow dot */}
-        <circle
-          cx={dotPos.x}
-          cy={dotPos.y}
-          r="5"
-          fill="hsl(210 100% 55%)"
-          filter="url(#dotGlow)"
-          style={{ transition: dotProgress < 0.05 ? 'none' : 'cx 80ms linear, cy 80ms linear' }}
-        />
-        <circle
-          cx={dotPos.x}
-          cy={dotPos.y}
-          r="2.5"
-          fill="#fff"
-          style={{ transition: dotProgress < 0.05 ? 'none' : 'cx 80ms linear, cy 80ms linear' }}
+          pathLength="100"
+          strokeDasharray="100"
+          strokeDashoffset={100 - ((activeStep + 1) / STEPS.length) * 100}
+          style={{
+            transition: 'stroke-dashoffset 480ms ease',
+            filter: 'drop-shadow(0 0 10px hsl(210 100% 55% / 0.22))',
+          }}
         />
       </svg>
 
-      {/* Step cards positioned along the arc */}
       {STEPS.map((step, i) => {
         const t = stepPositions[i];
         const point = getPointOnArc(t);
         const isActive = i <= activeStep;
         const isCurrent = i === activeStep;
 
-        // Convert SVG coords to percentage
         const leftPct = (point.x / ARC_SVG_WIDTH) * 100;
-        const topPct = (point.y / (ARC_SVG_HEIGHT + 60)) * 100;
+        const topPct = (point.y / ARC_SVG_HEIGHT) * 100;
 
         return (
           <div
             key={i}
-            className="absolute flex flex-col items-center gap-2 -translate-x-1/2 -translate-y-1/2 z-10"
+            className="absolute flex flex-col items-center gap-3 -translate-x-1/2 -translate-y-1/2 z-10"
             style={{
               left: `${leftPct}%`,
               top: `${topPct}%`,
             }}
           >
             <div
-              className="w-14 h-14 rounded-2xl flex items-center justify-center border-2 transition-all duration-700 backdrop-blur-sm"
+              className="w-20 h-20 rounded-[24px] flex items-center justify-center border transition-all duration-500 bg-white/80"
               style={{
                 background: isCurrent
-                  ? 'linear-gradient(135deg, hsl(210 100% 50%), hsl(210 100% 38%))'
+                  ? 'linear-gradient(135deg, hsl(210 100% 50%), hsl(210 100% 39%))'
                   : isActive
-                    ? 'hsl(210 100% 50% / 0.08)'
-                    : 'hsl(0 0% 100% / 0.7)',
+                    ? 'linear-gradient(180deg, hsl(210 100% 98%), hsl(210 100% 95%))'
+                    : 'rgba(255,255,255,0.72)',
                 borderColor: isCurrent
                   ? 'hsl(210 100% 60%)'
                   : isActive
-                    ? 'hsl(210 100% 50% / 0.3)'
-                    : 'hsl(210 20% 88% / 0.6)',
+                    ? 'hsl(210 80% 70% / 0.75)'
+                    : 'hsl(210 18% 84% / 0.8)',
                 boxShadow: isCurrent
-                  ? '0 0 24px hsl(210 100% 50% / 0.35), 0 0 48px hsl(210 100% 50% / 0.12), 0 4px 16px hsl(210 100% 50% / 0.15)'
+                  ? '0 0 0 1px hsl(210 100% 62% / 0.45), 0 0 28px hsl(210 100% 55% / 0.22), 0 12px 30px hsl(210 60% 30% / 0.16)'
                   : isActive
-                    ? '0 2px 8px hsl(210 100% 50% / 0.08)'
-                    : '0 1px 4px hsl(0 0% 0% / 0.04)',
-                transform: isCurrent ? 'scale(1.1)' : 'scale(1)',
+                    ? '0 8px 22px hsl(210 45% 40% / 0.10)'
+                    : '0 6px 18px hsl(220 20% 20% / 0.06)',
+                transform: isCurrent ? 'scale(1.08)' : isActive ? 'scale(1.02)' : 'scale(1)',
+                backdropFilter: 'blur(6px)',
               }}
             >
               <StepIcon type={step.icon} active={isCurrent} />
             </div>
+
             <span
-              className="text-[11px] font-semibold whitespace-nowrap transition-all duration-700"
+              className="text-sm font-semibold whitespace-nowrap transition-all duration-500"
               style={{
                 color: isCurrent
-                  ? 'hsl(210 100% 45%)'
+                  ? 'hsl(210 100% 42%)'
                   : isActive
-                    ? 'hsl(220 30% 30%)'
-                    : 'hsl(220 15% 55%)',
-                textShadow: isCurrent ? '0 0 12px hsl(210 100% 50% / 0.2)' : 'none',
+                    ? 'hsl(220 28% 28%)'
+                    : 'hsl(220 12% 56%)',
+                textShadow: isCurrent ? '0 0 8px hsl(210 100% 55% / 0.14)' : 'none',
               }}
             >
               {step.label}
@@ -271,45 +249,28 @@ const DesktopFlow = ({ activeStep, dotProgress }: { activeStep: number; dotProgr
 
 const HeroAutomationFlow = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [dotProgress, setDotProgress] = useState(0);
-  const rafRef = useRef<number>(0);
-  const startRef = useRef<number>(0);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const isMobile = useIsMobile();
+  const intervalRef = useRef<number | null>(null);
 
   useEffect(() => {
-    setPrefersReducedMotion(
-      window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    );
-  }, []);
+    setActiveStep(0);
 
-  useEffect(() => {
-    if (prefersReducedMotion) {
-      setActiveStep(STEPS.length - 1);
-      setDotProgress(1);
-      return;
-    }
+    intervalRef.current = window.setInterval(() => {
+      setActiveStep((prev) => (prev + 1) % STEPS.length);
+    }, CYCLE_MS / STEPS.length);
 
-    const animate = (timestamp: number) => {
-      if (!startRef.current) startRef.current = timestamp;
-      const elapsed = (timestamp - startRef.current) % CYCLE_MS;
-      const step = Math.floor(elapsed / STEP_DURATION);
-      const progress = (elapsed % STEP_DURATION) / STEP_DURATION;
-
-      setActiveStep(step);
-      setDotProgress(progress);
-      rafRef.current = requestAnimationFrame(animate);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
     };
-
-    rafRef.current = requestAnimationFrame(animate);
-    return () => cancelAnimationFrame(rafRef.current);
-  }, [prefersReducedMotion]);
+  }, []);
 
   if (isMobile) {
     return <MobileFlow activeStep={activeStep} />;
   }
 
-  return <DesktopFlow activeStep={activeStep} dotProgress={dotProgress} />;
+  return <DesktopFlow activeStep={activeStep} />;
 };
 
 export default HeroAutomationFlow;
