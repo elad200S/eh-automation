@@ -1,5 +1,6 @@
 import { ArrowLeft, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import HeroAutomationFlow from './HeroAutomationFlow';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const bullets = [
@@ -67,6 +68,9 @@ const HeroSection = () => {
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
+
+          {/* Automation flow animation */}
+          <HeroAutomationFlow />
         </div>
       </div>
       
