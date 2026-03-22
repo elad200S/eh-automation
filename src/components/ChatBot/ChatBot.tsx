@@ -4,71 +4,81 @@ import { useChatBot } from './useChatBot';
 import ChatWindow from './ChatWindow';
 import ChatChoiceModal from './ChatChoiceModal';
 import ProactiveBubble from './ProactiveBubble';
+import { useEngagement } from '@/contexts/EngagementContext';
 
-const PROACTIVE_MSG_1 = 'היי 👋\nרוצה לראות איזה אוטומציות יכולות לעבוד בעסק שלך?';
-const PROACTIVE_MSG_2 = 'רוצה לראות דוגמה לאוטומציה שיכולה לחסוך שעות עבודה לעסק?';
-const QUICK_REPLIES_1 = ['כן, תראה לי', 'יש לי שאלה'];
-const MAX_PROACTIVE = 2;
-const TIME_TRIGGER_MS = 8000;
-const SCROLL_THRESHOLD = 0.5;
+const PROACTIVE_MSG = 'היי 👋\nרוצה לראות איזה אוטומציות יכולות לעבוד בעסק שלך?';
+const QUICK_REPLIES = ['כן, תראה לי', 'יש לי שאלה'];
+
+// Timing constants
+const PROACTIVE_DELAY_MS = 20_000;  // 20s - chatbot warm-up
+const CHOICE_DELAY_MS = 75_000;     // 75s - final choice popup
+
+const POPUP_ID_PROACTIVE = 'proactive-bubble';
+const POPUP_ID_CHOICE = 'choice-modal';
 
 const ChatBot = () => {
   const { messages, isLoading, isOpen, hasBeenOpened, sendMessage, toggleOpen, openChat, maxInputLength } = useChatBot();
+  const { isAnyPopupOpen, hasInteracted, registerPopup, unregisterPopup, markInteracted, wasShown, markShown } = useEngagement();
+
   const [showAnimation, setShowAnimation] = useState(false);
   const [showChoiceModal, setShowChoiceModal] = useState(false);
-  const [hasShownModal, setHasShownModal] = useState(false);
+  const [proactiveBubble, setProactiveBubble] = useState<{ message: string; quickReplies?: string[] } | null>(null);
 
-  // Proactive bubble state
-  const [proactiveBubble, setProactiveBubble] = useState<{
-    message: string;
-    quickReplies?: string[];
-  } | null>(null);
-  const proactiveCountRef = useRef(0);
-  const userInteractedRef = useRef(false);
-  const dismissedRef = useRef(false);
+  const userOpenedChatRef = useRef(false);
 
-  // Track if user has interacted with chat
+  // Track user interaction
   useEffect(() => {
     if (hasBeenOpened || isOpen) {
-      userInteractedRef.current = true;
+      userOpenedChatRef.current = true;
+      markInteracted();
       setProactiveBubble(null);
+      unregisterPopup(POPUP_ID_PROACTIVE);
     }
-  }, [hasBeenOpened, isOpen]);
+  }, [hasBeenOpened, isOpen, markInteracted, unregisterPopup]);
 
-  // Time-based trigger (8s)
+  // Popup 1: Proactive bubble at 20s
   useEffect(() => {
     const timer = setTimeout(() => {
-      if (!userInteractedRef.current && !dismissedRef.current && proactiveCountRef.current < MAX_PROACTIVE) {
-        setProactiveBubble({ message: PROACTIVE_MSG_1, quickReplies: QUICK_REPLIES_1 });
-        proactiveCountRef.current += 1;
-      }
-    }, TIME_TRIGGER_MS);
+      if (userOpenedChatRef.current || wasShown(POPUP_ID_PROACTIVE)) return;
+      // Don't show if another popup is active
+      if (isAnyPopupOpen) return;
+
+      setProactiveBubble({ message: PROACTIVE_MSG, quickReplies: QUICK_REPLIES });
+      markShown(POPUP_ID_PROACTIVE);
+      registerPopup(POPUP_ID_PROACTIVE);
+    }, PROACTIVE_DELAY_MS);
 
     return () => clearTimeout(timer);
+    // Only run once on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Scroll-based trigger (50% of page)
+  // Popup 3: Choice modal at 75s
   useEffect(() => {
-    const handleScroll = () => {
-      if (userInteractedRef.current || dismissedRef.current) return;
-      if (proactiveCountRef.current >= MAX_PROACTIVE) return;
-      // Only trigger second message after first was shown and dismissed/ignored
-      if (proactiveCountRef.current < 1) return;
-      // Don't show if bubble is already visible
-      if (proactiveBubble) return;
-
-      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (scrollPercent >= SCROLL_THRESHOLD) {
-        setProactiveBubble({ message: PROACTIVE_MSG_2, quickReplies: QUICK_REPLIES_1 });
-        proactiveCountRef.current += 1;
+    const timer = setTimeout(() => {
+      if (userOpenedChatRef.current || wasShown(POPUP_ID_CHOICE)) return;
+      if (isAnyPopupOpen) {
+        // If something else is open, retry after 5s
+        const retry = setTimeout(() => {
+          if (!userOpenedChatRef.current && !wasShown(POPUP_ID_CHOICE) && !isAnyPopupOpen) {
+            setShowChoiceModal(true);
+            markShown(POPUP_ID_CHOICE);
+            registerPopup(POPUP_ID_CHOICE);
+          }
+        }, 5000);
+        return () => clearTimeout(retry);
       }
-    };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [proactiveBubble]);
+      setShowChoiceModal(true);
+      markShown(POPUP_ID_CHOICE);
+      registerPopup(POPUP_ID_CHOICE);
+    }, CHOICE_DELAY_MS);
 
-  // Attention animation logic
+    return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Attention animation
   useEffect(() => {
     if (hasBeenOpened) {
       setShowAnimation(false);
@@ -84,7 +94,7 @@ const ChatBot = () => {
         setShowAnimation(true);
         setTimeout(() => setShowAnimation(false), 2000);
       }
-    }, 10000 + Math.random() * 5000);
+    }, 12000);
 
     return () => {
       clearTimeout(initialTimer);
@@ -92,61 +102,35 @@ const ChatBot = () => {
     };
   }, [hasBeenOpened]);
 
-  // Choice modal: show after 15s OR 40% scroll, whichever comes first
-  useEffect(() => {
-    if (hasShownModal) return;
-
-    const show = () => {
-      if (!hasShownModal) {
-        setShowChoiceModal(true);
-        setHasShownModal(true);
-      }
-    };
-
-    // Time-based trigger (15s)
-    const timer = setTimeout(show, 15000);
-
-    // Scroll-based trigger (40%)
-    const handleScroll = () => {
-      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
-      if (scrollPercent >= 0.4) {
-        show();
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      clearTimeout(timer);
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [hasShownModal]);
-
   const handleChooseBot = () => {
     setShowChoiceModal(false);
+    unregisterPopup(POPUP_ID_CHOICE);
+    markInteracted();
     openChat();
   };
 
   const handleChooseWhatsApp = () => {
     setShowChoiceModal(false);
+    unregisterPopup(POPUP_ID_CHOICE);
+    markInteracted();
     window.open('https://wa.link/kw53y2', '_blank');
   };
 
   const handleProactiveDismiss = useCallback(() => {
     setProactiveBubble(null);
-    dismissedRef.current = true;
-  }, []);
+    unregisterPopup(POPUP_ID_PROACTIVE);
+  }, [unregisterPopup]);
 
   const handleProactiveReply = useCallback((text: string) => {
     setProactiveBubble(null);
-    userInteractedRef.current = true;
+    unregisterPopup(POPUP_ID_PROACTIVE);
+    markInteracted();
     openChat();
-    // Small delay so chat window renders before sending
     setTimeout(() => sendMessage(text), 300);
-  }, [openChat, sendMessage]);
+  }, [openChat, sendMessage, unregisterPopup, markInteracted]);
 
   return (
     <>
-      {/* Chat Window */}
       {isOpen && (
         <ChatWindow
           messages={messages}
@@ -157,7 +141,6 @@ const ChatBot = () => {
         />
       )}
 
-      {/* Proactive Bubble */}
       {proactiveBubble && !isOpen && (
         <ProactiveBubble
           message={proactiveBubble.message}
@@ -167,15 +150,16 @@ const ChatBot = () => {
         />
       )}
 
-      {/* Choice Modal */}
       <ChatChoiceModal
         isOpen={showChoiceModal}
-        onClose={() => setShowChoiceModal(false)}
+        onClose={() => {
+          setShowChoiceModal(false);
+          unregisterPopup(POPUP_ID_CHOICE);
+        }}
         onChooseBot={handleChooseBot}
         onChooseWhatsApp={handleChooseWhatsApp}
       />
 
-      {/* Floating Button */}
       <button
         onClick={toggleOpen}
         className={`
@@ -188,11 +172,7 @@ const ChatBot = () => {
         `}
         aria-label={isOpen ? 'סגור צ\'אט' : 'פתח צ\'אט'}
       >
-        {isOpen ? (
-          <X className="w-6 h-6" />
-        ) : (
-          <MessageCircle className="w-6 h-6" />
-        )}
+        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
       </button>
     </>
   );
