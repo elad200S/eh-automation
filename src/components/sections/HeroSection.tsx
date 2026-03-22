@@ -68,6 +68,9 @@ const HeroSection = () => {
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
+
+          {/* Automation flow animation */}
+          <HeroAutomationFlow />
         </div>
       </div>
       
