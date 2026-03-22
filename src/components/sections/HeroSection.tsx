@@ -1,5 +1,6 @@
 import { ArrowLeft, Check } from 'lucide-react';
 import { useEffect, useState } from 'react';
+import HeroAutomationFlow from './HeroAutomationFlow';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 const bullets = [
