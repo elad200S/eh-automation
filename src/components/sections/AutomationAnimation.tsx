@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import Section from '@/components/Section';
 import { User, MessageSquare, BarChart3, CalendarCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -20,7 +20,7 @@ const steps = [
     Icon: BarChart3,
     label: 'הליד נרשם ומנוטר',
     color: 'text-accent-foreground',
-    bg: 'bg-accent',
+    bg: 'bg-accent/10',
   },
   {
     Icon: CalendarCheck,
@@ -33,7 +33,19 @@ const steps = [
 const AutomationAnimation = () => {
   const [activeStep, setActiveStep] = useState(-1);
   const sectionRef = useRef<HTMLDivElement>(null);
-  const hasAnimated = useRef(false);
+  const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  const startAnimation = useCallback(() => {
+    // Reset
+    setActiveStep(-1);
+    timersRef.current.forEach(clearTimeout);
+    timersRef.current = [];
+
+    steps.forEach((_, i) => {
+      const timer = setTimeout(() => setActiveStep(i), (i + 1) * 700);
+      timersRef.current.push(timer);
+    });
+  }, []);
 
   useEffect(() => {
     const el = sectionRef.current;
@@ -41,23 +53,31 @@ const AutomationAnimation = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasAnimated.current) {
-          hasAnimated.current = true;
-          steps.forEach((_, i) => {
-            setTimeout(() => setActiveStep(i), (i + 1) * 700);
-          });
+        if (entry.isIntersecting) {
+          startAnimation();
+        } else {
+          // Reset when out of view so it replays on re-entry
+          setActiveStep(-1);
+          timersRef.current.forEach(clearTimeout);
+          timersRef.current = [];
         }
       },
       { threshold: 0.3 }
     );
 
     observer.observe(el);
-    return () => observer.disconnect();
-  }, []);
+    return () => {
+      observer.disconnect();
+      timersRef.current.forEach(clearTimeout);
+    };
+  }, [startAnimation]);
 
   return (
     <Section id="automation-demo" withSeparator={false}>
       <div ref={sectionRef} className="max-w-3xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
+          איך זה עובד בפועל
+        </h2>
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-0 justify-center">
           {steps.map((step, index) => (
             <div key={index} className="flex flex-col md:flex-row items-center gap-4">
@@ -80,7 +100,6 @@ const AutomationAnimation = () => {
                   'transition-all duration-500',
                   activeStep > index ? 'opacity-100' : 'opacity-20'
                 )}>
-                  {/* Horizontal arrow on desktop, vertical on mobile */}
                   <svg className="hidden md:block w-8 h-4 text-primary/40" viewBox="0 0 32 16">
                     <path d="M0 8h24" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
                     <path d="M20 4l6 4-6 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />

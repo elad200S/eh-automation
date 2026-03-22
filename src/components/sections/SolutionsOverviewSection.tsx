@@ -1,46 +1,52 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow } from 'lucide-react';
+import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3 } from 'lucide-react';
 import Section from '@/components/Section';
 
 const solutions = [
   {
     icon: Bot,
     title: 'סוכני AI חכמים',
-    description: 'בוטים חכמים שעובדים 24/7 – מענה ללקוחות, טיפול בלידים ואוטומציה של תהליכים.',
+    description: 'בוטים חכמים שעובדים 24/7 – מענה ללקוחות וטיפול בלידים.',
     href: '/solutions/ai-agents',
   },
   {
     icon: Zap,
     title: 'אוטומציה עסקית',
-    description: 'מערכות שמחברות בין הכלים שלך, מבטלות משימות ידניות ומייעלות תהליכים.',
+    description: 'ביטול משימות ידניות וייעול תהליכים בעסק.',
     href: '/solutions/business-automation',
   },
   {
     icon: MessageCircle,
     title: 'אוטומציית WhatsApp',
-    description: 'מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות ללקוחות – הכל אוטומטית.',
+    description: 'מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות.',
     href: '/solutions/whatsapp-automation',
   },
   {
     icon: GitBranch,
     title: 'אוטומציית CRM',
-    description: 'תהליכי CRM אוטומטיים שמוודאים שאף ליד לא נופל בין הכיסאות.',
+    description: 'תהליכי CRM שמוודאים שאף ליד לא נופל בין הכיסאות.',
     href: '/solutions/crm-automation',
   },
   {
     icon: Workflow,
     title: 'אוטומציית תהליכי עבודה',
-    description: 'מיפוי ואוטומציה של תהליכים פנימיים – דוחות, אישורים ועדכונים אוטומטיים.',
+    description: 'מיפוי ואוטומציה של דוחות, אישורים ועדכונים.',
     href: '/solutions/workflow-automation',
+  },
+  {
+    icon: BarChart3,
+    title: 'דוחות וניתוח נתונים',
+    description: 'מעקב אוטומטי אחרי ביצועים והפקת תובנות לעסק.',
+    href: '/solutions/business-automation',
   },
 ];
 
 const SolutionsOverviewSection = () => {
   return (
     <Section id="solutions-overview">
-      <div className="max-w-5xl">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
-          <div>
+      <div className="max-w-5xl mx-auto">
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+          <div className="text-center md:text-right flex-1">
             <p className="text-sm font-medium text-primary mb-2">מה אנחנו בונים</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
               פתרונות אוטומציה לעסקים
@@ -48,7 +54,7 @@ const SolutionsOverviewSection = () => {
           </div>
           <Link
             to="/solutions"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors mx-auto md:mx-0"
           >
             לכל הפתרונות
             <ArrowLeft className="w-4 h-4" />
