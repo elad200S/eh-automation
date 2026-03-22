@@ -92,25 +92,33 @@ const ChatBot = () => {
     };
   }, [hasBeenOpened]);
 
-  // Scroll-triggered choice modal
+  // Choice modal: show after 15s OR 40% scroll, whichever comes first
   useEffect(() => {
     if (hasShownModal) return;
 
-    const handleScroll = () => {
-      const problemSection = document.getElementById('problem');
-      if (!problemSection) return;
-
-      const rect = problemSection.getBoundingClientRect();
-      const isVisible = rect.top < window.innerHeight * 0.7 && rect.bottom > 0;
-
-      if (isVisible && !hasShownModal) {
+    const show = () => {
+      if (!hasShownModal) {
         setShowChoiceModal(true);
         setHasShownModal(true);
       }
     };
 
+    // Time-based trigger (15s)
+    const timer = setTimeout(show, 15000);
+
+    // Scroll-based trigger (40%)
+    const handleScroll = () => {
+      const scrollPercent = window.scrollY / (document.documentElement.scrollHeight - window.innerHeight);
+      if (scrollPercent >= 0.4) {
+        show();
+      }
+    };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [hasShownModal]);
 
   const handleChooseBot = () => {
