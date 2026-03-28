@@ -1,55 +1,69 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const HELIX_TURNS = 3;
-const POINTS_PER_TURN = 60;
-const TOTAL_POINTS = HELIX_TURNS * POINTS_PER_TURN;
-const PULSE_SPEED = 4000; // ms per full loop
+const CYCLE_MS = 6000;
+
+const NODES = [
+  { label: 'ליד נכנס', position: 0.05 },
+  { label: 'עיבוד נתונים', position: 0.28 },
+  { label: 'CRM', position: 0.5 },
+  { label: 'אוטומציה', position: 0.72 },
+  { label: 'תוצאה', position: 0.95 },
+];
+
+const MOBILE_NODES = [
+  { label: 'ליד', position: 0.08 },
+  { label: 'עיבוד', position: 0.35 },
+  { label: 'CRM', position: 0.65 },
+  { label: 'תוצאה', position: 0.92 },
+];
 
 interface HelixPoint {
-  x: number;
-  y: number;
-  z: number;
   screenX: number;
   screenY: number;
-  opacity: number;
+  z: number;
 }
 
 function generateHelixPoints(
   width: number,
   height: number,
-  radiusX: number,
+  turns: number,
   radiusY: number,
-  rotationY: number
+  rotationOffset: number
 ): HelixPoint[] {
   const points: HelixPoint[] = [];
-  const centerX = width / 2;
+  const totalPoints = turns * 80;
   const centerY = height / 2;
-  const verticalSpread = height * 0.7;
+  const padding = 40;
 
-  for (let i = 0; i <= TOTAL_POINTS; i++) {
-    const t = i / TOTAL_POINTS;
-    const angle = t * HELIX_TURNS * Math.PI * 2;
-
-    const x = Math.cos(angle + rotationY) * radiusX;
-    const z = Math.sin(angle + rotationY) * radiusX * 0.4;
-    const y = (t - 0.5) * verticalSpread;
-
-    // Perspective projection
-    const perspective = 600;
+  for (let i = 0; i <= totalPoints; i++) {
+    const t = i / totalPoints;
+    const angle = t * turns * Math.PI * 2 + rotationOffset;
+    const x = padding + t * (width - padding * 2);
+    const z = Math.sin(angle) * radiusY * 0.5;
+    const perspective = 500;
     const scale = perspective / (perspective + z);
-    const screenX = centerX + x * scale;
-    const screenY = centerY + y * scale;
+    const y = centerY + Math.cos(angle) * radiusY * scale;
 
-    // Depth-based opacity for 3D feel
-    const depthOpacity = 0.3 + 0.7 * ((z + radiusX * 0.4) / (radiusX * 0.8));
-
-    points.push({ x, y, z, screenX, screenY, opacity: Math.max(0.15, Math.min(1, depthOpacity)) });
+    points.push({ screenX: x, screenY: y, z });
   }
   return points;
 }
 
-function buildPathFromPoints(points: HelixPoint[]): string {
+function getPointAtT(points: HelixPoint[], t: number): HelixPoint {
+  const idx = t * (points.length - 1);
+  const i = Math.floor(idx);
+  const frac = idx - i;
+  const a = points[Math.min(i, points.length - 1)];
+  const b = points[Math.min(i + 1, points.length - 1)];
+  return {
+    screenX: a.screenX + (b.screenX - a.screenX) * frac,
+    screenY: a.screenY + (b.screenY - a.screenY) * frac,
+    z: a.z + (b.z - a.z) * frac,
+  };
+}
+
+function buildPath(points: HelixPoint[]): string {
   if (points.length < 2) return '';
   let d = `M ${points[0].screenX} ${points[0].screenY}`;
   for (let i = 1; i < points.length; i++) {
@@ -58,238 +72,258 @@ function buildPathFromPoints(points: HelixPoint[]): string {
   return d;
 }
 
-const MetallicHelix = ({ width, height, isMobile }: { width: number; height: number; isMobile: boolean }) => {
+const HeroAutomationFlow = () => {
+  const isMobile = useIsMobile();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dims, setDims] = useState({ width: 0, height: 0 });
   const [pulseT, setPulseT] = useState(0);
-  const [rotationY, setRotationY] = useState(0);
-  const rafRef = useRef<number>(0);
-  const startRef = useRef<number>(0);
+  const [rotation, setRotation] = useState(0);
+  const [activeNode, setActiveNode] = useState(-1);
+  const rafRef = useRef(0);
+  const startRef = useRef(0);
 
-  const radiusX = isMobile ? width * 0.28 : width * 0.22;
+  const nodes = isMobile ? MOBILE_NODES : NODES;
+  const height = isMobile ? 140 : 200;
+  const turns = isMobile ? 2 : 3;
+  const radiusY = isMobile ? 22 : 35;
+
+  useEffect(() => {
+    const update = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDims({ width: rect.width, height });
+      }
+    };
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, [height]);
 
   useEffect(() => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-    const animate = (timestamp: number) => {
-      if (!startRef.current) startRef.current = timestamp;
-      const elapsed = timestamp - startRef.current;
-
-      setPulseT((elapsed % PULSE_SPEED) / PULSE_SPEED);
+    const animate = (ts: number) => {
+      if (!startRef.current) startRef.current = ts;
+      const elapsed = ts - startRef.current;
+      const t = (elapsed % CYCLE_MS) / CYCLE_MS;
+      setPulseT(t);
 
       if (!prefersReduced) {
-        setRotationY(elapsed * 0.0002); // Very gentle rotation
+        setRotation(elapsed * 0.00015);
       }
+
+      // Determine active node
+      let closest = -1;
+      let minDist = 0.06;
+      for (let i = 0; i < nodes.length; i++) {
+        const dist = Math.abs(t - nodes[i].position);
+        if (dist < minDist) {
+          minDist = dist;
+          closest = i;
+        }
+      }
+      setActiveNode(closest);
 
       rafRef.current = requestAnimationFrame(animate);
     };
 
     rafRef.current = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(rafRef.current);
-  }, []);
+  }, [nodes]);
 
-  const points = generateHelixPoints(width, height, radiusX, radiusX * 0.15, rotationY);
+  if (dims.width === 0) {
+    return <div ref={containerRef} className="relative w-full" style={{ height }} />;
+  }
 
-  // Split into front and back strands based on z-depth
-  const frontPoints: HelixPoint[] = [];
-  const backPoints: HelixPoint[] = [];
+  const points = generateHelixPoints(dims.width, height, turns, radiusY, rotation);
+  const pulsePoint = getPointAtT(points, pulseT);
+
+  // Split into front/back segments
+  const frontSegs: HelixPoint[][] = [];
+  const backSegs: HelixPoint[][] = [];
+  let currentFront: HelixPoint[] = [];
+  let currentBack: HelixPoint[] = [];
 
   points.forEach((p) => {
     if (p.z >= 0) {
-      frontPoints.push(p);
+      currentFront.push(p);
+      if (currentBack.length > 1) backSegs.push(currentBack);
+      currentBack = [p];
     } else {
-      backPoints.push(p);
+      currentBack.push(p);
+      if (currentFront.length > 1) frontSegs.push(currentFront);
+      currentFront = [p];
     }
   });
+  if (currentFront.length > 1) frontSegs.push(currentFront);
+  if (currentBack.length > 1) backSegs.push(currentBack);
 
-  // Pulse position along the helix
-  const pulseIndex = Math.floor(pulseT * points.length);
-  const pulsePoint = points[Math.min(pulseIndex, points.length - 1)];
-
-  // Build segments for metallic look
-  const segments: { d: string; opacity: number; isFront: boolean }[] = [];
-  let currentSegment: HelixPoint[] = [];
-  let currentIsFront = points[0]?.z >= 0;
-
-  for (let i = 0; i < points.length; i++) {
-    const isFront = points[i].z >= 0;
-    if (isFront !== currentIsFront && currentSegment.length > 0) {
-      segments.push({
-        d: buildPathFromPoints(currentSegment),
-        opacity: currentIsFront ? 0.85 : 0.25,
-        isFront: currentIsFront,
-      });
-      // Overlap by one point for continuity
-      currentSegment = [points[i - 1], points[i]];
-      currentIsFront = isFront;
-    } else {
-      currentSegment.push(points[i]);
-    }
-  }
-  if (currentSegment.length > 0) {
-    segments.push({
-      d: buildPathFromPoints(currentSegment),
-      opacity: currentIsFront ? 0.85 : 0.25,
-      isFront: currentIsFront,
-    });
-  }
-
-  const strokeWidth = isMobile ? 2.5 : 3.5;
-
-  return (
-    <svg
-      width={width}
-      height={height}
-      viewBox={`0 0 ${width} ${height}`}
-      className="absolute inset-0"
-      style={{ filter: 'drop-shadow(0 0 20px hsl(220 15% 40% / 0.15))' }}
-      aria-hidden="true"
-    >
-      <defs>
-        {/* Metallic gradient for back segments */}
-        <linearGradient id="helixBack" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="hsl(220 10% 55%)" stopOpacity="0.3" />
-          <stop offset="50%" stopColor="hsl(220 8% 45%)" stopOpacity="0.2" />
-          <stop offset="100%" stopColor="hsl(220 10% 55%)" stopOpacity="0.3" />
-        </linearGradient>
-
-        {/* Metallic gradient for front segments */}
-        <linearGradient id="helixFront" x1="0%" y1="0%" x2="0%" y2="100%">
-          <stop offset="0%" stopColor="hsl(215 15% 72%)" stopOpacity="0.9" />
-          <stop offset="30%" stopColor="hsl(220 12% 82%)" stopOpacity="1" />
-          <stop offset="50%" stopColor="hsl(210 20% 90%)" stopOpacity="1" />
-          <stop offset="70%" stopColor="hsl(220 12% 78%)" stopOpacity="0.95" />
-          <stop offset="100%" stopColor="hsl(215 15% 65%)" stopOpacity="0.85" />
-        </linearGradient>
-
-        {/* Pulse glow */}
-        <radialGradient id="pulseGlow" cx="50%" cy="50%" r="50%">
-          <stop offset="0%" stopColor="hsl(210 60% 75%)" stopOpacity="0.9" />
-          <stop offset="40%" stopColor="hsl(210 50% 65%)" stopOpacity="0.5" />
-          <stop offset="100%" stopColor="hsl(210 40% 55%)" stopOpacity="0" />
-        </radialGradient>
-
-        <filter id="pulseBlur">
-          <feGaussianBlur stdDeviation={isMobile ? '6' : '10'} />
-        </filter>
-
-        <filter id="metalShine">
-          <feGaussianBlur stdDeviation="0.5" />
-        </filter>
-      </defs>
-
-      {/* Back segments (behind the coil) */}
-      {segments
-        .filter((s) => !s.isFront)
-        .map((seg, i) => (
-          <path
-            key={`back-${i}`}
-            d={seg.d}
-            fill="none"
-            stroke="url(#helixBack)"
-            strokeWidth={strokeWidth * 0.8}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-        ))}
-
-      {/* Front segments (visible coil) */}
-      {segments
-        .filter((s) => s.isFront)
-        .map((seg, i) => (
-          <g key={`front-${i}`}>
-            {/* Shadow/depth line */}
-            <path
-              d={seg.d}
-              fill="none"
-              stroke="hsl(220 15% 30%)"
-              strokeWidth={strokeWidth + 2}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.08}
-            />
-            {/* Main metallic stroke */}
-            <path
-              d={seg.d}
-              fill="none"
-              stroke="url(#helixFront)"
-              strokeWidth={strokeWidth}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-            {/* Highlight line */}
-            <path
-              d={seg.d}
-              fill="none"
-              stroke="hsl(210 20% 95%)"
-              strokeWidth={strokeWidth * 0.3}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              opacity={0.4}
-            />
-          </g>
-        ))}
-
-      {/* Energy pulse glow (large soft) */}
-      <circle
-        cx={pulsePoint.screenX}
-        cy={pulsePoint.screenY}
-        r={isMobile ? 18 : 28}
-        fill="url(#pulseGlow)"
-        filter="url(#pulseBlur)"
-        opacity={0.7 + pulsePoint.opacity * 0.3}
-      />
-
-      {/* Energy pulse core */}
-      <circle
-        cx={pulsePoint.screenX}
-        cy={pulsePoint.screenY}
-        r={isMobile ? 3 : 4.5}
-        fill="hsl(210 40% 88%)"
-        opacity={0.9}
-      />
-      <circle
-        cx={pulsePoint.screenX}
-        cy={pulsePoint.screenY}
-        r={isMobile ? 1.5 : 2}
-        fill="hsl(0 0% 100%)"
-        opacity={0.95}
-      />
-    </svg>
-  );
-};
-
-const HeroAutomationFlow = () => {
-  const isMobile = useIsMobile();
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-
-  useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
-      }
-    };
-
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
-
-  const height = isMobile ? 180 : 280;
+  const nodeRadius = isMobile ? 14 : 18;
+  const strokeW = isMobile ? 2 : 3;
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full mx-auto mt-6 md:mt-10"
-      style={{ height, maxWidth: isMobile ? '320px' : '500px' }}
+      className="relative w-full mt-6 md:mt-8"
+      style={{ height }}
     >
-      {dimensions.width > 0 && (
-        <MetallicHelix
-          width={dimensions.width}
-          height={height}
-          isMobile={isMobile}
+      <svg
+        width={dims.width}
+        height={height}
+        viewBox={`0 0 ${dims.width} ${height}`}
+        className="absolute inset-0"
+        aria-hidden="true"
+      >
+        <defs>
+          <linearGradient id="helixBackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(220 10% 50%)" stopOpacity="0.15" />
+            <stop offset="50%" stopColor="hsl(220 8% 45%)" stopOpacity="0.2" />
+            <stop offset="100%" stopColor="hsl(220 10% 50%)" stopOpacity="0.15" />
+          </linearGradient>
+          <linearGradient id="helixFrontGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="hsl(215 12% 65%)" stopOpacity="0.6" />
+            <stop offset="30%" stopColor="hsl(220 10% 75%)" stopOpacity="0.8" />
+            <stop offset="50%" stopColor="hsl(210 15% 82%)" stopOpacity="0.9" />
+            <stop offset="70%" stopColor="hsl(220 10% 75%)" stopOpacity="0.8" />
+            <stop offset="100%" stopColor="hsl(215 12% 65%)" stopOpacity="0.6" />
+          </linearGradient>
+          <radialGradient id="pulseGlowGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(210 50% 78%)" stopOpacity="0.9" />
+            <stop offset="50%" stopColor="hsl(210 40% 68%)" stopOpacity="0.4" />
+            <stop offset="100%" stopColor="hsl(210 30% 60%)" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="nodeActiveGrad" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(210 40% 80%)" stopOpacity="0.7" />
+            <stop offset="100%" stopColor="hsl(210 30% 60%)" stopOpacity="0" />
+          </radialGradient>
+          <filter id="softGlow">
+            <feGaussianBlur stdDeviation={isMobile ? '5' : '8'} />
+          </filter>
+          <filter id="nodeGlow">
+            <feGaussianBlur stdDeviation="3" />
+          </filter>
+        </defs>
+
+        {/* Back segments */}
+        {backSegs.map((seg, i) => (
+          <path
+            key={`b-${i}`}
+            d={buildPath(seg)}
+            fill="none"
+            stroke="url(#helixBackGrad)"
+            strokeWidth={strokeW * 0.7}
+            strokeLinecap="round"
+          />
+        ))}
+
+        {/* Front segments */}
+        {frontSegs.map((seg, i) => (
+          <g key={`f-${i}`}>
+            <path
+              d={buildPath(seg)}
+              fill="none"
+              stroke="hsl(220 12% 25%)"
+              strokeWidth={strokeW + 1.5}
+              strokeLinecap="round"
+              opacity={0.06}
+            />
+            <path
+              d={buildPath(seg)}
+              fill="none"
+              stroke="url(#helixFrontGrad)"
+              strokeWidth={strokeW}
+              strokeLinecap="round"
+            />
+            <path
+              d={buildPath(seg)}
+              fill="none"
+              stroke="hsl(210 15% 92%)"
+              strokeWidth={strokeW * 0.25}
+              strokeLinecap="round"
+              opacity={0.35}
+            />
+          </g>
+        ))}
+
+        {/* Nodes along the helix */}
+        {nodes.map((node, i) => {
+          const pt = getPointAtT(points, node.position);
+          const isActive = activeNode === i;
+          return (
+            <g key={`node-${i}`}>
+              {/* Glow ring when active */}
+              {isActive && (
+                <circle
+                  cx={pt.screenX}
+                  cy={pt.screenY}
+                  r={nodeRadius * 2}
+                  fill="url(#nodeActiveGrad)"
+                  filter="url(#nodeGlow)"
+                  opacity={0.8}
+                />
+              )}
+              {/* Outer ring */}
+              <circle
+                cx={pt.screenX}
+                cy={pt.screenY}
+                r={nodeRadius}
+                fill="none"
+                stroke={isActive ? 'hsl(210 20% 82%)' : 'hsl(220 10% 55%)'}
+                strokeWidth={isActive ? 2 : 1.2}
+                opacity={isActive ? 1 : 0.5}
+                style={{ transition: 'all 0.4s ease' }}
+              />
+              {/* Inner dot */}
+              <circle
+                cx={pt.screenX}
+                cy={pt.screenY}
+                r={isActive ? 4 : 2.5}
+                fill={isActive ? 'hsl(210 30% 88%)' : 'hsl(220 10% 60%)'}
+                opacity={isActive ? 1 : 0.6}
+                style={{ transition: 'all 0.4s ease' }}
+              />
+              {/* Label */}
+              <text
+                x={pt.screenX}
+                y={pt.screenY + nodeRadius + (isMobile ? 12 : 16)}
+                textAnchor="middle"
+                fill={isActive ? 'hsl(210 15% 85%)' : 'hsl(220 8% 55%)'}
+                fontSize={isMobile ? 9 : 11}
+                fontFamily="inherit"
+                opacity={isActive ? 1 : 0.6}
+                style={{ transition: 'all 0.4s ease' }}
+              >
+                {node.label}
+              </text>
+            </g>
+          );
+        })}
+
+        {/* Pulse glow */}
+        <circle
+          cx={pulsePoint.screenX}
+          cy={pulsePoint.screenY}
+          r={isMobile ? 14 : 22}
+          fill="url(#pulseGlowGrad)"
+          filter="url(#softGlow)"
+          opacity={0.7}
         />
-      )}
+        {/* Pulse core */}
+        <circle
+          cx={pulsePoint.screenX}
+          cy={pulsePoint.screenY}
+          r={isMobile ? 2.5 : 3.5}
+          fill="hsl(210 35% 88%)"
+          opacity={0.9}
+        />
+        <circle
+          cx={pulsePoint.screenX}
+          cy={pulsePoint.screenY}
+          r={isMobile ? 1.2 : 1.8}
+          fill="hsl(0 0% 100%)"
+          opacity={0.95}
+        />
+      </svg>
     </div>
   );
 };
