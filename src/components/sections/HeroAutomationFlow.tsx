@@ -1,335 +1,297 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const STEPS = [
-  { label: 'ליד נכנס', icon: 'user' },
-  { label: 'נרשם במערכת', icon: 'database' },
-  { label: 'הודעה נשלחת', icon: 'message' },
-  { label: 'משימה נוצרת', icon: 'check' },
-];
+const HELIX_TURNS = 3;
+const POINTS_PER_TURN = 60;
+const TOTAL_POINTS = HELIX_TURNS * POINTS_PER_TURN;
+const PULSE_SPEED = 4000; // ms per full loop
 
-const STEP_INTERVAL = 1400;
-
-const StepIcon = ({ type, active }: { type: string; active: boolean }) => {
-  const color = active ? '#ffffff' : 'hsl(210 100% 46%)';
-  const size = 24;
-
-  switch (type) {
-    case 'user':
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-          <circle cx="12" cy="7" r="4" />
-        </svg>
-      );
-    case 'database':
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-          <ellipse cx="12" cy="5" rx="9" ry="3" />
-          <path d="M3 5v14c0 1.66 4.03 3 9 3s9-1.34 9-3V5" />
-          <path d="M3 12c0 1.66 4.03 3 9 3s9-1.34 9-3" />
-        </svg>
-      );
-    case 'message':
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-        </svg>
-      );
-    case 'check':
-      return (
-        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.1" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
-          <polyline points="22 4 12 14.01 9 11.01" />
-        </svg>
-      );
-    default:
-      return null;
-  }
-};
-
-const desktopNodes = [
-  { x: 12, y: 72 },
-  { x: 37, y: 26 },
-  { x: 64, y: 52 },
-  { x: 88, y: 20 },
-];
-
-const mobileNodes = [
-  { x: 10, y: 50 },
-  { x: 36, y: 18 },
-  { x: 64, y: 50 },
-  { x: 90, y: 18 },
-];
-
-type NetworkNode = {
+interface HelixPoint {
   x: number;
   y: number;
-};
+  z: number;
+  screenX: number;
+  screenY: number;
+  opacity: number;
+}
 
-const buildSegments = (nodes: NetworkNode[]) =>
-  nodes.slice(0, -1).map((node, index) => ({
-    start: node,
-    end: nodes[index + 1],
-    key: `${index}-${index + 1}`,
-  }));
+function generateHelixPoints(
+  width: number,
+  height: number,
+  radiusX: number,
+  radiusY: number,
+  rotationY: number
+): HelixPoint[] {
+  const points: HelixPoint[] = [];
+  const centerX = width / 2;
+  const centerY = height / 2;
+  const verticalSpread = height * 0.7;
 
-const NetworkLines = ({
-  nodes,
-  activeStep,
-  svgHeight,
-}: {
-  nodes: NetworkNode[];
-  activeStep: number;
-  svgHeight: number;
-}) => {
-  const segments = buildSegments(nodes);
+  for (let i = 0; i <= TOTAL_POINTS; i++) {
+    const t = i / TOTAL_POINTS;
+    const angle = t * HELIX_TURNS * Math.PI * 2;
+
+    const x = Math.cos(angle + rotationY) * radiusX;
+    const z = Math.sin(angle + rotationY) * radiusX * 0.4;
+    const y = (t - 0.5) * verticalSpread;
+
+    // Perspective projection
+    const perspective = 600;
+    const scale = perspective / (perspective + z);
+    const screenX = centerX + x * scale;
+    const screenY = centerY + y * scale;
+
+    // Depth-based opacity for 3D feel
+    const depthOpacity = 0.3 + 0.7 * ((z + radiusX * 0.4) / (radiusX * 0.8));
+
+    points.push({ x, y, z, screenX, screenY, opacity: Math.max(0.15, Math.min(1, depthOpacity)) });
+  }
+  return points;
+}
+
+function buildPathFromPoints(points: HelixPoint[]): string {
+  if (points.length < 2) return '';
+  let d = `M ${points[0].screenX} ${points[0].screenY}`;
+  for (let i = 1; i < points.length; i++) {
+    d += ` L ${points[i].screenX} ${points[i].screenY}`;
+  }
+  return d;
+}
+
+const MetallicHelix = ({ width, height, isMobile }: { width: number; height: number; isMobile: boolean }) => {
+  const [pulseT, setPulseT] = useState(0);
+  const [rotationY, setRotationY] = useState(0);
+  const rafRef = useRef<number>(0);
+  const startRef = useRef<number>(0);
+
+  const radiusX = isMobile ? width * 0.28 : width * 0.22;
+
+  useEffect(() => {
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    const animate = (timestamp: number) => {
+      if (!startRef.current) startRef.current = timestamp;
+      const elapsed = timestamp - startRef.current;
+
+      setPulseT((elapsed % PULSE_SPEED) / PULSE_SPEED);
+
+      if (!prefersReduced) {
+        setRotationY(elapsed * 0.0002); // Very gentle rotation
+      }
+
+      rafRef.current = requestAnimationFrame(animate);
+    };
+
+    rafRef.current = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(rafRef.current);
+  }, []);
+
+  const points = generateHelixPoints(width, height, radiusX, radiusX * 0.15, rotationY);
+
+  // Split into front and back strands based on z-depth
+  const frontPoints: HelixPoint[] = [];
+  const backPoints: HelixPoint[] = [];
+
+  points.forEach((p) => {
+    if (p.z >= 0) {
+      frontPoints.push(p);
+    } else {
+      backPoints.push(p);
+    }
+  });
+
+  // Pulse position along the helix
+  const pulseIndex = Math.floor(pulseT * points.length);
+  const pulsePoint = points[Math.min(pulseIndex, points.length - 1)];
+
+  // Build segments for metallic look
+  const segments: { d: string; opacity: number; isFront: boolean }[] = [];
+  let currentSegment: HelixPoint[] = [];
+  let currentIsFront = points[0]?.z >= 0;
+
+  for (let i = 0; i < points.length; i++) {
+    const isFront = points[i].z >= 0;
+    if (isFront !== currentIsFront && currentSegment.length > 0) {
+      segments.push({
+        d: buildPathFromPoints(currentSegment),
+        opacity: currentIsFront ? 0.85 : 0.25,
+        isFront: currentIsFront,
+      });
+      // Overlap by one point for continuity
+      currentSegment = [points[i - 1], points[i]];
+      currentIsFront = isFront;
+    } else {
+      currentSegment.push(points[i]);
+    }
+  }
+  if (currentSegment.length > 0) {
+    segments.push({
+      d: buildPathFromPoints(currentSegment),
+      opacity: currentIsFront ? 0.85 : 0.25,
+      isFront: currentIsFront,
+    });
+  }
+
+  const strokeWidth = isMobile ? 2.5 : 3.5;
 
   return (
     <svg
-      viewBox={`0 0 100 ${svgHeight}`}
-      className="absolute inset-0 w-full h-full"
-      preserveAspectRatio="none"
+      width={width}
+      height={height}
+      viewBox={`0 0 ${width} ${height}`}
+      className="absolute inset-0"
+      style={{ filter: 'drop-shadow(0 0 20px hsl(220 15% 40% / 0.15))' }}
       aria-hidden="true"
     >
       <defs>
-        <linearGradient id="networkBase" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="hsl(210 35% 80%)" stopOpacity="0.45" />
-          <stop offset="50%" stopColor="hsl(205 42% 76%)" stopOpacity="0.75" />
-          <stop offset="100%" stopColor="hsl(190 36% 78%)" stopOpacity="0.45" />
+        {/* Metallic gradient for back segments */}
+        <linearGradient id="helixBack" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="hsl(220 10% 55%)" stopOpacity="0.3" />
+          <stop offset="50%" stopColor="hsl(220 8% 45%)" stopOpacity="0.2" />
+          <stop offset="100%" stopColor="hsl(220 10% 55%)" stopOpacity="0.3" />
         </linearGradient>
 
-        <linearGradient id="networkActive" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stopColor="hsl(210 100% 52%)" />
-          <stop offset="50%" stopColor="hsl(203 100% 58%)" />
-          <stop offset="100%" stopColor="hsl(188 92% 56%)" />
+        {/* Metallic gradient for front segments */}
+        <linearGradient id="helixFront" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="hsl(215 15% 72%)" stopOpacity="0.9" />
+          <stop offset="30%" stopColor="hsl(220 12% 82%)" stopOpacity="1" />
+          <stop offset="50%" stopColor="hsl(210 20% 90%)" stopOpacity="1" />
+          <stop offset="70%" stopColor="hsl(220 12% 78%)" stopOpacity="0.95" />
+          <stop offset="100%" stopColor="hsl(215 15% 65%)" stopOpacity="0.85" />
         </linearGradient>
 
-        <filter id="networkGlow">
-          <feGaussianBlur stdDeviation="1.8" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
+        {/* Pulse glow */}
+        <radialGradient id="pulseGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stopColor="hsl(210 60% 75%)" stopOpacity="0.9" />
+          <stop offset="40%" stopColor="hsl(210 50% 65%)" stopOpacity="0.5" />
+          <stop offset="100%" stopColor="hsl(210 40% 55%)" stopOpacity="0" />
+        </radialGradient>
+
+        <filter id="pulseBlur">
+          <feGaussianBlur stdDeviation={isMobile ? '6' : '10'} />
+        </filter>
+
+        <filter id="metalShine">
+          <feGaussianBlur stdDeviation="0.5" />
         </filter>
       </defs>
 
-      {segments.map((segment) => (
-        <line
-          key={`base-${segment.key}`}
-          x1={segment.start.x}
-          y1={segment.start.y}
-          x2={segment.end.x}
-          y2={segment.end.y}
-          stroke="url(#networkBase)"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      ))}
-
-      {segments.map((segment, index) => {
-        const isActive = index < activeStep;
-
-        return (
-          <line
-            key={`active-${segment.key}`}
-            x1={segment.start.x}
-            y1={segment.start.y}
-            x2={segment.end.x}
-            y2={segment.end.y}
-            stroke="url(#networkActive)"
-            strokeWidth="2.4"
+      {/* Back segments (behind the coil) */}
+      {segments
+        .filter((s) => !s.isFront)
+        .map((seg, i) => (
+          <path
+            key={`back-${i}`}
+            d={seg.d}
+            fill="none"
+            stroke="url(#helixBack)"
+            strokeWidth={strokeWidth * 0.8}
             strokeLinecap="round"
-            filter={isActive ? 'url(#networkGlow)' : undefined}
-            style={{
-              opacity: isActive ? 1 : 0,
-              transition: 'opacity 400ms ease',
-            }}
+            strokeLinejoin="round"
           />
-        );
-      })}
+        ))}
 
-      {nodes.map((node, index) => {
-        const isActive = index <= activeStep;
-        const isCurrent = index === activeStep;
-
-        return (
-          <g key={`pulse-${index}`}>
-            <circle
-              cx={node.x}
-              cy={node.y}
-              r={isCurrent ? 2.8 : 1.8}
-              fill={isCurrent ? 'hsl(210 100% 58%)' : isActive ? 'hsl(210 90% 56% / 0.75)' : 'hsl(210 18% 84%)'}
-              filter={isCurrent ? 'url(#networkGlow)' : undefined}
-              style={{ transition: 'all 300ms ease' }}
+      {/* Front segments (visible coil) */}
+      {segments
+        .filter((s) => s.isFront)
+        .map((seg, i) => (
+          <g key={`front-${i}`}>
+            {/* Shadow/depth line */}
+            <path
+              d={seg.d}
+              fill="none"
+              stroke="hsl(220 15% 30%)"
+              strokeWidth={strokeWidth + 2}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.08}
             />
-            {isCurrent && (
-              <circle
-                cx={node.x}
-                cy={node.y}
-                r="4.6"
-                fill="none"
-                stroke="hsl(210 100% 60% / 0.35)"
-                strokeWidth="0.6"
-              >
-                <animate attributeName="r" values="4.6;7.8;4.6" dur="1.6s" repeatCount="indefinite" />
-                <animate attributeName="opacity" values="0.65;0;0.65" dur="1.6s" repeatCount="indefinite" />
-              </circle>
-            )}
+            {/* Main metallic stroke */}
+            <path
+              d={seg.d}
+              fill="none"
+              stroke="url(#helixFront)"
+              strokeWidth={strokeWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+            {/* Highlight line */}
+            <path
+              d={seg.d}
+              fill="none"
+              stroke="hsl(210 20% 95%)"
+              strokeWidth={strokeWidth * 0.3}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              opacity={0.4}
+            />
           </g>
-        );
-      })}
+        ))}
+
+      {/* Energy pulse glow (large soft) */}
+      <circle
+        cx={pulsePoint.screenX}
+        cy={pulsePoint.screenY}
+        r={isMobile ? 18 : 28}
+        fill="url(#pulseGlow)"
+        filter="url(#pulseBlur)"
+        opacity={0.7 + pulsePoint.opacity * 0.3}
+      />
+
+      {/* Energy pulse core */}
+      <circle
+        cx={pulsePoint.screenX}
+        cy={pulsePoint.screenY}
+        r={isMobile ? 3 : 4.5}
+        fill="hsl(210 40% 88%)"
+        opacity={0.9}
+      />
+      <circle
+        cx={pulsePoint.screenX}
+        cy={pulsePoint.screenY}
+        r={isMobile ? 1.5 : 2}
+        fill="hsl(0 0% 100%)"
+        opacity={0.95}
+      />
     </svg>
   );
 };
 
-const NodeCard = ({
-  step,
-  index,
-  activeStep,
-  position,
-  size = 'desktop',
-}: {
-  step: (typeof STEPS)[number];
-  index: number;
-  activeStep: number;
-  position: NetworkNode;
-  size?: 'desktop' | 'mobile';
-}) => {
-  const isActive = index <= activeStep;
-  const isCurrent = index === activeStep;
-  const cardSize = size === 'desktop' ? 'w-24 h-24' : 'w-16 h-16';
-  const textSize = size === 'desktop' ? 'text-base' : 'text-[11px]';
-  const gapSize = size === 'desktop' ? 'gap-3' : 'gap-2';
-  const labelOffset = size === 'desktop' ? 18 : 14;
-
-  return (
-    <div
-      className={`absolute -translate-x-1/2 -translate-y-1/2 flex flex-col items-center ${gapSize} z-10`}
-      style={{
-        left: `${position.x}%`,
-        top: `${position.y}%`,
-      }}
-    >
-      <div
-        className={`${cardSize} rounded-[28px] flex items-center justify-center border transition-all duration-500`}
-        style={{
-          background: isCurrent
-            ? 'linear-gradient(135deg, hsl(210 100% 50%), hsl(210 100% 38%))'
-            : isActive
-              ? 'linear-gradient(180deg, rgba(255,255,255,0.92), rgba(239,247,255,0.96))'
-              : 'rgba(255,255,255,0.72)',
-          borderColor: isCurrent
-            ? 'hsl(210 100% 62%)'
-            : isActive
-              ? 'hsl(210 75% 72% / 0.9)'
-              : 'hsl(210 18% 84% / 0.85)',
-          boxShadow: isCurrent
-            ? '0 0 0 1px hsl(210 100% 62% / 0.30), 0 0 34px hsl(210 100% 55% / 0.25), 0 18px 32px hsl(210 50% 24% / 0.18)'
-            : isActive
-              ? '0 10px 24px hsl(210 38% 30% / 0.12)'
-              : '0 8px 18px hsl(220 20% 20% / 0.05)',
-          transform: isCurrent ? 'scale(1.1)' : isActive ? 'scale(1.03)' : 'scale(1)',
-          backdropFilter: 'blur(8px)',
-        }}
-      >
-        <StepIcon type={step.icon} active={isCurrent} />
-      </div>
-
-      <span
-        className={`${textSize} font-semibold whitespace-nowrap transition-all duration-500`}
-        style={{
-          color: isCurrent
-            ? 'hsl(210 100% 42%)'
-            : isActive
-              ? 'hsl(220 25% 28%)'
-              : 'hsl(220 12% 58%)',
-          textShadow: isCurrent ? '0 0 10px hsl(210 100% 56% / 0.10)' : 'none',
-          marginTop: `${labelOffset / 6}px`,
-        }}
-      >
-        {step.label}
-      </span>
-    </div>
-  );
-};
-
-const MobileFlow = ({ activeStep }: { activeStep: number }) => {
-  return (
-    <div className="relative w-full max-w-md mx-auto mt-8" dir="ltr" style={{ height: 240 }}>
-      <div className="absolute inset-0 rounded-[28px] bg-white/35" />
-
-      <NetworkLines nodes={mobileNodes} activeStep={activeStep} svgHeight={68} />
-
-      {STEPS.map((step, index) => (
-        <NodeCard
-          key={step.label}
-          step={step}
-          index={index}
-          activeStep={activeStep}
-          position={mobileNodes[index]}
-          size="mobile"
-        />
-      ))}
-    </div>
-  );
-};
-
-const DesktopFlow = ({ activeStep }: { activeStep: number }) => {
-  return (
-    <div
-      className="relative w-full max-w-6xl mx-auto mt-8"
-      dir="ltr"
-      style={{ height: 430 }}
-    >
-      <div
-        className="absolute inset-x-0 top-[8%] bottom-[4%] rounded-[40px]"
-        style={{
-          background:
-            'radial-gradient(circle at 50% 50%, hsl(210 100% 97% / 0.42), transparent 55%)',
-        }}
-      />
-
-      <NetworkLines nodes={desktopNodes} activeStep={activeStep} svgHeight={100} />
-
-      {STEPS.map((step, index) => (
-        <NodeCard
-          key={step.label}
-          step={step}
-          index={index}
-          activeStep={activeStep}
-          position={desktopNodes[index]}
-          size="desktop"
-        />
-      ))}
-    </div>
-  );
-};
-
 const HeroAutomationFlow = () => {
-  const [activeStep, setActiveStep] = useState(0);
-  const intervalRef = useRef<number | null>(null);
   const isMobile = useIsMobile();
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
 
   useEffect(() => {
-    setActiveStep(0);
-
-    intervalRef.current = window.setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % STEPS.length);
-    }, STEP_INTERVAL);
-
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setDimensions({ width: rect.width, height: rect.height });
       }
     };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
   }, []);
 
-  if (isMobile) {
-    return <MobileFlow activeStep={activeStep} />;
-  }
+  const height = isMobile ? 180 : 280;
 
-  return <DesktopFlow activeStep={activeStep} />;
+  return (
+    <div
+      ref={containerRef}
+      className="relative w-full mx-auto mt-6 md:mt-10"
+      style={{ height, maxWidth: isMobile ? '320px' : '500px' }}
+    >
+      {dimensions.width > 0 && (
+        <MetallicHelix
+          width={dimensions.width}
+          height={height}
+          isMobile={isMobile}
+        />
+      )}
+    </div>
+  );
 };
 
 export default HeroAutomationFlow;
