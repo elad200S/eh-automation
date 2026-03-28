@@ -30,21 +30,38 @@ const steps = [
   },
 ];
 
+// כמה זמן כל שלב מופיע (מילישניות)
+const STEP_DELAY = 700;
+// כמה זמן להמתין אחרי שכל השלבים הופיעו לפני איפוס
+const PAUSE_AFTER_COMPLETE = 2000;
+
 const AutomationAnimation = () => {
   const [activeStep, setActiveStep] = useState(-1);
   const sectionRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const isInViewRef = useRef(false);
 
   const startAnimation = useCallback(() => {
-    // Reset
-    setActiveStep(-1);
+    // איפוס כל הטיימרים הקודמים
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
+    setActiveStep(-1);
 
+    // הפעל כל שלב בזה אחר זה
     steps.forEach((_, i) => {
-      const timer = setTimeout(() => setActiveStep(i), (i + 1) * 700);
+      const timer = setTimeout(() => setActiveStep(i), (i + 1) * STEP_DELAY);
       timersRef.current.push(timer);
     });
+
+    // אחרי שכל השלבים הופיעו — המתן ואז התחל מחדש (loop!)
+    const totalDuration = steps.length * STEP_DELAY + PAUSE_AFTER_COMPLETE;
+    const loopTimer = setTimeout(() => {
+      // רק אם עדיין בview
+      if (isInViewRef.current) {
+        startAnimation();
+      }
+    }, totalDuration);
+    timersRef.current.push(loopTimer);
   }, []);
 
   useEffect(() => {
@@ -53,10 +70,11 @@ const AutomationAnimation = () => {
 
     const observer = new IntersectionObserver(
       ([entry]) => {
+        isInViewRef.current = entry.isIntersecting;
         if (entry.isIntersecting) {
           startAnimation();
         } else {
-          // Reset when out of view so it replays on re-entry
+          // יצא מview — עצור הכל ואפס
           setActiveStep(-1);
           timersRef.current.forEach(clearTimeout);
           timersRef.current = [];
@@ -89,24 +107,91 @@ const AutomationAnimation = () => {
                     : 'border-transparent bg-muted/30 scale-95 opacity-40'
                 )}
               >
-                <div className={cn('w-12 h-12 rounded-xl flex items-center justify-center transition-colors duration-500', step.bg)}>
+                {/* האייקון — מקבל scale-up כשפעיל */}
+                <div
+                  className={cn(
+                    'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500',
+                    step.bg,
+                    activeStep >= index ? 'scale-110' : 'scale-100'
+                  )}
+                >
                   <step.Icon className={cn('w-6 h-6 transition-colors duration-500', step.color)} />
                 </div>
-                <span className="text-xs text-muted-foreground text-center whitespace-nowrap">{step.label}</span>
+                <span className="text-xs text-muted-foreground text-center whitespace-nowrap">
+                  {step.label}
+                </span>
               </div>
-              
+
+              {/* החץ בין שלבים — עם אנימציית זרימה */}
               {index < steps.length - 1 && (
-                <div className={cn(
-                  'transition-all duration-500',
-                  activeStep > index ? 'opacity-100' : 'opacity-20'
-                )}>
-                  <svg className="hidden md:block w-8 h-4 text-primary/40" viewBox="0 0 32 16">
-                    <path d="M0 8h24" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
-                    <path d="M20 4l6 4-6 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+                <div
+                  className={cn(
+                    'transition-all duration-500',
+                    activeStep > index ? 'opacity-100' : 'opacity-20'
+                  )}
+                >
+                  {/* Desktop: חץ אופקי עם זרימה */}
+                  <svg
+                    className="hidden md:block w-10 h-5 text-primary"
+                    viewBox="0 0 40 20"
+                    overflow="visible"
+                  >
+                    {/* הקו הזורם */}
+                    <path
+                      d="M0 10h30"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 3"
+                      fill="none"
+                      strokeLinecap="round"
+                      style={
+                        activeStep > index
+                          ? {
+                              animation: 'dash-flow 0.8s linear infinite',
+                            }
+                          : {}
+                      }
+                    />
+                    {/* ראש החץ */}
+                    <path
+                      d="M26 6l8 4-8 4"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
-                  <svg className="md:hidden w-4 h-8 text-primary/40" viewBox="0 0 16 32">
-                    <path d="M8 0v24" stroke="currentColor" strokeWidth="1.5" strokeDasharray="3 3" />
-                    <path d="M4 20l4 6 4-6" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+
+                  {/* Mobile: חץ אנכי עם זרימה */}
+                  <svg
+                    className="md:hidden w-5 h-10 text-primary"
+                    viewBox="0 0 20 40"
+                    overflow="visible"
+                  >
+                    <path
+                      d="M10 0v30"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      strokeDasharray="4 3"
+                      fill="none"
+                      strokeLinecap="round"
+                      style={
+                        activeStep > index
+                          ? {
+                              animation: 'dash-flow-vertical 0.8s linear infinite',
+                            }
+                          : {}
+                      }
+                    />
+                    <path
+                      d="M6 26l4 8 4-8"
+                      stroke="currentColor"
+                      strokeWidth="1.5"
+                      fill="none"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
                   </svg>
                 </div>
               )}
@@ -114,6 +199,18 @@ const AutomationAnimation = () => {
           ))}
         </div>
       </div>
+
+      {/* CSS לאנימציית הזרימה — מוסיף לdocument פעם אחת */}
+      <style>{`
+        @keyframes dash-flow {
+          from { stroke-dashoffset: 14; }
+          to   { stroke-dashoffset: 0; }
+        }
+        @keyframes dash-flow-vertical {
+          from { stroke-dashoffset: 14; }
+          to   { stroke-dashoffset: 0; }
+        }
+      `}</style>
     </Section>
   );
 };
