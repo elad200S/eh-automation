@@ -34,6 +34,11 @@ const HeroSection = () => {
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
       
+      {/* Full-width automation flow behind content */}
+      <div className="absolute inset-0 flex items-center z-[1] pointer-events-none">
+        <HeroAutomationFlow />
+      </div>
+
       <div className="container relative z-10">
         <div className={`max-w-3xl mx-auto text-center ${getAnimationClasses()}`}>
           <div className="text-technical mb-6">
@@ -68,9 +73,6 @@ const HeroSection = () => {
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
-
-          {/* Automation flow animation */}
-          <HeroAutomationFlow />
         </div>
       </div>
       
