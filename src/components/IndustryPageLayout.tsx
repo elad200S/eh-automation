@@ -1,6 +1,6 @@
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import { SEOHead } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
 import Breadcrumbs from '@/components/Breadcrumbs';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -43,6 +43,11 @@ const IndustryPageLayout = ({ data }: { data: IndustryPageData }) => {
         description={data.metaDescription}
         path={`/${data.slug}`}
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'תעשיות', path: '/industries' },
+        { name: data.hero.headline, path: `/${data.slug}` },
+      ]} />
 
       <Navbar />
 

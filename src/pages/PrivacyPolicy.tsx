@@ -1,15 +1,16 @@
-import { Helmet } from 'react-helmet-async';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SEOHead } from '@/lib/seo';
 
 const PrivacyPolicy = () => {
   return (
     <>
-      <Helmet>
-        <title>מדיניות פרטיות | EH Automation</title>
-        <meta name="description" content="מדיניות הפרטיות של EH Automation - מידע על איסוף ושימוש במידע אישי" />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="מדיניות פרטיות | EH Automation"
+        description="מדיניות הפרטיות של EH Automation – מידע על איסוף, שימוש ואבטחת המידע האישי שלכם. השימוש באתר מהווה הסכמה למדיניות זו."
+        path="/privacy"
+        noindex
+      />
 
       <main className="bg-background min-h-screen py-16 px-4" dir="rtl">
         <div className="max-w-3xl mx-auto">

@@ -17,6 +17,10 @@
   <url><loc>https://ehautomation.co.il/blog</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
   <url><loc>https://ehautomation.co.il/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ehautomation.co.il/services/chatbots</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ehautomation.co.il/services/crm</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ehautomation.co.il/services/automation</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
+  <url><loc>https://ehautomation.co.il/services/ai-agents</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/privacy</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
   <url><loc>https://ehautomation.co.il/cookies</loc><priority>0.3</priority><changefreq>yearly</changefreq></url>
 </urlset>

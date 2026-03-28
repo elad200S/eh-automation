@@ -30,6 +30,9 @@ export const SEOHead = ({ title, description, path, type = 'website', noindex }:
       <meta property="og:type" content={type} />
       <meta property="og:site_name" content={SITE_NAME} />
       <meta property="og:locale" content="he_IL" />
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
       <html lang="he" dir="rtl" />
     </Helmet>
   );

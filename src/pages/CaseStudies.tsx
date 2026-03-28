@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Target, Zap } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -45,6 +45,10 @@ const CaseStudies = () => {
         description="מקרי בוחן מפרויקטי אוטומציה עסקית ובינה מלאכותית – ראו איך עסקים אמיתיים שיפרו תהליכים עם EH Automation."
         path="/case-studies"
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'מקרי בוחן', path: '/case-studies' },
+      ]} />
 
       <Navbar />
 

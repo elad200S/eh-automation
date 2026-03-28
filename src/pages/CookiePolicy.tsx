@@ -1,15 +1,16 @@
-import { Helmet } from 'react-helmet-async';
 import { ArrowRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { SEOHead } from '@/lib/seo';
 
 const CookiePolicy = () => {
   return (
     <>
-      <Helmet>
-        <title>מדיניות Cookies | EH Automation</title>
-        <meta name="description" content="מדיניות ה-Cookies של EH Automation - מידע על השימוש ב-Cookies באתר" />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title="מדיניות Cookies | EH Automation"
+        description="מדיניות ה-Cookies של EH Automation – סוגי העוגיות שבהן אנו משתמשים, כיצד לנהל אותן והזכות שלכם לשלוט בהעדפות."
+        path="/cookies"
+        noindex
+      />
 
       <div className="min-h-screen bg-background py-16 px-4">
         <div className="max-w-3xl mx-auto">
