@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Building2, Users, GraduationCap, Home, ShoppingCart } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -50,9 +50,13 @@ const Industries = () => {
     <>
       <SEOHead
         title="אוטומציה לפי תעשייה | EH Automation"
-        description="פתרונות אוטומציה מותאמים לתעשיות: סוכנויות, יועצים, מאמנים, נדל״ן ומסחר אלקטרוני."
+        description="פתרונות אוטומציה מותאמים לפי תעשייה: סוכנויות דיגיטל, יועצים עסקיים, מאמנים, נדל״ן ומסחר אלקטרוני. גלו איך אוטומציה יכולה לשנות את העסק שלכם."
         path="/industries"
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'תעשיות', path: '/industries' },
+      ]} />
 
       <Navbar />
 

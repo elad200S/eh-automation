@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -53,6 +53,10 @@ const Solutions = () => {
         description="פתרונות אוטומציה עסקית ובינה מלאכותית: סוכני AI, אוטומציית WhatsApp, CRM, תהליכי עבודה ומערכות עסקיות מותאמות."
         path="/solutions"
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'פתרונות', path: '/solutions' },
+      ]} />
 
       <Navbar />
 

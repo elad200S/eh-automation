@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
 import eladHeadshot from '@/assets/elad-headshot.png';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
@@ -40,9 +40,13 @@ const About = () => {
     <>
       <SEOHead
         title="אודות EH Automation | סטודיו לאוטומציה עסקית"
-        description="הכירו את EH Automation – סטודיו לאוטומציה עסקית ובינה מלאכותית שעוזר לעסקים לצמוח חכם יותר."
+        description="הכירו את EH Automation – סטודיו לאוטומציה עסקית ובינה מלאכותית. בונים מערכות שחוסכות זמן, מטפלות בלידים ומגדילות הכנסות לעסקים ישראלים."
         path="/about"
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'אודות', path: '/about' },
+      ]} />
 
       <Navbar />
 

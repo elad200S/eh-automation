@@ -56,6 +56,11 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
         description={data.metaDescription}
         path={`/${data.slug}`}
       />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'פתרונות', path: '/solutions' },
+        { name: data.hero.headline, path: `/${data.slug}` },
+      ]} />
       <FAQSchema items={data.faq.items} />
 
       <Navbar />
