@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from 'react';
 import { useIsMobile } from '@/hooks/use-mobile';
 
-const CYCLE_MS = 6000;
+const CYCLE_MS = 8000;
 
 const NODES = [
   { label: 'ליד נכנס', position: 0.05 },
-  { label: 'עיבוד נתונים', position: 0.28 },
+  { label: 'עיבוד נתונים', position: 0.25 },
   { label: 'CRM', position: 0.5 },
-  { label: 'אוטומציה', position: 0.72 },
+  { label: 'אוטומציה', position: 0.75 },
   { label: 'תוצאה', position: 0.95 },
 ];
 
@@ -32,9 +32,9 @@ function generateHelixPoints(
   rotationOffset: number
 ): HelixPoint[] {
   const points: HelixPoint[] = [];
-  const totalPoints = turns * 80;
+  const totalPoints = turns * 120;
   const centerY = height / 2;
-  const padding = 40;
+  const padding = 20;
 
   for (let i = 0; i <= totalPoints; i++) {
     const t = i / totalPoints;
@@ -44,7 +44,6 @@ function generateHelixPoints(
     const perspective = 500;
     const scale = perspective / (perspective + z);
     const y = centerY + Math.cos(angle) * radiusY * scale;
-
     points.push({ screenX: x, screenY: y, z });
   }
   return points;
@@ -84,9 +83,12 @@ const HeroAutomationFlow = () => {
   const isVisibleRef = useRef(true);
 
   const nodes = isMobile ? MOBILE_NODES : NODES;
-  const height = isMobile ? 140 : 200;
-  const turns = isMobile ? 2 : 3;
-  const radiusY = isMobile ? 22 : 35;
+  // גובה גדול יותר — ממלא את כל ה-Hero כולל מתחת לכפתור
+  const height = isMobile ? 220 : 340;
+  // הרבה יותר סיבובים — DNA style
+  const turns = isMobile ? 4 : 7;
+  // רדיוס גדול יותר — גלים גדולים
+  const radiusY = isMobile ? 40 : 65;
 
   useEffect(() => {
     const update = () => {
@@ -100,14 +102,11 @@ const HeroAutomationFlow = () => {
     return () => window.removeEventListener('resize', update);
   }, [height]);
 
-  // עצור את ה-rAF כשיוצא מview (חוסך סוללה ו-CPU)
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        isVisibleRef.current = entry.isIntersecting;
-      },
+      ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
       { threshold: 0 }
     );
     observer.observe(el);
@@ -118,7 +117,6 @@ const HeroAutomationFlow = () => {
     const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     const animate = (ts: number) => {
-      // רק אם הcomponent בתוך הview
       if (isVisibleRef.current) {
         if (!startRef.current) startRef.current = ts;
         const elapsed = ts - startRef.current;
@@ -126,10 +124,9 @@ const HeroAutomationFlow = () => {
         setPulseT(t);
 
         if (!prefersReduced) {
-          setRotation(elapsed * 0.00015);
+          setRotation(elapsed * 0.00012);
         }
 
-        // מציאת ה-node הקרוב לנקודת ה-pulse
         let closest = -1;
         let minDist = 0.06;
         for (let i = 0; i < nodes.length; i++) {
@@ -141,7 +138,6 @@ const HeroAutomationFlow = () => {
         }
         setActiveNode(closest);
       } else {
-        // כשלא בview — אפס את ה-startRef כדי שיתחיל חלק כשחוזר
         startRef.current = 0;
       }
 
@@ -159,7 +155,6 @@ const HeroAutomationFlow = () => {
   const points = generateHelixPoints(dims.width, height, turns, radiusY, rotation);
   const pulsePoint = getPointAtT(points, pulseT);
 
-  // חלוקה לקדמי/אחורי לאפקט 3D
   const frontSegs: HelixPoint[][] = [];
   const backSegs: HelixPoint[][] = [];
   let currentFront: HelixPoint[] = [];
@@ -179,13 +174,13 @@ const HeroAutomationFlow = () => {
   if (currentFront.length > 1) frontSegs.push(currentFront);
   if (currentBack.length > 1) backSegs.push(currentBack);
 
-  const nodeRadius = isMobile ? 14 : 18;
-  const strokeW = isMobile ? 2 : 3;
+  const nodeRadius = isMobile ? 12 : 16;
+  const strokeW = isMobile ? 1.5 : 2.5;
 
   return (
     <div
       ref={containerRef}
-      className="relative w-full mt-6 md:mt-8"
+      className="relative w-full"
       style={{ height }}
     >
       <svg
@@ -196,66 +191,50 @@ const HeroAutomationFlow = () => {
         aria-hidden="true"
       >
         <defs>
-          {/* הליקס — גרדיאנטים */}
           <linearGradient id="helixBackGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stopColor="hsl(210 100% 50%)" stopOpacity="0.08" />
-            <stop offset="50%"  stopColor="hsl(210 100% 50%)" stopOpacity="0.12" />
-            <stop offset="100%" stopColor="hsl(210 100% 50%)" stopOpacity="0.08" />
+            <stop offset="0%"   stopColor="hsl(210 100% 50%)" stopOpacity="0.05" />
+            <stop offset="50%"  stopColor="hsl(210 100% 50%)" stopOpacity="0.10" />
+            <stop offset="100%" stopColor="hsl(210 100% 50%)" stopOpacity="0.05" />
           </linearGradient>
           <linearGradient id="helixFrontGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%"   stopColor="hsl(210 80% 60%)"  stopOpacity="0.5" />
-            <stop offset="30%"  stopColor="hsl(210 90% 65%)"  stopOpacity="0.7" />
-            <stop offset="50%"  stopColor="hsl(210 100% 70%)" stopOpacity="0.85" />
-            <stop offset="70%"  stopColor="hsl(210 90% 65%)"  stopOpacity="0.7" />
-            <stop offset="100%" stopColor="hsl(210 80% 60%)"  stopOpacity="0.5" />
+            <stop offset="0%"   stopColor="hsl(210 80% 65%)"  stopOpacity="0.35" />
+            <stop offset="30%"  stopColor="hsl(210 90% 68%)"  stopOpacity="0.55" />
+            <stop offset="50%"  stopColor="hsl(210 100% 72%)" stopOpacity="0.70" />
+            <stop offset="70%"  stopColor="hsl(210 90% 68%)"  stopOpacity="0.55" />
+            <stop offset="100%" stopColor="hsl(210 80% 65%)"  stopOpacity="0.35" />
           </linearGradient>
-
-          {/* ה-pulse — כחול בהיר ונראה */}
           <radialGradient id="pulseGlowGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="hsl(210 100% 60%)" stopOpacity="0.8" />
+            <stop offset="0%"   stopColor="hsl(210 100% 58%)" stopOpacity="0.9" />
             <stop offset="40%"  stopColor="hsl(210 100% 55%)" stopOpacity="0.4" />
             <stop offset="100%" stopColor="hsl(210 100% 50%)" stopOpacity="0" />
           </radialGradient>
-
-          {/* glow של node פעיל */}
           <radialGradient id="nodeActiveGrad" cx="50%" cy="50%" r="50%">
-            <stop offset="0%"   stopColor="hsl(210 100% 60%)" stopOpacity="0.6" />
+            <stop offset="0%"   stopColor="hsl(210 100% 60%)" stopOpacity="0.5" />
             <stop offset="100%" stopColor="hsl(210 100% 50%)" stopOpacity="0" />
           </radialGradient>
-
           <filter id="softGlow">
-            <feGaussianBlur stdDeviation={isMobile ? '6' : '10'} />
+            <feGaussianBlur stdDeviation={isMobile ? '8' : '14'} />
           </filter>
           <filter id="nodeGlow">
-            <feGaussianBlur stdDeviation="4" />
+            <feGaussianBlur stdDeviation="5" />
           </filter>
         </defs>
 
-        {/* חלק אחורי של ההליקס */}
+        {/* חלק אחורי — עדין */}
         {backSegs.map((seg, i) => (
           <path
             key={`b-${i}`}
             d={buildPath(seg)}
             fill="none"
             stroke="url(#helixBackGrad)"
-            strokeWidth={strokeW * 0.7}
+            strokeWidth={strokeW * 0.6}
             strokeLinecap="round"
           />
         ))}
 
-        {/* חלק קדמי של ההליקס */}
+        {/* חלק קדמי — בולט */}
         {frontSegs.map((seg, i) => (
           <g key={`f-${i}`}>
-            {/* צל עדין */}
-            <path
-              d={buildPath(seg)}
-              fill="none"
-              stroke="hsl(210 100% 30%)"
-              strokeWidth={strokeW + 1.5}
-              strokeLinecap="round"
-              opacity={0.06}
-            />
-            {/* הקו הראשי */}
             <path
               d={buildPath(seg)}
               fill="none"
@@ -263,65 +242,61 @@ const HeroAutomationFlow = () => {
               strokeWidth={strokeW}
               strokeLinecap="round"
             />
-            {/* ניצוץ לבן קטן בקצה הקו */}
+            {/* ניצוץ לבן על הקו */}
             <path
               d={buildPath(seg)}
               fill="none"
-              stroke="hsl(210 100% 95%)"
-              strokeWidth={strokeW * 0.25}
+              stroke="hsl(210 100% 92%)"
+              strokeWidth={strokeW * 0.2}
               strokeLinecap="round"
-              opacity={0.5}
+              opacity={0.6}
             />
           </g>
         ))}
 
-        {/* Nodes לאורך ההליקס */}
+        {/* Nodes */}
         {nodes.map((node, i) => {
           const pt = getPointAtT(points, node.position);
           const isActive = activeNode === i;
           return (
             <g key={`node-${i}`}>
-              {/* Glow גדול כשפעיל */}
               {isActive && (
                 <circle
                   cx={pt.screenX}
                   cy={pt.screenY}
-                  r={nodeRadius * 2.5}
+                  r={nodeRadius * 3}
                   fill="url(#nodeActiveGrad)"
                   filter="url(#nodeGlow)"
-                  opacity={0.9}
+                  opacity={0.8}
                 />
               )}
-              {/* טבעת חיצונית */}
               <circle
                 cx={pt.screenX}
                 cy={pt.screenY}
                 r={nodeRadius}
                 fill="none"
-                stroke={isActive ? 'hsl(210 100% 60%)' : 'hsl(210 30% 55%)'}
-                strokeWidth={isActive ? 2.5 : 1}
-                opacity={isActive ? 1 : 0.4}
+                stroke={isActive ? 'hsl(210 100% 58%)' : 'hsl(210 40% 60%)'}
+                strokeWidth={isActive ? 2 : 0.8}
+                opacity={isActive ? 1 : 0.35}
                 style={{ transition: 'all 0.4s ease' }}
               />
-              {/* נקודה פנימית */}
               <circle
                 cx={pt.screenX}
                 cy={pt.screenY}
-                r={isActive ? 5 : 2.5}
-                fill={isActive ? 'hsl(210 100% 65%)' : 'hsl(210 30% 55%)'}
-                opacity={isActive ? 1 : 0.5}
+                r={isActive ? 5 : 2}
+                fill={isActive ? 'hsl(210 100% 60%)' : 'hsl(210 40% 60%)'}
+                opacity={isActive ? 1 : 0.4}
                 style={{ transition: 'all 0.4s ease' }}
               />
-              {/* תווית */}
               <text
                 x={pt.screenX}
-                y={pt.screenY + nodeRadius + (isMobile ? 12 : 16)}
+                y={pt.screenY + nodeRadius + (isMobile ? 11 : 15)}
                 textAnchor="middle"
-                fill={isActive ? 'hsl(210 100% 35%)' : 'hsl(220 15% 50%)'}
-                fontSize={isMobile ? 9 : 11}
+                fill={isActive ? 'hsl(210 80% 35%)' : 'hsl(220 15% 55%)'}
+                fontSize={isMobile ? 8 : 10}
                 fontFamily="inherit"
                 fontWeight={isActive ? '600' : '400'}
-                opacity={isActive ? 1 : 0.55}
+                opacity={isActive ? 1 : 0.5}
                 style={{ transition: 'all 0.4s ease' }}
               >
                 {node.label}
@@ -330,31 +305,28 @@ const HeroAutomationFlow = () => {
           );
         })}
 
-        {/* ה-Pulse — הנקודה הנעה (עכשיו כחולה ונראית!) */}
-        {/* Glow */}
+        {/* Pulse — הנקודה הנעה */}
         <circle
           cx={pulsePoint.screenX}
           cy={pulsePoint.screenY}
-          r={isMobile ? 18 : 28}
+          r={isMobile ? 22 : 36}
           fill="url(#pulseGlowGrad)"
           filter="url(#softGlow)"
-          opacity={0.8}
+          opacity={0.85}
         />
-        {/* גוף ראשי */}
         <circle
           cx={pulsePoint.screenX}
           cy={pulsePoint.screenY}
-          r={isMobile ? 4 : 5.5}
+          r={isMobile ? 4.5 : 6}
           fill="hsl(210 100% 55%)"
           opacity={0.95}
         />
-        {/* ניצוץ לבן במרכז */}
         <circle
           cx={pulsePoint.screenX}
           cy={pulsePoint.screenY}
-          r={isMobile ? 1.8 : 2.5}
+          r={isMobile ? 2 : 2.8}
           fill="hsl(0 0% 100%)"
-          opacity={0.98}
+          opacity={1}
         />
       </svg>
     </div>

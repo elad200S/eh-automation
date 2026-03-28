@@ -17,26 +17,21 @@ const HeroSection = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    // השתמש ב-100ms במקום 250ms — פחות flicker
     const timer = setTimeout(() => setMounted(true), 100);
     return () => clearTimeout(timer);
   }, []);
 
   return (
-    <section className="min-h-[70vh] md:min-h-[75vh] flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background pb-8 md:pb-12">
+    <section className="min-h-[80vh] md:min-h-[85vh] flex flex-col relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
       <div className="absolute inset-0 grid-pattern opacity-40" />
       <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
       <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
 
-      {/* ההליקס ברקע */}
-      <div className="absolute inset-0 flex items-center z-[1] pointer-events-none">
-        <HeroAutomationFlow />
-      </div>
-
-      <div className="container relative z-10">
+      {/* תוכן — חלק עליון */}
+      <div className="container relative z-10 pt-16 md:pt-24 pb-8">
         <div className="max-w-3xl mx-auto text-center">
 
-          {/* כותרת קטנה — נכנסת ראשונה */}
+          {/* כותרת קטנה */}
           <div
             className={
               prefersReducedMotion
@@ -45,12 +40,11 @@ const HeroSection = () => {
                     mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
                   }`
             }
-            style={{ transitionDelay: '0ms' }}
           >
             <span className="text-primary font-semibold">//</span> AI Automation Studio
           </div>
 
-          {/* כותרת ראשית — נכנסת שנייה */}
+          {/* כותרת ראשית */}
           <h1
             className={
               prefersReducedMotion
@@ -64,7 +58,7 @@ const HeroSection = () => {
             אוטומציות ו-AI לעסקים שרוצים לעבוד מסודר, לטפל ביותר לידים ולחסוך עבודה ידנית
           </h1>
 
-          {/* תיאור — נכנס שלישי */}
+          {/* תיאור */}
           <p
             className={
               prefersReducedMotion
@@ -78,7 +72,7 @@ const HeroSection = () => {
             אני בונה מערכות שמחברות בין לידים, לקוחות ותהליכים, כך שכל פנייה מטופלת, הכל מתועד, והעסק עובד בצורה חלקה וברורה
           </p>
 
-          {/* Bullets — נכנסים רביעיים */}
+          {/* Bullets */}
           <div
             className={
               prefersReducedMotion
@@ -97,7 +91,7 @@ const HeroSection = () => {
             ))}
           </div>
 
-          {/* כפתור CTA — נכנס אחרון */}
+          {/* כפתור CTA */}
           <div
             className={
               prefersReducedMotion
@@ -113,8 +107,21 @@ const HeroSection = () => {
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
-
         </div>
+      </div>
+
+      {/* ההליקס — מתחת לכל התוכן, ממלא את השטח שנשאר */}
+      <div
+        className={
+          prefersReducedMotion
+            ? 'relative z-10 w-full flex-1 flex items-center'
+            : `relative z-10 w-full flex-1 flex items-center transition-all duration-1000 ease-out ${
+                mounted ? 'opacity-100' : 'opacity-0'
+              }`
+        }
+        style={{ transitionDelay: prefersReducedMotion ? '0ms' : '600ms' }}
+      >
+        <HeroAutomationFlow />
       </div>
 
       <div className="absolute bottom-0 right-0 w-1 h-32 bg-gradient-to-t from-primary to-transparent" />
