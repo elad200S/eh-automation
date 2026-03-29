@@ -10,7 +10,7 @@ const HeroAutomationFlow = () => {
   const startRef = useRef(0);
   const isVisibleRef = useRef(true);
 
-  const height = isMobile ? 180 : 280;
+  const height = isMobile ? 260 : 420;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -55,12 +55,12 @@ const HeroAutomationFlow = () => {
       ctx.clearRect(0, 0, W, H);
 
       // פרמטרים של הגל
-      const turns = isMobile ? 2.5 : 3.5;
-      const ampY = isMobile ? 55 : 85;
+      const turns = isMobile ? 1.5 : 2;
+      const ampY = isMobile ? 78 : 130;
       const centerY = H / 2;
       const padding = isMobile ? -40 : -80;
-      const tubeRadius = isMobile ? 14 : 22;
-      const segments = 300;
+      const tubeRadius = isMobile ? 38 : 60;
+      const segments = 500;
 
       // בנה את נקודות הנתיב
       const pathPts: { x: number; y: number; z: number }[] = [];
@@ -92,27 +92,29 @@ const HeroAutomationFlow = () => {
         const ny = dx / len;
 
         // צבע — כחול + ציאן עם gradient לפי z
-        const bright = Math.round(50 + 30 * ((z + 1) / 2)); // 50–80%
-        const alpha = 0.35 + 0.65 * ((z + 1) / 2); // עמוק = שקוף יותר
+        const bright = Math.round(45 + 30 * ((z + 1) / 2)); // 45–75%
+        const alpha = 0.6 + 0.4 * ((z + 1) / 2); // אטום יותר בכל מצב
 
         // רק ציור של slice אחד — ellipse בניצב לנתיב
         ctx.save();
         ctx.translate(p.x, p.y);
 
-        // gradient רדיאלי על כל פרוסה לתת תחושת נפח
+        // gradient רדיאלי — הייליט חזק למעלה-שמאל, צל כהה למטה-ימין
         const grd = ctx.createRadialGradient(
-          -r * 0.3, -r * 0.3, 0,
-          0, 0, r
+          -r * 0.35, -r * 0.35, 0,
+          0, 0, r * 1.1
         );
-        // הייליט לבן בפינה
-        grd.addColorStop(0, `hsla(195, 100%, 85%, ${alpha})`);
-        // כחול ביניים
-        grd.addColorStop(0.4, `hsla(205, 100%, ${bright + 10}%, ${alpha})`);
-        // ציאן כהה בצד
-        grd.addColorStop(1, `hsla(210, 100%, ${bright - 15}%, ${alpha * 0.7})`);
+        // הייליט לבן-ציאן בפינה
+        grd.addColorStop(0,    `hsla(188, 100%, 88%, ${alpha})`);
+        // ציאן בהיר
+        grd.addColorStop(0.25, `hsla(196, 100%, 72%, ${alpha})`);
+        // כחול בינוני
+        grd.addColorStop(0.55, `hsla(208, 100%, ${bright + 8}%, ${alpha})`);
+        // כחול כהה בצד הצל
+        grd.addColorStop(1,    `hsla(218, 100%, ${bright - 18}%, ${alpha * 0.75})`);
 
         ctx.beginPath();
-        ctx.ellipse(0, 0, r, r * 0.92, 0, 0, Math.PI * 2);
+        ctx.ellipse(0, 0, r, r * 0.9, 0, 0, Math.PI * 2);
         ctx.fillStyle = grd;
         ctx.fill();
 
@@ -124,7 +126,7 @@ const HeroAutomationFlow = () => {
       const pp = pathPts[Math.min(pulseIdx, pathPts.length - 1)];
       const pulseZ = pp.z;
       const pulseScale = 0.55 + 0.45 * ((pulseZ + 1) / 2);
-      const pr = (isMobile ? 10 : 15) * pulseScale;
+      const pr = (isMobile ? 18 : 28) * pulseScale;
 
       const pulseGrd = ctx.createRadialGradient(
         pp.x - pr * 0.3, pp.y - pr * 0.3, 0,
