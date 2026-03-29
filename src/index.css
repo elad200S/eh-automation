@@ -4,50 +4,50 @@
 
 @layer base {
   :root {
-    /* New bright, clean palette */
-    --background: 210 20% 98%;
-    --background-secondary: 210 25% 96%;
-    --foreground: 220 30% 15%;
-    --foreground-muted: 220 15% 45%;
-    
-    /* Primary - Soft blue */
-    --primary: 210 100% 50%;
+    /* Dark theme palette */
+    --background: 222 20% 10%;
+    --background-secondary: 222 20% 13%;
+    --foreground: 0 0% 95%;
+    --foreground-muted: 220 15% 65%;
+
+    /* Primary - Bright blue (for headings + buttons) */
+    --primary: 210 100% 58%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 100% 50% / 0.12;
-    --primary-light: 210 100% 95%;
-    
-    /* Secondary - Light turquoise */
-    --secondary: 185 70% 50%;
+    --primary-glow: 210 100% 58% / 0.18;
+    --primary-light: 210 100% 15%;
+
+    /* Secondary - Cyan */
+    --secondary: 185 70% 52%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 185 60% 95%;
-    
-    /* Accent - Subtle green */
-    --accent: 160 60% 45%;
+    --secondary-light: 185 60% 15%;
+
+    /* Accent - Green */
+    --accent: 160 60% 48%;
     --accent-foreground: 0 0% 100%;
-    --accent-light: 160 50% 95%;
-    
+    --accent-light: 160 50% 12%;
+
     /* Surface colors */
-    --card: 0 0% 100%;
-    --card-foreground: 220 30% 15%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 30% 15%;
-    
+    --card: 222 20% 14%;
+    --card-foreground: 0 0% 95%;
+    --popover: 222 20% 14%;
+    --popover-foreground: 0 0% 95%;
+
     /* Muted */
-    --muted: 210 20% 94%;
-    --muted-foreground: 220 15% 45%;
-    
+    --muted: 222 20% 18%;
+    --muted-foreground: 220 15% 60%;
+
     /* States */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 160 60% 45%;
-    --success-light: 160 50% 95%;
-    
+    --success: 160 60% 48%;
+    --success-light: 160 50% 12%;
+
     /* Borders and inputs */
-    --border: 210 20% 88%;
-    --border-subtle: 210 15% 92%;
-    --input: 210 20% 96%;
-    --ring: 210 100% 50%;
-    
+    --border: 222 20% 22%;
+    --border-subtle: 222 20% 18%;
+    --input: 222 20% 16%;
+    --ring: 210 100% 58%;
+
     --radius: 0.5rem;
     
     /* Typography */
@@ -86,6 +86,7 @@
   /* Typography rhythm - consistent spacing */
   h1, h2, h3, h4, h5, h6 {
     margin-bottom: 0.75rem; /* 12px heading to paragraph */
+    color: hsl(var(--primary));
   }
 
   p + p {
@@ -149,16 +150,16 @@
 
   /* CTA gradient button */
   .cta-gradient {
-    @apply inline-flex items-center justify-center gap-3 px-8 py-4 rounded-lg font-medium text-lg;
+    @apply inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-medium text-lg;
     @apply shadow-lg transition-all duration-200;
     @apply hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97];
-    background: linear-gradient(to left, hsl(var(--primary)), hsl(210 100% 45%), hsl(210 100% 38%));
+    background: linear-gradient(to left, hsl(var(--primary)), hsl(210 100% 48%), hsl(210 100% 42%));
     color: hsl(var(--primary-foreground));
   }
 
   /* Outline button */
   .btn-outline {
-    @apply inline-flex items-center justify-center gap-2 px-6 py-4 font-medium rounded-lg;
+    @apply inline-flex items-center justify-center gap-2 px-6 py-4 font-medium rounded-full;
     @apply border border-border transition-all duration-200;
     @apply hover:border-primary/30 hover:bg-muted/50 hover:-translate-y-0.5 active:scale-[0.97];
     color: hsl(var(--foreground));
