@@ -98,7 +98,6 @@ const Blog = () => {
               <p className="text-muted-foreground mb-4">מאמרים חדשים מתווספים באופן שוטף.</p>
               <div className="flex flex-wrap gap-4">
                 <Link to="/solutions" className="text-sm text-primary hover:underline">ראו את הפתרונות שלנו →</Link>
-                <Link to="/case-studies" className="text-sm text-primary hover:underline">מקרי בוחן →</Link>
                 <button onClick={openPopup} className="text-sm text-primary hover:underline">שאלו אותנו ישירות →</button>
               </div>
             </nav>

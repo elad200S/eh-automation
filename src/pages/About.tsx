@@ -120,14 +120,10 @@ const About = () => {
         <Section id="explore">
           <div className="max-w-4xl">
             <h2 className="text-2xl font-semibold text-foreground mb-6">גלו עוד</h2>
-            <div className="grid sm:grid-cols-3 gap-4">
+            <div className="grid sm:grid-cols-2 gap-4">
               <Link to="/solutions" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-center">
                 <h3 className="font-medium text-foreground mb-1">פתרונות</h3>
                 <p className="text-xs text-muted-foreground">סוכני AI, אוטומציה, CRM</p>
-              </Link>
-              <Link to="/case-studies" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-center">
-                <h3 className="font-medium text-foreground mb-1">מקרי בוחן</h3>
-                <p className="text-xs text-muted-foreground">פרויקטים אמיתיים</p>
               </Link>
               <Link to="/blog" className="p-5 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 text-center">
                 <h3 className="font-medium text-foreground mb-1">בלוג</h3>
