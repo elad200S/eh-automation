@@ -10,17 +10,16 @@ const HeroAutomationFlow = () => {
   const startRef = useRef(0);
   const isVisibleRef = useRef(true);
 
-  const height = isMobile ? 180 : 280;
+  const height = isMobile ? 220 : 340;
 
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
-    const el = canvas;
     const observer = new IntersectionObserver(
       ([entry]) => { isVisibleRef.current = entry.isIntersecting; },
       { threshold: 0 }
     );
-    observer.observe(el);
+    observer.observe(canvas);
     return () => observer.disconnect();
   }, []);
 
@@ -32,7 +31,7 @@ const HeroAutomationFlow = () => {
 
     const resize = () => {
       const dpr = window.devicePixelRatio || 1;
-      canvas.width = canvas.offsetWidth * dpr;
+      canvas.width  = canvas.offsetWidth  * dpr;
       canvas.height = canvas.offsetHeight * dpr;
       ctx.scale(dpr, dpr);
     };
@@ -54,93 +53,97 @@ const HeroAutomationFlow = () => {
       const H = canvas.offsetHeight;
       ctx.clearRect(0, 0, W, H);
 
-      // פרמטרים של הגל
-      const turns = isMobile ? 2.5 : 3.5;
-      const ampY = isMobile ? 55 : 85;
-      const centerY = H / 2;
-      const padding = isMobile ? -40 : -80;
-      const tubeRadius = isMobile ? 14 : 22;
-      const segments = 300;
+      const turns      = isMobile ? 2.5 : 3.5;
+      const ampY       = isMobile ? 62  : 98;
+      const centerY    = H / 2;
+      const padding    = isMobile ? -40 : -80;
+      const tubeRadius = isMobile ? 22  : 36;
+      const segments   = 300;
 
-      // בנה את נקודות הנתיב
+      // בנה נקודות נתיב עם ערך z
       const pathPts: { x: number; y: number; z: number }[] = [];
       for (let i = 0; i <= segments; i++) {
-        const frac = i / segments;
+        const frac  = i / segments;
         const angle = frac * turns * Math.PI * 2;
-        const x = padding + frac * (W - padding * 2);
-        const y = centerY + Math.sin(angle) * ampY;
-        const z = Math.cos(angle); // -1 (אחורה) עד 1 (קדימה)
-        pathPts.push({ x, y, z });
+        pathPts.push({
+          x: padding + frac * (W - padding * 2),
+          y: centerY + Math.sin(angle) * ampY,
+          z: Math.cos(angle), // -1 (אחורה) → 1 (קדימה)
+        });
       }
 
-      // מיין לפי z כדי לצייר אחורה לפני קדמה
-      // צייר slice בכל נקודה
-      for (let i = 0; i < pathPts.length - 1; i++) {
-        const p = pathPts[i];
-        const pNext = pathPts[i + 1];
-        const z = p.z; // -1 to 1
+      // ── שכבת גלואו — stroke מטושטש מתחת לכל ──────────────────
+      ctx.save();
+      ctx.filter      = `blur(${isMobile ? 10 : 18}px)`;
+      ctx.globalAlpha = 0.42;
+      ctx.beginPath();
+      pathPts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = 'rgba(35, 195, 255, 0.85)';
+      ctx.lineWidth   = tubeRadius * 2.6;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.stroke();
+      ctx.restore();
 
-        // רדיוס נראה קטן יותר כשהצינור "אחורה"
-        const perspScale = 0.55 + 0.45 * ((z + 1) / 2);
-        const r = tubeRadius * perspScale;
+      // ── גוף הצינור — פרוסות עם z-ordering ───────────────────────
+      // ציור בשני מעברים: אחורה קודם (z<0), קדימה אחר-כך (z≥0)
+      for (const drawFront of [false, true]) {
+        for (let i = 0; i < pathPts.length - 1; i++) {
+          const p     = pathPts[i];
+          const pNext = pathPts[i + 1];
+          const isFront = p.z >= 0;
+          if (isFront !== drawFront) continue;
 
-        // כיוון האורך
-        const dx = pNext.x - p.x;
-        const dy = pNext.y - p.y;
-        const len = Math.sqrt(dx * dx + dy * dy) + 0.001;
-        const nx = -dy / len; // normal perpendicular
-        const ny = dx / len;
+          // עומק Z: קדמה=עבה, אחורה=דק
+          const perspScale = 0.42 + 0.58 * ((p.z + 1) / 2);
+          const r          = tubeRadius * perspScale;
 
-        // צבע — כחול + ציאן עם gradient לפי z
-        const bright = Math.round(50 + 30 * ((z + 1) / 2)); // 50–80%
-        const alpha = 0.35 + 0.65 * ((z + 1) / 2); // עמוק = שקוף יותר
+          const bright = Math.round(48 + 28 * ((p.z + 1) / 2)); // 48–76%
+          const alpha  = 0.55 + 0.45 * ((p.z + 1) / 2);        // 0.55–1.0
 
-        // רק ציור של slice אחד — ellipse בניצב לנתיב
-        ctx.save();
-        ctx.translate(p.x, p.y);
+          ctx.save();
+          ctx.translate(p.x, p.y);
 
-        // gradient רדיאלי על כל פרוסה לתת תחושת נפח
-        const grd = ctx.createRadialGradient(
-          -r * 0.3, -r * 0.3, 0,
-          0, 0, r
-        );
-        // הייליט לבן בפינה
-        grd.addColorStop(0, `hsla(195, 100%, 85%, ${alpha})`);
-        // כחול ביניים
-        grd.addColorStop(0.4, `hsla(205, 100%, ${bright + 10}%, ${alpha})`);
-        // ציאן כהה בצד
-        grd.addColorStop(1, `hsla(210, 100%, ${bright - 15}%, ${alpha * 0.7})`);
+          const grd = ctx.createRadialGradient(
+            -r * 0.35, -r * 0.35, 0,
+            0, 0, r * 1.05
+          );
+          grd.addColorStop(0,    `hsla(188, 100%, 88%, ${alpha})`);        // הייליט ציאן-לבן
+          grd.addColorStop(0.28, `hsla(197, 100%, 70%, ${alpha})`);        // ציאן
+          grd.addColorStop(0.58, `hsla(208, 100%, ${bright + 6}%, ${alpha})`); // כחול-ציאן
+          grd.addColorStop(1,    `hsla(218, 100%, ${bright - 18}%, ${alpha * 0.72})`); // צל כהה
 
-        ctx.beginPath();
-        ctx.ellipse(0, 0, r, r * 0.92, 0, 0, Math.PI * 2);
-        ctx.fillStyle = grd;
-        ctx.fill();
+          ctx.beginPath();
+          ctx.ellipse(0, 0, r, r * 0.91, 0, 0, Math.PI * 2);
+          ctx.fillStyle = grd;
+          ctx.fill();
+          ctx.restore();
 
-        ctx.restore();
+          void pNext; // suppress unused warning
+        }
       }
 
-      // ציר ה-pulse — נקודה בהירה נעה על הצינור
+      // ── Pulse — נקודה בהירה נעה ─────────────────────────────────
       const pulseIdx = Math.floor(t * pathPts.length);
-      const pp = pathPts[Math.min(pulseIdx, pathPts.length - 1)];
-      const pulseZ = pp.z;
-      const pulseScale = 0.55 + 0.45 * ((pulseZ + 1) / 2);
-      const pr = (isMobile ? 10 : 15) * pulseScale;
+      const pp       = pathPts[Math.min(pulseIdx, pathPts.length - 1)];
+      const pulseScale = 0.42 + 0.58 * ((pp.z + 1) / 2);
+      const pr         = (isMobile ? 12 : 18) * pulseScale;
 
       const pulseGrd = ctx.createRadialGradient(
         pp.x - pr * 0.3, pp.y - pr * 0.3, 0,
-        pp.x, pp.y, pr * 2.5
+        pp.x, pp.y, pr * 2.6
       );
-      pulseGrd.addColorStop(0, 'rgba(255,255,255,0.95)');
-      pulseGrd.addColorStop(0.3, 'rgba(100,210,255,0.8)');
-      pulseGrd.addColorStop(1, 'rgba(50,150,255,0)');
+      pulseGrd.addColorStop(0,   'rgba(255,255,255,0.95)');
+      pulseGrd.addColorStop(0.3, 'rgba(120,220,255,0.78)');
+      pulseGrd.addColorStop(1,   'rgba(50,150,255,0)');
 
       ctx.beginPath();
-      ctx.arc(pp.x, pp.y, pr * 2.5, 0, Math.PI * 2);
+      ctx.arc(pp.x, pp.y, pr * 2.6, 0, Math.PI * 2);
       ctx.fillStyle = pulseGrd;
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(pp.x, pp.y, pr * 0.6, 0, Math.PI * 2);
+      ctx.arc(pp.x, pp.y, pr * 0.58, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255,255,255,0.98)';
       ctx.fill();
 
