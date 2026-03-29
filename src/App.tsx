@@ -5,7 +5,7 @@ import AccessibilityButton from "@/components/AccessibilityButton";
 import CookieConsent from "@/components/CookieConsent";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -14,35 +14,37 @@ import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext"
 import ContactPopup from "@/components/ContactPopup";
 import TimedCTAPopup from "@/components/TimedCTAPopup";
 import Index from "./pages/Index";
-import PrivacyPolicy from "./pages/PrivacyPolicy";
-import CookiePolicy from "./pages/CookiePolicy";
-import NotFound from "./pages/NotFound";
-import Solutions from "./pages/Solutions";
-import Industries from "./pages/Industries";
-import CaseStudies from "./pages/CaseStudies";
-import Blog from "./pages/Blog";
-import About from "./pages/About";
-import Contact from "./pages/Contact";
+
+// Lazy-loaded pages
+const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
+const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Solutions = lazy(() => import("./pages/Solutions"));
+const Industries = lazy(() => import("./pages/Industries"));
+const CaseStudies = lazy(() => import("./pages/CaseStudies"));
+const Blog = lazy(() => import("./pages/Blog"));
+const About = lazy(() => import("./pages/About"));
+const Contact = lazy(() => import("./pages/Contact"));
 
 // Solutions sub-pages
-import SolutionAIAgents from "./pages/solutions/AIAgentsSolution";
-import BusinessAutomation from "./pages/solutions/BusinessAutomation";
-import WhatsAppAutomation from "./pages/solutions/WhatsAppAutomation";
-import CRMAutomation from "./pages/solutions/CRMAutomation";
-import WorkflowAutomation from "./pages/solutions/WorkflowAutomation";
+const SolutionAIAgents = lazy(() => import("./pages/solutions/AIAgentsSolution"));
+const BusinessAutomation = lazy(() => import("./pages/solutions/BusinessAutomation"));
+const WhatsAppAutomation = lazy(() => import("./pages/solutions/WhatsAppAutomation"));
+const CRMAutomation = lazy(() => import("./pages/solutions/CRMAutomation"));
+const WorkflowAutomation = lazy(() => import("./pages/solutions/WorkflowAutomation"));
 
 // Industries sub-pages
-import Agencies from "./pages/industries/Agencies";
-import Consultants from "./pages/industries/Consultants";
-import Coaches from "./pages/industries/Coaches";
-import RealEstate from "./pages/industries/RealEstate";
-import Ecommerce from "./pages/industries/Ecommerce";
+const Agencies = lazy(() => import("./pages/industries/Agencies"));
+const Consultants = lazy(() => import("./pages/industries/Consultants"));
+const Coaches = lazy(() => import("./pages/industries/Coaches"));
+const RealEstate = lazy(() => import("./pages/industries/RealEstate"));
+const Ecommerce = lazy(() => import("./pages/industries/Ecommerce"));
 
 // Legacy service pages
-import Chatbots from "./pages/services/Chatbots";
-import CRM from "./pages/services/CRM";
-import Automation from "./pages/services/Automation";
-import AIAgents from "./pages/services/AIAgents";
+const Chatbots = lazy(() => import("./pages/services/Chatbots"));
+const CRM = lazy(() => import("./pages/services/CRM"));
+const Automation = lazy(() => import("./pages/services/Automation"));
+const AIAgents = lazy(() => import("./pages/services/AIAgents"));
 
 const queryClient = new QueryClient();
 
@@ -95,6 +97,7 @@ const AppInner = () => {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ScrollToTop />
+      <Suspense fallback={null}>
       <Routes>
         <Route path="/" element={<Index />} />
 
@@ -132,6 +135,7 @@ const AppInner = () => {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
+      </Suspense>
       <ChatBot />
       <AccessibilityButton />
       <CookieConsent />

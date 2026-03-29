@@ -1,10 +1,10 @@
-import { Helmet } from 'react-helmet-async';
-import { ArrowLeft, CheckCircle2, ChevronDown } from 'lucide-react';
+import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { ReactNode } from 'react';
 import Section from '@/components/Section';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
+import { SEOHead, BreadcrumbSchema, FAQSchema } from '@/lib/seo';
 import {
   Accordion,
   AccordionContent,
@@ -53,12 +53,17 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
 
   return (
     <>
-      <Helmet>
-        <title>{data.metaTitle}</title>
-        <meta name="description" content={data.metaDescription} />
-        <link rel="canonical" href={`https://ehautomation.co.il/${data.slug}`} />
-        <html lang="he" dir="rtl" />
-      </Helmet>
+      <SEOHead
+        title={data.metaTitle}
+        description={data.metaDescription}
+        path={`/${data.slug}`}
+      />
+      <BreadcrumbSchema items={[
+        { name: 'בית', path: '/' },
+        { name: 'שירותים', path: '/solutions' },
+        { name: data.hero.headline, path: `/${data.slug}` },
+      ]} />
+      <FAQSchema items={data.faq.items} />
 
       <Navbar />
 
