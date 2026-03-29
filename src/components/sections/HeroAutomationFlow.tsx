@@ -58,7 +58,7 @@ const HeroAutomationFlow = () => {
       const turns = isMobile ? 2.5 : 3.5;
       const ampY = isMobile ? 55 : 85;
       const centerY = H / 2;
-      const padding = isMobile ? 30 : 50;
+      const padding = isMobile ? -40 : -80;
       const tubeRadius = isMobile ? 14 : 22;
       const segments = 300;
 

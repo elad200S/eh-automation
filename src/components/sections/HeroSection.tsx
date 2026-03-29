@@ -114,8 +114,8 @@ const HeroSection = () => {
       <div
         className={
           prefersReducedMotion
-            ? 'relative z-10 w-full flex-1 flex items-center'
-            : `relative z-10 w-full flex-1 flex items-center transition-all duration-1000 ease-out ${
+            ? 'relative z-10 w-full flex-1 flex items-center overflow-hidden'
+            : `relative z-10 w-full flex-1 flex items-center overflow-hidden transition-all duration-1000 ease-out ${
                 mounted ? 'opacity-100' : 'opacity-0'
               }`
         }
