@@ -112,7 +112,7 @@ const Industries = () => {
             <h2 className="text-3xl font-bold text-foreground mb-4">לא מצאתם את התעשייה שלכם?</h2>
             <p className="text-muted-foreground mb-8">אנחנו עובדים עם עסקים ממגוון תחומים. בואו נדבר על האתגרים הספציפיים שלכם.</p>
             <button onClick={openPopup} className="cta-gradient group">
-              שיחת אסטרטגיה
+              בדיקת התאמה לעסק →
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>

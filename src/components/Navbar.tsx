@@ -207,7 +207,7 @@ const MobileMenuPortal = ({
               }}
               className="mt-3 rounded-full bg-primary px-4 py-4 text-base font-medium text-primary-foreground transition-all active:scale-[0.97]"
             >
-              שיחת אסטרטגיה →
+              רוצה לדעת יותר? →
             </button>
           </div>
         </div>
@@ -301,7 +301,7 @@ const Navbar = () => {
               onClick={openPopup}
               className="mr-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 active:scale-[0.97]"
             >
-              שיחת אסטרטגיה →
+              רוצה לדעת יותר? →
             </button>
           </div>
 

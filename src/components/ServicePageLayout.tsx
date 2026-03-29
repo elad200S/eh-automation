@@ -46,7 +46,7 @@ export interface ServicePageData {
   };
 }
 
-const ctaLabel = 'קבעו שיחת אסטרטגיה';
+const ctaLabel = 'תן לי לחסוך לך זמן →';
 
 const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
   const { openPopup } = useContactPopup();

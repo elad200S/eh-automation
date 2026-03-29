@@ -142,7 +142,7 @@ const About = () => {
             <h2 className="text-3xl font-bold text-foreground mb-4">מוכנים לדבר?</h2>
             <p className="text-muted-foreground mb-8">שיחת אפיון ראשונית ללא עלות. נבין מה העסק צריך ונראה אם אנחנו הכתובת הנכונה.</p>
             <button onClick={openPopup} className="group inline-flex items-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all">
-              שיחת אסטרטגיה
+              תן לי לחסוך לך זמן →
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>
