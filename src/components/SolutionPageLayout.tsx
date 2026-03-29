@@ -82,7 +82,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
               <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <button onClick={openPopup} className="cta-gradient group">
-                  בדיקת התאמה לעסק →
+                  שיחת אסטרטגיה
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </button>
                 <Link to="/solutions" className="btn-outline">
@@ -210,7 +210,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
             <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">מוכנים להתחיל?</h2>
             <p className="text-lg text-muted-foreground mb-8 max-w-xl mx-auto">שיחת אפיון ראשונית ללא עלות. נבין מה העסק צריך ונתאים פתרון מדויק.</p>
             <button onClick={openPopup} className="cta-gradient group">
-              תן לי לחסוך לך זמן →
+              שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>

@@ -132,7 +132,7 @@ const Solutions = () => {
             <h2 className="text-3xl font-bold text-foreground mb-4">לא בטוחים מה מתאים לכם?</h2>
             <p className="text-muted-foreground mb-8">בשיחת אפיון קצרה נבין מה העסק צריך ונתאים את הפתרון המדויק.</p>
             <button onClick={openPopup} className="cta-gradient group">
-              בדיקת התאמה לעסק →
+              שיחת אסטרטגיה
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
           </div>

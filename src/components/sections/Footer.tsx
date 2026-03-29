@@ -143,7 +143,7 @@ const Footer = () => {
             onClick={openPopup}
             className="px-5 py-2.5 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
-            תן לי לחסוך לך זמן →
+            שיחת אסטרטגיה →
           </button>
         </div>
 
