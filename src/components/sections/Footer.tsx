@@ -27,7 +27,6 @@ const footerNav = [
     title: 'החברה',
     links: [
       { label: 'אודות', href: '/about' },
-      { label: 'מקרי בוחן', href: '/case-studies' },
       { label: 'בלוג', href: '/blog' },
       { label: 'צור קשר', href: '/contact' },
     ],
