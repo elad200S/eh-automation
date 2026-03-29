@@ -119,8 +119,8 @@ const MobileMenuPortal = ({
   if (!mobileOpen || typeof document === 'undefined') return null;
 
   return createPortal(
-    <div className="fixed inset-0 z-[10050] bg-background/98 backdrop-blur-md lg:hidden">
-      <div className="flex h-full flex-col">
+    <div className="fixed inset-0 z-[10050] bg-background/98 backdrop-blur-md lg:hidden" onClick={onClose}>
+      <div className="flex h-full flex-col" onClick={e => e.stopPropagation()}>
         <div className="border-b border-border">
           <div className="container flex h-16 items-center justify-between gap-3">
             <button
