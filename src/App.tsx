@@ -21,7 +21,6 @@ const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Solutions = lazy(() => import("./pages/Solutions"));
 const Industries = lazy(() => import("./pages/Industries"));
-const CaseStudies = lazy(() => import("./pages/CaseStudies"));
 const Blog = lazy(() => import("./pages/Blog"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
@@ -118,7 +117,6 @@ const AppInner = () => {
         <Route path="/industries/ecommerce" element={<Ecommerce />} />
 
         {/* Top-level pages */}
-        <Route path="/case-studies" element={<CaseStudies />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
