@@ -141,7 +141,7 @@ const Footer = () => {
           </p>
           <button
             onClick={openPopup}
-            className="px-5 py-2.5 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
+            className="px-5 py-2.5 text-sm font-medium rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-colors"
           >
             שיחת אסטרטגיה →
           </button>
