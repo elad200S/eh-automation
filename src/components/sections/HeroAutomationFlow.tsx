@@ -54,95 +54,78 @@ const HeroAutomationFlow = () => {
       const H = canvas.offsetHeight;
       ctx.clearRect(0, 0, W, H);
 
-      // פרמטרים של הגל
-      const turns = isMobile ? 1.5 : 2;
-      const ampY = isMobile ? 78 : 130;
-      const centerY = H / 2;
-      const padding = isMobile ? -40 : -80;
-      const tubeRadius = isMobile ? 38 : 60;
-      const segments = 500;
+      const turns      = isMobile ? 2   : 2.5;
+      const ampY       = isMobile ? 68  : 108;
+      const centerY    = H / 2;
+      const padding    = isMobile ? -50 : -100;
+      const tubeRadius = isMobile ? 30  : 50;
+      const segments   = 300;
 
-      // בנה את נקודות הנתיב
-      const pathPts: { x: number; y: number; z: number }[] = [];
+      // בנה נקודות נתיב
+      const pts: { x: number; y: number }[] = [];
       for (let i = 0; i <= segments; i++) {
-        const frac = i / segments;
+        const frac  = i / segments;
         const angle = frac * turns * Math.PI * 2;
-        const x = padding + frac * (W - padding * 2);
-        const y = centerY + Math.sin(angle) * ampY;
-        const z = Math.cos(angle); // -1 (אחורה) עד 1 (קדימה)
-        pathPts.push({ x, y, z });
+        pts.push({
+          x: padding + frac * (W - padding * 2),
+          y: centerY + Math.sin(angle) * ampY,
+        });
       }
 
-      // מיין לפי z כדי לצייר אחורה לפני קדמה
-      // צייר slice בכל נקודה
-      for (let i = 0; i < pathPts.length - 1; i++) {
-        const p = pathPts[i];
-        const pNext = pathPts[i + 1];
-        const z = p.z; // -1 to 1
+      // ── גוף הצינור ──────────────────────────────────────────────
+      // גרדיאנט לינארי מלמעלה למטה → מדמה תאורה מלמעלה
+      const top    = centerY - ampY - tubeRadius;
+      const bottom = centerY + ampY + tubeRadius;
+      const tubGrd = ctx.createLinearGradient(0, top, 0, bottom);
+      tubGrd.addColorStop(0,    'rgba(185, 248, 255, 0.97)'); // הייליט ציאן-לבן
+      tubGrd.addColorStop(0.22, 'rgba(30,  210, 255, 1.00)'); // ציאן בהיר
+      tubGrd.addColorStop(0.50, 'rgba(20,  155, 255, 1.00)'); // כחול-ציאן
+      tubGrd.addColorStop(0.75, 'rgba(14,   95, 245, 1.00)'); // כחול עמוק
+      tubGrd.addColorStop(1,    'rgba(10,   55, 200, 0.92)'); // צל כהה
 
-        // רדיוס נראה קטן יותר כשהצינור "אחורה"
-        const perspScale = 0.55 + 0.45 * ((z + 1) / 2);
-        const r = tubeRadius * perspScale;
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y) : ctx.lineTo(p.x, p.y));
+      ctx.strokeStyle = tubGrd;
+      ctx.lineWidth   = tubeRadius * 2;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.stroke();
 
-        // כיוון האורך
-        const dx = pNext.x - p.x;
-        const dy = pNext.y - p.y;
-        const len = Math.sqrt(dx * dx + dy * dy) + 0.001;
-        const nx = -dy / len; // normal perpendicular
-        const ny = dx / len;
+      // ── פס הייליט עליון (לבן-שקוף) ─────────────────────────────
+      const hlGrd = ctx.createLinearGradient(0, top, 0, bottom);
+      hlGrd.addColorStop(0,    'rgba(255,255,255,0.55)');
+      hlGrd.addColorStop(0.30, 'rgba(255,255,255,0.18)');
+      hlGrd.addColorStop(0.55, 'rgba(255,255,255,0.00)');
+      hlGrd.addColorStop(1,    'rgba(0,0,0,0)');
 
-        // צבע — כחול + ציאן עם gradient לפי z
-        const bright = Math.round(45 + 30 * ((z + 1) / 2)); // 45–75%
-        const alpha = 0.6 + 0.4 * ((z + 1) / 2); // אטום יותר בכל מצב
+      ctx.beginPath();
+      pts.forEach((p, i) => i === 0 ? ctx.moveTo(p.x, p.y - tubeRadius * 0.28) : ctx.lineTo(p.x, p.y - tubeRadius * 0.28));
+      ctx.strokeStyle = hlGrd;
+      ctx.lineWidth   = tubeRadius * 0.65;
+      ctx.lineCap     = 'round';
+      ctx.lineJoin    = 'round';
+      ctx.stroke();
 
-        // רק ציור של slice אחד — ellipse בניצב לנתיב
-        ctx.save();
-        ctx.translate(p.x, p.y);
-
-        // gradient רדיאלי — הייליט חזק למעלה-שמאל, צל כהה למטה-ימין
-        const grd = ctx.createRadialGradient(
-          -r * 0.35, -r * 0.35, 0,
-          0, 0, r * 1.1
-        );
-        // הייליט לבן-ציאן בפינה
-        grd.addColorStop(0,    `hsla(188, 100%, 88%, ${alpha})`);
-        // ציאן בהיר
-        grd.addColorStop(0.25, `hsla(196, 100%, 72%, ${alpha})`);
-        // כחול בינוני
-        grd.addColorStop(0.55, `hsla(208, 100%, ${bright + 8}%, ${alpha})`);
-        // כחול כהה בצד הצל
-        grd.addColorStop(1,    `hsla(218, 100%, ${bright - 18}%, ${alpha * 0.75})`);
-
-        ctx.beginPath();
-        ctx.ellipse(0, 0, r, r * 0.9, 0, 0, Math.PI * 2);
-        ctx.fillStyle = grd;
-        ctx.fill();
-
-        ctx.restore();
-      }
-
-      // ציר ה-pulse — נקודה בהירה נעה על הצינור
-      const pulseIdx = Math.floor(t * pathPts.length);
-      const pp = pathPts[Math.min(pulseIdx, pathPts.length - 1)];
-      const pulseZ = pp.z;
-      const pulseScale = 0.55 + 0.45 * ((pulseZ + 1) / 2);
-      const pr = (isMobile ? 18 : 28) * pulseScale;
+      // ── Pulse — נקודה בהירה נעה ─────────────────────────────────
+      const pulseIdx = Math.floor(t * pts.length);
+      const pp = pts[Math.min(pulseIdx, pts.length - 1)];
+      const pr = isMobile ? 20 : 32;
 
       const pulseGrd = ctx.createRadialGradient(
         pp.x - pr * 0.3, pp.y - pr * 0.3, 0,
-        pp.x, pp.y, pr * 2.5
+        pp.x, pp.y, pr * 2.8
       );
-      pulseGrd.addColorStop(0, 'rgba(255,255,255,0.95)');
-      pulseGrd.addColorStop(0.3, 'rgba(100,210,255,0.8)');
-      pulseGrd.addColorStop(1, 'rgba(50,150,255,0)');
+      pulseGrd.addColorStop(0,   'rgba(255,255,255,0.95)');
+      pulseGrd.addColorStop(0.3, 'rgba(130,225,255,0.75)');
+      pulseGrd.addColorStop(1,   'rgba(50,150,255,0)');
 
       ctx.beginPath();
-      ctx.arc(pp.x, pp.y, pr * 2.5, 0, Math.PI * 2);
+      ctx.arc(pp.x, pp.y, pr * 2.8, 0, Math.PI * 2);
       ctx.fillStyle = pulseGrd;
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(pp.x, pp.y, pr * 0.6, 0, Math.PI * 2);
+      ctx.arc(pp.x, pp.y, pr * 0.55, 0, Math.PI * 2);
       ctx.fillStyle = 'rgba(255,255,255,0.98)';
       ctx.fill();
 
