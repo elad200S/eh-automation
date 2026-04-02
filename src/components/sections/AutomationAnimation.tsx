@@ -1,39 +1,46 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import Section from '@/components/Section';
-import { User, MessageSquare, BarChart3, CalendarCheck } from 'lucide-react';
+import { ClipboardList, Zap, Settings2, Database, MessageCircle, Mail, CalendarCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const steps = [
+const mainSteps = [
   {
-    Icon: User,
-    label: 'ליד נכנס למערכת',
+    Icon: ClipboardList,
+    label: 'ממלא טופס',
+    sublabel: 'Lovable',
     color: 'text-primary',
     bg: 'bg-primary/10',
+    borderActive: 'border-primary/40',
   },
   {
-    Icon: MessageSquare,
-    label: 'הודעה נשלחת אוטומטית',
+    Icon: Zap,
+    label: 'Webhook נשלח',
+    sublabel: 'טריגר אוטומטי',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
+    borderActive: 'border-secondary/40',
   },
   {
-    Icon: BarChart3,
-    label: 'הליד נרשם ומנוטר',
+    Icon: Settings2,
+    label: 'Make מופעל',
+    sublabel: 'אוטומציה רצה',
     color: 'text-accent-foreground',
     bg: 'bg-accent/10',
-  },
-  {
-    Icon: CalendarCheck,
-    label: 'משימה או פגישה נוצרת',
-    color: 'text-primary',
-    bg: 'bg-primary/10',
+    borderActive: 'border-accent/40',
   },
 ];
 
-// כמה זמן כל שלב מופיע (מילישניות)
-const STEP_DELAY = 700;
-// כמה זמן להמתין אחרי שכל השלבים הופיעו לפני איפוס
-const PAUSE_AFTER_COMPLETE = 2000;
+const makeActions = [
+  { Icon: Database,       label: 'שמירת ליד',  color: 'text-primary',          bg: 'bg-primary/10' },
+  { Icon: MessageCircle,  label: 'WhatsApp',    color: 'text-green-400',        bg: 'bg-green-400/10' },
+  { Icon: Mail,           label: 'מייל',        color: 'text-secondary',        bg: 'bg-secondary/10' },
+  { Icon: CalendarCheck,  label: 'משימה',       color: 'text-accent-foreground', bg: 'bg-accent/10' },
+];
+
+// Total "steps" = 3 main + 4 make-actions = 7
+const TOTAL_STEPS = mainSteps.length + makeActions.length;
+const STEP_DELAY = 600;
+const PAUSE_AFTER_COMPLETE = 2200;
 
 const AutomationAnimation = () => {
   const [activeStep, setActiveStep] = useState(-1);
@@ -42,25 +49,18 @@ const AutomationAnimation = () => {
   const isInViewRef = useRef(false);
 
   const startAnimation = useCallback(() => {
-    // איפוס כל הטיימרים הקודמים
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
     setActiveStep(-1);
 
-    // הפעל כל שלב בזה אחר זה
-    steps.forEach((_, i) => {
+    for (let i = 0; i < TOTAL_STEPS; i++) {
       const timer = setTimeout(() => setActiveStep(i), (i + 1) * STEP_DELAY);
       timersRef.current.push(timer);
-    });
+    }
 
-    // אחרי שכל השלבים הופיעו — המתן ואז התחל מחדש (loop!)
-    const totalDuration = steps.length * STEP_DELAY + PAUSE_AFTER_COMPLETE;
     const loopTimer = setTimeout(() => {
-      // רק אם עדיין בview
-      if (isInViewRef.current) {
-        startAnimation();
-      }
-    }, totalDuration);
+      if (isInViewRef.current) startAnimation();
+    }, TOTAL_STEPS * STEP_DELAY + PAUSE_AFTER_COMPLETE);
     timersRef.current.push(loopTimer);
   }, []);
 
@@ -74,7 +74,6 @@ const AutomationAnimation = () => {
         if (entry.isIntersecting) {
           startAnimation();
         } else {
-          // יצא מview — עצור הכל ואפס
           setActiveStep(-1);
           timersRef.current.forEach(clearTimeout);
           timersRef.current = [];
@@ -90,117 +89,87 @@ const AutomationAnimation = () => {
     };
   }, [startAnimation]);
 
+  // step index 0,1,2 = main steps; 3-6 = make actions
+  const makeCardActive = activeStep >= 2; // Make card appears when step 2 activates
+  const makeActionsVisible = activeStep >= 3; // actions appear from step 3
+
   return (
     <Section id="automation-demo" withSeparator={false}>
-      <div ref={sectionRef} className="max-w-3xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
+      <div ref={sectionRef} className="max-w-5xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12 text-center">
           איך זה עובד בפועל
         </h2>
+
+        {/* ── Row: main flow ── */}
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-0 justify-center">
-          {steps.map((step, index) => (
+
+          {/* Steps 0 & 1 */}
+          {mainSteps.slice(0, 2).map((step, index) => (
             <div key={index} className="flex flex-col md:flex-row items-center gap-4">
-              <div
-                className={cn(
-                  'flex flex-col items-center gap-3 p-5 rounded-xl border transition-all duration-500',
-                  activeStep >= index
-                    ? 'border-primary/30 bg-card shadow-md scale-100 opacity-100'
-                    : 'border-transparent bg-muted/30 scale-95 opacity-40'
-                )}
-              >
-                {/* האייקון — מקבל scale-up כשפעיל */}
-                <div
-                  className={cn(
-                    'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500',
-                    step.bg,
-                    activeStep >= index ? 'scale-110' : 'scale-100'
-                  )}
-                >
-                  <step.Icon className={cn('w-6 h-6 transition-colors duration-500', step.color)} />
-                </div>
-                <span className="text-xs text-muted-foreground text-center whitespace-nowrap">
-                  {step.label}
-                </span>
-              </div>
-
-              {/* החץ בין שלבים — עם אנימציית זרימה */}
-              {index < steps.length - 1 && (
-                <div
-                  className={cn(
-                    'transition-all duration-500',
-                    activeStep > index ? 'opacity-100' : 'opacity-20'
-                  )}
-                >
-                  {/* Desktop: חץ אופקי עם זרימה */}
-                  <svg
-                    className="hidden md:block w-10 h-5 text-primary"
-                    viewBox="0 0 40 20"
-                    overflow="visible"
-                  >
-                    {/* הקו הזורם */}
-                    <path
-                      d="M0 10h30"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeDasharray="4 3"
-                      fill="none"
-                      strokeLinecap="round"
-                      style={
-                        activeStep > index
-                          ? {
-                              animation: 'dash-flow 0.8s linear infinite',
-                            }
-                          : {}
-                      }
-                    />
-                    {/* ראש החץ */}
-                    <path
-                      d="M26 6l8 4-8 4"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-
-                  {/* Mobile: חץ אנכי עם זרימה */}
-                  <svg
-                    className="md:hidden w-5 h-10 text-primary"
-                    viewBox="0 0 20 40"
-                    overflow="visible"
-                  >
-                    <path
-                      d="M10 0v30"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      strokeDasharray="4 3"
-                      fill="none"
-                      strokeLinecap="round"
-                      style={
-                        activeStep > index
-                          ? {
-                              animation: 'dash-flow-vertical 0.8s linear infinite',
-                            }
-                          : {}
-                      }
-                    />
-                    <path
-                      d="M6 26l4 8 4-8"
-                      stroke="currentColor"
-                      strokeWidth="1.5"
-                      fill="none"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
-                </div>
-              )}
+              <StepCard step={step} active={activeStep >= index} />
+              <FlowArrow active={activeStep > index} />
             </div>
           ))}
+
+          {/* Step 2 — Make card (expanded with sub-actions) */}
+          <div
+            className={cn(
+              'flex flex-col items-center gap-3 p-5 rounded-xl border transition-all duration-500 min-w-[160px]',
+              makeCardActive
+                ? 'border-accent/40 bg-card shadow-md scale-100 opacity-100'
+                : 'border-transparent bg-muted/30 scale-95 opacity-40'
+            )}
+          >
+            {/* Make icon + label */}
+            <div
+              className={cn(
+                'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500',
+                mainSteps[2].bg,
+                makeCardActive ? 'scale-110' : 'scale-100'
+              )}
+            >
+              <Settings2 className={cn('w-6 h-6 transition-colors duration-500', mainSteps[2].color)} />
+            </div>
+            <span className="text-xs font-medium text-foreground/80 text-center">{mainSteps[2].label}</span>
+            <span className="text-[10px] text-muted-foreground text-center -mt-2">{mainSteps[2].sublabel}</span>
+
+            {/* Divider */}
+            <div
+              className={cn(
+                'w-full border-t transition-all duration-500',
+                makeActionsVisible ? 'border-border/50 opacity-100' : 'border-transparent opacity-0'
+              )}
+            />
+
+            {/* 4 Make actions grid */}
+            <div className="grid grid-cols-2 gap-2 w-full">
+              {makeActions.map((action, i) => {
+                const actionStep = 3 + i;
+                const isActive = activeStep >= actionStep;
+                return (
+                  <div
+                    key={i}
+                    className={cn(
+                      'flex flex-col items-center gap-1.5 p-2 rounded-lg border transition-all duration-500',
+                      isActive
+                        ? 'border-border/40 bg-background/40 opacity-100 scale-100'
+                        : 'border-transparent bg-transparent opacity-0 scale-90'
+                    )}
+                  >
+                    <div className={cn('w-7 h-7 rounded-lg flex items-center justify-center', action.bg)}>
+                      <action.Icon className={cn('w-3.5 h-3.5', action.color)} />
+                    </div>
+                    <span className="text-[10px] text-muted-foreground text-center leading-tight">
+                      {action.label}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* CSS לאנימציית הזרימה — מוסיף לdocument פעם אחת */}
       <style>{`
         @keyframes dash-flow {
           from { stroke-dashoffset: 14; }
@@ -214,5 +183,67 @@ const AutomationAnimation = () => {
     </Section>
   );
 };
+
+/* ── helpers ── */
+
+type StepDef = typeof mainSteps[0];
+
+function StepCard({ step, active }: { step: StepDef; active: boolean }) {
+  return (
+    <div
+      className={cn(
+        'flex flex-col items-center gap-3 p-5 rounded-xl border transition-all duration-500',
+        active
+          ? `${step.borderActive} bg-card shadow-md scale-100 opacity-100`
+          : 'border-transparent bg-muted/30 scale-95 opacity-40'
+      )}
+    >
+      <div
+        className={cn(
+          'w-12 h-12 rounded-xl flex items-center justify-center transition-all duration-500',
+          step.bg,
+          active ? 'scale-110' : 'scale-100'
+        )}
+      >
+        <step.Icon className={cn('w-6 h-6 transition-colors duration-500', step.color)} />
+      </div>
+      <span className="text-xs font-medium text-foreground/80 text-center whitespace-nowrap">{step.label}</span>
+      <span className="text-[10px] text-muted-foreground text-center -mt-2 whitespace-nowrap">{step.sublabel}</span>
+    </div>
+  );
+}
+
+function FlowArrow({ active }: { active: boolean }) {
+  return (
+    <div className={cn('transition-all duration-500', active ? 'opacity-100' : 'opacity-20')}>
+      {/* Desktop */}
+      <svg className="hidden md:block w-10 h-5 text-primary" viewBox="0 0 40 20" overflow="visible">
+        <path
+          d="M0 10h30"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+          fill="none"
+          strokeLinecap="round"
+          style={active ? { animation: 'dash-flow 0.8s linear infinite' } : {}}
+        />
+        <path d="M26 6l8 4-8 4" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+      {/* Mobile */}
+      <svg className="md:hidden w-5 h-10 text-primary" viewBox="0 0 20 40" overflow="visible">
+        <path
+          d="M10 0v30"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeDasharray="4 3"
+          fill="none"
+          strokeLinecap="round"
+          style={active ? { animation: 'dash-flow-vertical 0.8s linear infinite' } : {}}
+        />
+        <path d="M6 26l4 8 4-8" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      </svg>
+    </div>
+  );
+}
 
 export default AutomationAnimation;
