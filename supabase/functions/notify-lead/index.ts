@@ -78,6 +78,24 @@ serve(async (req) => {
       results.whatsapp = waRes.ok ? "sent" : `error ${waRes.status}`;
     }
 
+    // ── Make Webhook (fire-and-forget) ──────────────────────────
+    const makeUrl = Deno.env.get("MAKE_WEBHOOK_URL");
+    if (makeUrl) {
+      fetch(makeUrl, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name,
+          phone,
+          business,
+          automation_type: record.automation_type ?? "",
+          automation_type_label: automationType,
+          created_at: record.created_at ?? new Date().toISOString(),
+          source: "website",
+        }),
+      }).catch((e) => console.error("make webhook error:", e));
+    }
+
     return new Response(JSON.stringify({ ok: true, results }), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
     });
