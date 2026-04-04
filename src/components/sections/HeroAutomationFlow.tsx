@@ -5,58 +5,21 @@ import { cn } from '@/lib/utils';
 
 const CYCLE_MS = 6000;
 
-// Desktop turns=3.5:
-// sin=-1 (top of screen) at frac = 3/14, 7/14
-// sin=+1 (bottom of screen) at frac = 5/14, 9/14
-const LABELS = [
-  {
-    frac: 3 / 14,
-    above: true,
-    leftPct: 17,
-    Icon: User,
-    title: 'ליד נכנס',
-    sub: 'פנייה חדשה',
-    color: 'text-primary',
-    bg: 'bg-primary/15',
-    activeBorder: 'border-primary/60',
-    activeGlow: 'shadow-primary/25',
-  },
-  {
-    frac: 5 / 14,
-    above: false,
-    leftPct: 34,
-    Icon: MessageCircle,
-    title: 'הודעת חימום',
-    sub: 'WhatsApp אוטומטי',
-    color: 'text-green-400',
-    bg: 'bg-green-400/15',
-    activeBorder: 'border-green-400/60',
-    activeGlow: 'shadow-green-400/25',
-  },
-  {
-    frac: 7 / 14,
-    above: true,
-    leftPct: 50,
-    Icon: Database,
-    title: 'ליד ב-CRM',
-    sub: 'נשמר אוטומטית',
-    color: 'text-secondary',
-    bg: 'bg-secondary/15',
-    activeBorder: 'border-secondary/60',
-    activeGlow: 'shadow-secondary/25',
-  },
-  {
-    frac: 9 / 14,
-    above: false,
-    leftPct: 66,
-    Icon: Smartphone,
-    title: 'התראה לסוכן',
-    sub: 'WhatsApp לנציג',
-    color: 'text-accent-foreground',
-    bg: 'bg-accent/15',
-    activeBorder: 'border-accent/60',
-    activeGlow: 'shadow-accent/25',
-  },
+// Desktop (turns=3.5): sin=-1 top at 3/14,7/14 | sin=+1 bottom at 5/14,9/14
+const DESKTOP_LABELS = [
+  { frac: 3/14, above: true,  leftPct: 17, Icon: User,          title: 'ליד נכנס',      sub: 'פנייה חדשה',        color: 'text-primary',          bg: 'bg-primary/15',    activeBorder: 'border-primary/60',    activeGlow: 'shadow-primary/20' },
+  { frac: 5/14, above: false, leftPct: 34, Icon: MessageCircle, title: 'הודעת חימום',   sub: 'WhatsApp אוטומטי',  color: 'text-green-400',         bg: 'bg-green-400/15', activeBorder: 'border-green-400/60',  activeGlow: 'shadow-green-400/20' },
+  { frac: 7/14, above: true,  leftPct: 50, Icon: Database,      title: 'ליד ב-CRM',     sub: 'נשמר אוטומטית',    color: 'text-secondary',         bg: 'bg-secondary/15', activeBorder: 'border-secondary/60',  activeGlow: 'shadow-secondary/20' },
+  { frac: 9/14, above: false, leftPct: 66, Icon: Smartphone,    title: 'התראה לסוכן',   sub: 'WhatsApp לנציג',    color: 'text-accent-foreground', bg: 'bg-accent/15',    activeBorder: 'border-accent/60',     activeGlow: 'shadow-accent/20' },
+];
+
+// Mobile (turns=2.5): sin=-1 top at 3/10,7/10 | sin=+1 bottom at 1/10,5/10
+// x = -40 + frac*(W+80), leftPct ≈ frac*100 - 10 for W≈390
+const MOBILE_LABELS = [
+  { frac: 0.20, above: true,  leftPct: 12, Icon: User,          title: 'ליד נכנס',    color: 'text-primary',          bg: 'bg-primary/15',    activeBorder: 'border-primary/60',    activeGlow: 'shadow-primary/20' },
+  { frac: 0.42, above: false, leftPct: 36, Icon: MessageCircle, title: 'הודעת חימום', color: 'text-green-400',         bg: 'bg-green-400/15', activeBorder: 'border-green-400/60',  activeGlow: 'shadow-green-400/20' },
+  { frac: 0.62, above: true,  leftPct: 58, Icon: Database,      title: 'ל-CRM',       color: 'text-secondary',         bg: 'bg-secondary/15', activeBorder: 'border-secondary/60',  activeGlow: 'shadow-secondary/20' },
+  { frac: 0.82, above: false, leftPct: 78, Icon: Smartphone,    title: 'לסוכן',       color: 'text-accent-foreground', bg: 'bg-accent/15',    activeBorder: 'border-accent/60',     activeGlow: 'shadow-accent/20' },
 ];
 
 const HeroAutomationFlow = () => {
@@ -66,14 +29,37 @@ const HeroAutomationFlow = () => {
   const startRef = useRef(0);
   const isVisibleRef = useRef(true);
   const tRef = useRef(0);
-  const [pulseT, setPulseT] = useState(0);
+  const prevTRef = useRef(0);
+  const visitedRef = useRef<Set<number>>(new Set());
+  const [visited, setVisited] = useState<Set<number>>(new Set());
 
   const height = isMobile ? 180 : 280;
+  const labels = isMobile ? MOBILE_LABELS : DESKTOP_LABELS;
 
+  // Track visited labels — stay lit until full cycle reset
   useEffect(() => {
-    const interval = setInterval(() => setPulseT(tRef.current), 100);
+    const interval = setInterval(() => {
+      const currentT = tRef.current;
+      const prevT = prevTRef.current;
+
+      // Detect cycle reset: t jumped back significantly
+      const cycleReset = prevT > 0.8 && currentT < 0.2;
+
+      if (cycleReset) {
+        visitedRef.current = new Set();
+      } else {
+        labels.forEach((label, i) => {
+          if (currentT >= label.frac && prevT < label.frac) {
+            visitedRef.current.add(i);
+          }
+        });
+      }
+
+      prevTRef.current = currentT;
+      setVisited(new Set(visitedRef.current));
+    }, 80);
     return () => clearInterval(interval);
-  }, []);
+  }, [labels]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -136,16 +122,9 @@ const HeroAutomationFlow = () => {
 
       for (let i = 0; i < pathPts.length - 1; i++) {
         const p = pathPts[i];
-        const pNext = pathPts[i + 1];
         const z = p.z;
-
         const perspScale = 0.55 + 0.45 * ((z + 1) / 2);
         const r = tubeRadius * perspScale;
-
-        const dx = pNext.x - p.x;
-        const dy = pNext.y - p.y;
-        const len = Math.sqrt(dx * dx + dy * dy) + 0.001;
-
         const bright = Math.round(50 + 30 * ((z + 1) / 2));
         const alpha = 0.35 + 0.65 * ((z + 1) / 2);
 
@@ -162,8 +141,6 @@ const HeroAutomationFlow = () => {
         ctx.fillStyle = grd;
         ctx.fill();
         ctx.restore();
-
-        void dx; void dy; void len;
       }
 
       const pulseIdx = Math.floor(t * pathPts.length);
@@ -208,40 +185,45 @@ const HeroAutomationFlow = () => {
         aria-hidden="true"
       />
 
-      {!isMobile && LABELS.map((label, i) => {
-        const dist = Math.min(
-          Math.abs(pulseT - label.frac),
-          Math.abs(pulseT - label.frac + 1),
-          Math.abs(pulseT - label.frac - 1)
-        );
-        const isActive = dist < 0.06;
-
+      {labels.map((label, i) => {
+        const isActive = visited.has(i);
         return (
           <div
             key={i}
             className={cn(
-              'absolute flex items-center gap-2 px-3 py-2 rounded-xl border text-xs pointer-events-none',
-              'bg-background/70 backdrop-blur-md transition-all duration-300',
+              'absolute flex items-center gap-1.5 rounded-xl border pointer-events-none',
+              'bg-background/75 backdrop-blur-md transition-all duration-400',
+              isMobile ? 'px-2 py-1' : 'px-3 py-2',
               isActive
                 ? `${label.activeBorder} shadow-lg ${label.activeGlow} opacity-100`
-                : 'border-white/10 opacity-50'
+                : 'border-white/10 opacity-40'
             )}
             style={{
               left: `${label.leftPct}%`,
-              transform: `translateX(-50%) scale(${isActive ? 1.08 : 1})`,
-              ...(label.above ? { top: '4px' } : { bottom: '4px' }),
+              transform: `translateX(-50%) scale(${isActive ? 1.06 : 1})`,
+              ...(label.above ? { top: '3px' } : { bottom: '3px' }),
             }}
           >
-            <div className={cn('w-6 h-6 rounded-lg flex items-center justify-center flex-shrink-0', label.bg)}>
-              <label.Icon className={cn('w-3.5 h-3.5', label.color)} />
+            <div className={cn(
+              'rounded-md flex items-center justify-center flex-shrink-0',
+              isMobile ? 'w-5 h-5' : 'w-6 h-6',
+              label.bg
+            )}>
+              <label.Icon className={cn(isMobile ? 'w-3 h-3' : 'w-3.5 h-3.5', label.color)} />
             </div>
             <div dir="rtl">
-              <div className={cn('font-semibold leading-tight whitespace-nowrap', isActive ? 'text-foreground' : 'text-foreground/60')}>
+              <div className={cn(
+                'font-semibold leading-tight whitespace-nowrap',
+                isMobile ? 'text-[10px]' : 'text-xs',
+                isActive ? 'text-foreground' : 'text-foreground/55'
+              )}>
                 {label.title}
               </div>
-              <div className="text-muted-foreground/70 text-[10px] leading-tight whitespace-nowrap">
-                {label.sub}
-              </div>
+              {'sub' in label && !isMobile && (
+                <div className="text-muted-foreground/70 text-[10px] leading-tight whitespace-nowrap">
+                  {(label as typeof DESKTOP_LABELS[0]).sub}
+                </div>
+              )}
             </div>
           </div>
         );
