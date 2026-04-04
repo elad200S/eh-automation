@@ -7,7 +7,7 @@ const mainSteps = [
   {
     Icon: ClipboardList,
     label: 'ממלא טופס',
-    sublabel: 'Lovable',
+    sublabel: ' ',
     color: 'text-primary',
     bg: 'bg-primary/10',
     borderActive: 'border-primary/40',
@@ -15,15 +15,15 @@ const mainSteps = [
   {
     Icon: Zap,
     label: 'Webhook נשלח',
-    sublabel: 'טריגר אוטומטי',
+    sublabel: ' ',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
     borderActive: 'border-secondary/40',
   },
   {
     Icon: Settings2,
-    label: 'Make מופעל',
-    sublabel: 'אוטומציה רצה',
+    label: 'אוטומיה בפעולה',
+    sublabel: ' ',
     color: 'text-accent-foreground',
     bg: 'bg-accent/10',
     borderActive: 'border-accent/40',
