@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 const mainSteps = [
   {
     Icon: ClipboardList,
-    label: 'ממלא טופס',
+    label: 'fills out a form',
     sublabel: ' ',
     color: 'text-primary',
     bg: 'bg-primary/10',
@@ -14,7 +14,7 @@ const mainSteps = [
   },
   {
     Icon: Zap,
-    label: ' נשלח Webhook ',
+    label: 'sent Webhook ',
     sublabel: ' ',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
@@ -22,7 +22,7 @@ const mainSteps = [
   },
   {
     Icon: Settings2,
-    label: 'אוטומיה בפעולה',
+    label: 'Automatic automation',
     sublabel: ' ',
     color: 'text-accent-foreground',
     bg: 'bg-accent/10',
