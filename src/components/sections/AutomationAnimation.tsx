@@ -14,7 +14,7 @@ const mainSteps = [
   },
   {
     Icon: Zap,
-    label: 'Webhook נשלח',
+    label: ' נשלח Webhook ',
     sublabel: ' ',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
