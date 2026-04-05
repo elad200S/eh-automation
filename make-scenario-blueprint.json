@@ -30,7 +30,7 @@
         "useNewZLibDecompression": true
       },
       "mapper": {
-        "url": "https://api.base44.com/apps/APP_ID_HERE/entities/Leads/",
+        "url": "https://api.base44.com/apps/68ca70a27ae659023f0c2732/entities/Lead/",
         "serializeUrl": false,
         "method": "post",
         "headers": [
@@ -73,7 +73,7 @@
         "useNewZLibDecompression": true
       },
       "mapper": {
-        "url": "https://api.base44.com/apps/APP_ID_HERE/entities/Tasks/",
+        "url": "https://api.base44.com/apps/68ca70a27ae659023f0c2732/entities/Task/",
         "serializeUrl": false,
         "method": "post",
         "headers": [
@@ -125,6 +125,6 @@
     "designer": {
       "orphans": []
     },
-    "zone": "eu1.make.com"
+    "zone": "us2.make.com"
   }
 }
