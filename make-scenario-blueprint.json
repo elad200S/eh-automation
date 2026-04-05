@@ -30,13 +30,13 @@
         "useNewZLibDecompression": true
       },
       "mapper": {
-        "url": "https://api.base44.com/apps/68ca70a27ae659023f0c2732/entities/Lead/",
+        "url": "https://app.base44.com/api/apps/68ca70a27ae659023f0c2732/entities/Lead",
         "serializeUrl": false,
         "method": "post",
         "headers": [
           {
-            "name": "Authorization",
-            "value": "Bearer API_KEY_HERE"
+            "name": "api_key",
+            "value": "50290b7de016434184e42f238da348db"
           },
           {
             "name": "Content-Type",
@@ -47,7 +47,7 @@
         "bodyType": "raw",
         "parseResponse": true,
         "contentType": "application/json",
-        "data": "{\n  \"שם מלא\": \"{{1.name}}\",\n  \"טלפון\": \"{{1.phone}}\",\n  \"שם חברה\": \"{{1.business}}\",\n  \"שירות מבוקש\": \"{{1.automation_type}}\",\n  \"מקור ליד\": \"אתר\",\n  \"סטטוס\": \"התקבל\",\n  \"פרטי מקור\": \"{{1.source}}\",\n  \"הערות\": \"נשלח מהאתר ב-{{1.submitted_at}}\"\n}",
+        "data": "{\n  \"full_name\": \"{{1.name}}\",\n  \"phone\": \"{{1.phone}}\",\n  \"company\": \"{{1.business}}\",\n  \"source\": \"אתר\",\n  \"status\": \"התקבל\",\n  \"notes\": \"שירות מבוקש: {{1.automation_type}}\\nנשלח מהאתר ב-{{1.submitted_at}}\"\n}",
         "followRedirect": true,
         "useQuerystring": false,
         "gzip": true,
@@ -73,13 +73,13 @@
         "useNewZLibDecompression": true
       },
       "mapper": {
-        "url": "https://api.base44.com/apps/68ca70a27ae659023f0c2732/entities/Task/",
+        "url": "https://app.base44.com/api/apps/68ca70a27ae659023f0c2732/entities/Task",
         "serializeUrl": false,
         "method": "post",
         "headers": [
           {
-            "name": "Authorization",
-            "value": "Bearer API_KEY_HERE"
+            "name": "api_key",
+            "value": "50290b7de016434184e42f238da348db"
           },
           {
             "name": "Content-Type",
@@ -90,7 +90,7 @@
         "bodyType": "raw",
         "parseResponse": true,
         "contentType": "application/json",
-        "data": "{\n  \"כותרת\": \"פנייה חדשה — {{1.name}}\",\n  \"תיאור\": \"טלפון: {{1.phone}}\\nעסק: {{1.business}}\\nשירות: {{1.automation_type}}\",\n  \"סטטוס\": \"פתוח\",\n  \"עדיפות\": \"גבוהה\",\n  \"תאריך יעד\": \"{{formatDate(addDays(now; 1); 'YYYY-MM-DD')}}\"\n}",
+        "data": "{\n  \"title\": \"פנייה חדשה — {{1.name}}\",\n  \"description\": \"טלפון: {{1.phone}}\\nעסק: {{1.business}}\\nשירות: {{1.automation_type}}\",\n  \"status\": \"פתוח\",\n  \"priority\": \"גבוהה\",\n  \"due_date\": \"{{formatDate(addDays(now; 1); 'YYYY-MM-DD')}}\"\n}",
         "followRedirect": true,
         "useQuerystring": false,
         "gzip": true,
