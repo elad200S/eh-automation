@@ -2,7 +2,8 @@ import { useState } from 'react';
 import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+
+const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/1wnxhbnt67r06tawrqfh7lhgh1xtxcwe';
 
 const ContactSection = () => {
   const { toast } = useToast();
@@ -41,16 +42,20 @@ const ContactSection = () => {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert({
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
           name: formData.name.trim(),
           phone: normalizePhone(formData.phone),
           business: formData.business.trim() || 'לא צוין',
           automation_type: formData.automationType || 'general',
-        });
+          source: 'website',
+          submitted_at: new Date().toISOString(),
+        }),
+      });
 
-      if (error) throw error;
+      if (!res.ok) throw new Error(`status ${res.status}`);
 
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
