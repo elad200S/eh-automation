@@ -3,7 +3,7 @@ import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
-const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/1wnxhbnt67r06tawrqfh7lhgh1xtxcwe';
+const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
 const ContactSection = () => {
   const { toast } = useToast();
