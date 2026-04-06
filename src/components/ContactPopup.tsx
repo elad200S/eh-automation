@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { X, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useToast } from '@/hooks/use-toast';
-import { supabase } from '@/integrations/supabase/client';
+const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
 const ContactPopup = () => {
   const { isOpen, closePopup } = useContactPopup();
