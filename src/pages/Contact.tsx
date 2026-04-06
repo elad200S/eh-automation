@@ -36,17 +36,19 @@ const Contact = () => {
     
     setIsSubmitting(true);
     try {
+      const payload: Record<string, string> = {
+        full_name: formData.name.trim(),
+        phone: normalizePhone(formData.phone),
+        form_type: 'main_form',
+      };
+      const biz = formData.business.trim();
+      if (biz) payload.business_type = biz;
+      if (formData.automationType) payload.automation_type = formData.automationType;
+
       const res = await fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: formData.name.trim(),
-          phone: normalizePhone(formData.phone),
-          business: formData.business.trim(),
-          automation_type: formData.automationType || 'general',
-          source: 'website',
-          submitted_at: new Date().toISOString(),
-        }),
+        body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });

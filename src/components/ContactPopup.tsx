@@ -48,16 +48,21 @@ const ContactPopup = () => {
     setIsSubmitting(true);
 
     try {
-      const { error } = await supabase
-        .from('contact_submissions')
-        .insert({
-          name: formData.name.trim(),
-          phone: normalizePhone(formData.phone),
-          business: formData.business.trim(),
-          automation_type: formData.automationType,
-        });
+      const payload: Record<string, string> = {
+        full_name: formData.name.trim(),
+        phone: normalizePhone(formData.phone),
+        form_type: 'popup_form',
+      };
+      const biz = formData.business.trim();
+      if (biz) payload.business_type = biz;
+      if (formData.automationType) payload.automation_type = formData.automationType;
 
-      if (error) throw error;
+      const res = await fetch(MAKE_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`status ${res.status}`);
 
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
