@@ -13,7 +13,10 @@
   <url><loc>https://ehautomation.co.il/industries/coaches</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/industries/real-estate</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/industries/ecommerce</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
-  <url><loc>https://ehautomation.co.il/blog</loc><priority>0.7</priority><changefreq>weekly</changefreq></url>
+  <url><loc>https://ehautomation.co.il/blog</loc><priority>0.7</priority><changefreq>weekly</changefreq><lastmod>2026-04-08</lastmod></url>
+  <url><loc>https://ehautomation.co.il/blog/5-automation-processes</loc><priority>0.8</priority><changefreq>monthly</changefreq><lastmod>2026-04-08</lastmod></url>
+  <url><loc>https://ehautomation.co.il/blog/ai-agent-for-business</loc><priority>0.8</priority><changefreq>monthly</changefreq><lastmod>2026-04-08</lastmod></url>
+  <url><loc>https://ehautomation.co.il/blog/how-to-choose-crm</loc><priority>0.8</priority><changefreq>monthly</changefreq><lastmod>2026-04-08</lastmod></url>
   <url><loc>https://ehautomation.co.il/about</loc><priority>0.7</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/contact</loc><priority>0.8</priority><changefreq>monthly</changefreq></url>
   <url><loc>https://ehautomation.co.il/services/chatbots</loc><priority>0.6</priority><changefreq>monthly</changefreq></url>

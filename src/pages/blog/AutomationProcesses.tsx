@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, CheckCircle2, Clock, Zap } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -48,6 +48,12 @@ const AutomationProcesses = () => {
         { name: 'בלוג', path: '/blog' },
         { name: '5 תהליכים לאוטומציה', path: '/blog/5-automation-processes' },
       ]} />
+      <ArticleSchema
+        title="5 תהליכים שכל עסק קטן צריך לאטמט היום"
+        description="סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע."
+        path="/blog/5-automation-processes"
+        datePublished="2026-04-08"
+      />
 
       <Navbar />
 

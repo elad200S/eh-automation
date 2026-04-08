@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, CheckCircle2, XCircle } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -33,6 +33,12 @@ const AIAgentForBusiness = () => {
         { name: 'בלוג', path: '/blog' },
         { name: 'סוכן AI לעסק', path: '/blog/ai-agent-for-business' },
       ]} />
+      <ArticleSchema
+        title="סוכן AI לעסק: מתי זה שווה ומתי לא"
+        description="מדריך מעשי שעוזר לבעלי עסקים להבין אם סוכן AI מתאים לעסק שלהם – ומה הציפיות הריאליות."
+        path="/blog/ai-agent-for-business"
+        datePublished="2026-04-08"
+      />
 
       <Navbar />
 

@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, AlertCircle } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
@@ -43,6 +43,12 @@ const HowToChooseCRM = () => {
         { name: 'בלוג', path: '/blog' },
         { name: 'איך לבחור CRM', path: '/blog/how-to-choose-crm' },
       ]} />
+      <ArticleSchema
+        title="איך לבחור CRM שבאמת ישתמשו בו"
+        description="הבעיה לא הכלי – הבעיה היא ההטמעה. טיפים מעשיים לבחירת CRM שהצוות שלך באמת ישתמש בו."
+        path="/blog/how-to-choose-crm"
+        datePublished="2026-04-08"
+      />
 
       <Navbar />
 

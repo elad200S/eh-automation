@@ -117,6 +117,34 @@ export const LocalBusinessSchema = () => (
 );
 
 /**
+ * JSON-LD Article schema for blog posts.
+ */
+export const ArticleSchema = ({ title, description, path, datePublished }: { title: string; description: string; path: string; datePublished: string }) => (
+  <Helmet>
+    <script type="application/ld+json">{JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Article',
+      headline: title,
+      description,
+      url: `${SITE_URL}${path}`,
+      datePublished,
+      dateModified: datePublished,
+      author: {
+        '@type': 'Person',
+        name: 'אלעד חנינה',
+        url: `${SITE_URL}/about`,
+      },
+      publisher: {
+        '@type': 'Organization',
+        name: SITE_NAME,
+        url: SITE_URL,
+      },
+      inLanguage: 'he-IL',
+    })}</script>
+  </Helmet>
+);
+
+/**
  * JSON-LD FAQPage schema.
  */
 export const FAQSchema = ({ items }: { items: { question: string; answer: string }[] }) => (
