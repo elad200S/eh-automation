@@ -13,24 +13,27 @@ const categories = [
   { label: 'מדריכים', icon: BookOpen, color: 'bg-primary/10 text-primary' },
 ];
 
-const placeholderArticles = [
+const articles = [
   {
     title: '5 תהליכים שכל עסק קטן צריך לאטמט היום',
     category: 'אוטומציה',
     excerpt: 'סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע.',
     readTime: '5 דקות קריאה',
+    href: '/blog/5-automation-processes',
   },
   {
     title: 'סוכן AI לעסק: מתי זה שווה ומתי לא',
     category: 'סוכני AI',
     excerpt: 'מדריך מעשי שעוזר לבעלי עסקים להבין אם סוכן AI מתאים לעסק שלהם – ומה הציפיות הריאליות.',
     readTime: '7 דקות קריאה',
+    href: '/blog/ai-agent-for-business',
   },
   {
     title: 'איך לבחור CRM שבאמת ישתמשו בו',
     category: 'מערכות עסקיות',
     excerpt: 'הבעיה לא הכלי – הבעיה היא ההטמעה. טיפים מעשיים לבחירת CRM שהצוות שלך באמת ישתמש בו.',
     readTime: '6 דקות קריאה',
+    href: '/blog/how-to-choose-crm',
   },
 ];
 
@@ -78,18 +81,20 @@ const Blog = () => {
 
             <h2 className="text-xl font-semibold text-foreground mb-6">מאמרים אחרונים</h2>
             <div className="space-y-6">
-              {placeholderArticles.map((article, index) => (
-                <article key={index} className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all group">
-                  <div className="flex items-center gap-3 mb-3">
-                    <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">{article.category}</span>
-                    <span className="text-xs text-muted-foreground">{article.readTime}</span>
-                  </div>
-                  <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
-                    {article.title}
-                  </h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{article.excerpt}</p>
-                  <p className="text-xs text-primary font-medium mt-4">בקרוב</p>
-                </article>
+              {articles.map((article, index) => (
+                <Link key={index} to={article.href}>
+                  <article className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg transition-all group cursor-pointer">
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">{article.category}</span>
+                      <span className="text-xs text-muted-foreground">{article.readTime}</span>
+                    </div>
+                    <h3 className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+                      {article.title}
+                    </h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{article.excerpt}</p>
+                    <p className="text-xs text-primary font-medium mt-4">קראו עוד ←</p>
+                  </article>
+                </Link>
               ))}
             </div>
 

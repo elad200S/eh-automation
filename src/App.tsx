@@ -22,6 +22,9 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const Solutions = lazy(() => import("./pages/Solutions"));
 const Industries = lazy(() => import("./pages/Industries"));
 const Blog = lazy(() => import("./pages/Blog"));
+const AutomationProcesses = lazy(() => import("./pages/blog/AutomationProcesses"));
+const AIAgentForBusiness = lazy(() => import("./pages/blog/AIAgentForBusiness"));
+const HowToChooseCRM = lazy(() => import("./pages/blog/HowToChooseCRM"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 
@@ -118,6 +121,9 @@ const AppInner = () => {
 
         {/* Top-level pages */}
         <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
+        <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
+        <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
 
