@@ -180,20 +180,34 @@ const ProblemSection = () => {
               <div>
                 {SOLUTION_LINES.slice(0, solutionCount).map((line, i) => {
                   if (line.text === '__progress__') {
-                    const filled  = Math.floor(progress / 5);   // 0-20 blocks
-                    const empty   = 20 - filled;
-                    const done    = progress >= 100;
-                    const barColor = done ? '#3fb950' : '#febc2e';
+                    const filledBoxes = Math.floor(progress / 10);
+                    const done        = progress >= 100;
+                    const boxColor    = done ? '#3fb950' : '#febc2e';
                     return (
-                      <div key={i} style={{ marginBottom: 2, direction: 'ltr', textAlign: 'left', fontFamily: 'inherit' }}>
-                        <span style={{ color: '#8b949e' }}>&gt; [</span>
-                        <span style={{ color: barColor, transition: 'color 0.3s' }}>
-                          {'█'.repeat(filled)}
-                          {'░'.repeat(empty)}
+                      <div key={i} style={{ marginBottom: 8, marginTop: 4, direction: 'ltr', textAlign: 'left' }}>
+                        <span style={{ color: '#8b949e' }}>&gt;&nbsp;</span>
+                        <span style={{ display: 'inline-flex', gap: 5, verticalAlign: 'middle', margin: '0 6px' }}>
+                          {Array.from({ length: 10 }).map((_, idx) => {
+                            const filled = idx < filledBoxes;
+                            return (
+                              <span
+                                key={idx}
+                                style={{
+                                  display: 'inline-block',
+                                  width: 20,
+                                  height: 20,
+                                  borderRadius: 4,
+                                  border: `1px solid ${filled ? boxColor : '#30363d'}`,
+                                  background: filled ? boxColor : '#161b22',
+                                  boxShadow: filled ? `0 0 6px ${boxColor}66` : 'none',
+                                  transition: 'background 0.12s, border-color 0.12s, box-shadow 0.12s',
+                                }}
+                              />
+                            );
+                          })}
                         </span>
-                        <span style={{ color: '#8b949e' }}>] </span>
-                        <span style={{ color: barColor, fontWeight: 'bold', transition: 'color 0.3s' }}>
-                          {progress}%
+                        <span style={{ color: boxColor, fontWeight: 'bold', transition: 'color 0.3s' }}>
+                          &nbsp;{progress}%
                         </span>
                         {i === solutionCount - 1 && cursor}
                       </div>
