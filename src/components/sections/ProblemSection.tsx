@@ -20,7 +20,7 @@ const SOLUTION_DELAY = ERROR_DONE + 1400;
 
 const SOLUTION_LINES = [
   { text: '$ loading EH-Automation...',        dir: 'ltr', color: '#8b949e' },
-  { text: '> [████████████████████] 100%',     dir: 'ltr', color: '#3fb950' },
+  { text: '__progress__',                       dir: 'ltr', color: '#3fb950' },
   { text: '',                                   dir: 'ltr', color: '' },
   { text: 'כל ליד מטופל אוטומטית ✓',          dir: 'rtl', color: '#3fb950' },
   { text: 'מעקב מלא ב-CRM ✓',                 dir: 'rtl', color: '#3fb950' },
@@ -38,18 +38,22 @@ const ProblemSection = () => {
   const [phase,         setPhase]         = useState<'idle' | 'problems' | 'error' | 'solution'>('idle');
   const [solutionCount, setSolutionCount] = useState(0);
   const [cursorOn,      setCursorOn]      = useState(true);
+  const [progress,      setProgress]      = useState(0);
 
-  const sectionRef = useRef<HTMLDivElement>(null);
-  const timersRef  = useRef<ReturnType<typeof setTimeout>[]>([]);
-  const inViewRef  = useRef(false);
+  const sectionRef   = useRef<HTMLDivElement>(null);
+  const timersRef    = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const progressRef  = useRef<ReturnType<typeof setInterval> | null>(null);
+  const inViewRef    = useRef(false);
 
   const reset = useCallback(() => {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
+    if (progressRef.current) clearInterval(progressRef.current);
     setVisibleCount(0);
     setErrorText('');
     setPhase('idle');
     setSolutionCount(0);
+    setProgress(0);
   }, []);
 
   const startAnimation = useCallback(() => {
@@ -77,14 +81,25 @@ const ProblemSection = () => {
       setPhase('solution');
       setVisibleCount(0);
       setErrorText('');
+      setProgress(0);
     }, SOLUTION_DELAY);
     timersRef.current.push(solT);
 
     SOLUTION_LINES.forEach((_, i) => {
-      const t = setTimeout(
-        () => setSolutionCount(i + 1),
-        SOLUTION_DELAY + (i + 1) * SOL_LINE_DELAY
-      );
+      const t = setTimeout(() => {
+        setSolutionCount(i + 1);
+        // Start progress bar when its line appears (index 1)
+        if (i === 1) {
+          if (progressRef.current) clearInterval(progressRef.current);
+          setProgress(0);
+          let p = 0;
+          progressRef.current = setInterval(() => {
+            p += 2;
+            setProgress(p);
+            if (p >= 100) clearInterval(progressRef.current!);
+          }, 16); // ~800ms to reach 100
+        }
+      }, SOLUTION_DELAY + (i + 1) * SOL_LINE_DELAY);
       timersRef.current.push(t);
     });
 
@@ -163,23 +178,45 @@ const ProblemSection = () => {
 
               /* ── Solution output ── */
               <div>
-                {SOLUTION_LINES.slice(0, solutionCount).map((line, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      marginBottom: 2,
-                      direction: line.dir as 'ltr' | 'rtl',
-                      textAlign: line.dir === 'rtl' ? 'right' : 'left',
-                      color: line.color || 'transparent',
-                      fontWeight: line.text.startsWith('⚡') ? 'bold' : 'normal',
-                      fontSize: line.text.startsWith('⚡') ? 16 : 14,
-                      animation: 'termLine 0.2s ease forwards',
-                    }}
-                  >
-                    {line.text || '\u00A0'}
-                    {i === solutionCount - 1 && cursor}
-                  </div>
-                ))}
+                {SOLUTION_LINES.slice(0, solutionCount).map((line, i) => {
+                  if (line.text === '__progress__') {
+                    const filled  = Math.floor(progress / 5);   // 0-20 blocks
+                    const empty   = 20 - filled;
+                    const done    = progress >= 100;
+                    const barColor = done ? '#3fb950' : '#febc2e';
+                    return (
+                      <div key={i} style={{ marginBottom: 2, direction: 'ltr', textAlign: 'left', fontFamily: 'inherit' }}>
+                        <span style={{ color: '#8b949e' }}>&gt; [</span>
+                        <span style={{ color: barColor, transition: 'color 0.3s' }}>
+                          {'█'.repeat(filled)}
+                          {'░'.repeat(empty)}
+                        </span>
+                        <span style={{ color: '#8b949e' }}>] </span>
+                        <span style={{ color: barColor, fontWeight: 'bold', transition: 'color 0.3s' }}>
+                          {progress}%
+                        </span>
+                        {i === solutionCount - 1 && cursor}
+                      </div>
+                    );
+                  }
+                  return (
+                    <div
+                      key={i}
+                      style={{
+                        marginBottom: 2,
+                        direction: line.dir as 'ltr' | 'rtl',
+                        textAlign: line.dir === 'rtl' ? 'right' : 'left',
+                        color: line.color || 'transparent',
+                        fontWeight: line.text.startsWith('⚡') ? 'bold' : 'normal',
+                        fontSize: line.text.startsWith('⚡') ? 16 : 14,
+                        animation: 'termLine 0.2s ease forwards',
+                      }}
+                    >
+                      {line.text || '\u00A0'}
+                      {i === solutionCount - 1 && cursor}
+                    </div>
+                  );
+                })}
               </div>
 
             ) : (
