@@ -132,8 +132,8 @@ const MobileMenuPortal = ({
               <X className="h-5 w-5" />
             </button>
 
-            <Link to="/" onClick={onClose} className="text-xl font-bold text-foreground">
-              EH <span className="gradient-text">Automation</span>
+            <Link to="/" onClick={onClose} className="flex items-center">
+              <img src="/logo website - eh (2).png" alt="EH Automation" className="h-10 w-auto" />
             </Link>
           </div>
         </div>
@@ -274,8 +274,8 @@ const Navbar = () => {
         )}
       >
         <div className="container flex h-16 items-center justify-between">
-          <Link to="/" className="text-xl font-bold text-foreground">
-            EH <span className="gradient-text">Automation</span>
+          <Link to="/" className="flex items-center">
+            <img src="/logo website - eh (2).png" alt="EH Automation" className="h-10 w-auto" />
           </Link>
 
           <div className="hidden items-center gap-5 lg:flex">

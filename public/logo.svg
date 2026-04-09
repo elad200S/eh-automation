@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 100" width="360" height="100">
+  <defs>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+
+  <!-- Icon badge background -->
+  <rect x="0" y="0" width="100" height="100" rx="18" fill="#131A2B"/>
+
+  <!-- ═══ Letter E ═══ -->
+  <!-- Left vertical bar -->
+  <rect x="12" y="18" width="8" height="52" rx="2" fill="#2994FF"/>
+  <!-- Top horizontal -->
+  <rect x="12" y="18" width="32" height="8" rx="2" fill="#2994FF"/>
+  <!-- Middle horizontal -->
+  <rect x="12" y="40" width="25" height="8" rx="2" fill="#2994FF"/>
+  <!-- Bottom horizontal -->
+  <rect x="12" y="62" width="32" height="8" rx="2" fill="#2994FF"/>
+
+  <!-- Circuit dots — E endpoints -->
+  <circle cx="44" cy="22" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="44" y1="22" x2="50" y2="22" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <circle cx="37" cy="44" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+
+  <circle cx="44" cy="66" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="44" y1="66" x2="50" y2="66" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- ═══ Letter H ═══ -->
+  <!-- Left vertical bar -->
+  <rect x="54" y="18" width="8" height="52" rx="2" fill="#2994FF"/>
+  <!-- Right vertical bar -->
+  <rect x="80" y="18" width="8" height="52" rx="2" fill="#2994FF"/>
+  <!-- Middle horizontal -->
+  <rect x="54" y="40" width="34" height="8" rx="2" fill="#2994FF"/>
+
+  <!-- Circuit dots — H endpoints -->
+  <circle cx="58" cy="15" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="58" y1="12" x2="58" y2="6" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <circle cx="84" cy="15" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="84" y1="12" x2="84" y2="6" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <circle cx="58" cy="73" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="58" y1="76" x2="58" y2="82" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <circle cx="84" cy="73" r="3.5" fill="#30CDD8" filter="url(#glow)"/>
+  <line x1="84" y1="76" x2="84" y2="82" stroke="#30CDD8" stroke-width="1.5" opacity="0.4"/>
+
+  <!-- ═══ Wordmark text ═══ -->
+  <!-- EH bold -->
+  <text x="120" y="58" font-family="Rubik, Arial, sans-serif" font-weight="700" font-size="38" fill="#2994FF">EH</text>
+
+  <!-- AUTOMATION tracked -->
+  <text x="122" y="78" font-family="Rubik, Arial, sans-serif" font-weight="400" font-size="13" fill="#6B84A0" letter-spacing="5">AUTOMATION</text>
+</svg>
