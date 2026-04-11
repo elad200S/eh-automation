@@ -221,12 +221,25 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const lastScrollY = useRef(0);
   const location = useLocation();
   const navigate = useNavigate();
   const { openPopup } = useContactPopup();
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 10);
+    const onScroll = () => {
+      const y = window.scrollY;
+      setScrolled(y > 10);
+      if (y < 60) {
+        setHidden(false);
+      } else if (y > lastScrollY.current + 6) {
+        setHidden(true);
+      } else if (y < lastScrollY.current - 6) {
+        setHidden(false);
+      }
+      lastScrollY.current = y;
+    };
     window.addEventListener('scroll', onScroll, { passive: true });
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
@@ -270,6 +283,7 @@ const Navbar = () => {
         className={cn(
           'fixed top-3 right-4 left-4 rounded-2xl border border-white/10 bg-background/80 backdrop-blur-xl transition-all duration-300',
           scrolled ? 'shadow-[0_4px_32px_-4px_hsl(var(--primary)/0.18)] border-white/15' : '',
+          hidden && !mobileOpen ? '-translate-y-[calc(100%+1rem)] opacity-0' : 'translate-y-0 opacity-100',
           mobileOpen ? 'z-[10040]' : 'z-50'
         )}
       >
