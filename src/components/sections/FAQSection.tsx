@@ -31,7 +31,14 @@ const FAQSection = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <>
+    <div className="relative">
+      {/* Gradient backdrop */}
+      <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[500px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(ellipse at center, hsl(210 100% 58%) 0%, hsl(185 70% 52% / 0.3) 40%, transparent 70%)' }}
+        />
+      </div>
       <FAQSchema items={faqs} />
       <Section id="faq">
         <div className="max-w-3xl mx-auto">
@@ -73,7 +80,7 @@ const FAQSection = () => {
           </div>
         </div>
       </Section>
-    </>
+    </div>
   );
 };
 
