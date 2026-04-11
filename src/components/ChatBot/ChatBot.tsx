@@ -132,13 +132,19 @@ const ChatBot = () => {
   return (
     <>
       {isOpen && (
-        <ChatWindow
-          messages={messages}
-          isLoading={isLoading}
-          onSendMessage={sendMessage}
-          onClose={toggleOpen}
-          maxInputLength={maxInputLength}
-        />
+        <>
+          <div
+            className="fixed inset-0 z-[9997]"
+            onClick={toggleOpen}
+          />
+          <ChatWindow
+            messages={messages}
+            isLoading={isLoading}
+            onSendMessage={sendMessage}
+            onClose={toggleOpen}
+            maxInputLength={maxInputLength}
+          />
+        </>
       )}
 
       {proactiveBubble && !isOpen && (
