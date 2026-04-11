@@ -117,6 +117,62 @@ function detectBuyingIntent(text: string): boolean {
   return TRIGGER_PHRASES.some(phrase => normalized.includes(normalize(phrase)));
 }
 
+const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj";
+const ISRAELI_PHONE_REGEX = /0[5-9][0-9]{7,8}/;
+
+function extractContactDetails(messages: Array<{ role: string; content: string }>): Record<string, string> | null {
+  const userMessages = messages.filter(m => m.role === 'user');
+  const allUserText = userMessages.map(m => m.content).join(' ');
+  
+  // Extract phone number
+  const phoneMatch = allUserText.match(ISRAELI_PHONE_REGEX);
+  if (!phoneMatch) return null; // Only send to webhook if we have a phone number
+  
+  const payload: Record<string, string> = {
+    phone: phoneMatch[0],
+    form_type: 'chatbot',
+  };
+
+  // Try to extract name - look for common Hebrew patterns like "שמי X" or "קוראים לי X"
+  const namePatterns = [
+    /(?:שמי|קוראים לי|אני)\s+([א-ת]+(?:\s+[א-ת]+)?)/,
+    /(?:my name is|i'm|i am)\s+(\w+(?:\s+\w+)?)/i,
+  ];
+  for (const pattern of namePatterns) {
+    const nameMatch = allUserText.match(pattern);
+    if (nameMatch) {
+      payload.full_name = nameMatch[1].trim();
+      break;
+    }
+  }
+
+  // Try to extract business type
+  const bizPatterns = [
+    /(?:עסק של|בתחום|עוסק ב|יש לי|מנהל)\s+([א-ת\w\s]{2,30})/,
+  ];
+  for (const pattern of bizPatterns) {
+    const bizMatch = allUserText.match(pattern);
+    if (bizMatch) {
+      payload.business_type = bizMatch[1].trim();
+      break;
+    }
+  }
+
+  return payload;
+}
+
+async function sendToWebhook(payload: Record<string, string>): Promise<void> {
+  try {
+    await fetch(MAKE_WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+  } catch (err) {
+    console.error('Webhook send error:', err);
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
