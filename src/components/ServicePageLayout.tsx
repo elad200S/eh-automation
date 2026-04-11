@@ -69,7 +69,7 @@ const ServicePageLayout = ({ data }: { data: ServicePageData }) => {
 
       <main className="bg-background min-h-screen pt-16">
         {/* Section 1 – Hero */}
-        <section className="min-h-[50vh] flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background py-20 md:py-28">
+        <section className="min-h-[50vh] flex items-center relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background pt-8 pb-20 md:py-28">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="container relative z-10">

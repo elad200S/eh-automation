@@ -54,7 +54,7 @@ const Blog = () => {
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        <section className="py-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
+        <section className="pt-8 pb-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
             <div className="max-w-3xl">
