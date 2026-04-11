@@ -233,9 +233,9 @@ const Navbar = () => {
       setScrolled(y > 10);
       if (y < 60) {
         setHidden(false);
-      } else if (y > lastScrollY.current + 6) {
+      } else if (y > lastScrollY.current + 40) {
         setHidden(true);
-      } else if (y < lastScrollY.current - 6) {
+      } else if (y < lastScrollY.current - 20) {
         setHidden(false);
       }
       lastScrollY.current = y;
@@ -289,7 +289,7 @@ const Navbar = () => {
           mobileOpen ? 'z-[10040]' : 'z-50'
         )}
       >
-        <div className="container flex h-16 items-center justify-between px-6">
+        <div className="container flex h-12 lg:h-16 items-center justify-between px-6">
           <Link to="/" className="flex items-center">
             <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" fetchPriority="high" />
           </Link>
