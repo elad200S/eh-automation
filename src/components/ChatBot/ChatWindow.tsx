@@ -1,10 +1,12 @@
 import { useRef, useEffect, useState, KeyboardEvent, useCallback } from 'react';
-import { X, Send, Bot, ChevronDown } from 'lucide-react';
+import { X, Send, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import type { Message } from './useChatBot';
+
+const WHATSAPP_NUMBER = '972547108219';
 
 interface ChatWindowProps {
   messages: Message[];
@@ -23,7 +25,6 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   const [showScrollButton, setShowScrollButton] = useState(false);
   const [hasNewMessage, setHasNewMessage] = useState(false);
 
-  // Check if user is near bottom
   const checkIfNearBottom = useCallback(() => {
     const container = scrollContainerRef.current;
     if (!container) return true;
@@ -31,27 +32,23 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     return container.scrollHeight - container.scrollTop - container.clientHeight < threshold;
   }, []);
 
-  // Handle scroll events
   const handleScroll = useCallback(() => {
     const isNearBottom = checkIfNearBottom();
     setStickToBottom(isNearBottom);
     setShowScrollButton(!isNearBottom);
   }, [checkIfNearBottom]);
 
-  // Scroll to bottom function
   const scrollToBottom = useCallback((behavior: ScrollBehavior = 'smooth') => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior, block: 'end' });
     }
   }, []);
 
-  // Auto-scroll when messages change or during streaming
   useEffect(() => {
     if (stickToBottom) {
       scrollToBottom('smooth');
       setHasNewMessage(false);
     } else if (messages.length > 0) {
-      // Check if the last message is from the bot (new message indicator)
       const lastMessage = messages[messages.length - 1];
       if (lastMessage?.role === 'assistant') {
         setHasNewMessage(true);
@@ -59,17 +56,14 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     }
   }, [messages, isLoading, stickToBottom, scrollToBottom]);
 
-  // Clear new message indicator when user scrolls to bottom
   useEffect(() => {
     if (stickToBottom) {
       setHasNewMessage(false);
     }
   }, [stickToBottom]);
 
-  // Focus input on open
   useEffect(() => {
     inputRef.current?.focus();
-    // Initial scroll to bottom
     scrollToBottom('instant');
   }, [scrollToBottom]);
 
@@ -78,7 +72,6 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     if (trimmed && !isLoading) {
       onSendMessage(trimmed);
       setInputValue('');
-      // Force stick to bottom when sending
       setStickToBottom(true);
     }
   };
@@ -102,6 +95,11 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     scrollToBottom('smooth');
   };
 
+  const handleLeadSubmit = (name: string, phone: string) => {
+    const text = encodeURIComponent(`שלום אלעד, שמי ${name}. מספרי ${phone}. דיברתי עם הבוט שלך ואשמח לשמוע עוד!`);
+    window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
+  };
+
   return (
     <div
       dir="rtl"
@@ -109,21 +107,38 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     >
       {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
-        <div className="flex items-center gap-2">
-          <Bot className="w-5 h-5" />
-          <span className="font-medium text-sm">EH Automation</span>
+        <div className="flex items-center gap-2.5">
+          <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+            <img src="/bot ocon website.png" alt="Bot" className="w-full h-full object-cover" />
+          </div>
+          <div>
+            <p className="font-medium text-sm leading-tight">EH Automation</p>
+            <p className="text-xs text-primary-foreground/70 leading-tight">בוט חכם • עונה מיד</p>
+          </div>
         </div>
-        <button
-          onClick={onClose}
-          className="p-1 hover:bg-primary-foreground/10 rounded-full transition-colors"
-          aria-label="סגור צ'אט"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-center gap-1">
+          <a
+            href={`https://wa.me/${WHATSAPP_NUMBER}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-1.5 hover:bg-primary-foreground/10 rounded-full transition-colors"
+            aria-label="WhatsApp"
+            title="דבר עם אלעד ישירות"
+          >
+            <img src="/whatsapp icon website.png" alt="WhatsApp" className="w-5 h-5 object-cover rounded" />
+          </a>
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-primary-foreground/10 rounded-full transition-colors"
+            aria-label="סגור צ'אט"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Messages */}
-      <div 
+      <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
         className="flex-1 overflow-y-auto p-4 scroll-smooth"
@@ -135,12 +150,13 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
               role={message.role}
               content={message.content}
               showQuickReplies={message.showQuickReplies}
+              showLeadForm={message.showLeadForm}
               onQuickReply={handleQuickReply}
+              onLeadSubmit={handleLeadSubmit}
               isLoading={isLoading}
             />
           ))}
           {isLoading && <TypingIndicator />}
-          {/* Bottom anchor for scrolling */}
           <div ref={bottomRef} className="h-1" />
         </div>
       </div>
@@ -150,8 +166,8 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
         <button
           onClick={handleScrollToBottomClick}
           className={`absolute bottom-20 left-1/2 -translate-x-1/2 px-3 py-1.5 rounded-full text-xs font-medium shadow-lg flex items-center gap-1 transition-all animate-in fade-in slide-in-from-bottom-2 ${
-            hasNewMessage 
-              ? 'bg-secondary text-secondary-foreground' 
+            hasNewMessage
+              ? 'bg-secondary text-secondary-foreground'
               : 'bg-primary text-primary-foreground hover:bg-primary/90'
           }`}
         >

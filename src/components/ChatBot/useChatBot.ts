@@ -5,12 +5,13 @@ export interface Message {
   role: 'user' | 'assistant';
   content: string;
   showQuickReplies?: boolean;
+  showLeadForm?: boolean;
 }
 
 const INITIAL_MESSAGE: Message = {
   id: 'welcome',
   role: 'assistant',
-  content: 'היי! אני הבוט של אלעד.\nאפשר לשאול אותי שאלות על אוטומציה עסקית, תהליכים, וחיסכון בזמן וכסף.',
+  content: 'היי! ספר לי על העסק שלך — ואני אגיד לך מה אפשר לאוטמט ולחסוך.',
   showQuickReplies: true,
 };
 
@@ -19,6 +20,13 @@ const NUDGE_MESSAGE: Message = {
   role: 'assistant',
   content: 'רוב העסקים שמגיעים לפה מבזבזים זמן על תהליכים ידניים.\nרוצה לבדוק אם זה גם המצב אצלך?',
   showQuickReplies: true,
+};
+
+const LEAD_CAPTURE_MESSAGE: Message = {
+  id: 'lead-capture',
+  role: 'assistant',
+  content: 'נשמע שיש פה פוטנציאל 💡\nרוצה שאלעד יחזור אליך לשיחה קצרה? השאר שם ומספר:',
+  showLeadForm: true,
 };
 
 const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', 'reset', 'new chat', 'פתיחת שיחה חדשה'];
@@ -36,6 +44,8 @@ export function useChatBot() {
   const [showNudge, setShowNudge] = useState(false);
   const messageTimestamps = useRef<number[]>([]);
   const nudgeTimerRef = useRef<number | null>(null);
+  const botResponseCountRef = useRef(0);
+  const leadShownRef = useRef(false);
 
   // Setup nudge timer - show after 20-30 seconds if chat not opened
   useEffect(() => {
@@ -73,6 +83,8 @@ export function useChatBot() {
   const resetChat = useCallback(() => {
     setMessages([{ ...INITIAL_MESSAGE, id: `welcome-${Date.now()}` }]);
     setIsLoading(false);
+    botResponseCountRef.current = 0;
+    leadShownRef.current = false;
   }, []);
 
   const isResetCommand = useCallback((text: string): boolean => {
@@ -146,7 +158,7 @@ export function useChatBot() {
         } else if (response.status === 402) {
           errorText = 'השירות לא זמין כרגע';
         }
-        
+
         const errorMessage: Message = {
           id: `error-${Date.now()}`,
           role: 'assistant',
@@ -233,6 +245,17 @@ export function useChatBot() {
           }
         }
       }
+
+      // After 3rd bot response, show lead capture form
+      botResponseCountRef.current += 1;
+      if (botResponseCountRef.current >= 3 && !leadShownRef.current) {
+        leadShownRef.current = true;
+        setMessages(prev => [
+          ...prev,
+          { ...LEAD_CAPTURE_MESSAGE, id: `lead-${Date.now()}` },
+        ]);
+      }
+
     } catch (error) {
       console.error('Chat error:', error);
       const errorMessage: Message = {

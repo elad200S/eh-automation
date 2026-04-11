@@ -1,12 +1,15 @@
 import { memo, useMemo } from 'react';
 import { cn } from '@/lib/utils';
 import QuickReplies from './QuickReplies';
+import LeadCaptureForm from './LeadCaptureForm';
 
 interface ChatMessageProps {
   role: 'user' | 'assistant';
   content: string;
   showQuickReplies?: boolean;
+  showLeadForm?: boolean;
   onQuickReply?: (text: string) => void;
+  onLeadSubmit?: (name: string, phone: string) => void;
   isLoading?: boolean;
 }
 
@@ -34,7 +37,7 @@ const linkifyContent = (text: string) => {
   });
 };
 
-const ChatMessage = memo(({ role, content, showQuickReplies, onQuickReply, isLoading }: ChatMessageProps) => {
+const ChatMessage = memo(({ role, content, showQuickReplies, showLeadForm, onQuickReply, onLeadSubmit, isLoading }: ChatMessageProps) => {
   const isUser = role === 'user';
   const linkedContent = useMemo(() => linkifyContent(content), [content]);
 
@@ -51,6 +54,9 @@ const ChatMessage = memo(({ role, content, showQuickReplies, onQuickReply, isLoa
         <p className="text-sm whitespace-pre-wrap leading-relaxed">{linkedContent}</p>
         {showQuickReplies && onQuickReply && (
           <QuickReplies onSelect={onQuickReply} disabled={isLoading} />
+        )}
+        {showLeadForm && onLeadSubmit && (
+          <LeadCaptureForm onSubmit={onLeadSubmit} />
         )}
       </div>
     </div>
