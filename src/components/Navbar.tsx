@@ -133,7 +133,7 @@ const MobileMenuPortal = ({
             </button>
 
             <Link to="/" onClick={onClose} className="flex items-center">
-              <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" />
+              <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" fetchPriority="high" />
             </Link>
           </div>
         </div>
@@ -275,7 +275,7 @@ const Navbar = () => {
       >
         <div className="container flex h-16 items-center justify-between">
           <Link to="/" className="flex items-center">
-            <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" />
+            <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" fetchPriority="high" />
           </Link>
 
           <div className="hidden items-center gap-5 lg:flex">

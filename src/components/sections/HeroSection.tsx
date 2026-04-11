@@ -17,8 +17,7 @@ const HeroSection = () => {
   useEffect(() => {
     const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
     setPrefersReducedMotion(mediaQuery.matches);
-    const timer = setTimeout(() => setMounted(true), 100);
-    return () => clearTimeout(timer);
+    setMounted(true);
   }, []);
 
   return (
@@ -53,7 +52,7 @@ const HeroSection = () => {
                     mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                   }`
             }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '120ms' }}
+            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '60ms' }}
           >
             אוטומציות ו-AI לעסקים שרוצים לעבוד מסודר, לטפל ביותר לידים ולחסוך עבודה ידנית
           </h1>
@@ -67,7 +66,7 @@ const HeroSection = () => {
                     mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                   }`
             }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '240ms' }}
+            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '120ms' }}
           >
             אני בונה מערכות שמחברות בין לידים, לקוחות ותהליכים, כך שכל פנייה מטופלת, הכל מתועד, והעסק עובד בצורה חלקה וברורה
           </p>
@@ -81,7 +80,7 @@ const HeroSection = () => {
                     mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                   }`
             }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '360ms' }}
+            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '180ms' }}
           >
             {bullets.map((bullet, i) => (
               <div key={i} className="flex items-center gap-2 text-foreground/80">
@@ -100,7 +99,7 @@ const HeroSection = () => {
                     mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                   }`
             }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '480ms' }}
+            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '240ms' }}
           >
             <button onClick={openPopup} className="cta-gradient group">
               בדיקת התאמה לעסק
@@ -119,7 +118,7 @@ const HeroSection = () => {
                 mounted ? 'opacity-100' : 'opacity-0'
               }`
         }
-        style={{ transitionDelay: prefersReducedMotion ? '0ms' : '600ms' }}
+        style={{ transitionDelay: prefersReducedMotion ? '0ms' : '300ms' }}
       >
         <HeroAutomationFlow />
       </div>
