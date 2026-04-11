@@ -174,7 +174,7 @@ const ChatBot = () => {
       >
         {isOpen
           ? <X className="w-6 h-6 text-foreground" />
-          : <img src="/bot ocon website.png" alt="פתח צ'אט" className="w-full h-full object-cover" />
+          : <img src="/bot-icon.png" alt="פתח צ'אט" className="w-full h-full object-cover" />
         }
       </button>
     </>

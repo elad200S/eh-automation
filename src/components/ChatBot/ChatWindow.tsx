@@ -109,7 +109,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
         <div className="flex items-center gap-2.5">
           <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-            <img src="/bot ocon website.png" alt="Bot" className="w-full h-full object-cover" />
+            <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
           </div>
           <div>
             <p className="font-medium text-sm leading-tight">EH Automation</p>
@@ -125,7 +125,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
             aria-label="WhatsApp"
             title="דבר עם אלעד ישירות"
           >
-            <img src="/whatsapp icon website.png" alt="WhatsApp" className="w-5 h-5 object-cover rounded" />
+            <img src="/whatsapp-icon.png" alt="WhatsApp" className="w-5 h-5 object-cover rounded" />
           </a>
           <button
             onClick={onClose}

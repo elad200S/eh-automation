@@ -61,7 +61,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group"
             >
               <div className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden">
-                <img src="/whatsapp icon website.png" alt="WhatsApp" className="w-full h-full object-cover" />
+                <img src="/whatsapp-icon.png" alt="WhatsApp" className="w-full h-full object-cover" />
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
@@ -79,7 +79,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               className="w-full flex items-center gap-4 p-4 rounded-xl border border-border bg-card hover:bg-muted/50 hover:border-primary/30 transition-all group"
             >
               <div className="w-14 h-14 flex-shrink-0 rounded-xl overflow-hidden">
-                <img src="/bot ocon website.png" alt="Bot" className="w-full h-full object-cover" />
+                <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
