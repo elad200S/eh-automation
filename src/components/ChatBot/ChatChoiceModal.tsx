@@ -17,22 +17,22 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
   if (!isOpen) return null;
 
   return (
-    <div 
+    <div
       className="fixed inset-0 z-[9999] flex items-end sm:items-center justify-center"
       onClick={onClose}
     >
       {/* Backdrop */}
       <div className="absolute inset-0 bg-black/60 animate-in fade-in duration-200" />
-      
+
       {/* Modal */}
-      <div 
+      <div
         dir="rtl"
         onClick={(e) => e.stopPropagation()}
         className={cn(
           "relative bg-background border border-border shadow-2xl z-10",
           "animate-in duration-300",
-          isMobile 
-            ? "w-full rounded-t-2xl slide-in-from-bottom pb-safe" 
+          isMobile
+            ? "w-full rounded-t-2xl slide-in-from-bottom pb-safe"
             : "w-full max-w-md rounded-2xl fade-in zoom-in-95"
         )}
       >
@@ -65,7 +65,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                  לדבר עם אלעד ב-WhatsApp
+                  לדבר עם נציג
                 </p>
                 <p className="text-sm text-muted-foreground">
                   תשובה מהירה ואישית
@@ -83,7 +83,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                  לברר עוד עם הבוט
+                  לדבר עם הבוט שלנו
                 </p>
                 <p className="text-sm text-muted-foreground">
                   שאלות ותשובות מיידיות
