@@ -6,6 +6,7 @@ import CookieConsent from "@/components/CookieConsent";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
+import Lenis from "lenis";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
@@ -49,6 +50,19 @@ const Automation = lazy(() => import("./pages/services/Automation"));
 const AIAgents = lazy(() => import("./pages/services/AIAgents"));
 
 const queryClient = new QueryClient();
+
+// Initialize Lenis smooth scroll
+const lenis = new Lenis({
+  duration: 1.4,
+  easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+  touchMultiplier: 1.5,
+});
+
+function raf(time: number) {
+  lenis.raf(time);
+  requestAnimationFrame(raf);
+}
+requestAnimationFrame(raf);
 
 const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
