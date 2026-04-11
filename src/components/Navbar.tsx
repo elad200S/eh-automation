@@ -281,7 +281,7 @@ const Navbar = () => {
     <>
       <nav
         className={cn(
-          'fixed top-3 right-4 left-4 rounded-2xl border border-white/10 bg-background/80 backdrop-blur-xl transition-all duration-300',
+          'fixed top-3 right-4 left-4 rounded-2xl border border-white/10 bg-background/80 backdrop-blur-xl transition-all duration-500',
           scrolled ? 'shadow-[0_4px_32px_-4px_hsl(var(--primary)/0.18)] border-white/15' : '',
           hidden && !mobileOpen ? '-translate-y-[calc(100%+1rem)] opacity-0' : 'translate-y-0 opacity-100',
           mobileOpen ? 'z-[10040]' : 'z-50'
