@@ -69,7 +69,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                  לדבר עם אלעד ב-WhatsApp
+                  לדבר עם נציג 
                 </p>
                 <p className="text-sm text-muted-foreground">
                   תשובה מהירה ואישית
@@ -87,7 +87,7 @@ const ChatChoiceModal = ({ isOpen, onClose, onChooseBot, onChooseWhatsApp }: Cha
               </div>
               <div className="text-right">
                 <p className="font-medium text-foreground group-hover:text-primary transition-colors">
-                  לברר עוד עם הבוט
+                  לדבר עם הבוט שלנו
                 </p>
                 <p className="text-sm text-muted-foreground">
                   שאלות ותשובות מיידיות
