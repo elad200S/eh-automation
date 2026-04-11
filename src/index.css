@@ -205,19 +205,19 @@
 @keyframes chat-attention {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 4px 15px hsl(var(--primary) / 0.3);
+    filter: drop-shadow(0 4px 8px hsl(var(--primary) / 0.3));
   }
   25% {
     transform: scale(1.05);
-    box-shadow: 0 6px 25px hsl(var(--primary) / 0.5);
+    filter: drop-shadow(0 6px 16px hsl(var(--primary) / 0.55));
   }
   50% {
     transform: scale(1.02);
-    box-shadow: 0 8px 35px hsl(var(--primary) / 0.6);
+    filter: drop-shadow(0 8px 22px hsl(var(--primary) / 0.7));
   }
   75% {
     transform: scale(1.05);
-    box-shadow: 0 6px 25px hsl(var(--primary) / 0.5);
+    filter: drop-shadow(0 6px 16px hsl(var(--primary) / 0.55));
   }
 }
 
