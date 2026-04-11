@@ -1,7 +1,8 @@
 import { X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useIsMobile } from '@/hooks/use-mobile';
-import botIcon from '@/assets/icons/bot.png';
+import botIcon from '@/assets/icons/bot-custom.png';
+import whatsappIcon from '@/assets/icons/whatsapp-custom.png';
 
 interface ChatChoiceModalProps {
   isOpen: boolean;
