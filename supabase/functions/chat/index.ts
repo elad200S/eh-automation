@@ -180,8 +180,8 @@ serve(async (req) => {
 
   try {
     // Server-side rate limiting by IP
-    const clientIp = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
-                     req.headers.get("x-real-ip") || 
+    const clientIp = req.headers.get("x-real-ip") || 
+                     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
                      "anonymous";
     
     const rateCheck = checkRateLimit(clientIp);
@@ -287,7 +287,7 @@ serve(async (req) => {
   } catch (error) {
     console.error("Chat function error:", error);
     return new Response(
-      JSON.stringify({ error: error instanceof Error ? error.message : "Unknown error" }),
+      JSON.stringify({ error: "Internal server error" }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }
