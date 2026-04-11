@@ -130,11 +130,21 @@ const ContactSection = () => {
               />
             </div>
             
-            <button
-              type="submit"
-              disabled={isSubmitting}
-              className="cta-gradient group w-full"
-            >
+            <div className="relative">
+              <div
+                className="absolute inset-0 pointer-events-none flex items-center justify-center"
+                aria-hidden="true"
+              >
+                <div
+                  className="w-3/4 h-16 rounded-full blur-2xl opacity-40"
+                  style={{ background: 'radial-gradient(ellipse at center, hsl(210 100% 58%) 0%, hsl(185 70% 52% / 0.6) 50%, transparent 75%)' }}
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="cta-gradient group w-full relative"
+              >
               {isSubmitting ? (
                 <span className="animate-pulse">שולח...</span>
               ) : (
@@ -143,7 +153,8 @@ const ContactSection = () => {
                   <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
                 </>
               )}
-            </button>
+              </button>
+            </div>
           </form>
           
           <div className="flex items-center justify-center gap-6 mt-8 pt-6 border-t border-border">
