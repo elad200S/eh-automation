@@ -65,8 +65,8 @@ const DesktopDropdownItem = ({ item, pathname }: { item: NavItem; pathname: stri
       <Link
         to={item.href}
         className={cn(
-          'flex items-center gap-1 py-2 text-sm transition-all duration-200',
-          pathname.startsWith(item.href) ? 'text-primary font-medium' : 'text-muted-foreground hover:text-foreground'
+          'relative flex items-center gap-1 py-2 text-sm transition-all duration-200 after:absolute after:bottom-0 after:right-0 after:h-px after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full',
+          pathname.startsWith(item.href) ? 'text-primary font-medium after:w-full' : 'text-muted-foreground hover:text-foreground'
         )}
       >
         {item.label}
@@ -268,17 +268,17 @@ const Navbar = () => {
     <>
       <nav
         className={cn(
-          'fixed top-3 right-4 left-4 rounded-2xl border border-border bg-background/90 backdrop-blur-md transition-shadow duration-300',
-          scrolled && 'shadow-lg',
+          'fixed top-3 right-4 left-4 rounded-2xl border border-white/10 bg-background/80 backdrop-blur-xl transition-all duration-300',
+          scrolled ? 'shadow-[0_4px_32px_-4px_hsl(var(--primary)/0.18)] border-white/15' : '',
           mobileOpen ? 'z-[10040]' : 'z-50'
         )}
       >
-        <div className="container flex h-16 items-center justify-between">
+        <div className="container flex h-16 items-center justify-between px-6">
           <Link to="/" className="flex items-center">
             <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" fetchPriority="high" />
           </Link>
 
-          <div className="hidden items-center gap-5 lg:flex">
+          <div className="hidden items-center gap-7 lg:flex">
             {navItems.map((item) =>
               item.children ? (
                 <DesktopDropdownItem key={item.href} item={item} pathname={location.pathname} />
@@ -287,8 +287,8 @@ const Navbar = () => {
                   key={item.href}
                   to={item.href}
                   className={cn(
-                    'text-sm transition-all duration-200',
-                    location.pathname === item.href ? 'font-medium text-primary' : 'text-muted-foreground hover:text-foreground'
+                    'relative text-sm transition-all duration-200 after:absolute after:bottom-0 after:right-0 after:h-px after:w-0 after:bg-primary after:transition-all after:duration-200 hover:after:w-full',
+                    location.pathname === item.href ? 'font-medium text-primary after:w-full' : 'text-muted-foreground hover:text-foreground'
                   )}
                 >
                   {item.label}
@@ -299,10 +299,10 @@ const Navbar = () => {
             <button
               type="button"
               onClick={openPopup}
-              className="mr-2 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 active:scale-[0.97]"
+              className="mr-2 flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
             >
               שיחת אסטרטגיה
-              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary-foreground/70" />
+              <span className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-primary-foreground/80" />
             </button>
           </div>
 
