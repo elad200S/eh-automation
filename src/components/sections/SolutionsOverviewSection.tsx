@@ -8,36 +8,60 @@ const solutions = [
     title: 'סוכני AI חכמים',
     description: 'בוטים חכמים שעובדים 24/7 – מענה ללקוחות וטיפול בלידים.',
     href: '/solutions/ai-agents',
+    iconColor: 'text-primary',
+    iconBg: 'bg-primary/15',
+    glowColor: 'hover:shadow-primary/10',
+    borderHover: 'hover:border-primary/40',
   },
   {
     icon: Zap,
     title: 'אוטומציה עסקית',
     description: 'ביטול משימות ידניות וייעול תהליכים בעסק.',
     href: '/solutions/business-automation',
+    iconColor: 'text-yellow-400',
+    iconBg: 'bg-yellow-400/15',
+    glowColor: 'hover:shadow-yellow-400/10',
+    borderHover: 'hover:border-yellow-400/40',
   },
   {
     icon: MessageCircle,
     title: 'אוטומציית WhatsApp',
     description: 'מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות.',
     href: '/solutions/whatsapp-automation',
+    iconColor: 'text-green-400',
+    iconBg: 'bg-green-400/15',
+    glowColor: 'hover:shadow-green-400/10',
+    borderHover: 'hover:border-green-400/40',
   },
   {
     icon: GitBranch,
     title: 'אוטומציית CRM',
     description: 'תהליכי CRM שמוודאים שאף ליד לא נופל בין הכיסאות.',
     href: '/solutions/crm-automation',
+    iconColor: 'text-secondary',
+    iconBg: 'bg-secondary/15',
+    glowColor: 'hover:shadow-secondary/10',
+    borderHover: 'hover:border-secondary/40',
   },
   {
     icon: Workflow,
     title: 'אוטומציית תהליכי עבודה',
     description: 'מיפוי ואוטומציה של דוחות, אישורים ועדכונים.',
     href: '/solutions/workflow-automation',
+    iconColor: 'text-accent',
+    iconBg: 'bg-accent/15',
+    glowColor: 'hover:shadow-accent/10',
+    borderHover: 'hover:border-accent/40',
   },
   {
     icon: BarChart3,
     title: 'דוחות וניתוח נתונים',
     description: 'מעקב אוטומטי אחרי ביצועים והפקת תובנות לעסק.',
     href: '/solutions/business-automation',
+    iconColor: 'text-purple-400',
+    iconBg: 'bg-purple-400/15',
+    glowColor: 'hover:shadow-purple-400/10',
+    borderHover: 'hover:border-purple-400/40',
   },
 ];
 
@@ -66,12 +90,18 @@ const SolutionsOverviewSection = () => {
             <Link
               key={index}
               to={solution.href}
-              className="group p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5 hover:-translate-y-1 transition-all duration-300"
+              className={`group relative p-6 bg-card rounded-2xl border border-border transition-all duration-300 hover:-translate-y-1 hover:shadow-xl ${solution.glowColor} ${solution.borderHover} overflow-hidden`}
             >
-              <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center mb-4 group-hover:bg-primary/20 transition-colors">
-                <solution.icon className="w-6 h-6 text-primary" />
+              {/* subtle corner glow */}
+              <div className="absolute top-0 right-0 w-24 h-24 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl -translate-y-6 translate-x-6"
+                style={{ background: `var(--tw-shadow-color, transparent)` }}
+              />
+
+              <div className={`w-12 h-12 rounded-xl ${solution.iconBg} flex items-center justify-center mb-5 transition-transform duration-300 group-hover:scale-110`}>
+                <solution.icon className={`w-6 h-6 ${solution.iconColor}`} />
               </div>
-              <h3 className="text-lg font-medium text-foreground mb-2 group-hover:text-primary transition-colors">
+
+              <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-white transition-colors">
                 {solution.title}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
