@@ -268,8 +268,8 @@ const Navbar = () => {
     <>
       <nav
         className={cn(
-          'fixed top-0 right-0 left-0 border-b border-border bg-background/90 backdrop-blur-md transition-shadow duration-300',
-          scrolled && 'shadow-md',
+          'fixed top-3 right-4 left-4 rounded-2xl border border-border bg-background/90 backdrop-blur-md transition-shadow duration-300',
+          scrolled && 'shadow-lg',
           mobileOpen ? 'z-[10040]' : 'z-50'
         )}
       >
@@ -299,9 +299,10 @@ const Navbar = () => {
             <button
               type="button"
               onClick={openPopup}
-              className="mr-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 active:scale-[0.97]"
+              className="mr-2 flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-md hover:shadow-primary/20 active:scale-[0.97]"
             >
-              שיחת אסטרטגיה →
+              שיחת אסטרטגיה
+              <span className="h-2 w-2 flex-shrink-0 rounded-full bg-primary-foreground/70" />
             </button>
           </div>
 
