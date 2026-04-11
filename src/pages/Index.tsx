@@ -1,15 +1,17 @@
+import { lazy, Suspense } from 'react';
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
-import ProcessSection from '@/components/sections/ProcessSection';
-import ToolsSection from '@/components/sections/ToolsSection';
-import AutomationAnimation from '@/components/sections/AutomationAnimation';
-import SolutionsOverviewSection from '@/components/sections/SolutionsOverviewSection';
-import AboutSection from '@/components/sections/AboutSection';
-import FAQSection from '@/components/sections/FAQSection';
-import ContactSection from '@/components/sections/ContactSection';
-import Footer from '@/components/sections/Footer';
+
+const ProcessSection = lazy(() => import('@/components/sections/ProcessSection'));
+const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
+const AutomationAnimation = lazy(() => import('@/components/sections/AutomationAnimation'));
+const SolutionsOverviewSection = lazy(() => import('@/components/sections/SolutionsOverviewSection'));
+const AboutSection = lazy(() => import('@/components/sections/AboutSection'));
+const FAQSection = lazy(() => import('@/components/sections/FAQSection'));
+const ContactSection = lazy(() => import('@/components/sections/ContactSection'));
+const Footer = lazy(() => import('@/components/sections/Footer'));
 
 const Index = () => {
   return (
@@ -25,14 +27,16 @@ const Index = () => {
       <main className="bg-background min-h-screen">
         <HeroSection />
         <ProblemSection />
-        <ProcessSection />
-        <ToolsSection />
-        <AutomationAnimation />
-        <SolutionsOverviewSection />
-        <AboutSection />
-        <FAQSection />
-        <ContactSection />
-        <Footer />
+        <Suspense fallback={null}>
+          <ProcessSection />
+          <ToolsSection />
+          <AutomationAnimation />
+          <SolutionsOverviewSection />
+          <AboutSection />
+          <FAQSection />
+          <ContactSection />
+          <Footer />
+        </Suspense>
       </main>
     </>
   );
