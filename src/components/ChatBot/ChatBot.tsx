@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { MessageCircle, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import { useChatBot } from './useChatBot';
 import ChatWindow from './ChatWindow';
 import ChatChoiceModal from './ChatChoiceModal';
@@ -163,16 +163,19 @@ const ChatBot = () => {
       <button
         onClick={toggleOpen}
         className={`
-          fixed bottom-6 right-6 w-14 h-14 
-          bg-primary hover:bg-primary/90 text-primary-foreground 
-          rounded-full shadow-lg flex items-center justify-center 
+          fixed bottom-6 right-6 w-14 h-14
+          rounded-xl overflow-hidden shadow-lg
           z-[9998] transition-all duration-300
           hover:scale-105 active:scale-95
           ${showAnimation && !hasBeenOpened ? 'animate-chat-attention' : ''}
+          ${isOpen ? 'bg-muted flex items-center justify-center' : ''}
         `}
         aria-label={isOpen ? 'סגור צ\'אט' : 'פתח צ\'אט'}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <MessageCircle className="w-6 h-6" />}
+        {isOpen
+          ? <X className="w-6 h-6 text-foreground" />
+          : <img src="/bot ocon website.png" alt="פתח צ'אט" className="w-full h-full object-cover" />
+        }
       </button>
     </>
   );
