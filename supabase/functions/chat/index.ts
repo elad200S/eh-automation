@@ -225,6 +225,12 @@ serve(async (req) => {
 
     // Check for buying intent in the last message
     const hasBuyingIntent = lastMessage?.role === 'user' && detectBuyingIntent(lastMessage.content || '');
+
+    // Check if user provided contact details and send to webhook (fire-and-forget)
+    const contactDetails = extractContactDetails(messages);
+    if (contactDetails) {
+      sendToWebhook(contactDetails);
+    }
     
     // Enhanced system prompt if buying intent detected
     let systemPrompt = SYSTEM_PROMPT;
