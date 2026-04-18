@@ -3,6 +3,7 @@ import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3 } fr
 import { useRef, useEffect, useState } from 'react';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
+import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
 
 const solutions = [
   {
@@ -127,10 +128,13 @@ const SolutionCard = ({ solution }: { solution: Solution }) => {
 };
 
 const SolutionsOverviewSection = () => {
+  const { ref: headerRef, style: headerStyle } = useScrollReveal<HTMLDivElement>(0);
+  const { ref: gridRef, itemStyle } = useScrollRevealGroup(80);
+
   return (
     <Section id="solutions-overview">
       <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
+        <div ref={headerRef} style={headerStyle} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="text-center md:text-right flex-1">
             <p className="text-sm font-medium text-primary mb-2">מה אנחנו בונים</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
@@ -146,9 +150,11 @@ const SolutionsOverviewSection = () => {
           </Link>
         </div>
 
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {solutions.map((solution, index) => (
-            <SolutionCard key={index} solution={solution} />
+            <div key={index} style={itemStyle(index)}>
+              <SolutionCard solution={solution} />
+            </div>
           ))}
         </div>
       </div>

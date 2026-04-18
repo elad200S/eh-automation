@@ -1,5 +1,6 @@
 import Section from '@/components/Section';
 import { Search, Settings, Rocket } from 'lucide-react';
+import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
 
 /* ─── Animation 1: Checklist ─────────────────────────────── */
 const ChecklistAnimation = () => (
@@ -114,6 +115,9 @@ const steps = [
 ];
 
 const ProcessSection = () => {
+  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
+  const { ref: gridRef, itemStyle } = useScrollRevealGroup(150);
+
   return (
     <Section id="process">
       <style>{`
@@ -144,15 +148,15 @@ const ProcessSection = () => {
       `}</style>
 
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
+        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
           איך אנחנו עובדים יחד
         </h2>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div ref={gridRef} className="grid md:grid-cols-3 gap-6">
           {steps.map((step, index) => {
             const StepIcon = step.Icon;
             return (
-              <div key={index} className="relative">
+              <div key={index} className="relative" style={itemStyle(index)}>
                 <div className="bg-card rounded-xl p-6 border border-border h-full text-center flex flex-col">
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 bg-secondary/10">
                     <StepIcon className="w-7 h-7 text-secondary" />

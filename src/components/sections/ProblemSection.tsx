@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Section from '@/components/Section';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const problems = [
   'לידים נכנסים ממקומות שונים',
@@ -33,6 +34,8 @@ const SOL_LINE_DELAY = 260;
 const TOTAL_CYCLE    = SOLUTION_DELAY + SOLUTION_LINES.length * SOL_LINE_DELAY + 2800;
 
 const ProblemSection = () => {
+  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
+  const { ref: terminalRef, style: terminalStyle } = useScrollReveal<HTMLDivElement>(150);
   const [visibleCount,  setVisibleCount]  = useState(0);
   const [errorText,     setErrorText]     = useState('');
   const [phase,         setPhase]         = useState<'idle' | 'problems' | 'error' | 'solution'>('idle');
@@ -139,12 +142,12 @@ const ProblemSection = () => {
   return (
     <Section id="problem">
       <div ref={sectionRef} className="max-w-3xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
+        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-8">
           מרגיש שהעסק עובד אבל לא באמת מסודר?
         </h2>
 
         {/* ── Terminal window ── */}
-        <div style={{
+        <div ref={terminalRef} style={{ ...terminalStyle,
           background: '#0d1117',
           borderRadius: 12,
           border: '1px solid #30363d',

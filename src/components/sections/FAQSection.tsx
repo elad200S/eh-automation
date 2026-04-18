@@ -3,6 +3,7 @@ import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FAQSchema } from '@/lib/seo';
 import Section from '@/components/Section';
+import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
 
 const faqs = [
   {
@@ -28,6 +29,8 @@ const faqs = [
 ];
 
 const FAQSection = () => {
+  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
+  const { ref: listRef, itemStyle } = useScrollRevealGroup(80);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
@@ -42,16 +45,16 @@ const FAQSection = () => {
       <FAQSchema items={faqs} />
       <Section id="faq">
         <div className="max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
+          <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
             שאלות נפוצות
           </h2>
 
-          <div className="space-y-3">
+          <div ref={listRef} className="space-y-3">
             {faqs.map((faq, index) => (
+              <div key={index} style={itemStyle(index)}>
               <div
-                key={index}
                 className={cn(
-                  'bg-card rounded-xl border border-border overflow-hidden transition-all',
+                  'bg-card rounded-xl border border-border overflow-hidden transition-colors',
                   openIndex === index && 'border-primary/30'
                 )}
               >
@@ -75,6 +78,7 @@ const FAQSection = () => {
                 >
                   <p className="px-5 pb-5 text-muted-foreground leading-relaxed">{faq.answer}</p>
                 </div>
+              </div>
               </div>
             ))}
           </div>

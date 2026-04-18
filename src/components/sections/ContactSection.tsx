@@ -2,10 +2,14 @@ import { useState } from 'react';
 import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
 const ContactSection = () => {
+  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
+  const { ref: subtitleRef, style: subtitleStyle } = useScrollReveal<HTMLParagraphElement>(100);
+  const { ref: cardRef, style: cardStyle } = useScrollReveal<HTMLDivElement>(200);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -71,15 +75,15 @@ const ContactSection = () => {
   return (
     <Section id="contact" withSeparator={false}>
       <div className="max-w-2xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
+        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
           בוא נבדוק מה יכול להתאים לעסק שלך
         </h2>
-        
-        <p className="text-muted-foreground text-center mb-12">
+
+        <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground text-center mb-12">
           שיחת היכרות קצרה, בלי התחייבות
         </p>
-        
-        <div className="bg-card rounded-2xl border border-border p-8 shadow-lg">
+
+        <div ref={cardRef} style={cardStyle} className="bg-card rounded-2xl border border-border p-8 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">

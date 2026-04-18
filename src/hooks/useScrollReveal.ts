@@ -1,27 +1,56 @@
 import { useEffect, useRef, useState } from 'react';
+import type { CSSProperties } from 'react';
 
-export const useScrollReveal = (threshold = 0.15) => {
-  const ref = useRef<HTMLElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
+const prefersReduced = () =>
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(delay = 0) {
+  const ref = useRef<T>(null);
+  const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
-    const element = ref.current;
-    if (!element) return;
-
+    if (prefersReduced()) { setRevealed(true); return; }
+    const el = ref.current;
+    if (!el) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-          observer.unobserve(element);
-        }
-      },
-      { threshold, rootMargin: '0px 0px -50px 0px' }
+      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
+      { threshold: 0.12 }
     );
-
-    observer.observe(element);
-
+    observer.observe(el);
     return () => observer.disconnect();
-  }, [threshold]);
+  }, []);
 
-  return { ref, isVisible };
-};
+  const style: CSSProperties = {
+    opacity: revealed ? 1 : 0,
+    transform: revealed ? 'translateY(0)' : 'translateY(24px)',
+    transition: `opacity 700ms ease-out ${delay}ms, transform 700ms ease-out ${delay}ms`,
+  };
+
+  return { ref, revealed, style };
+}
+
+export function useScrollRevealGroup(stagger = 150) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [revealed, setRevealed] = useState(false);
+
+  useEffect(() => {
+    if (prefersReduced()) { setRevealed(true); return; }
+    const el = ref.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
+      { threshold: 0.1 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const itemStyle = (index: number): CSSProperties => ({
+    opacity: revealed ? 1 : 0,
+    transform: revealed ? 'translateY(0)' : 'translateY(24px)',
+    transition: `opacity 700ms ease-out ${index * stagger}ms, transform 700ms ease-out ${index * stagger}ms`,
+  });
+
+  return { ref, revealed, itemStyle };
+}

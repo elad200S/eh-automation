@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import Section from '@/components/Section';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 import gmailIcon from '@/assets/icons/gmail.png';
 
 // SVG Brand Logos
@@ -113,6 +114,8 @@ const tools = [
 const duplicatedTools = [...tools, ...tools];
 
 const ToolsSection = () => {
+  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
+  const { ref: subtitleRef, style: subtitleStyle } = useScrollReveal<HTMLParagraphElement>(150);
   const isMobile = useIsMobile();
   const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -148,10 +151,10 @@ const ToolsSection = () => {
   return (
     <Section id="tools">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
           מתחבר למערכות שכבר יש לך
         </h2>
-        <p className="text-muted-foreground mb-10 max-w-xl mx-auto">
+        <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground mb-10 max-w-xl mx-auto">
           אין צורך להחליף את כל מה שעובד. המערכת נבנית סביב הכלים הקיימים ומחברת ביניהם בצורה חכמה.
         </p>
 
