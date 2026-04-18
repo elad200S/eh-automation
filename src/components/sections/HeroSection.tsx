@@ -34,7 +34,7 @@ const HeroSection = () => {
             variants={blurFadeUp}
             className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight"
           >
-            הכל עובד. גם כשאתה לא.
+            הכל עובד גם כשאתה לא
           </motion.h1>
 
           <motion.p
