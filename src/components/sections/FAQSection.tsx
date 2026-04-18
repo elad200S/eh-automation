@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { FAQSchema } from '@/lib/seo';
 import Section from '@/components/Section';
-import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
+import { fadeUp, staggerContainer, cardReveal } from '@/lib/animations';
 
 const faqs = [
   {
@@ -29,13 +30,10 @@ const faqs = [
 ];
 
 const FAQSection = () => {
-  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
-  const { ref: listRef, itemStyle } = useScrollRevealGroup(80);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <div className="relative">
-      {/* Gradient backdrop */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div
           className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[700px] rounded-full opacity-30"
@@ -45,13 +43,22 @@ const FAQSection = () => {
       <FAQSchema items={faqs} />
       <Section id="faq">
         <div className="max-w-3xl mx-auto">
-          <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
+          <motion.h2
+            variants={fadeUp}
+            className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center"
+          >
             שאלות נפוצות
-          </h2>
+          </motion.h2>
 
-          <div ref={listRef} className="space-y-3">
+          <motion.div
+            className="space-y-3"
+            variants={staggerContainer(0.07, 0.1)}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, margin: '-40px 0px' }}
+          >
             {faqs.map((faq, index) => (
-              <div key={index} style={itemStyle(index)}>
+              <motion.div key={index} variants={cardReveal}>
               <div
                 className={cn(
                   'bg-card rounded-xl border border-border overflow-hidden transition-colors',
@@ -79,9 +86,9 @@ const FAQSection = () => {
                   <p className="px-5 pb-5 text-muted-foreground leading-relaxed">{faq.answer}</p>
                 </div>
               </div>
-              </div>
+              </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </Section>
     </div>

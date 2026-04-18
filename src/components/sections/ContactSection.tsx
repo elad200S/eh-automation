@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { useToast } from '@/hooks/use-toast';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { fadeUp, staggerContainer } from '@/lib/animations';
 
 const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
 const ContactSection = () => {
-  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
-  const { ref: subtitleRef, style: subtitleStyle } = useScrollReveal<HTMLParagraphElement>(100);
-  const { ref: cardRef, style: cardStyle } = useScrollReveal<HTMLDivElement>(200);
   const { toast } = useToast();
   const [formData, setFormData] = useState({
     name: '',
@@ -74,16 +72,22 @@ const ContactSection = () => {
 
   return (
     <Section id="contact" withSeparator={false}>
-      <div className="max-w-2xl mx-auto">
-        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
+      <motion.div
+        className="max-w-2xl mx-auto"
+        variants={staggerContainer(0.12, 0.05)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: '-40px 0px' }}
+      >
+        <motion.h2 variants={fadeUp} className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
           בוא נבדוק מה יכול להתאים לעסק שלך
-        </h2>
+        </motion.h2>
 
-        <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground text-center mb-12">
+        <motion.p variants={fadeUp} className="text-muted-foreground text-center mb-12">
           שיחת היכרות קצרה, בלי התחייבות
-        </p>
+        </motion.p>
 
-        <div ref={cardRef} style={cardStyle} className="bg-card rounded-2xl border border-border p-8 shadow-lg">
+        <motion.div variants={fadeUp} className="bg-card rounded-2xl border border-border p-8 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
@@ -171,8 +175,8 @@ const ContactSection = () => {
               <span>מענה מיידי (בכל זאת אוטומציה)</span>
             </div>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </Section>
   );
 };

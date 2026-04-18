@@ -1,7 +1,5 @@
 import { ReactNode } from 'react';
-import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
-import { fadeUp } from '@/lib/animations';
 
 interface SectionProps {
   children: ReactNode;
@@ -12,13 +10,9 @@ interface SectionProps {
 
 const Section = ({ children, className, id, withSeparator = true }: SectionProps) => {
   return (
-    <motion.section
+    <section
       id={id}
       className={cn('py-16 md:py-20', className)}
-      variants={fadeUp}
-      initial="hidden"
-      whileInView="visible"
-      viewport={{ once: true, margin: '-60px 0px' }}
     >
       <div className="container">
         {children}
@@ -28,7 +22,7 @@ const Section = ({ children, className, id, withSeparator = true }: SectionProps
           <div className="section-separator" />
         </div>
       )}
-    </motion.section>
+    </section>
   );
 };
 
