@@ -54,7 +54,7 @@ const HeroSection = () => {
             }
             style={{ transitionDelay: prefersReducedMotion ? '0ms' : '60ms' }}
           >
-            אוטומציות ו-AI לעסקים שרוצים לעבוד מסודר, לטפל ביותר לידים ולחסוך עבודה ידנית
+            הכל עובד. גם כשאתה לא.
           </h1>
 
           {/* תיאור */}
