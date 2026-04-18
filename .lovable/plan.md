@@ -1,69 +1,44 @@
 
 
-## מה הבעיה כרגע (למה זה עדיין מרגיש “מהיר”)
-למרות שהגדרנו `duration-[1800ms]`, בפועל תחושת המהירות יכולה להישאר “קופצנית” בגלל שני דברים נפוצים:
-1) **האנימציה מתחילה מיד אחרי ה-mount** (כמעט בלי “נשימה” לפני התנועה), אז היא נתפסת כחדה גם אם היא ארוכה.
-2) שימוש ב-`transition-all` עלול “לערבב” מעבר על עוד פרופרטיז (גם אם לא משתנים), וזה לפעמים גורם לתחושה פחות נשלטת לעומת הגדרה ממוקדת רק ל-`transform` ו-`opacity`.
+## Diagnosis
 
-המטרה: לגרום לזה להרגיש ממש כמו “הבלוק מחליק פנימה אל תוך העמוד”, רגוע, עם התחלה מאוחרת מעט.
+The screenshot shows the published site (`h-automation.lovable.app`) rendering completely blank with a dark background — not even the site's white background appears. The preview works fine and there are no runtime errors locally.
 
----
+This points to one of two causes:
 
-## מה נשנה (בלי לשנות שום Layout / Copy / גדלים)
-נשאיר בדיוק את אותו מבנה DOM, אותם classNames של טיפוגרפיה/ריווחים, ואותה נקודת סיום ויזואלית. נשנה רק את האנימציה של ה-wrapper (הבלוק כולו).
+1. **Most likely:** The latest frontend changes were never re-published. In Lovable, **frontend changes don't auto-deploy** — they require clicking "Update" in the Publish dialog. Backend (edge functions/DB) deploys automatically, but UI changes don't. Since several recent edits were made (icons, click-outside-to-close, CaseStudySection added, security fixes), the live published bundle is likely stale or in an inconsistent state.
 
-### 1) נוסיף “דיליי אמיתי” לפני תחילת האנימציה (250ms)
-במקום `setMounted(true)` מיד ב-`useEffect`, נפעיל אותו אחרי 250ms באמצעות `setTimeout`.
+2. **Secondary possibility:** A runtime crash on the published bundle that doesn't reproduce in the preview (e.g., a lazy-loaded chunk failing).
 
-- זה לא משנה layout, רק מתי האנימציה מתחילה.
-- זה גם נותן זמן לרינדור הראשוני “להתיישב” ואז התנועה מרגישה יותר קולנועית ופחות “פלאש”.
+## Action plan
 
-### 2) נגדיר Transition ממוקד רק ל-transform + opacity (לא `transition-all`)
-נחליף ל:
-- `transition-[transform,opacity]`
+### Step 1 — Republish (user action, required)
+Ask the user to open the **Publish** dialog (top-right) and click **Update**. This pushes the latest preview build to `h-automation.lovable.app`. In ~90% of "blank published site" cases this resolves it immediately.
 
-זה עומד בדרישה שלך (transform+opacity בלבד) וגם מרגיש יותר מדויק.
+### Step 2 — Hard refresh
+After republishing, do a hard refresh on mobile (close the tab fully and reopen, or clear site data) to bypass the cached blank bundle.
 
-### 3) נאריך עוד קצת את משך האנימציה כדי שיהיה “ניכר” איטי ורגוע
-כרגע זה 1800ms. אם עדיין מרגיש מהיר, נעלה ל:
-- `duration-[2600ms]` או `duration-[2800ms]`
+### Step 3 — If still blank after republish (defensive code fix)
+If the issue persists after republish, I'll add a safety net to `src/pages/Index.tsx`:
 
-(לא משנה את הסוף, רק את הזמן להגיע אליו.)
+- Wrap the lazy `<Suspense>` block in an **ErrorBoundary** so a single failing lazy chunk can't blank the entire page.
+- This way, even if `CaseStudySection` (recently added) or any other lazy chunk fails to load on the published bundle, the Hero + Problem sections still render and the user sees content.
 
-### 4) נשמור על כיוון RTL “ימין -> שמאל” עם מרחק כניסה משמעותי
-נשאיר/נדייק את:
-- התחלה: `opacity-0 translate-x-[60px]` (ואפשר להגדיל ל-`[72px]` אם תרצה עוד “החלקה”)
-- סוף: `opacity-100 translate-x-0`
+```text
+<main>
+  <HeroSection />          ← always renders
+  <ProblemSection />       ← always renders
+  <ErrorBoundary fallback={null}>
+    <Suspense fallback={null}>
+      ...lazy sections...
+    </Suspense>
+  </ErrorBoundary>
+</main>
+```
 
-### 5) נוודא ש-prefers-reduced-motion מכבה את הכל
-אם `prefersReducedMotion`:
-- נחזיר `''` (כמו עכשיו), כך שלא יהיו שינויי opacity/transform בכלל.
+No other files touched. No design/logic changes.
 
----
+## What I need from you
 
-## שינויים ספציפיים בקוד (קובץ אחד)
-**קובץ:** `src/components/sections/HeroSection.tsx`
-
-### A) עדכון ה-useEffect להתחלה עם דיליי
-- נחליף את `setMounted(true)` ל-`setTimeout(() => setMounted(true), 250)`
-- נוסיף cleanup כדי למנוע memory leak אם הקומפוננטה מתפרקת מהר.
-
-### B) עדכון `getAnimationClasses`
-- `transition-all` -> `transition-[transform,opacity]`
-- `duration-[1800ms]` -> `duration-[2600ms]` (או 2800ms)
-- נשמור את easing: `ease-[cubic-bezier(0.16,1,0.3,1)]`
-- נשאיר את הטרנספורם: `translate-x-[60px]` (או נגדיל אם נרצה)
-
----
-
-## למה זה ירגיש “מחליק אל תוך העמוד”
-- הדיליי של 250ms יוצר “כניסה” יותר קולנועית.
-- משך ארוך יותר + easing רך + תנועה רציפה של הבלוק כיחידה אחת = תחושת “החלקה לתוך העמוד” ולא “הופעה מהירה”.
-
----
-
-## בדיקות לאחר השינוי
-1) רענון עמוד: לוודא שהבלוק מתחיל להופיע רק אחרי ~250ms ואז מחליק לאט פנימה.
-2) לבדוק שאין שינוי בסידור/מרווחים/יישור לפני ואחרי האנימציה (הסוף חייב להיות זהה לחלוטין).
-3) להפעיל prefers-reduced-motion במערכת ולהבטיח שאין אנימציה בכלל.
+Please first try **Publish → Update** and refresh the live URL. If it still shows a blank screen after that, reply and I'll switch to default mode and apply the ErrorBoundary safety fix.
 
