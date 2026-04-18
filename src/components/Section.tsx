@@ -11,7 +11,7 @@ interface SectionProps {
 
 const Section = forwardRef<HTMLElement, SectionProps>(
   ({ children, className, id, withSeparator = true }, _ref) => {
-    const { ref, isVisible } = useScrollReveal();
+    const { ref, revealed: isVisible } = useScrollReveal();
 
     return (
       <section

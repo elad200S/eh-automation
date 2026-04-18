@@ -1,4 +1,5 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 
 export interface Message {
   id: string;
@@ -34,7 +35,10 @@ const MAX_MESSAGES_PER_MINUTE = 10;
 const MAX_INPUT_LENGTH = 1500;
 const MAX_HISTORY = 30;
 
-const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+// Build URL/key from the supabase client to avoid undefined env vars at runtime
+const SUPABASE_URL = (supabase as any).supabaseUrl as string;
+const SUPABASE_KEY = (supabase as any).supabaseKey as string;
+const CHAT_URL = `${SUPABASE_URL}/functions/v1/chat`;
 
 export function useChatBot() {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
@@ -146,7 +150,8 @@ export function useChatBot() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_KEY,
         },
         body: JSON.stringify({ messages: apiMessages }),
       });
