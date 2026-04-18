@@ -13,9 +13,11 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(delay = 
     if (prefersReduced()) { setRevealed(true); return; }
     const el = ref.current;
     if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
-      { threshold: 0.12 }
+      { threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -38,9 +40,11 @@ export function useScrollRevealGroup(stagger = 150) {
     if (prefersReduced()) { setRevealed(true); return; }
     const el = ref.current;
     if (!el) return;
+    const rect = el.getBoundingClientRect();
+    if (rect.top < window.innerHeight && rect.bottom > 0) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
-      { threshold: 0.1 }
+      { threshold: 0 }
     );
     observer.observe(el);
     return () => observer.disconnect();
