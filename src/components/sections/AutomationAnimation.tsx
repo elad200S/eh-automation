@@ -2,6 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import Section from '@/components/Section';
 import { ClipboardList, Zap, Settings2, Database, MessageCircle, Mail, CalendarCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const mainSteps = [
   {
@@ -43,6 +44,7 @@ const STEP_DELAY = 600;
 const PAUSE_AFTER_COMPLETE = 2200;
 
 const AutomationAnimation = () => {
+  const { ref: revealRef, style: revealStyle } = useScrollReveal(0);
   const [activeStep, setActiveStep] = useState(-1);
   const sectionRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -95,6 +97,7 @@ const AutomationAnimation = () => {
 
   return (
     <Section id="automation-demo" withSeparator={false}>
+      <div ref={revealRef} style={revealStyle}>
       <div ref={sectionRef} className="max-w-5xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12 text-center">
           איך זה עובד בפועל
@@ -180,6 +183,7 @@ const AutomationAnimation = () => {
           to   { stroke-dashoffset: 0; }
         }
       `}</style>
+      </div>
     </Section>
   );
 };

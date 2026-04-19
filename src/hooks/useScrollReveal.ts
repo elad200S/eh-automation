@@ -25,14 +25,14 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(delay = 
 
   const style: CSSProperties = {
     opacity: revealed ? 1 : 0,
-    transform: revealed ? 'translateY(0)' : 'translateY(24px)',
-    transition: `opacity 700ms ease-out ${delay}ms, transform 700ms ease-out ${delay}ms`,
+    transform: revealed ? 'translateY(0)' : 'translateY(16px)',
+    transition: `opacity 600ms ease-out ${delay}ms, transform 600ms ease-out ${delay}ms`,
   };
 
   return { ref, revealed, style };
 }
 
-export function useScrollRevealGroup(stagger = 150) {
+export function useScrollRevealGroup(stagger = 120) {
   const ref = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -44,7 +44,7 @@ export function useScrollRevealGroup(stagger = 150) {
     if (rect.top < window.innerHeight && rect.bottom > 0) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
       ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
-      { threshold: 0 }
+      { threshold: 0.1 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -52,8 +52,8 @@ export function useScrollRevealGroup(stagger = 150) {
 
   const itemStyle = (index: number): CSSProperties => ({
     opacity: revealed ? 1 : 0,
-    transform: revealed ? 'translateY(0)' : 'translateY(24px)',
-    transition: `opacity 700ms ease-out ${index * stagger}ms, transform 700ms ease-out ${index * stagger}ms`,
+    transform: revealed ? 'translateY(0)' : 'translateY(20px)',
+    transition: `opacity 600ms ease-out ${index * stagger}ms, transform 600ms ease-out ${index * stagger}ms`,
   });
 
   return { ref, revealed, itemStyle };

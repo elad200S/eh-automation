@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
+import { useScrollReveal } from '@/hooks/useScrollReveal';
 
 const footerNav = [
   {
@@ -65,9 +66,10 @@ const socialLinks = [
 
 const Footer = () => {
   const { openPopup } = useContactPopup();
+  const { ref, style } = useScrollReveal(0);
   return (
     <footer className="bg-muted/50 border-t border-border">
-      <div className="container py-12">
+      <div ref={ref} style={style} className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-8">
           {/* Brand */}
           <div className="lg:col-span-2">

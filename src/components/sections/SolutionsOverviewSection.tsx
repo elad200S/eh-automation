@@ -1,10 +1,9 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3 } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
-import { fadeUp, cardReveal, staggerContainer } from '@/lib/animations';
+import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
 
 const solutions = [
   {
@@ -76,39 +75,48 @@ const SolutionCard = ({ solution }: { solution: Solution }) => {
   const [touchActive, setTouchActive] = useState(false);
 
   useEffect(() => {
+    // Only activate scroll-based highlight on touch devices
     if (!window.matchMedia('(hover: none)').matches) return;
+
     const el = ref.current;
     if (!el) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => setTouchActive(entry.isIntersecting),
       { threshold: 0.55, rootMargin: '-10% 0px -10% 0px' }
     );
+
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
+
+  const isHighlighted = touchActive;
 
   return (
     <Link
       ref={ref}
       to={solution.href}
       className={cn(
-        'group relative p-6 bg-card rounded-2xl border transition-all duration-300 overflow-hidden block',
-        touchActive
+        'group relative p-6 bg-card rounded-2xl border transition-all duration-300 overflow-hidden',
+        isHighlighted
           ? `${solution.borderActive} shadow-xl ${solution.shadow} -translate-y-1`
           : 'border-border hover:-translate-y-1',
         `hover:shadow-xl hover:${solution.shadow} hover:${solution.borderActive}`
       )}
     >
-      <div className={cn(
-        'w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300',
-        solution.iconBg,
-        touchActive ? 'scale-110' : 'group-hover:scale-110'
-      )}>
+      <div
+        className={cn(
+          'w-12 h-12 rounded-xl flex items-center justify-center mb-5 transition-transform duration-300',
+          solution.iconBg,
+          isHighlighted ? 'scale-110' : 'group-hover:scale-110'
+        )}
+      >
         <solution.icon className={cn('w-6 h-6', solution.iconColor)} />
       </div>
+
       <h3 className={cn(
         'text-base font-semibold mb-2 transition-colors',
-        touchActive ? 'text-white' : 'text-foreground group-hover:text-white'
+        isHighlighted ? 'text-white' : 'text-foreground group-hover:text-white'
       )}>
         {solution.title}
       </h3>
@@ -120,13 +128,13 @@ const SolutionCard = ({ solution }: { solution: Solution }) => {
 };
 
 const SolutionsOverviewSection = () => {
+  const { ref: headerRef, style: headerStyle } = useScrollReveal<HTMLDivElement>(0);
+  const { ref: gridRef, itemStyle } = useScrollRevealGroup(80);
+
   return (
     <Section id="solutions-overview">
       <div className="max-w-5xl mx-auto">
-        <motion.div
-          variants={fadeUp}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10"
-        >
+        <div ref={headerRef} style={headerStyle} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="text-center md:text-right flex-1">
             <p className="text-sm font-medium text-primary mb-2">מה אנחנו בונים</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
@@ -140,21 +148,15 @@ const SolutionsOverviewSection = () => {
             לכל הפתרונות
             <ArrowLeft className="w-4 h-4" />
           </Link>
-        </motion.div>
+        </div>
 
-        <motion.div
-          className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"
-          variants={staggerContainer(0.07, 0.1)}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-40px 0px' }}
-        >
+        <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {solutions.map((solution, index) => (
-            <motion.div key={index} variants={cardReveal}>
+            <div key={index} style={itemStyle(index)}>
               <SolutionCard solution={solution} />
-            </motion.div>
+            </div>
           ))}
-        </motion.div>
+        </div>
       </div>
     </Section>
   );
