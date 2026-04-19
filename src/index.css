@@ -5,21 +5,21 @@
 @layer base {
   :root {
     /* Dark theme palette */
-    --background: 222 20% 10%;
-    --background-secondary: 222 20% 13%;
+    --background: 220 15% 9%;
+    --background-secondary: 220 15% 12%;
     --foreground: 0 0% 95%;
-    --foreground-muted: 220 15% 65%;
+    --foreground-muted: 220 10% 65%;
 
-    /* Primary - Bright blue (for headings + buttons) */
-    --primary: 210 100% 58%;
+    /* Primary - Emerald green (for headings + buttons) */
+    --primary: 160 84% 39%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 210 100% 58% / 0.18;
-    --primary-light: 210 100% 15%;
+    --primary-glow: 160 84% 39% / 0.18;
+    --primary-light: 160 60% 12%;
 
-    /* Secondary - Cyan */
-    --secondary: 185 70% 52%;
+    /* Secondary - Teal green */
+    --secondary: 168 70% 45%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 185 60% 15%;
+    --secondary-light: 168 60% 12%;
 
     /* Accent - Green */
     --accent: 160 60% 48%;
@@ -27,14 +27,14 @@
     --accent-light: 160 50% 12%;
 
     /* Surface colors */
-    --card: 222 20% 14%;
+    --card: 220 15% 13%;
     --card-foreground: 0 0% 95%;
-    --popover: 222 20% 14%;
+    --popover: 220 15% 13%;
     --popover-foreground: 0 0% 95%;
 
     /* Muted */
-    --muted: 222 20% 18%;
-    --muted-foreground: 220 15% 60%;
+    --muted: 220 15% 17%;
+    --muted-foreground: 220 10% 60%;
 
     /* States */
     --destructive: 0 84% 60%;
@@ -43,10 +43,10 @@
     --success-light: 160 50% 12%;
 
     /* Borders and inputs */
-    --border: 222 20% 22%;
-    --border-subtle: 222 20% 18%;
-    --input: 222 20% 16%;
-    --ring: 210 100% 58%;
+    --border: 220 15% 20%;
+    --border-subtle: 220 15% 16%;
+    --input: 220 15% 15%;
+    --ring: 160 84% 39%;
 
     --radius: 0.5rem;
     
@@ -147,13 +147,18 @@
     @apply hover:border-primary/20 hover:shadow-md hover:shadow-primary/5;
   }
 
-  /* CTA gradient button */
+  /* CTA solid button with glow */
   .cta-gradient {
     @apply inline-flex items-center justify-center gap-3 px-8 py-4 rounded-full font-medium text-lg;
-    @apply shadow-lg transition-all duration-200;
-    @apply hover:shadow-xl hover:-translate-y-0.5 active:scale-[0.97];
-    background: linear-gradient(to left, hsl(var(--primary)), hsl(210 100% 48%), hsl(210 100% 42%));
+    @apply transition-all duration-200;
+    @apply hover:-translate-y-0.5 active:scale-[0.97];
+    background: hsl(var(--primary));
     color: hsl(var(--primary-foreground));
+    box-shadow: 0 0 24px hsl(var(--primary) / 0.4), 0 4px 16px hsl(var(--primary) / 0.25);
+  }
+
+  .cta-gradient:hover {
+    box-shadow: 0 0 40px hsl(var(--primary) / 0.6), 0 8px 28px hsl(var(--primary) / 0.4);
   }
 
   /* Outline button */

@@ -141,7 +141,7 @@ const ContactSection = () => {
               >
                 <div
                   className="w-3/4 h-16 rounded-full blur-2xl opacity-40"
-                  style={{ background: 'radial-gradient(ellipse at center, hsl(210 100% 58%) 0%, hsl(185 70% 52% / 0.6) 50%, transparent 75%)' }}
+                  style={{ background: 'radial-gradient(ellipse at center, hsl(var(--primary)) 0%, hsl(var(--secondary) / 0.6) 50%, transparent 75%)' }}
                 />
               </div>
               <button

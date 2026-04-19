@@ -27,7 +27,7 @@ const SOLUTION_LINES = [
   { text: 'מעקב מלא ב-CRM ✓',                 dir: 'rtl', color: '#3fb950' },
   { text: 'הסוכן מקבל התראה מיידית ✓',        dir: 'rtl', color: '#3fb950' },
   { text: '',                                   dir: 'ltr', color: '' },
-  { text: '⚡ EH Automation — הכל תחת שליטה', dir: 'rtl', color: '#58a6ff' },
+  { text: '⚡ EH Automation — הכל תחת שליטה', dir: 'rtl', color: '#10b981' },
 ];
 
 const SOL_LINE_DELAY = 260;

@@ -14,12 +14,12 @@ const ChecklistAnimation = () => (
         <div
           className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
           style={{
-            background: 'hsl(210 100% 58% / 0.15)',
+            background: 'hsl(var(--primary) / 0.15)',
             animation: `checkPop 3s ease-in-out ${i * 0.6}s infinite`,
           }}
         >
           <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-            <path d="M1 4l2 2 4-4" stroke="hsl(210 100% 58%)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            <path d="M1 4l2 2 4-4" style={{ stroke: 'hsl(var(--primary))' }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </div>
         <span>{item}</span>
@@ -70,8 +70,8 @@ const FlowAnimation = () => (
 const BarChartAnimation = () => (
   <div className="mt-5 flex items-end justify-center gap-3 h-12">
     {[
-      { height: '40%', color: 'hsl(210 100% 58%)', delay: '0s' },
-      { height: '75%', color: 'hsl(185 70% 52%)', delay: '0.3s' },
+      { height: '40%', color: 'hsl(var(--primary))', delay: '0s' },
+      { height: '75%', color: 'hsl(var(--secondary))', delay: '0.3s' },
       { height: '60%', color: 'hsl(160 60% 48%)', delay: '0.6s' },
     ].map((bar, i) => (
       <div
