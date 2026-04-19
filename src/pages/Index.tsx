@@ -3,10 +3,8 @@ import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
-import ErrorBoundary from '@/components/ErrorBoundary';
 
 const ProcessSection = lazy(() => import('@/components/sections/ProcessSection'));
-const CaseStudySection = lazy(() => import('@/components/sections/CaseStudySection'));
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
 const AutomationAnimation = lazy(() => import('@/components/sections/AutomationAnimation'));
 const SolutionsOverviewSection = lazy(() => import('@/components/sections/SolutionsOverviewSection'));
@@ -29,19 +27,16 @@ const Index = () => {
       <main className="bg-background min-h-screen">
         <HeroSection />
         <ProblemSection />
-        <ErrorBoundary fallback={null}>
-          <Suspense fallback={null}>
-            <ProcessSection />
-            <CaseStudySection />
-            <ToolsSection />
-            <AutomationAnimation />
-            <SolutionsOverviewSection />
-            <AboutSection />
-            <FAQSection />
-            <ContactSection />
-            <Footer />
-          </Suspense>
-        </ErrorBoundary>
+        <Suspense fallback={null}>
+          <ProcessSection />
+          <ToolsSection />
+          <AutomationAnimation />
+          <SolutionsOverviewSection />
+          <AboutSection />
+          <FAQSection />
+          <ContactSection />
+          <Footer />
+        </Suspense>
       </main>
     </>
   );
