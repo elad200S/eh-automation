@@ -141,7 +141,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto p-4 scroll-smooth"
+        className="flex-1 overflow-y-auto no-scrollbar p-4 scroll-smooth"
       >
         <div className="space-y-1">
           {messages.map((message) => (
