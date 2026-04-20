@@ -97,7 +97,7 @@ const SolutionCard = ({ solution }: { solution: Solution }) => {
       ref={ref}
       to={solution.href}
       className={cn(
-        'group relative p-6 bg-card rounded-2xl border transition-all duration-300 overflow-hidden',
+        'group relative p-6 bg-card rounded-2xl border transition-all duration-300',
         isHighlighted
           ? `${solution.borderActive} shadow-xl ${solution.shadow} -translate-y-1`
           : 'border-border hover:-translate-y-1',
