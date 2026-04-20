@@ -54,7 +54,7 @@ const FAQSection = () => {
               <div key={index} style={itemStyle(index)}>
               <div
                 className={cn(
-                  'bg-card rounded-xl border border-border overflow-hidden transition-colors',
+                  'bg-card/80 backdrop-blur-sm rounded-xl border border-border overflow-hidden transition-colors',
                   openIndex === index && 'border-primary/30'
                 )}
               >

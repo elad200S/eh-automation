@@ -83,7 +83,7 @@ const ContactSection = () => {
           שיחת היכרות קצרה, בלי התחייבות
         </p>
 
-        <div ref={cardRef} style={cardStyle} className="bg-card rounded-2xl border border-border p-8 shadow-lg">
+        <div ref={cardRef} style={cardStyle} className="bg-card/80 backdrop-blur-sm rounded-2xl border border-border p-8 shadow-lg">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">

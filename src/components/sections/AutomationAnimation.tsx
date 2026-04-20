@@ -119,7 +119,7 @@ const AutomationAnimation = () => {
             className={cn(
               'flex flex-col items-center gap-3 p-5 rounded-xl border transition-all duration-500 min-w-[160px]',
               makeCardActive
-                ? 'border-accent/40 bg-card shadow-md scale-100 opacity-100'
+                ? 'border-accent/40 bg-card/80 backdrop-blur-sm shadow-md scale-100 opacity-100'
                 : 'border-transparent bg-muted/30 scale-95 opacity-40'
             )}
           >
@@ -198,7 +198,7 @@ function StepCard({ step, active }: { step: StepDef; active: boolean }) {
       className={cn(
         'flex flex-col items-center gap-3 p-5 rounded-xl border transition-all duration-500',
         active
-          ? `${step.borderActive} bg-card shadow-md scale-100 opacity-100`
+          ? `${step.borderActive} bg-card/80 backdrop-blur-sm shadow-md scale-100 opacity-100`
           : 'border-transparent bg-muted/30 scale-95 opacity-40'
       )}
     >
