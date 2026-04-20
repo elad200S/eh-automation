@@ -157,7 +157,7 @@ const ProcessSection = () => {
             const StepIcon = step.Icon;
             return (
               <div key={index} className="relative" style={itemStyle(index)}>
-                <div className="bg-card rounded-xl p-6 border border-border h-full text-center flex flex-col">
+                <div className="bg-card/80 backdrop-blur-sm rounded-xl p-6 border border-border h-full text-center flex flex-col">
                   <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 bg-secondary/10">
                     <StepIcon className="w-7 h-7 text-secondary" />
                   </div>

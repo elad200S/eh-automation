@@ -169,7 +169,7 @@ const ToolsSection = () => {
             {duplicatedTools.map((tool, index) => (
               <div
                 key={index}
-                className="relative flex flex-col items-center gap-2 p-4 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 w-24 flex-shrink-0 cursor-default"
+                className="relative flex flex-col items-center gap-2 p-4 bg-card/80 backdrop-blur-sm rounded-xl border border-border hover:border-primary/30 hover:shadow-md transition-all duration-300 w-24 flex-shrink-0 cursor-default"
                 onMouseEnter={() => !isMobile && setActiveTooltip(index)}
                 onMouseLeave={() => !isMobile && setActiveTooltip(null)}
                 onClick={() => isMobile && setActiveTooltip(activeTooltip === index ? null : index)}
