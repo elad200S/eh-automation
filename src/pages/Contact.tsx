@@ -171,7 +171,7 @@ const Contact = () => {
                     <button
                       type="submit"
                       disabled={isSubmitting}
-                      className="group w-full flex items-center justify-center gap-3 px-8 py-4 bg-gradient-to-l from-[#3b82f6] via-[#2563eb] to-[#1e40af] text-white rounded-full font-medium text-lg shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="cta-gradient group w-full disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       {isSubmitting ? (
                         <span className="animate-pulse">שולח...</span>
