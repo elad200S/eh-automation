@@ -99,9 +99,9 @@ const SolutionCard = ({ solution }: { solution: Solution }) => {
       className={cn(
         'group relative p-6 bg-card/80 backdrop-blur-sm rounded-2xl border transition-all duration-300 overflow-hidden',
         isHighlighted
-          ? `${solution.borderActive} shadow-xl ${solution.shadow} -translate-y-1`
+          ? `${solution.borderActive} -translate-y-1`
           : 'border-border hover:-translate-y-1',
-        `hover:shadow-xl hover:${solution.shadow} hover:${solution.borderActive}`
+        `hover:${solution.borderActive}`
       )}
     >
       <div
