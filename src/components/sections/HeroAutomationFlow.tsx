@@ -132,9 +132,9 @@ const HeroAutomationFlow = () => {
         ctx.translate(p.x, p.y);
 
         const grd = ctx.createRadialGradient(-r * 0.3, -r * 0.3, 0, 0, 0, r);
-        grd.addColorStop(0, `hsla(195, 100%, 85%, ${alpha})`);
-        grd.addColorStop(0.4, `hsla(205, 100%, ${bright + 10}%, ${alpha})`);
-        grd.addColorStop(1, `hsla(210, 100%, ${bright - 15}%, ${alpha * 0.7})`);
+        grd.addColorStop(0, `hsla(150, 80%, 85%, ${alpha})`);
+        grd.addColorStop(0.4, `hsla(155, 75%, ${bright + 10}%, ${alpha})`);
+        grd.addColorStop(1, `hsla(160, 72%, ${bright - 15}%, ${alpha * 0.7})`);
 
         ctx.beginPath();
         ctx.ellipse(0, 0, r, r * 0.92, 0, 0, Math.PI * 2);
