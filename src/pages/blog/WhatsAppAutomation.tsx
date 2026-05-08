@@ -1,25 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, CheckCircle2, XCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
-
-const canAutomate = [
-  'הודעת אישור קבלת פנייה — מיד כשמישהו כותב, הוא מקבל תגובה אוטומטית',
-  'שליחת פרטים שנשאלים כל הזמן: מחיר, מיקום, שעות פעילות',
-  'איסוף מידע בסיסי לפני שיחה — שם, סוג הצורך, מספר טלפון',
-  'תזכורות לפגישות ומעקב אחרי לידים שלא ענו',
-  'עדכון סטטוס הזמנה או שירות ללקוח קיים',
-];
-
-const keepHuman = [
-  'שיחת מכירה אמיתית — לקוח שמתלבט צריך אדם, לא בוט',
-  'טיפול בתלונות ובמצבים רגישים',
-  'ניהול משא ומתן על מחיר',
-  'שיחות שדורשות הקשבה אמיתית לצרכי הלקוח',
-];
 
 const WhatsAppAutomation = () => {
   const { openPopup } = useContactPopup();
@@ -45,7 +30,6 @@ const WhatsAppAutomation = () => {
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="pt-8 pb-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -54,10 +38,7 @@ const WhatsAppAutomation = () => {
               חזרה לבלוג
             </Link>
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">אוטומציה</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="w-3 h-3" />6 דקות קריאה</span>
-              </div>
+              <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground mb-4 inline-block">אוטומציה</span>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                 WhatsApp לעסק: מה לאטמט ומה להשאיר אנושי
               </h1>
@@ -69,40 +50,46 @@ const WhatsAppAutomation = () => {
         </section>
 
         <Section id="content">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-10 text-base text-muted-foreground leading-relaxed">
 
-            <p className="text-base text-muted-foreground leading-relaxed mb-8">
-              רוב בעלי העסקים שמגיעים אלי מבינים שהם מבלים שעות ביום על הודעות שחוזרות על עצמן. "מה המחיר?", "אתה זמין ביום שישי?", "איך מגיעים אליך?" — אותן שאלות, עשרות פעמים. זה בדיוק המקום שבו אוטומציה של WhatsApp עושה את העבודה.
+            <p>
+              רוב בעלי העסקים שמגיעים אלי מבינים שהם מבלים שעות ביום על הודעות שחוזרות על עצמן. "מה המחיר?", "אתה זמין ביום שישי?", "איך מגיעים אליך?" — אותן שאלות, עשרות פעמים. הן לא קשות לענות עליהן, אבל הן גוזלות זמן, מפריעות לריכוז, ומצטברות לשעות שלא חזרות. זה בדיוק המקום שבו אוטומציה של WhatsApp עושה את העבודה.
             </p>
 
-            <h2 className="text-2xl font-bold text-foreground mb-6">מה כדאי לאטמט</h2>
-            <div className="space-y-3 mb-10">
-              {canAutomate.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-green-50 dark:bg-green-950/20 rounded-lg border border-green-200 dark:border-green-800">
-                  <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-foreground leading-relaxed">{item}</p>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">מה כדאי לאטמט</h2>
+              <p className="mb-4">
+                הצעד הראשון הוא תמיד אישור קבלת פנייה. כשמישהו שולח הודעה לעסק ולא מקבל תגובה תוך דקות, הוא מניח שאף אחד לא ראה. אישור אוטומטי קצר — "קיבלנו את פנייתך, נחזור אליך תוך שעה" — משנה את החוויה לחלוטין. הלקוח רגוע, ואתה לא מרגיש לחוץ לענות מיד.
+              </p>
+              <p className="mb-4">
+                מידע שנשאל שוב ושוב הוא מועמד מצוין לאוטומציה. מחירים, שעות פעילות, כתובת, תהליך ההתחלה — אם השאלה חוזרת יותר מפעמיים בשבוע, שווה לבנות תגובה אוטומטית שמכסה אותה. זה לא מרגיש פחות אישי כשהתשובה מדויקת ומהירה.
+              </p>
+              <p>
+                תזכורות לפגישות, פולו-אפ ללידים שלא ענו, ועדכוני סטטוס הזמנה — כל אלה פעולות שאפשר לאטמט לחלוטין. הלקוח מקבל מידע בזמן אמת, ואתה לא צריך לזכור לשלוח.
+              </p>
             </div>
 
-            <h2 className="text-2xl font-bold text-foreground mb-6">מה כדאי להשאיר אנושי</h2>
-            <div className="space-y-3 mb-10">
-              {keepHuman.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-red-50 dark:bg-red-950/20 rounded-lg border border-red-200 dark:border-red-800">
-                  <XCircle className="w-5 h-5 text-red-400 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-foreground leading-relaxed">{item}</p>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">מה כדאי להשאיר אנושי</h2>
+              <p className="mb-4">
+                שיחת מכירה אמיתית — לקוח שמתלבט, שוקל, ורוצה להרגיש שמקשיבים לו — לא מקבלת תשובה טובה מבוט. ניסיון לאטמט שיחה כזו לרוב מסיים אותה. הלקוח מרגיש שמעבירים אותו ממסך למסך ולא מתייחסים אליו.
+              </p>
+              <p className="mb-4">
+                טיפול בתלונות ובמצבים רגישים חייב להיות אנושי. גם אם התגובה הראשונה היא אוטומטית — "קיבלנו את הפנייה, מישהו יחזור אליך תוך שעה" — הטיפול עצמו צריך לבוא מאדם. לקוח מתוסכל שמקבל תגובת בוט על בעיה רצינית מתוסכל פי שניים.
+              </p>
+              <p>
+                ניהול משא ומתן על מחיר, שיחות שדורשות הקשבה ממשית לצרכי הלקוח, וכל מצב שבו ההקשר חשוב לתשובה — אלה נשארים אצלך. האוטומציה מפנה לך את הזמן כדי שתוכל להיות שם באמת כשצריך.
+              </p>
             </div>
 
-            <h2 className="text-2xl font-bold text-foreground mb-4">איך זה נראה בפועל</h2>
-            <div className="p-6 bg-card rounded-xl border border-border mb-10">
-              <ul className="space-y-3 text-sm text-muted-foreground leading-relaxed">
-                <li>• לקוח שולח הודעה → <strong className="text-foreground">אישור קבלה אוטומטי + שאלת כוונות</strong></li>
-                <li>• הלקוח עונה → <strong className="text-foreground">המערכת מסננת: ליד רציני עובר אליך, שאלת מידע מקבלת תשובה אוטומטית</strong></li>
-                <li>• אחרי פגישה → <strong className="text-foreground">תזכורת אוטומטית יוצאת בלי שתזכור</strong></li>
-                <li>• לאחר 48 שעות בלי תשובה → <strong className="text-foreground">פולו-אפ אוטומטי קצר ועניני</strong></li>
-              </ul>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">איך זה נראה בפועל</h2>
+              <p className="mb-4">
+                לקוח שולח הודעה → מיד מקבל אישור קבלה ושאלה שפותחת שיחה. אם הוא שואל שאלת מידע — מקבל תשובה אוטומטית מסודרת. אם הוא ליד רציני שרוצה לדבר — ההודעה מגיעה אליך מסודרת עם ההקשר, ואתה ממשיך משם.
+              </p>
+              <p>
+                אחרי פגישה יוצאת תזכורת אוטומטית. אחרי 48 שעות בלי תשובה — פולו-אפ קצר ועניני. כל זה קורה בלי שתצטרך לזכור, לבדוק, או לשלוח ידנית. השינוי המורגש הוא לא רק בחיסכון בזמן — אלא בירידה ברמת הלחץ.
+              </p>
             </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">

@@ -1,33 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, AlertCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
-
-const mistakes = [
-  {
-    mistake: 'בוחרים לפי תכונות, לא לפי שימוש',
-    explanation: 'CRM עם 200 פיצ\'רים שנמצא בשימוש רק בגלל הפיצ\'ר הראשון — זה בזבוז. בחרו מה שהצוות ישתמש בו ביום-יום.',
-  },
-  {
-    mistake: 'לא מערבים את הצוות בהחלטה',
-    explanation: 'אם המוכרים לא רצו בזה — הם לא ישתמשו בזה. שאלו מה מפריע להם כרגע, ואז בחרו פתרון.',
-  },
-  {
-    mistake: 'מצפים שהמערכת תפתור בעיות תהליך',
-    explanation: 'CRM לא מתקן תהליך שבור — הוא מעצים תהליך שעובד. קודם בנו את התהליך, אחר כך הכניסו אותו למערכת.',
-  },
-];
-
-const questions = [
-  'כמה אנשים ישתמשו ביום-יום?',
-  'מה הפעולה הכי חשובה שאנחנו רוצים לעקוב אחריה?',
-  'האם אנחנו צריכים חיבור לכלים אחרים (ווטסאפ, אימייל, טפסים)?',
-  'מי יהיה אחראי על תחזוקת הנתונים?',
-  'כמה אנחנו מוכנים להשקיע בחודש?',
-];
 
 const HowToChooseCRM = () => {
   const { openPopup } = useContactPopup();
@@ -53,7 +30,6 @@ const HowToChooseCRM = () => {
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="pt-8 pb-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -62,10 +38,7 @@ const HowToChooseCRM = () => {
               חזרה לבלוג
             </Link>
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">מערכות עסקיות</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="w-3 h-3" />6 דקות קריאה</span>
-              </div>
+              <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground mb-4 inline-block">מערכות עסקיות</span>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                 איך לבחור CRM שבאמת ישתמשו בו
               </h1>
@@ -77,44 +50,59 @@ const HowToChooseCRM = () => {
         </section>
 
         <Section id="content">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-10 text-base text-muted-foreground leading-relaxed">
 
-            <p className="text-base text-muted-foreground leading-relaxed mb-10">
-              CRM הוא אחד הכלים הכי חשובים שעסק יכול לאמץ — ואחד הכי מבוזבזים. לא בגלל שהמערכות גרועות, אלא בגלל שאנשים בוחרים לא נכון ולא מטמיעים נכון. הנה איך לעשות את זה אחרת.
+            <p>
+              CRM הוא אחד הכלים הכי חשובים שעסק יכול לאמץ — ואחד הכי מבוזבזים. לא בגלל שהמערכות גרועות. בגלל שאנשים בוחרים לפי הדגמה מרשימה, חותמים על מנוי, ואז מגלים שהצוות לא פותח את המערכת. הכסף הלך, וחזרו לגיליון אקסל.
             </p>
 
-            <h2 className="text-2xl font-bold text-foreground mb-6">3 הטעויות הנפוצות</h2>
-            <div className="space-y-4 mb-12">
-              {mistakes.map((m, i) => (
-                <div key={i} className="p-5 bg-card rounded-xl border border-border">
-                  <div className="flex items-start gap-3">
-                    <AlertCircle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
-                    <div>
-                      <h3 className="font-semibold text-foreground mb-1">{m.mistake}</h3>
-                      <p className="text-sm text-muted-foreground leading-relaxed">{m.explanation}</p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <h2 className="text-2xl font-bold text-foreground mb-6">5 שאלות לפני שבוחרים</h2>
-            <div className="space-y-3 mb-12">
-              {questions.map((q, i) => (
-                <div key={i} className="flex items-start gap-3 p-4 bg-muted/40 rounded-lg">
-                  <span className="w-6 h-6 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                  <p className="text-sm text-foreground leading-relaxed">{q}</p>
-                </div>
-              ))}
-            </div>
-
-            <h2 className="text-2xl font-bold text-foreground mb-4">מה אנחנו ממליצים</h2>
-            <div className="p-6 bg-card rounded-xl border border-border mb-10">
-              <p className="text-sm text-muted-foreground leading-relaxed mb-4">
-                לרוב העסקים הקטנים והבינוניים, CRM פשוט שמחובר לווטסאפ, לטפסים ולאוטומציות — שווה יותר מ-CRM מורכב שאף אחד לא פותח.
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">הטעות הנפוצה ביותר: לבחור לפי תכונות</h2>
+              <p className="mb-4">
+                מרבית ההחלטות על CRM מתקבלות לאחר דמו שבו איש מכירות מראה 50 פיצ'רים מרשימים. הבעיה היא שהעסק ישתמש ב-3 מהם. CRM עם 200 יכולות שנמצא בשימוש בגלל אחת מהן הוא בזבוז תקציב ובזבוז זמן. השאלה הנכונה היא לא "מה המערכת יכולה לעשות?" אלא "מה אנחנו באמת צריכים לעשות כל יום?"
               </p>
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                הגדרת הצלחה פשוטה: <strong className="text-foreground">האם הצוות פותח את המערכת בלי שמאלצים אותו?</strong> אם כן — בחרתם נכון.
+              <p>
+                ההמלצה הפשוטה: לפני שבוחרים, רשמו 3 תהליכים שאתם רוצים שה-CRM יפתור. אם המערכת עונה על 3 האלה בצורה פשוטה — זה מספיק. אל תשלמו על כל השאר.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">הטמעה בלי הצוות — כישלון בטוח</h2>
+              <p className="mb-4">
+                טעות שנייה ונפוצה לא פחות: מנהל שמחליט לבד על CRM ומפתיע את הצוות. אם המוכרים, נציגי השירות, או כל מי שצריך להשתמש במערכת — לא היו שותפים להחלטה, הם לא ישתמשו בה. לא מתוך עקשנות, אלא כי לא הבינו את הערך וכי המערכת לא מותאמת לאיך שהם עובדים.
+              </p>
+              <p>
+                הדרך הנכונה היא להכניס את הצוות כבר בשלב הבחירה. לשאול אותם מה מפריע להם היום, איפה הם מאבדים מידע, מה לוקח להם זמן מיותר. כשה-CRM פותר בעיה שהם הרגישו — הם ישתמשו בו.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">CRM לא מתקן תהליך שבור</h2>
+              <p className="mb-4">
+                זו אולי הטעות הכי קשה לשמוע: אם תהליך המכירה שלכם לא עובד — CRM לא יתקן אותו. הוא יעצים את מה שקיים. תהליך טוב עם CRM יהיה טוב יותר. תהליך שבור עם CRM יהיה שבור בצורה מסודרת יותר.
+              </p>
+              <p>
+                לפני שבוחרים כלי, שווה לשאול: האם יש לנו תהליך ברור ממגע ראשון עם ליד ועד סגירה? האם כל אחד בצוות יודע מה תפקידו בכל שלב? אם לא — קודם מסדרים את התהליך, ואחר כך מחפשים כלי שיתמוך בו.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">5 שאלות שכדאי לשאול לפני ההחלטה</h2>
+              <p className="mb-4">
+                לפני שבוחרים מערכת, ענו בכנות על חמש שאלות פשוטות: כמה אנשים ישתמשו ביומיום? מה הפעולה הכי חשובה שרוצים לעקוב אחריה? האם צריך חיבור לכלים אחרים כמו ווטסאפ, אימייל, או טפסים? מי יהיה אחראי על תחזוקת הנתונים? וכמה מוכנים להשקיע בחודש?
+              </p>
+              <p>
+                התשובות לשאלות האלה מגדירות את הפרופיל של המערכת שמתאימה לכם — עוד לפני שפתחתם אפילו דף השוואה.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">מה בדרך כלל עובד לעסקים קטנים ובינוניים</h2>
+              <p className="mb-4">
+                מניסיון, לרוב העסקים הקטנים והבינוניים CRM פשוט שמחובר לווטסאפ, לטפסים ולאוטומציות — שווה יותר מ-CRM מורכב שאף אחד לא פותח. הפשטות היא יתרון, לא חסרון. מערכת שכולם יודעים לעבוד איתה ביום הראשון שווה יותר ממערכת שדורשת הכשרה של שבוע.
+              </p>
+              <p>
+                הגדרת הצלחה שאני משתמש בה: האם הצוות פותח את המערכת בלי שמאלצים אותו? אם כן — בחרתם נכון. אם צריך להזכיר להם בכל פגישה — משהו לא עובד, ולא בהכרח המערכת אשמה.
               </p>
             </div>
 

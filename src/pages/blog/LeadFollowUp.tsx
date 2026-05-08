@@ -1,32 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, Clock, AlertCircle } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
-
-const mistakes = [
-  {
-    title: 'פולו-אפ אחד ואז ויתור',
-    desc: 'רוב העסקים שולחים הודעה אחת. אם לא ענו — נגמר. אבל המחקרים מראים שרוב הסגירות קורות אחרי 3-5 נגיעות.',
-  },
-  {
-    title: 'עיכוב בחזרה לליד',
-    desc: 'ליד שמילא טופס ומחכה שעה לתשובה — כבר קורא הצעה של מתחרה. הזמן הקריטי הוא דקות, לא שעות.',
-  },
-  {
-    title: 'פולו-אפ ידני שתלוי בזיכרון',
-    desc: 'כשאתה עמוס, הלידים נופלים בין הכיסאות. לא כי לא אכפת לך — אלא כי אין מערכת שמזכירה לך.',
-  },
-];
-
-const sequence = [
-  { time: 'מיד בקבלת הפנייה', action: 'אישור קבלה + שאלה פותחת שיחה' },
-  { time: 'אחרי 24 שעות בלי תשובה', action: 'הודעת המשך קצרה ועניינית' },
-  { time: 'אחרי 3 ימים', action: 'הצעת ערך נוספת — טיפ, שאלה, או תוכן רלוונטי' },
-  { time: 'אחרי שבוע', action: 'שאלה ישירה: "עדיין רלוונטי?" — בלי לחץ' },
-];
 
 const LeadFollowUp = () => {
   const { openPopup } = useContactPopup();
@@ -52,7 +30,6 @@ const LeadFollowUp = () => {
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="pt-8 pb-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -61,10 +38,7 @@ const LeadFollowUp = () => {
               חזרה לבלוג
             </Link>
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">אוטומציה</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="w-3 h-3" />5 דקות קריאה</span>
-              </div>
+              <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground mb-4 inline-block">אוטומציה</span>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                 למה הלידים שלך לא סוגרים — ואיך פולו-אפ אוטומטי עוזר
               </h1>
@@ -76,44 +50,59 @@ const LeadFollowUp = () => {
         </section>
 
         <Section id="content">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-10 text-base text-muted-foreground leading-relaxed">
 
-            <p className="text-base text-muted-foreground leading-relaxed mb-8">
-              אתה מוציא כסף על פרסום, מקבל פניות, ואז חלק גדול מהן פשוט נעלם. הליד לא ענה, אתה עמוס, ועברת הלאה. אחרי שבוע — כבר מאוחר מדי. זה לא בעיה של מכירות, זה בעיה של תזמון ומעקב.
+            <p>
+              אתה מוציא כסף על פרסום, מקבל פניות, ואז חלק גדול מהן פשוט נעלם. הליד לא ענה, אתה עמוס, ועברת הלאה. אחרי שבוע — כבר מאוחר מדי. זה לא בעיה של מכירות, זה בעיה של תזמון ומעקב. והדבר המפתיע הוא שרוב העסקים שמפסידים לידים לא עושים טעות אחת גדולה — הם עושים כמה טעויות קטנות שמצטברות.
             </p>
 
-            <h2 className="text-2xl font-bold text-foreground mb-6">3 טעויות נפוצות שגורמות ללידים להיעלם</h2>
-            <div className="space-y-4 mb-10">
-              {mistakes.map((item, i) => (
-                <div key={i} className="flex items-start gap-3 p-5 bg-orange-50 dark:bg-orange-950/20 rounded-lg border border-orange-200 dark:border-orange-800">
-                  <AlertCircle className="w-5 h-5 text-orange-400 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-sm font-semibold text-foreground mb-1">{item.title}</p>
-                    <p className="text-sm text-muted-foreground leading-relaxed">{item.desc}</p>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">הטעות הראשונה: פולו-אפ אחד ואז ויתור</h2>
+              <p className="mb-4">
+                רוב העסקים שולחים הודעה אחת. אם לא ענו — נגמר. מבחינתם, הליד "לא היה רלוונטי". אבל הנתונים מראים תמונה אחרת לגמרי: רוב הסגירות קורות אחרי 3 עד 5 נגיעות. ליד שלא ענה פעם אחת לא אמר לא — הוא פשוט לא היה פנוי, לא ראה, או חיכה שתחזור שוב.
+              </p>
+              <p>
+                הפתרון פשוט אבל דורש עקביות: לא רק לשלוח פולו-אפ שני — אלא לבנות רצף שיוצא אוטומטית, בלי שתצטרך לזכור. כשהרצף קורה מעצמו, אתה לא צריך להחליט כל פעם אם להמשיך להרים טלפון.
+              </p>
             </div>
 
-            <h2 className="text-2xl font-bold text-foreground mb-4">סדר פעולות שעובד</h2>
-            <p className="text-sm text-muted-foreground mb-6 leading-relaxed">
-              אוטומציה של פולו-אפ לא אומרת הודעות קרות וגנריות. אומרת שיש רצף מתוכנן שיוצא בזמן הנכון, בלי שתצטרך לזכור.
-            </p>
-            <div className="space-y-3 mb-10">
-              {sequence.map((step, i) => (
-                <div key={i} className="flex items-start gap-4 p-4 bg-card rounded-lg border border-border">
-                  <span className="w-7 h-7 rounded-full bg-primary/10 text-primary text-xs font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{i + 1}</span>
-                  <div>
-                    <p className="text-xs text-muted-foreground mb-0.5">{step.time}</p>
-                    <p className="text-sm font-medium text-foreground">{step.action}</p>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">הטעות השנייה: לחזור ללידים מאוחר מדי</h2>
+              <p className="mb-4">
+                ליד שמילא טופס ומחכה שעה לתשובה — כבר קורא הצעה של מתחרה. הזמן הקריטי הוא הדקות הראשונות אחרי הפנייה, לא שעה לאחר מכן. בשלב הזה הלקוח פעיל, מעוניין, ומוכן לשמוע. ככל שהמענה הראשון מאוחר יותר — כך ההזדמנות מתקררת.
+              </p>
+              <p>
+                מענה אוטומטי ראשוני — גם אם הוא לא ממצה — שומר את הליד חם. "קיבלנו את הפנייה, נחזור אליך תוך שעה" שווה יותר משתיקה של שעה ומענה מלא בסוף. הלקוח יודע שראו אותו.
+              </p>
             </div>
 
-            <div className="p-6 bg-card rounded-xl border border-border mb-10">
-              <p className="text-sm text-muted-foreground leading-relaxed">
-                <strong className="text-foreground">חשוב:</strong> הרצף הזה לא צריך להיות זהה לכל ליד. עסקים שמפלחים לפי מקור הפנייה (אתר, ווטסאפ, רשתות חברתיות) ומתאימים את ההודעות — רואים שיפור משמעותי בשיעור ההיענות.
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">הטעות השלישית: פולו-אפ שתלוי בזיכרון</h2>
+              <p className="mb-4">
+                כשאתה עמוס — והרבה פעמים אתה עמוס — הלידים נופלים בין הכיסאות. לא כי לא אכפת לך, אלא כי אין מערכת שמזכירה לך. אתה מתכוון לחזור אל הליד הזה בצהריים, ואז נכנסת שיחה, ואז ישיבה, ואז נגמר היום. הליד לא קיבל פולו-אפ.
+              </p>
+              <p>
+                כשהמערכת מנהלת את הרצף, הבעיה הזו נעלמת. לא צריך לזכור, לא צריך לבדוק, לא צריך לתעדף. ההודעה יוצאת בזמן שנקבע — בין אם אתה בפגישה, בחופשה, או בשיחת טלפון אחרת.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">רצף שעובד בפועל</h2>
+              <p className="mb-4">
+                הרצף הבסיסי שעובד לרוב העסקים נראה כך: מיד עם קבלת הפנייה יוצא אישור קבלה עם שאלה קצרה שפותחת שיחה. אחרי 24 שעות בלי תשובה — הודעת המשך קצרה ועניינית. אחרי 3 ימים — הצעת ערך נוספת, טיפ, שאלה, או תוכן רלוונטי. אחרי שבוע — שאלה ישירה: "עדיין רלוונטי?" בלי לחץ.
+              </p>
+              <p>
+                מה שמשנה את הטון של הרצף הזה הוא שלא מדובר בהטרדה — מדובר בנוכחות. לקוח שמקבל 4 הודעות לאורך שבוע, כל אחת עם ערך קטן, לא מרגיש לחוץ. הוא מרגיש שיש מישהו שחושב עליו.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">התאמה לפי מקור הפנייה</h2>
+              <p className="mb-4">
+                ליד שמגיע מפרסום בפייסבוק מתנהג אחרת מליד שהגיע דרך המלצה אישית. הראשון בדרך כלל יותר קר ודורש יותר חימום. השני כבר עם בסיס אמון ויכול לזוז מהר יותר לשיחה. כשמבנים רצף פולו-אפ, שווה להתאים את הטון והקצב לפי מאיפה הגיע הליד.
+              </p>
+              <p>
+                עסקים שמפלחים את הלידים לפי מקור ומשנים את ההודעות בהתאם — רואים שיפור ברור בשיעור ההיענות. זה לא עבודה גדולה יותר — זה תכנון חכם יותר מראש.
               </p>
             </div>
 

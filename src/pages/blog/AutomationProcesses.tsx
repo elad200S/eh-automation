@@ -1,38 +1,10 @@
 import { Link } from 'react-router-dom';
-import { ArrowRight, CheckCircle2, Clock, Zap } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
-
-const processes = [
-  {
-    title: 'מענה על לידים נכנסים',
-    description: 'כל ליד שמגיע מהאתר, מפייסבוק או מווטסאפ — מקבל מענה אוטומטי תוך שניות. לא צריך להיות ליד הטלפון 24/7.',
-    saving: 'חיסכון: 2–4 שעות שבועיות',
-  },
-  {
-    title: 'שליחת הצעות מחיר',
-    description: 'הלקוח ממלא פרטים → הצעת המחיר נוצרת ונשלחת אוטומטית. PDF מוכן תוך דקות, בלי לגעת בקובץ.',
-    saving: 'חיסכון: 3–5 שעות שבועיות',
-  },
-  {
-    title: 'מעקב אחרי לקוחות',
-    description: 'תזכורות אוטומטיות ללקוחות שלא הגיבו, אחרי 24 שעות, 3 ימים, שבוע. בלי לשכוח אף אחד.',
-    saving: 'חיסכון: 1–2 שעות שבועיות',
-  },
-  {
-    title: 'דוחות ועדכוני סטטוס',
-    description: 'בסוף כל שבוע — דוח עם כל הלידים, הסטטוסים, ההכנסות. ישר לווטסאפ או לאימייל, בלי להכין ידנית.',
-    saving: 'חיסכון: 1–3 שעות שבועיות',
-  },
-  {
-    title: 'ניהול תורים ופגישות',
-    description: 'הלקוח בוחר זמן → הפגישה נרשמת ביומן → הוא מקבל תזכורת יום לפני. אפס עיסוק מצדך.',
-    saving: 'חיסכון: 2–3 שעות שבועיות',
-  },
-];
 
 const AutomationProcesses = () => {
   const { openPopup } = useContactPopup();
@@ -58,7 +30,6 @@ const AutomationProcesses = () => {
       <Navbar />
 
       <main className="bg-background min-h-screen pt-16">
-        {/* Hero */}
         <section className="pt-8 pb-20 md:py-28 relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="container relative z-10">
@@ -67,10 +38,7 @@ const AutomationProcesses = () => {
               חזרה לבלוג
             </Link>
             <div className="max-w-3xl">
-              <div className="flex items-center gap-3 mb-4">
-                <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground">אוטומציה</span>
-                <span className="flex items-center gap-1 text-xs text-muted-foreground"><Clock className="w-3 h-3" />5 דקות קריאה</span>
-              </div>
+              <span className="px-3 py-1 rounded-full bg-muted text-xs font-medium text-muted-foreground mb-4 inline-block">אוטומציה</span>
               <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6 leading-tight">
                 5 תהליכים שכל עסק קטן צריך לאטמט היום
               </h1>
@@ -82,42 +50,70 @@ const AutomationProcesses = () => {
         </section>
 
         <Section id="content">
-          <div className="max-w-3xl">
+          <div className="max-w-3xl space-y-10 text-base text-muted-foreground leading-relaxed">
 
-            <p className="text-base text-muted-foreground leading-relaxed mb-10">
-              אוטומציה לא חייבת להיות מורכבת. ברוב העסקים הקטנים, 5 תהליכים פשוטים יכולים לשחרר עשרות שעות בשבוע — שעות שאפשר להשקיע בלקוחות, בצמיחה, או פשוט בנשימה. הנה 5 התהליכים שכדאי להתחיל איתם.
+            <p>
+              אוטומציה לא חייבת להיות מורכבת. ברוב העסקים הקטנים, 5 תהליכים פשוטים יכולים לשחרר עשרות שעות בשבוע — שעות שאפשר להשקיע בלקוחות, בצמיחה, או פשוט בנשימה. הבעיה היא שרוב בעלי העסקים לא יודעים מאיפה להתחיל, ואז לא מתחילים בכלל.
             </p>
 
-            <div className="space-y-6 mb-12">
-              {processes.map((p, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border">
-                  <div className="flex items-start gap-4">
-                    <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <span className="text-sm font-bold text-primary">{i + 1}</span>
-                    </div>
-                    <div>
-                      <h2 className="text-lg font-semibold text-foreground mb-2">{p.title}</h2>
-                      <p className="text-sm text-muted-foreground leading-relaxed mb-3">{p.description}</p>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-4 h-4 text-green-500" />
-                        <span className="text-xs font-medium text-green-600">{p.saving}</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">1. מענה אוטומטי על לידים נכנסים</h2>
+              <p className="mb-4">
+                כל עסק מכיר את הסיטואציה: ליד נכנס מהאתר בשעה 11 בלילה, ואתה רואה אותו רק למחרת בבוקר. עד אז הוא כבר דיבר עם שלושה מתחרים. מענה אוטומטי פותר את הבעיה הזו בצורה פשוטה — הליד שולח פנייה ותוך שניות מקבל הודעה חזרה עם פרטים בסיסיים ושאלה שפותחת שיחה.
+              </p>
+              <p>
+                זה לא מחליף שיחה אנושית, אבל זה שומר על הליד חם עד שאתה פנוי. הפרש של שעה-שעתיים בתגובה יכול לקבוע אם הסגירה קורה אצלך או אצל המתחרה.
+              </p>
             </div>
 
-            <div className="p-6 bg-primary/5 rounded-xl border border-primary/20 mb-12">
-              <div className="flex items-start gap-3">
-                <Zap className="w-5 h-5 text-primary mt-0.5 flex-shrink-0" />
-                <div>
-                  <h3 className="font-semibold text-foreground mb-2">מאיפה מתחילים?</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">
-                    לא צריך לאטמט הכל בבת אחת. תבחרו תהליך אחד שגוזל לכם הכי הרבה זמן, ותתחילו משם. בדרך כלל תוך שבוע–שבועיים רואים חיסכון ממשי — ואז ממשיכים.
-                  </p>
-                </div>
-              </div>
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">2. שליחת הצעות מחיר</h2>
+              <p className="mb-4">
+                הצעת מחיר ידנית לוקחת בממוצע 20-40 דקות. לעסק שמקבל 10 פניות בשבוע — זה 4-7 שעות שבועיות על עניין אדמינסטרטיבי בלבד. כשהתהליך אוטומטי, הלקוח ממלא טופס עם פרטי הצורך, המערכת מחשבת ומייצרת PDF מותאם אישית — והכל נשלח אליו תוך דקות.
+              </p>
+              <p>
+                היתרון הנוסף: כל ההצעות נשמרות ומאורגנות. אפשר לעקוב אחרי מי פתח, מי לא ענה, ומתי לשלוח פולו-אפ — בלי לנהל גיליון אקסל ידנית.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">3. מעקב אחרי לקוחות שלא ענו</h2>
+              <p className="mb-4">
+                זה התחום שבו הכי הרבה כסף נשאר על השולחן. ליד שהתעניין אבל לא ענה — לא בהכרח איבד עניין. לפעמים הוא פשוט היה עסוק, שכח, או חיכה שתחזור אליו. מערכת אוטומטית שולחת תזכורת אחרי 24 שעות, עוד אחת אחרי 3 ימים, ואחת נוספת אחרי שבוע.
+              </p>
+              <p>
+                הטון חשוב כאן: לא לחץ, אלא הצעת ערך קצרה בכל הודעה. רוב הסגירות שקורות דרך פולו-אפ קורות דווקא בהודעה השלישית — שרוב בעלי העסקים לא שולחים כי הם שכחו.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">4. דוחות שבועיים אוטומטיים</h2>
+              <p className="mb-4">
+                כל בעל עסק צריך לדעת בסוף השבוע: כמה לידים נכנסו, כמה הפכו לעסקאות, מה הסטטוס של הפייפליין. הכנת הדוח הזה ידנית לוקחת שעה-שעתיים. כשהיא אוטומטית — הדוח פשוט מגיע אליך כל יום ראשון בבוקר לווטסאפ.
+              </p>
+              <p>
+                היתרון הגדול של אוטומציה כאן הוא לא רק החיסכון בזמן — אלא העקביות. דוח שמגיע בכל שבוע, גם כשאתה עמוס, יוצר הרגל של קבלת החלטות מבוסס נתונים.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">5. ניהול תורים ופגישות</h2>
+              <p className="mb-4">
+                ניהול יומן ידנית הוא תהליך שלם: הלקוח שואל מתי אתה פנוי, אתה בודק, מציע שעה, הוא לא יכול, אתה מציע שוב — ובינתיים עשרות הודעות הלוך ושוב. כשהתהליך אוטומטי, הלקוח מקבל לינק לבחירת שעה, בוחר לבד, ומיד מקבל אישור עם פרטי הפגישה.
+              </p>
+              <p>
+                מה שמשנה את התמונה באמת הוא התזכורת האוטומטית: הלקוח מקבל הודעה יום לפני הפגישה, ואם הוא לא יכול — יש לינק לשינוי. זה מוריד דרמטית את אחוז ה-no-show.
+              </p>
+            </div>
+
+            <div>
+              <h2 className="text-2xl font-bold text-foreground mb-4">מאיפה מתחילים?</h2>
+              <p className="mb-4">
+                לא צריך לאטמט הכל בבת אחת. הדרך הנכונה היא לזהות את התהליך שלוקח לך הכי הרבה זמן ביחס לערך שהוא מייצר — ולהתחיל משם. ברוב המקרים, תהליך אחד שעובד טוב מניע בעל עסק להמשיך לשני, לשלישי.
+              </p>
+              <p>
+                השאלה הנכונה לשאול היא לא "מה אפשר לאטמט?" אלא "מה אני עושה שוב ושוב כל שבוע ומרגיש שהיה אפשר לא לעשות ידנית?" שם נמצא נקודת ההתחלה.
+              </p>
             </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
