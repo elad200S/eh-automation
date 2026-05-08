@@ -70,14 +70,14 @@ const About = () => {
           <div className="max-w-4xl mx-auto">
             <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
               <div className="order-1">
-                <p className="text-sm font-medium text-primary mb-2">המייסד</p>
-                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">אלעד חנינה</h2>
+                <p className="font-medium text-primary mb-2 text-center text-xl font-serif">Co-founder</p>
+                <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 font-serif text-center">אלעד חנינה</h2>
                 <p className="text-muted-foreground mb-6 leading-relaxed">
                   פועל בעולמות ה-B2B ועוזר לעסקים לבנות תשתית אוטומטית יציבה.
                   הגישה פשוטה: לבנות אוטומציות חכמות שמחליפות תהליכים ידניים,
                   חוסכות זמן וכסף, ומורידות מהעסק את הפעולות שהוא לא צריך להתעסק בהן.
                 </p>
-                <ul className="space-y-3">
+                <ul className="space-y-3 text-center">
                   {highlights.map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <CheckCircle2 className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />

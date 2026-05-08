@@ -136,7 +136,7 @@ const SolutionsOverviewSection = () => {
       <div className="max-w-5xl mx-auto">
         <div ref={headerRef} style={headerStyle} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="text-center md:text-right flex-1">
-            <p className="text-sm font-medium text-primary mb-2">מה אנחנו בונים</p>
+            <p className="font-medium text-primary mb-2 text-center text-xl font-serif">מה אנחנו בונים</p>
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
               פתרונות אוטומציה לעסקים
             </h2>

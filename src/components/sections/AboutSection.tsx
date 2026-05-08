@@ -12,7 +12,7 @@ const AboutSection = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content */}
           <div ref={contentRef} style={contentStyle} className="order-1">
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6">
+            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 font-serif text-center">
               קצת עליי
             </h2>
             
