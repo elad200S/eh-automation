@@ -26,6 +26,8 @@ const Blog = lazy(() => import("./pages/Blog"));
 const AutomationProcesses = lazy(() => import("./pages/blog/AutomationProcesses"));
 const AIAgentForBusiness = lazy(() => import("./pages/blog/AIAgentForBusiness"));
 const HowToChooseCRM = lazy(() => import("./pages/blog/HowToChooseCRM"));
+const BlogWhatsAppAutomation = lazy(() => import("./pages/blog/WhatsAppAutomation"));
+const BlogLeadFollowUp = lazy(() => import("./pages/blog/LeadFollowUp"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 
@@ -138,6 +140,8 @@ const AppInner = () => {
         <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
         <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
         <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
+        <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
+        <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
         <Route path="/about" element={<About />} />
         <Route path="/contact" element={<Contact />} />
 

@@ -35,6 +35,20 @@ const articles = [
     readTime: '6 דקות קריאה',
     href: '/blog/how-to-choose-crm',
   },
+  {
+    title: 'WhatsApp לעסק: מה לאטמט ומה להשאיר אנושי',
+    category: 'אוטומציה',
+    excerpt: 'הערוץ הכי פעיל בישראל — אבל לא כל הודעה צריכה לצאת ממך אישית. מה כדאי לאטמט ומה לא.',
+    readTime: '6 דקות קריאה',
+    href: '/blog/whatsapp-automation',
+  },
+  {
+    title: 'למה הלידים שלך לא סוגרים — ואיך פולו-אפ אוטומטי עוזר',
+    category: 'אוטומציה',
+    excerpt: 'רוב הלידים לא נעלמים כי הם לא מתאימים — הם נעלמים כי אף אחד לא חזר אליהם בזמן.',
+    readTime: '5 דקות קריאה',
+    href: '/blog/lead-follow-up',
+  },
 ];
 
 const Blog = () => {
