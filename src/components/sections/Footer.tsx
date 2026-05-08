@@ -96,7 +96,7 @@ const Footer = () => {
               </li>
               <li className="flex items-start gap-2 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 flex-shrink-0 mt-0.5" />
-                <span>חיים לסקוב 22, נתניה</span>
+                <a href="https://maps.app.goo.gl/tLz26QNqvV2kMKsG8" target="_blank" rel="noopener noreferrer" className="hover:text-foreground transition-colors">חיים לסקוב 22, נתניה</a>
               </li>
             </ul>
 
