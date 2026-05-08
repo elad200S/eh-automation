@@ -14,8 +14,10 @@ export default {
     },
     extend: {
       fontFamily: {
-        primary: ['Rubik', 'sans-serif'],
-        mono: ['IBM Plex Mono', 'monospace'],
+        primary: ['Heebo', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        display: ['Heebo', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'Segoe UI', 'sans-serif'],
+        serif: ['Heebo', 'Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['IBM Plex Mono', 'ui-monospace', 'monospace'],
       },
       colors: {
         border: "hsl(var(--border))",
