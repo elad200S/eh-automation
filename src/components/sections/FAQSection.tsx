@@ -49,7 +49,7 @@ const FAQSection = () => {
             שאלות נפוצות
           </h2>
 
-          <div ref={listRef} className="space-y-3">
+          <div ref={listRef} className="space-y-3 text-center">
             {faqs.map((faq, index) => (
               <div key={index} style={itemStyle(index)}>
               <div
