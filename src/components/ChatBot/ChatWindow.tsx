@@ -8,6 +8,12 @@ import type { Message } from './useChatBot';
 
 const WHATSAPP_NUMBER = '972547108219';
 
+const HEADER_QUICK_REPLIES = [
+  'יש לי תהליך ידני שמבזבז זמן',
+  'אני רוצה יותר לידים בלי כאב ראש',
+  'אני רוצה סדר ודוחות בעסק',
+];
+
 interface ChatWindowProps {
   messages: Message[];
   isLoading: boolean;
@@ -103,37 +109,51 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   return (
     <div
       dir="rtl"
-      className="fixed bottom-24 right-6 w-[360px] max-w-[calc(100vw-48px)] h-[500px] max-h-[calc(100vh-120px)] bg-background border border-border rounded-2xl shadow-xl flex flex-col z-[9998] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300"
+      className="fixed bottom-24 right-6 w-[440px] max-w-[calc(100vw-48px)] h-[520px] max-h-[calc(100vh-120px)] bg-background border border-border rounded-2xl shadow-xl flex flex-col z-[9998] overflow-hidden animate-in fade-in slide-in-from-bottom-4 duration-300"
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-4 py-3 bg-primary text-primary-foreground">
-        <div className="flex items-center gap-2.5">
-          <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
-            <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
+      <div className="bg-primary text-primary-foreground">
+        <div className="flex items-center justify-between px-4 py-3">
+          <div className="flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-lg overflow-hidden flex-shrink-0">
+              <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
+            </div>
+            <div>
+              <p className="font-medium text-sm leading-tight">EH Automation</p>
+              <p className="text-xs text-primary-foreground/70 leading-tight">בוט חכם • עונה מיד</p>
+            </div>
           </div>
-          <div>
-            <p className="font-medium text-sm leading-tight">EH Automation</p>
-            <p className="text-xs text-primary-foreground/70 leading-tight">בוט חכם • עונה מיד</p>
+          <div className="flex items-center gap-1">
+            <a
+              href={`https://wa.me/${WHATSAPP_NUMBER}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-1.5 hover:bg-primary-foreground/10 rounded-full transition-colors"
+              aria-label="WhatsApp"
+              title="דבר עם אלעד ישירות"
+            >
+              <img src="/whatsapp-icon.png" alt="WhatsApp" className="w-5 h-5 object-cover rounded" />
+            </a>
+            <button
+              onClick={onClose}
+              className="p-1 hover:bg-primary-foreground/10 rounded-full transition-colors"
+              aria-label="סגור צ'אט"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
-        <div className="flex items-center gap-1">
-          <a
-            href={`https://wa.me/${WHATSAPP_NUMBER}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="p-1.5 hover:bg-primary-foreground/10 rounded-full transition-colors"
-            aria-label="WhatsApp"
-            title="דבר עם אלעד ישירות"
-          >
-            <img src="/whatsapp-icon.png" alt="WhatsApp" className="w-5 h-5 object-cover rounded" />
-          </a>
-          <button
-            onClick={onClose}
-            className="p-1 hover:bg-primary-foreground/10 rounded-full transition-colors"
-            aria-label="סגור צ'אט"
-          >
-            <X className="w-5 h-5" />
-          </button>
+        <div className="flex gap-1.5 px-3 pb-3">
+          {HEADER_QUICK_REPLIES.map((text, i) => (
+            <button
+              key={i}
+              onClick={() => handleQuickReply(text)}
+              disabled={isLoading}
+              className="flex-1 text-xs text-center leading-tight px-2 py-1.5 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {text}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -141,7 +161,12 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
-        className="flex-1 overflow-y-auto no-scrollbar p-4 scroll-smooth"
+        className="flex-1 overflow-y-auto no-scrollbar p-4 scroll-smooth bg-background"
+        style={{
+          backgroundImage:
+            'linear-gradient(to left, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
       >
         <div className="space-y-1">
           {messages.map((message) => (
@@ -184,7 +209,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
             value={inputValue}
             onChange={(e) => setInputValue(e.target.value.slice(0, maxInputLength))}
             onKeyDown={handleKeyDown}
-            placeholder="הקלד הודעה..."
+            placeholder="מה הכי מפריע לך בעסק"
             disabled={isLoading}
             className="flex-1 text-sm"
             dir="rtl"

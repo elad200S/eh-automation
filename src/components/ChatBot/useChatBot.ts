@@ -41,7 +41,7 @@ const SUPABASE_KEY = (supabase as any).supabaseKey as string;
 const CHAT_URL = `${SUPABASE_URL}/functions/v1/chat`;
 
 export function useChatBot() {
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
@@ -85,7 +85,7 @@ export function useChatBot() {
   }, []);
 
   const resetChat = useCallback(() => {
-    setMessages([{ ...INITIAL_MESSAGE, id: `welcome-${Date.now()}` }]);
+    setMessages([]);
     setIsLoading(false);
     botResponseCountRef.current = 0;
     leadShownRef.current = false;
@@ -131,7 +131,7 @@ export function useChatBot() {
       const updated = [...prev, userMessage];
       // Limit history
       if (updated.length > MAX_HISTORY) {
-        return [INITIAL_MESSAGE, ...updated.slice(-MAX_HISTORY + 1)];
+        return updated.slice(-MAX_HISTORY);
       }
       return updated;
     });
