@@ -1,13 +1,22 @@
 import { ArrowLeft, Check } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import HeroAutomationFlow from './HeroAutomationFlow';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+gsap.registerPlugin(ScrollTrigger);
 
 const bullets = [
   'טיפול אוטומטי בלידים נכנסים',
   'חיבור בין טפסים, CRM ו-WhatsApp',
   'פחות כאוס, יותר שליטה',
+];
+
+const SUBTITLES = [
+  'אני בונה מערכות שמחברות בין לידים, לקוחות ותהליכים, כך שכל פנייה מטופלת, הכל מתועד, והעסק עובד בצורה חלקה וברורה',
+  'כל ליד שנכנס מטופל אוטומטית — CRM מתעדכן, WhatsApp נשלח, והסוכן מקבל התראה בשניות',
+  'פחות עבודה ידנית, יותר תוצאות — מערכות שעובדות 24/7 ומונעות מלידים ליפול בין הכיסאות',
 ];
 
 const HeroSection = () => {
@@ -16,9 +25,43 @@ const HeroSection = () => {
   const contentRef = useRef<HTMLDivElement>(null);
   const eyebrowRef = useRef<HTMLDivElement>(null);
   const titleRef = useRef<HTMLHeadingElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const subtitleRef = useRef<HTMLDivElement>(null);
   const bulletsRef = useRef<HTMLDivElement>(null);
   const ctaRef = useRef<HTMLDivElement>(null);
+  const orbRef = useRef<HTMLDivElement>(null);
+
+  const [subtitleIdx, setSubtitleIdx] = useState(0);
+  const [subtitleVisible, setSubtitleVisible] = useState(true);
+
+  // Cycle subtitle every 4.5s
+  useEffect(() => {
+    const id = setInterval(() => {
+      setSubtitleVisible(false);
+      setTimeout(() => {
+        setSubtitleIdx(i => (i + 1) % SUBTITLES.length);
+        setSubtitleVisible(true);
+      }, 450);
+    }, 4500);
+    return () => clearInterval(id);
+  }, []);
+
+  // Parallax orb on scroll
+  useEffect(() => {
+    if (!orbRef.current || !sectionRef.current) return;
+    const ctx = gsap.context(() => {
+      gsap.to(orbRef.current, {
+        y: -160,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.2,
+        },
+      });
+    });
+    return () => ctx.revert();
+  }, []);
 
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -69,6 +112,53 @@ const HeroSection = () => {
     >
       <div className="absolute inset-0 grid-pattern opacity-40" />
 
+      {/* Nexus-style parallax ring */}
+      <div
+        ref={orbRef}
+        className="pointer-events-none absolute"
+        style={{
+          width: 680,
+          height: 680,
+          borderRadius: '50%',
+          border: '1px solid hsl(var(--primary) / 0.14)',
+          left: '50%',
+          top: '42%',
+          transform: 'translate(-50%, -50%)',
+          background: 'radial-gradient(circle, hsl(var(--primary) / 0.05) 0%, transparent 65%)',
+        }}
+      >
+        <div style={{
+          position: 'absolute',
+          inset: 55,
+          borderRadius: '50%',
+          border: '1px solid hsl(var(--primary) / 0.07)',
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: 8, height: 8,
+          borderRadius: '50%',
+          background: 'hsl(var(--primary) / 0.75)',
+          boxShadow: '0 0 14px hsl(var(--primary) / 0.55)',
+          top: '7%', left: '50%',
+          transform: 'translateX(-50%)',
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: 5, height: 5,
+          borderRadius: '50%',
+          background: 'hsl(var(--secondary) / 0.65)',
+          boxShadow: '0 0 10px hsl(var(--secondary) / 0.45)',
+          bottom: '10%', right: '16%',
+        }} />
+        <div style={{
+          position: 'absolute',
+          width: 4, height: 4,
+          borderRadius: '50%',
+          background: 'hsl(var(--accent) / 0.5)',
+          top: '30%', left: '6%',
+        }} />
+      </div>
+
       {/* Cinematic ambient orbs */}
       <div className="pointer-events-none absolute -top-48 -right-48 w-[600px] h-[600px]">
         <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.08] blur-[120px] animate-orb-1" />
@@ -92,9 +182,15 @@ const HeroSection = () => {
             הכל עובד. גם כשאתה לא.
           </h1>
 
-          <p ref={subtitleRef} className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
-            אני בונה מערכות שמחברות בין לידים, לקוחות ותהליכים, כך שכל פנייה מטופלת, הכל מתועד, והעסק עובד בצורה חלקה וברורה
-          </p>
+          {/* Cycling subtitle */}
+          <div ref={subtitleRef} style={{ minHeight: '4rem' }}>
+            <p
+              className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto transition-opacity duration-[400ms]"
+              style={{ opacity: subtitleVisible ? 1 : 0 }}
+            >
+              {SUBTITLES[subtitleIdx]}
+            </p>
+          </div>
 
           <div ref={bulletsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             {bullets.map((bullet, i) => (
