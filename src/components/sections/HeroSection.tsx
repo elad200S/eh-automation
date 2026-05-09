@@ -70,14 +70,14 @@ const HeroSection = () => {
       <div className="absolute inset-0 grid-pattern opacity-40" />
 
       {/* Cinematic ambient orbs */}
-      <div className="pointer-events-none absolute -top-48 -right-48 w-[640px] h-[640px] animate-orb-1">
-        <div className="w-full h-full rounded-full bg-primary/[0.08] blur-[130px]" />
+      <div className="pointer-events-none absolute -top-48 -right-48 w-[600px] h-[600px]">
+        <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.08] blur-[120px] animate-orb-1" />
       </div>
-      <div className="pointer-events-none absolute -bottom-48 -left-48 w-[540px] h-[540px] animate-orb-2">
-        <div className="w-full h-full rounded-full bg-secondary/[0.06] blur-[110px]" />
+      <div className="pointer-events-none absolute -bottom-48 -left-48 w-[500px] h-[500px]">
+        <div className="pointer-events-none w-full h-full rounded-full bg-secondary/[0.06] blur-[100px] animate-orb-2" />
       </div>
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[420px] animate-orb-3">
-        <div className="w-full h-full rounded-full bg-primary/[0.04] blur-[100px]" />
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px]">
+        <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.04] blur-[100px] animate-orb-3" />
       </div>
 
       {/* Content */}

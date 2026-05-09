@@ -249,12 +249,12 @@
 
 /* Hero orb ambient animations */
 @keyframes orb-breathe-1 {
-  0%, 100% { opacity: 0.45; }
+  0%, 100% { opacity: 0.4; }
   50% { opacity: 0.75; }
 }
 @keyframes orb-breathe-2 {
-  0%, 100% { opacity: 0.35; }
-  50% { opacity: 0.6; }
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.75; }
 }
 @keyframes orb-breathe-3 {
   0%, 100% { opacity: 0.15; }
@@ -265,7 +265,7 @@
   animation: orb-breathe-1 20s ease-in-out infinite;
 }
 .animate-orb-2 {
-  animation: orb-breathe-2 16s ease-in-out infinite;
+  animation: orb-breathe-2 20s ease-in-out infinite;
   animation-delay: -8s;
 }
 .animate-orb-3 {
