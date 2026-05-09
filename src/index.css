@@ -260,13 +260,13 @@
 /* Page load: MatrixRain fade in */
 @keyframes matrixFadeIn {
   from { opacity: 0; }
-  to   { opacity: 0.15; }
+  to   { opacity: 0.45; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   @keyframes matrixFadeIn {
-    from { opacity: 0.15; }
-    to   { opacity: 0.15; }
+    from { opacity: 0.45; }
+    to   { opacity: 0.45; }
   }
 }
 
