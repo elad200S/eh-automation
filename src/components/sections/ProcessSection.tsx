@@ -119,7 +119,7 @@ const ProcessSection = () => {
   const { ref: gridRef, itemStyle } = useScrollRevealGroup(150);
 
   return (
-    <Section id="process">
+    <Section id="process" className="bg-background-secondary">
       <style>{`
         @keyframes fadeSlide {
           0%, 10%   { opacity: 0; transform: translateX(6px); }
@@ -148,9 +148,12 @@ const ProcessSection = () => {
       `}</style>
 
       <div className="max-w-4xl mx-auto">
-        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
-          איך אנחנו עובדים יחד
-        </h2>
+        <div ref={titleRef} style={titleStyle} className="text-center mb-10">
+          <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">תהליך העבודה</p>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+            איך אנחנו עובדים יחד
+          </h2>
+        </div>
 
         <div ref={gridRef} className="grid md:grid-cols-3 gap-6">
           {steps.map((step, index) => {

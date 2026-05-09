@@ -73,9 +73,10 @@ const ContactSection = () => {
   };
 
   return (
-    <Section id="contact" withSeparator={false}>
+    <Section id="contact" withSeparator={false} className="bg-background-secondary">
       <div className="max-w-2xl mx-auto">
-        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-4 text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">צור קשר</p>
+        <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">
           בוא נבדוק מה יכול להתאים לעסק שלך
         </h2>
 

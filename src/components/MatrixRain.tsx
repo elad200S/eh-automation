@@ -46,9 +46,9 @@ const MatrixRain = () => {
         const char = CHARS[Math.floor(Math.random() * CHARS.length)];
         const y = drops[i] * FONT_SIZE;
 
-        // Leading character — bright
+        // Leading character — muted ambient tone
         if (drops[i] === drops[i]) {
-          ctx.fillStyle = '#6ee7b7';
+          ctx.fillStyle = '#1d5c3e';
           ctx.fillText(char, i * FONT_SIZE, y);
         }
 

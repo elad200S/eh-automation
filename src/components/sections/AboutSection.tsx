@@ -12,7 +12,8 @@ const AboutSection = () => {
         <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center">
           {/* Content */}
           <div ref={contentRef} style={contentStyle} className="order-1">
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-6 font-serif text-center">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">מי אני</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-6 text-center">
               קצת עליי
             </h2>
             

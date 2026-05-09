@@ -132,12 +132,12 @@ const SolutionsOverviewSection = () => {
   const { ref: gridRef, itemStyle } = useScrollRevealGroup(80);
 
   return (
-    <Section id="solutions-overview">
+    <Section id="solutions-overview" className="bg-background-secondary">
       <div className="max-w-5xl mx-auto">
         <div ref={headerRef} style={headerStyle} className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-10">
           <div className="text-center md:text-right flex-1">
-            <p className="font-medium text-primary mb-2 text-center text-xl font-serif">מה אנחנו בונים</p>
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">מה אנחנו בונים</p>
+            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
               פתרונות אוטומציה לעסקים
             </h2>
           </div>

@@ -151,7 +151,8 @@ const ToolsSection = () => {
   return (
     <Section id="tools">
       <div className="max-w-4xl mx-auto text-center">
-        <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-4">
+        <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">אינטגרציות</p>
+        <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-4">
           מתחבר למערכות שכבר יש לך
         </h2>
         <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground mb-10 max-w-xl mx-auto">
