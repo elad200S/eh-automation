@@ -64,12 +64,12 @@ const lenis = new Lenis({
 
 function raf(time: number) {
   lenis.raf(time);
+  requestAnimationFrame(raf);
+}
 requestAnimationFrame(raf);
 
 gsap.registerPlugin(ScrollTrigger);
 lenis.on('scroll', () => ScrollTrigger.update());
-}
-requestAnimationFrame(raf);
 
 const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
