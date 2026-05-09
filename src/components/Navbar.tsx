@@ -36,7 +36,7 @@ const navItems: NavItem[] = [
   { label: 'בית', href: '/' },
   { label: 'פתרונות', href: '/solutions', children: solutions },
   { label: 'תעשיות', href: '/industries', children: industries },
-  { label: 'בלוג', href: '/blog' },
+  { label: 'SEO', href: '/blog' },
   { label: 'אודות', href: '/about' },
   { label: 'צור קשר', href: '/contact' },
 ];
