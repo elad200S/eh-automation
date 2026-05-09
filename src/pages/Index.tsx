@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react';
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import MatrixRain from '@/components/MatrixRain';
+import ScrollOrb from '@/components/ScrollOrb';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
@@ -26,6 +27,7 @@ const Index = () => {
       <OrganizationSchema />
       
       <MatrixRain />
+      <ScrollOrb />
       <Navbar />
       <main className="relative z-10 bg-transparent min-h-screen">
         <HeroSection />

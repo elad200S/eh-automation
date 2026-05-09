@@ -108,6 +108,7 @@ const HeroSection = () => {
   return (
     <section
       ref={sectionRef}
+      id="hero"
       className="min-h-[80vh] md:min-h-[85vh] flex flex-col relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background"
     >
       <div className="absolute inset-0 grid-pattern opacity-40" />
