@@ -20,7 +20,6 @@ const NUDGE_MESSAGE: Message = {
   id: 'nudge',
   role: 'assistant',
   content: 'רוב העסקים שמגיעים לפה מבזבזים זמן על תהליכים ידניים.\nרוצה לבדוק אם זה גם המצב אצלך?',
-  showQuickReplies: true,
 };
 
 const LEAD_CAPTURE_MESSAGE: Message = {

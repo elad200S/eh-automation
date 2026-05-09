@@ -143,13 +143,13 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
             </button>
           </div>
         </div>
-        <div className="flex gap-1.5 px-3 pb-3">
+        <div className="flex gap-2 px-3 pb-3">
           {HEADER_QUICK_REPLIES.map((text, i) => (
             <button
               key={i}
               onClick={() => handleQuickReply(text)}
               disabled={isLoading}
-              className="flex-1 text-xs text-center leading-tight px-2 py-1.5 bg-primary-foreground/10 hover:bg-primary-foreground/20 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 text-xs font-medium text-center leading-tight px-2 py-2 bg-white/20 hover:bg-white/30 border border-white/30 rounded-2xl transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {text}
             </button>
