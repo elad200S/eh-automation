@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { motion } from 'framer-motion';
+import gsap from 'gsap';
 
 interface NavChild {
   label: string;
@@ -224,9 +225,27 @@ const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
+  const navRef = useRef<HTMLElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { openPopup } = useContactPopup();
+
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.set(navRef.current, { y: -80, opacity: 0 });
+  }, []);
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    gsap.to(navRef.current, {
+      y: 0,
+      opacity: 1,
+      duration: 0.85,
+      delay: 0.6,
+      ease: 'power3.out',
+      clearProps: 'transform,opacity',
+    });
+  }, []);
 
   useEffect(() => {
     const onScroll = () => {
@@ -281,6 +300,7 @@ const Navbar = () => {
   return (
     <>
       <nav
+        ref={navRef}
         className={cn(
           'fixed top-3 right-4 left-4 rounded-2xl border transition-all duration-500',
           scrolled

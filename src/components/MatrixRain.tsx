@@ -79,7 +79,8 @@ const MatrixRain = () => {
         height: '100vh',
         zIndex: 0,
         pointerEvents: 'none',
-        opacity: 0.45,
+        opacity: 0,
+        animation: 'matrixFadeIn 2.5s ease-out 0.3s forwards',
       }}
     />
   );

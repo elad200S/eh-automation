@@ -247,6 +247,19 @@
   }
 }
 
+/* Page load: MatrixRain fade in */
+@keyframes matrixFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 0.45; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @keyframes matrixFadeIn {
+    from { opacity: 0.45; }
+    to   { opacity: 0.45; }
+  }
+}
+
 /* Hero orb ambient animations */
 @keyframes orb-breathe-1 {
   0%, 100% { opacity: 0.4; }

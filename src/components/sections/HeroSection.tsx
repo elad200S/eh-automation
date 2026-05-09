@@ -37,7 +37,7 @@ const HeroSection = () => {
     }
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.1 });
+      const tl = gsap.timeline({ delay: 0.9 });
       tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' })
         .to(titleRef.current, { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' }, '-=0.35')
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.45')
