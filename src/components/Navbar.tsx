@@ -4,6 +4,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
+import { motion } from 'framer-motion';
 
 interface NavChild {
   label: string;
@@ -283,7 +284,7 @@ const Navbar = () => {
         className={cn(
           'fixed top-3 right-4 left-4 rounded-2xl border transition-all duration-500',
           scrolled
-            ? 'bg-background/80 backdrop-blur-xl border-white/15 shadow-[0_4px_32px_-4px_hsl(var(--primary)/0.18)]'
+            ? 'bg-background/75 backdrop-blur-2xl border-white/[0.08] shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.22),0_1px_0_0_rgba(255,255,255,0.05)_inset]'
             : 'bg-transparent border-transparent',
           hidden && !mobileOpen ? '-translate-y-[calc(100%+1rem)] opacity-0' : 'translate-y-0 opacity-100',
           mobileOpen ? 'z-[10040]' : 'z-50'
@@ -312,14 +313,29 @@ const Navbar = () => {
               )
             )}
 
-            <button
-              type="button"
-              onClick={openPopup}
-              className="mr-2 flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/25 transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/30 active:scale-[0.97]"
+            <motion.div
+              className="relative mr-2"
+              whileHover="hover"
+              initial="rest"
+              animate="rest"
             >
-              שיחת אסטרטגיה
-              <span className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-primary-foreground/80" />
-            </button>
+              <motion.div
+                className="absolute inset-0 rounded-full bg-primary blur-[18px]"
+                variants={{ rest: { opacity: 0 }, hover: { opacity: 0.4 } }}
+                transition={{ duration: 0.25 }}
+              />
+              <motion.button
+                type="button"
+                onClick={openPopup}
+                className="relative flex items-center gap-2 rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground shadow-md shadow-primary/25"
+                variants={{ rest: { y: 0, scale: 1 }, hover: { y: -2, scale: 1.03 } }}
+                whileTap={{ scale: 0.96 }}
+                transition={{ type: 'spring', stiffness: 420, damping: 26 }}
+              >
+                שיחת אסטרטגיה
+                <span className="h-2 w-2 flex-shrink-0 animate-pulse rounded-full bg-primary-foreground/80" />
+              </motion.button>
+            </motion.div>
           </div>
 
           <button

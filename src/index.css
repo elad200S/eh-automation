@@ -84,6 +84,7 @@
     overflow-x: hidden;
     overflow-wrap: break-word;
     word-break: break-word;
+    background-image: radial-gradient(ellipse 100% 55% at 50% -5%, hsl(var(--primary) / 0.07), transparent);
   }
 
   img, video, iframe {
@@ -243,6 +244,38 @@
     mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
+  }
+}
+
+/* Hero orb ambient animations */
+@keyframes orb-breathe-1 {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 0.75; }
+}
+@keyframes orb-breathe-2 {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.6; }
+}
+@keyframes orb-breathe-3 {
+  0%, 100% { opacity: 0.15; }
+  50% { opacity: 0.4; }
+}
+
+.animate-orb-1 {
+  animation: orb-breathe-1 20s ease-in-out infinite;
+}
+.animate-orb-2 {
+  animation: orb-breathe-2 16s ease-in-out infinite;
+  animation-delay: -8s;
+}
+.animate-orb-3 {
+  animation: orb-breathe-3 12s ease-in-out infinite;
+  animation-delay: -4s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-orb-1, .animate-orb-2, .animate-orb-3 {
+    animation: none;
   }
 }
 

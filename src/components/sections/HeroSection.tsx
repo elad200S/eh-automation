@@ -1,7 +1,8 @@
 import { ArrowLeft, Check } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef } from 'react';
 import HeroAutomationFlow from './HeroAutomationFlow';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
+import gsap from 'gsap';
 
 const bullets = [
   'טיפול אוטומטי בלידים נכנסים',
@@ -10,78 +11,92 @@ const bullets = [
 ];
 
 const HeroSection = () => {
-  const [mounted, setMounted] = useState(false);
-  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const { openPopup } = useContactPopup();
+  const sectionRef = useRef<HTMLElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const eyebrowRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLHeadingElement>(null);
+  const subtitleRef = useRef<HTMLParagraphElement>(null);
+  const bulletsRef = useRef<HTMLDivElement>(null);
+  const ctaRef = useRef<HTMLDivElement>(null);
+
+  useLayoutEffect(() => {
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) return;
+    const targets = [eyebrowRef.current, titleRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current];
+    gsap.set(targets, { opacity: 0, y: 32 });
+  }, []);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
-    setPrefersReducedMotion(mediaQuery.matches);
-    setMounted(true);
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const targets = [eyebrowRef.current, titleRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current];
+
+    if (prefersReducedMotion) {
+      gsap.set(targets, { opacity: 1, y: 0 });
+      return;
+    }
+
+    const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 0.1 });
+      tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' })
+        .to(titleRef.current, { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' }, '-=0.35')
+        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.45')
+        .to(bulletsRef.current, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.4')
+        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.3)' }, '-=0.3');
+    }, sectionRef);
+
+    const onScroll = () => {
+      if (!contentRef.current) return;
+      const progress = Math.min(window.scrollY / 320, 1);
+      gsap.set(contentRef.current, {
+        opacity: 1 - progress * 0.5,
+        scale: 1 - progress * 0.03,
+        y: -progress * 24,
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+
+    return () => {
+      ctx.revert();
+      window.removeEventListener('scroll', onScroll);
+    };
   }, []);
 
   return (
-    <section className="min-h-[80vh] md:min-h-[85vh] flex flex-col relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background">
+    <section
+      ref={sectionRef}
+      className="min-h-[80vh] md:min-h-[85vh] flex flex-col relative overflow-hidden bg-gradient-to-b from-primary-light/50 to-background"
+    >
       <div className="absolute inset-0 grid-pattern opacity-40" />
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-secondary/5 rounded-full blur-3xl" />
 
-      {/* תוכן — חלק עליון */}
-      <div className="container relative z-10 pt-16 md:pt-24 pb-8">
+      {/* Cinematic ambient orbs */}
+      <div className="pointer-events-none absolute -top-48 -right-48 w-[640px] h-[640px] animate-orb-1">
+        <div className="w-full h-full rounded-full bg-primary/[0.08] blur-[130px]" />
+      </div>
+      <div className="pointer-events-none absolute -bottom-48 -left-48 w-[540px] h-[540px] animate-orb-2">
+        <div className="w-full h-full rounded-full bg-secondary/[0.06] blur-[110px]" />
+      </div>
+      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[420px] animate-orb-3">
+        <div className="w-full h-full rounded-full bg-primary/[0.04] blur-[100px]" />
+      </div>
+
+      {/* Content */}
+      <div ref={contentRef} className="container relative z-10 pt-16 md:pt-24 pb-8">
         <div className="max-w-3xl mx-auto text-center">
 
-          {/* כותרת קטנה */}
-          <div
-            className={
-              prefersReducedMotion
-                ? 'text-technical mb-6'
-                : `text-technical mb-6 transition-all duration-500 ease-out ${
-                    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-                  }`
-            }
-          >
+          <div ref={eyebrowRef} className="text-technical mb-6">
             <span className="text-primary font-semibold">//</span> AI Automation Studio
           </div>
 
-          {/* כותרת ראשית */}
-          <h1
-            className={
-              prefersReducedMotion
-                ? 'text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight'
-                : `text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight transition-all duration-700 ease-out ${
-                    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                  }`
-            }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '60ms' }}
-          >
+          <h1 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground mb-6 leading-tight">
             הכל עובד. גם כשאתה לא.
           </h1>
 
-          {/* תיאור */}
-          <p
-            className={
-              prefersReducedMotion
-                ? 'text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto'
-                : `text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto transition-all duration-700 ease-out ${
-                    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                  }`
-            }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '120ms' }}
-          >
+          <p ref={subtitleRef} className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto">
             אני בונה מערכות שמחברות בין לידים, לקוחות ותהליכים, כך שכל פנייה מטופלת, הכל מתועד, והעסק עובד בצורה חלקה וברורה
           </p>
 
-          {/* Bullets */}
-          <div
-            className={
-              prefersReducedMotion
-                ? 'flex flex-col sm:flex-row items-center justify-center gap-4 mb-10'
-                : `flex flex-col sm:flex-row items-center justify-center gap-4 mb-10 transition-all duration-700 ease-out ${
-                    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                  }`
-            }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '180ms' }}
-          >
+          <div ref={bulletsRef} className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-10">
             {bullets.map((bullet, i) => (
               <div key={i} className="flex items-center gap-2 text-foreground/80">
                 <Check className="w-5 h-5 text-success flex-shrink-0" />
@@ -90,17 +105,7 @@ const HeroSection = () => {
             ))}
           </div>
 
-          {/* כפתור CTA */}
-          <div
-            className={
-              prefersReducedMotion
-                ? 'flex flex-col sm:flex-row gap-4 justify-center'
-                : `flex flex-col sm:flex-row gap-4 justify-center transition-all duration-700 ease-out ${
-                    mounted ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
-                  }`
-            }
-            style={{ transitionDelay: prefersReducedMotion ? '0ms' : '240ms' }}
-          >
+          <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center">
             <button onClick={openPopup} className="cta-gradient group">
               בדיקת התאמה לעסק
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -109,17 +114,7 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* ההליקס — מתחת לכל התוכן, ממלא את השטח שנשאר */}
-      <div
-        className={
-          prefersReducedMotion
-            ? 'relative z-10 w-full flex-1 flex items-center overflow-hidden'
-            : `relative z-10 w-full flex-1 flex items-center overflow-hidden transition-all duration-1000 ease-out ${
-                mounted ? 'opacity-100' : 'opacity-0'
-              }`
-        }
-        style={{ transitionDelay: prefersReducedMotion ? '0ms' : '300ms' }}
-      >
+      <div className="relative z-10 w-full flex-1 flex items-center overflow-hidden">
         <HeroAutomationFlow />
       </div>
 
