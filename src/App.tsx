@@ -1,3 +1,5 @@
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import ChatBot from "@/components/ChatBot/ChatBot";
@@ -65,6 +67,9 @@ function raf(time: number) {
   requestAnimationFrame(raf);
 }
 requestAnimationFrame(raf);
+
+gsap.registerPlugin(ScrollTrigger);
+lenis.on('scroll', () => ScrollTrigger.update());
 
 const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
