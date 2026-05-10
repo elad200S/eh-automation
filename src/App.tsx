@@ -178,15 +178,35 @@ const AppInner = () => {
 };
 
 const App = () => {
+  const [introDone, setIntroDone] = useState(() => {
+    if (typeof window === 'undefined') return true;
+    return sessionStorage.getItem(INTRO_STORAGE_KEY) === '1';
+  });
+  const [showIntro, setShowIntro] = useState(() => !introDone);
+
+  const handleIntroComplete = () => {
+    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
+    setShowIntro(false);
+    setIntroDone(true);
+  };
+
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
         <ContactPopupProvider>
           <EngagementProvider>
             <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <AppInner />
+              {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
+              <div
+                style={{
+                  opacity: introDone ? 1 : 0,
+                  transition: 'opacity 0.6s ease-out',
+                }}
+              >
+                <Toaster />
+                <Sonner />
+                <AppInner />
+              </div>
             </TooltipProvider>
           </EngagementProvider>
         </ContactPopupProvider>
