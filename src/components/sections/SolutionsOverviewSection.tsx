@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3, Globe } from 'lucide-react';
+import { useEffect, useRef } from 'react';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
@@ -12,7 +13,7 @@ const solutions = [
     href: '/solutions/ai-agents',
     iconColor: 'text-primary',
     iconBg: 'bg-primary/15',
-    accent: 'hsl(160 84% 39%)',
+    accent: 'hsl(160,84%,39%)',
   },
   {
     icon: Zap,
@@ -62,19 +63,43 @@ const solutions = [
   {
     icon: Globe,
     title: 'בניית אתרים',
-    description: 'אתרים מודרניים, מהירים ומותאמים לעסק — מהתכנון ועד ההשקה.',
+    description: 'אתרים מודרניים, מהירים ומותאמים לעסק — מהתכנון ועד ההשקה. מחוברים לאוטומציות מהיום הראשון.',
     href: '/solutions/web-development',
     iconColor: 'text-blue-400',
     iconBg: 'bg-blue-400/15',
     accent: '#60a5fa',
+    featured: true,
   },
 ];
 
-const STACK_OFFSET = 28;
-const SCROLL_SPACE = 220;
-
 const SolutionsOverviewSection = () => {
   const { ref: headerRef, style: headerStyle } = useScrollReveal<HTMLDivElement>(0);
+  const gridRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>('.sol-card'));
+
+    const obs = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const delay = parseInt((entry.target as HTMLElement).dataset.delay ?? '0');
+            setTimeout(() => {
+              entry.target.classList.add('sol-card-visible');
+            }, delay);
+            obs.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    cards.forEach((card) => obs.observe(card));
+    return () => obs.disconnect();
+  }, []);
 
   return (
     <Section id="solutions-overview" className="bg-background-secondary">
@@ -83,7 +108,7 @@ const SolutionsOverviewSection = () => {
         <div
           ref={headerRef}
           style={headerStyle}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-16"
+          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
         >
           <div className="text-center md:text-right flex-1">
             <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">מה אנחנו בונים</p>
@@ -100,50 +125,74 @@ const SolutionsOverviewSection = () => {
           </Link>
         </div>
 
-        {/* Stacked cards */}
-        <div className="relative max-w-2xl mx-auto">
-          {solutions.map((s, i) => (
-            <div
-              key={i}
-              className="sticky"
-              style={{
-                top: `${88 + i * STACK_OFFSET}px`,
-                zIndex: i + 1,
-                marginBottom: i < solutions.length - 1 ? `${SCROLL_SPACE}px` : 0,
-              }}
-            >
+        {/* Cards grid */}
+        <div ref={gridRef} className="grid sm:grid-cols-2 gap-4">
+          {solutions.map((s, i) => {
+            const colDelay = (i % 2) * 110;
+            return (
               <Link
+                key={i}
                 to={s.href}
-                className="group relative block w-full rounded-2xl border border-white/[0.07] bg-card/80 backdrop-blur-md p-6 shadow-[0_8px_32px_-8px_rgba(0,0,0,0.5)] transition-all duration-300 hover:border-white/[0.16] overflow-hidden"
+                className={cn(
+                  'sol-card group relative block rounded-2xl border border-white/[0.07] bg-card/60 backdrop-blur-sm overflow-hidden',
+                  s.featured ? 'sm:col-span-2 p-8' : 'p-6'
+                )}
+                data-delay={String(colDelay)}
               >
-                {/* Per-solution accent glow */}
+                {/* Per-solution accent glow — stronger on featured */}
                 <div
-                  className="absolute inset-0 rounded-2xl opacity-[0.05] pointer-events-none transition-opacity duration-300 group-hover:opacity-[0.10]"
-                  style={{ background: `radial-gradient(ellipse at top right, ${s.accent}, transparent 65%)` }}
+                  className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
+                  style={{
+                    background: `radial-gradient(ellipse at top right, ${s.accent}${s.featured ? '14' : '0d'}, transparent 60%)`,
+                  }}
+                />
+                <div
+                  className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-400"
+                  style={{
+                    background: `radial-gradient(ellipse at top right, ${s.accent}22, transparent 60%)`,
+                  }}
                 />
 
-                <div className="relative flex items-center gap-5" dir="rtl">
+                {/* Border glow on hover via box-shadow (inline, avoids Tailwind purge) */}
+                <div
+                  className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
+                />
+
+                <div className={cn('relative flex items-start gap-4', s.featured ? 'flex-row' : '')} dir="rtl">
+                  {/* Icon */}
                   <div className={cn(
-                    'w-14 h-14 rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110',
-                    s.iconBg
+                    'rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110',
+                    s.iconBg,
+                    s.featured ? 'w-16 h-16' : 'w-12 h-12'
                   )}>
-                    <s.icon className={cn('w-7 h-7', s.iconColor)} />
+                    <s.icon className={cn(s.featured ? 'w-8 h-8' : 'w-6 h-6', s.iconColor)} />
                   </div>
 
+                  {/* Text */}
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-base font-semibold text-foreground mb-1 group-hover:text-white transition-colors">
+                    <h3 className={cn(
+                      'font-semibold text-foreground mb-1.5 group-hover:text-white transition-colors',
+                      s.featured ? 'text-lg' : 'text-base'
+                    )}>
                       {s.title}
                     </h3>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
+                    <p className={cn(
+                      'text-muted-foreground leading-relaxed',
+                      s.featured ? 'text-sm max-w-xl' : 'text-sm'
+                    )}>
                       {s.description}
                     </p>
                   </div>
 
-                  <ArrowLeft className="w-5 h-5 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0" />
+                  {/* Arrow */}
+                  <ArrowLeft
+                    className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1"
+                  />
                 </div>
               </Link>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </Section>
