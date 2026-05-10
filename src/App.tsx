@@ -16,6 +16,7 @@ import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
 import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext";
 import ContactPopup from "@/components/ContactPopup";
 import TimedCTAPopup from "@/components/TimedCTAPopup";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
