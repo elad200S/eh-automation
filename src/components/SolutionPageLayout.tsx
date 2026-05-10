@@ -186,11 +186,12 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
         </Section>
 
         {/* FAQ */}
+        {hasFaq && (
         <Section id="faq" className="bg-muted/30">
           <div className="max-w-3xl mx-auto">
-            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8 text-center">{data.faq.title}</h2>
+            <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-8 text-center">{data.faq?.title ?? 'שאלות נפוצות'}</h2>
             <div className="space-y-3">
-              {data.faq.items.map((item, i) => (
+              {faqItems.map((item, i) => (
                 <div key={i} className={cn('bg-card rounded-xl border border-border overflow-hidden transition-all', openFaq === i && 'border-primary/30')}>
                   <button onClick={() => setOpenFaq(openFaq === i ? null : i)} className="w-full flex items-center justify-between gap-4 p-5 text-right">
                     <span className="text-base font-medium text-foreground">{item.question}</span>
@@ -204,6 +205,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
             </div>
           </div>
         </Section>
+        )}
 
         {/* Final CTA */}
         <section className="py-20 bg-gradient-to-b from-background to-primary-light/30">
