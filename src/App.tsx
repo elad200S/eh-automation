@@ -16,6 +16,7 @@ import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
 import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext";
 import ContactPopup from "@/components/ContactPopup";
 import TimedCTAPopup from "@/components/TimedCTAPopup";
+import ErrorBoundary from "@/components/ErrorBoundary";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
@@ -115,42 +116,57 @@ const AppInner = () => {
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ScrollToTop />
-      <Suspense fallback={null}>
-      <Routes>
-        <Route path="/" element={<Index />} />
+      <ErrorBoundary
+        fallback={
+          <div dir="rtl" className="min-h-screen flex items-center justify-center bg-background px-6">
+            <div className="max-w-md text-center space-y-4">
+              <h1 className="text-2xl font-semibold text-foreground">משהו השתבש</h1>
+              <p className="text-muted-foreground">אירעה תקלה בטעינת הדף. נסו לרענן או לחזור לדף הבית.</p>
+              <div className="flex gap-3 justify-center">
+                <button onClick={() => window.location.reload()} className="cta-gradient">רענון</button>
+                <a href="/" className="btn-outline">דף הבית</a>
+              </div>
+            </div>
+          </div>
+        }
+      >
+        <Suspense fallback={null}>
+        <Routes>
+          <Route path="/" element={<Index />} />
 
-        {/* Solutions */}
-        <Route path="/solutions" element={<Solutions />} />
-        <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
-        <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
-        <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
-        <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
-        <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
-        <Route path="/solutions/web-development" element={<WebDevelopment />} />
+          {/* Solutions */}
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
+          <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
+          <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
+          <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
+          <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
+          <Route path="/solutions/web-development" element={<WebDevelopment />} />
 
-        {/* Top-level pages */}
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
-        <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
-        <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
-        <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
-        <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
+          {/* Top-level pages */}
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
+          <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
+          <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
+          <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
+          <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
 
-        {/* Legacy service pages */}
-        <Route path="/services/chatbots" element={<Chatbots />} />
-        <Route path="/services/crm" element={<CRM />} />
-        <Route path="/services/automation" element={<Automation />} />
-        <Route path="/services/ai-agents" element={<AIAgents />} />
+          {/* Legacy service pages */}
+          <Route path="/services/chatbots" element={<Chatbots />} />
+          <Route path="/services/crm" element={<CRM />} />
+          <Route path="/services/automation" element={<Automation />} />
+          <Route path="/services/ai-agents" element={<AIAgents />} />
 
-        {/* Legal */}
-        <Route path="/privacy" element={<PrivacyPolicy />} />
-        <Route path="/cookies" element={<CookiePolicy />} />
+          {/* Legal */}
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/cookies" element={<CookiePolicy />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-      </Suspense>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+        </Suspense>
+      </ErrorBoundary>
       <ChatBot />
       <AccessibilityButton />
       <CookieConsent />
