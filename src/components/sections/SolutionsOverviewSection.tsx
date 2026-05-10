@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3 } from 'lucide-react';
+import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3, Globe } from 'lucide-react';
 import { useRef, useEffect, useState } from 'react';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
@@ -65,6 +65,16 @@ const solutions = [
     iconBg: 'bg-purple-400/15',
     borderActive: 'border-purple-400/40',
     shadow: 'shadow-purple-400/10',
+  },
+  {
+    icon: Globe,
+    title: 'בניית אתרים',
+    description: 'אתרים מודרניים, מהירים ומותאמים לעסק — מהתכנון ועד ההשקה.',
+    href: '/solutions/web-development',
+    iconColor: 'text-blue-400',
+    iconBg: 'bg-blue-400/15',
+    borderActive: 'border-blue-400/40',
+    shadow: 'shadow-blue-400/10',
   },
 ];
 

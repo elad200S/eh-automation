@@ -24,20 +24,12 @@ const solutions: NavChild[] = [
   { label: 'אוטומציית WhatsApp', href: '/solutions/whatsapp-automation' },
   { label: 'אוטומציית CRM', href: '/solutions/crm-automation' },
   { label: 'אוטומציית תהליכי עבודה', href: '/solutions/workflow-automation' },
-];
-
-const industries: NavChild[] = [
-  { label: 'סוכנויות', href: '/industries/agencies' },
-  { label: 'יועצים', href: '/industries/consultants' },
-  { label: 'מאמנים', href: '/industries/coaches' },
-  { label: 'נדל"ן', href: '/industries/real-estate' },
-  { label: 'מסחר אלקטרוני', href: '/industries/ecommerce' },
+  { label: 'בניית אתרים', href: '/solutions/web-development' },
 ];
 
 const navItems: NavItem[] = [
   { label: 'בית', href: '/' },
   { label: 'פתרונות', href: '/solutions', children: solutions },
-  { label: 'תעשיות', href: '/industries', children: industries },
   { label: 'SEO', href: '/blog' },
   { label: 'אודות', href: '/about' },
   { label: 'צור קשר', href: '/contact' },

@@ -23,7 +23,6 @@ const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const CookiePolicy = lazy(() => import("./pages/CookiePolicy"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const Solutions = lazy(() => import("./pages/Solutions"));
-const Industries = lazy(() => import("./pages/Industries"));
 const Blog = lazy(() => import("./pages/Blog"));
 const AutomationProcesses = lazy(() => import("./pages/blog/AutomationProcesses"));
 const AIAgentForBusiness = lazy(() => import("./pages/blog/AIAgentForBusiness"));
@@ -40,12 +39,8 @@ const WhatsAppAutomation = lazy(() => import("./pages/solutions/WhatsAppAutomati
 const CRMAutomation = lazy(() => import("./pages/solutions/CRMAutomation"));
 const WorkflowAutomation = lazy(() => import("./pages/solutions/WorkflowAutomation"));
 
-// Industries sub-pages
-const Agencies = lazy(() => import("./pages/industries/Agencies"));
-const Consultants = lazy(() => import("./pages/industries/Consultants"));
-const Coaches = lazy(() => import("./pages/industries/Coaches"));
-const RealEstate = lazy(() => import("./pages/industries/RealEstate"));
-const Ecommerce = lazy(() => import("./pages/industries/Ecommerce"));
+// Solutions - web development
+const WebDevelopment = lazy(() => import("./pages/solutions/WebDevelopment"));
 
 // Legacy service pages
 const Chatbots = lazy(() => import("./pages/services/Chatbots"));
@@ -131,14 +126,7 @@ const AppInner = () => {
         <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
         <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
         <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
-
-        {/* Industries */}
-        <Route path="/industries" element={<Industries />} />
-        <Route path="/industries/agencies" element={<Agencies />} />
-        <Route path="/industries/consultants" element={<Consultants />} />
-        <Route path="/industries/coaches" element={<Coaches />} />
-        <Route path="/industries/real-estate" element={<RealEstate />} />
-        <Route path="/industries/ecommerce" element={<Ecommerce />} />
+        <Route path="/solutions/web-development" element={<WebDevelopment />} />
 
         {/* Top-level pages */}
         <Route path="/blog" element={<Blog />} />

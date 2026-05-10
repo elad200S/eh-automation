@@ -156,46 +156,48 @@ const AutomationShowcaseSection = () => {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-5 gap-5 items-start">
-          {/* Left: scenario tabs */}
-          <div className="md:col-span-2 space-y-2">
-            {scenarios.map((s, i) => (
-              <button
-                key={i}
-                onClick={() => handleSelect(i)}
-                className={cn(
-                  'w-full text-right p-4 rounded-xl border transition-all duration-300',
-                  active === i
-                    ? 'bg-card border-primary/40 shadow-lg shadow-primary/10'
-                    : 'bg-card/40 border-border/40 hover:border-border hover:bg-card/60'
-                )}
-              >
-                <div className="flex items-center gap-3" dir="rtl">
-                  <span className={cn(
-                    'font-mono text-xs font-bold transition-colors shrink-0',
-                    active === i ? 'text-primary' : 'text-muted-foreground/60'
-                  )}>
-                    {s.tag}
-                  </span>
-                  <span className={cn(
-                    'font-medium text-sm transition-colors text-right',
-                    active === i ? 'text-foreground' : 'text-muted-foreground'
-                  )}>
-                    {s.title}
-                  </span>
-                </div>
-
-                {/* Progress bar */}
-                {active === i && (
-                  <div className="mt-3 h-0.5 bg-border/40 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary rounded-full"
-                      style={{ width: `${progress}%`, transition: 'width 50ms linear' }}
-                    />
+        <div className="flex flex-col md:grid md:grid-cols-5 gap-5 items-start">
+          {/* Left: scenario tabs — horizontal scroll on mobile */}
+          <div className="md:col-span-2">
+            <div className="flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 md:overflow-x-visible">
+              {scenarios.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => handleSelect(i)}
+                  className={cn(
+                    'flex-shrink-0 md:w-full text-right p-3 md:p-4 rounded-xl border transition-all duration-300',
+                    active === i
+                      ? 'bg-card border-primary/40 shadow-lg shadow-primary/10'
+                      : 'bg-card/40 border-border/40 hover:border-border hover:bg-card/60'
+                  )}
+                >
+                  <div className="flex items-center gap-2 md:gap-3" dir="rtl">
+                    <span className={cn(
+                      'font-mono text-xs font-bold transition-colors shrink-0',
+                      active === i ? 'text-primary' : 'text-muted-foreground/60'
+                    )}>
+                      {s.tag}
+                    </span>
+                    <span className={cn(
+                      'font-medium text-xs md:text-sm transition-colors text-right whitespace-nowrap md:whitespace-normal',
+                      active === i ? 'text-foreground' : 'text-muted-foreground'
+                    )}>
+                      {s.title}
+                    </span>
                   </div>
-                )}
-              </button>
-            ))}
+
+                  {/* Progress bar — desktop only */}
+                  {active === i && (
+                    <div className="hidden md:block mt-3 h-0.5 bg-border/40 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-primary rounded-full"
+                        style={{ width: `${progress}%`, transition: 'width 50ms linear' }}
+                      />
+                    </div>
+                  )}
+                </button>
+              ))}
+            </div>
           </div>
 
           {/* Right: animated visual */}
