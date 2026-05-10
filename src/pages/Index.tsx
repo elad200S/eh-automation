@@ -6,6 +6,7 @@ import ScrollOrb from '@/components/ScrollOrb';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
+const ScrollStoryAnimator = lazy(() => import('@/components/ScrollStoryAnimator'));
 const ProcessSection = lazy(() => import('@/components/sections/ProcessSection'));
 const AutomationShowcaseSection = lazy(() => import('@/components/sections/AutomationShowcaseSection'));
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
@@ -33,6 +34,7 @@ const Index = () => {
         <HeroSection />
         <ProblemSection />
         <Suspense fallback={null}>
+          <ScrollStoryAnimator />
           <ProcessSection />
           <AutomationShowcaseSection />
           <ToolsSection />

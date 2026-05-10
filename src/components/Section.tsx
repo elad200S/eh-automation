@@ -7,10 +7,11 @@ interface SectionProps {
   className?: string;
   id?: string;
   withSeparator?: boolean;
+  story?: boolean;
 }
 
 const Section = forwardRef<HTMLElement, SectionProps>(
-  ({ children, className, id, withSeparator = true }, _ref) => {
+  ({ children, className, id, withSeparator = true, story = false }, _ref) => {
     const { ref, revealed: isVisible } = useScrollReveal();
 
     return (
@@ -18,13 +19,12 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         ref={ref as React.RefObject<HTMLElement>}
         id={id}
         className={cn(
-          'py-16 md:py-20',
-          'section-reveal',
-          isVisible && 'visible',
+          story ? 'story-section min-h-screen flex flex-col' : 'py-16 md:py-20 section-reveal',
+          !story && isVisible && 'visible',
           className
         )}
       >
-        <div className="container">
+        <div className={cn('container', story && 'flex-1 flex flex-col justify-center py-16 md:py-20')}>
           {children}
         </div>
         {withSeparator && (

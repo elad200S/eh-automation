@@ -198,7 +198,7 @@ const ProblemSection = () => {
   );
 
   return (
-    <Section id="problem">
+    <Section id="problem" story>
       <div ref={sectionRef} className="max-w-3xl mx-auto text-center">
         <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-8">
           מרגיש שהעסק עובד אבל לא באמת מסודר?
