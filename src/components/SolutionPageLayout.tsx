@@ -48,6 +48,8 @@ export interface SolutionPageData {
 const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
   const [openFaq, setOpenFaq] = useState<number | null>(null);
   const { openPopup } = useContactPopup();
+  const faqItems = data?.faq?.items ?? [];
+  const hasFaq = faqItems.length > 0;
 
   return (
     <>
