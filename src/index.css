@@ -302,6 +302,26 @@
   }
 }
 
+/* AI Energy Core animations */
+@keyframes spinCW {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes spinCCW {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(-360deg); }
+}
+@keyframes corePulse {
+  0%, 100% { opacity: 0.8; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.06); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [style*="spinCW"], [style*="spinCCW"], [style*="corePulse"] {
+    animation: none !important;
+  }
+}
+
 /* Chat button attention animation */
 @keyframes chat-attention {
   0%, 100% {

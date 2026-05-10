@@ -1,6 +1,7 @@
 import { ArrowLeft, Check } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import HeroAutomationFlow from './HeroAutomationFlow';
+import AiEnergyCore from '@/components/AiEnergyCore';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -113,52 +114,8 @@ const HeroSection = () => {
     >
       <div className="absolute inset-0 grid-pattern opacity-40" />
 
-      {/* Nexus-style parallax ring */}
-      <div
-        ref={orbRef}
-        className="pointer-events-none absolute"
-        style={{
-          width: 680,
-          height: 680,
-          borderRadius: '50%',
-          border: '1px solid hsl(var(--primary) / 0.14)',
-          left: '50%',
-          top: '42%',
-          transform: 'translate(-50%, -50%)',
-          background: 'radial-gradient(circle, hsl(var(--primary) / 0.05) 0%, transparent 65%)',
-        }}
-      >
-        <div style={{
-          position: 'absolute',
-          inset: 55,
-          borderRadius: '50%',
-          border: '1px solid hsl(var(--primary) / 0.07)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          width: 8, height: 8,
-          borderRadius: '50%',
-          background: 'hsl(var(--primary) / 0.75)',
-          boxShadow: '0 0 14px hsl(var(--primary) / 0.55)',
-          top: '7%', left: '50%',
-          transform: 'translateX(-50%)',
-        }} />
-        <div style={{
-          position: 'absolute',
-          width: 5, height: 5,
-          borderRadius: '50%',
-          background: 'hsl(var(--secondary) / 0.65)',
-          boxShadow: '0 0 10px hsl(var(--secondary) / 0.45)',
-          bottom: '10%', right: '16%',
-        }} />
-        <div style={{
-          position: 'absolute',
-          width: 4, height: 4,
-          borderRadius: '50%',
-          background: 'hsl(var(--accent) / 0.5)',
-          top: '30%', left: '6%',
-        }} />
-      </div>
+      {/* AI Energy Core */}
+      <AiEnergyCore ref={orbRef} />
 
       {/* Cinematic ambient orbs */}
       <div className="pointer-events-none absolute -top-48 -right-48 w-[600px] h-[600px]">
