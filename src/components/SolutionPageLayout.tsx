@@ -63,7 +63,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
         { name: 'פתרונות', path: '/solutions' },
         { name: data.hero.headline, path: `/${data.slug}` },
       ]} />
-      <FAQSchema items={data.faq.items} />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
