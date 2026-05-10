@@ -148,9 +148,18 @@
     @apply opacity-100 translate-y-0;
   }
   
-  /* Subtle line separator */
+  /* Glowing section separator */
   .section-separator {
-    @apply h-px bg-gradient-to-l from-transparent via-border to-transparent;
+    height: 1px;
+    background: linear-gradient(
+      to left,
+      transparent 0%,
+      hsl(var(--primary) / 0.2) 25%,
+      hsl(var(--primary) / 0.45) 50%,
+      hsl(var(--primary) / 0.2) 75%,
+      transparent 100%
+    );
+    box-shadow: 0 0 14px hsl(var(--primary) / 0.12);
   }
   
   /* Grid pattern background - lighter for bright theme */

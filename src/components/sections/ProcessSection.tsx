@@ -2,115 +2,24 @@ import Section from '@/components/Section';
 import { Search, Settings, Rocket } from 'lucide-react';
 import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
 
-/* ─── Animation 1: Checklist ─────────────────────────────── */
-const ChecklistAnimation = () => (
-  <div className="mt-5 space-y-2">
-    {['מיפוי תהליכים קיימים', 'איתור נקודות כשל', 'הגדרת יעדים'].map((item, i) => (
-      <div
-        key={i}
-        className="flex items-center gap-2 text-xs text-muted-foreground"
-        style={{ animation: `fadeSlide 3s ease-in-out ${i * 0.6}s infinite` }}
-      >
-        <div
-          className="w-4 h-4 rounded flex items-center justify-center flex-shrink-0"
-          style={{
-            background: 'hsl(var(--primary) / 0.15)',
-            animation: `checkPop 3s ease-in-out ${i * 0.6}s infinite`,
-          }}
-        >
-          <svg width="8" height="8" viewBox="0 0 8 8" fill="none">
-            <path d="M1 4l2 2 4-4" style={{ stroke: 'hsl(var(--primary))' }} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        </div>
-        <span>{item}</span>
-      </div>
-    ))}
-  </div>
-);
-
-/* ─── Animation 2: Flow dots ─────────────────────────────── */
-const FlowAnimation = () => (
-  <div className="mt-5 flex items-center justify-center gap-1">
-    {/* Node 1 */}
-    <div className="w-10 h-8 rounded-lg bg-primary/15 border border-primary/30 flex items-center justify-center">
-      <div className="w-2 h-2 rounded-full bg-primary" />
-    </div>
-
-    {/* Arrow 1 */}
-    <div className="relative w-8 h-1 flex items-center">
-      <div className="w-full h-px bg-border" />
-      <div
-        className="absolute w-2 h-2 rounded-full bg-primary"
-        style={{ animation: 'travelDot 2s ease-in-out infinite' }}
-      />
-    </div>
-
-    {/* Node 2 */}
-    <div className="w-10 h-8 rounded-lg bg-secondary/15 border border-secondary/30 flex items-center justify-center">
-      <div className="w-2 h-2 rounded-full bg-secondary" />
-    </div>
-
-    {/* Arrow 2 */}
-    <div className="relative w-8 h-1 flex items-center">
-      <div className="w-full h-px bg-border" />
-      <div
-        className="absolute w-2 h-2 rounded-full bg-secondary"
-        style={{ animation: 'travelDot 2s ease-in-out 0.6s infinite' }}
-      />
-    </div>
-
-    {/* Node 3 */}
-    <div className="w-10 h-8 rounded-lg bg-accent/15 border border-accent/30 flex items-center justify-center">
-      <div className="w-2 h-2 rounded-full bg-accent" />
-    </div>
-  </div>
-);
-
-/* ─── Animation 3: Bar chart ─────────────────────────────── */
-const BarChartAnimation = () => (
-  <div className="mt-5 flex items-end justify-center gap-3 h-12">
-    {[
-      { height: '40%', color: 'hsl(var(--primary))', delay: '0s' },
-      { height: '75%', color: 'hsl(var(--secondary))', delay: '0.3s' },
-      { height: '60%', color: 'hsl(160 60% 48%)', delay: '0.6s' },
-    ].map((bar, i) => (
-      <div
-        key={i}
-        className="w-8 rounded-t-md"
-        style={{
-          height: bar.height,
-          background: bar.color,
-          opacity: 0.8,
-          animation: `barGrow 2.5s ease-in-out ${bar.delay} infinite`,
-          transformOrigin: 'bottom',
-        }}
-      />
-    ))}
-  </div>
-);
-
-/* ─── Steps data ─────────────────────────────────────────── */
 const steps = [
   {
     title: 'הבנה של העסק והתהליך הקיים',
-    description: 'איפה הולכים לאיבוד לידים ואיפה יש בזבוז זמן',
+    description: 'איפה הולכים לאיבוד לידים ואיפה יש בזבוז זמן — מיפוי מלא לפני שנוגעים בקוד.',
     Icon: Search,
     number: '01',
-    Animation: ChecklistAnimation,
   },
   {
     title: 'בניית אוטומציה מותאמת',
-    description: 'חיבור בין המערכות והגדרת זרימות עבודה',
+    description: 'חיבור בין המערכות, הגדרת זרימות עבודה, ובדיקות עד שהכל רץ חלק.',
     Icon: Settings,
     number: '02',
-    Animation: FlowAnimation,
   },
   {
-    title: 'הטמעה ושיפור',
-    description: 'בדיקות, התאמות ושיפור מתמשך לפי הצורך',
+    title: 'הטמעה ושיפור מתמשך',
+    description: 'עלייה לאוויר, ליווי צמוד ושיפורים לפי הצורך — לא נעלמים אחרי ה-deploy.',
     Icon: Rocket,
     number: '03',
-    Animation: BarChartAnimation,
   },
 ];
 
@@ -120,67 +29,55 @@ const ProcessSection = () => {
 
   return (
     <Section id="process" className="bg-background-secondary">
-      <style>{`
-        @keyframes fadeSlide {
-          0%, 10%   { opacity: 0; transform: translateX(6px); }
-          25%, 70%  { opacity: 1; transform: translateX(0); }
-          85%, 100% { opacity: 0; transform: translateX(0); }
-        }
-        @keyframes checkPop {
-          0%, 10%  { transform: scale(0.6); }
-          25%, 70% { transform: scale(1); }
-          100%     { transform: scale(1); }
-        }
-        @keyframes travelDot {
-          0%   { left: 0; opacity: 0; }
-          10%  { opacity: 1; }
-          90%  { opacity: 1; }
-          100% { left: calc(100% - 8px); opacity: 0; }
-        }
-        @keyframes barGrow {
-          0%, 10%  { transform: scaleY(0); }
-          40%, 70% { transform: scaleY(1); }
-          90%, 100%{ transform: scaleY(0.2); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .process-anim * { animation: none !important; }
-        }
-      `}</style>
-
       <div className="max-w-4xl mx-auto">
-        <div ref={titleRef} style={titleStyle} className="text-center mb-10">
+        <div ref={titleRef} style={titleStyle} className="text-center mb-12">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">תהליך העבודה</p>
           <h2 className="text-4xl md:text-5xl font-bold text-foreground">
             איך אנחנו עובדים יחד
           </h2>
         </div>
 
-        <div ref={gridRef} className="grid md:grid-cols-3 gap-6">
+        <div ref={gridRef} className="grid md:grid-cols-3 gap-5">
           {steps.map((step, index) => {
             const StepIcon = step.Icon;
             return (
-              <div key={index} className="relative" style={itemStyle(index)}>
-                <div className="bg-card/80 backdrop-blur-sm rounded-xl p-6 border border-border h-full text-center flex flex-col">
-                  <div className="w-14 h-14 rounded-xl flex items-center justify-center mx-auto mb-4 bg-secondary/10">
-                    <StepIcon className="w-7 h-7 text-secondary" />
-                  </div>
-                  <span className="text-xs font-mono text-muted-foreground mb-2 block">{step.number}</span>
-                  <h3 className="text-lg font-medium text-foreground mb-2">{step.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{step.description}</p>
-
-                  {/* Animation widget */}
-                  <div className="process-anim mt-auto pt-4 border-t border-border/50">
-                    <step.Animation />
-                  </div>
+              <div
+                key={index}
+                className="group relative bg-card/50 backdrop-blur-sm rounded-2xl border border-border/60 p-7 overflow-hidden transition-all duration-300 hover:border-primary/30 hover:bg-card/70"
+                style={itemStyle(index)}
+              >
+                {/* Watermark step number */}
+                <div
+                  className="absolute top-1 right-3 font-mono font-black leading-none pointer-events-none select-none"
+                  style={{ fontSize: 96, color: 'hsl(160,84%,39%,0.06)', lineHeight: 1 }}
+                >
+                  {step.number}
                 </div>
 
-                {index < steps.length - 1 && (
-                  <div className="hidden md:block absolute top-1/2 -left-3 -translate-y-1/2 -translate-x-full">
-                    <svg width="24" height="24" viewBox="0 0 24 24" className="text-border rotate-180">
-                      <path d="M9 5l7 7-7 7" stroke="currentColor" strokeWidth="2" fill="none" strokeLinecap="round" strokeLinejoin="round" />
-                    </svg>
+                {/* Accent glow on hover */}
+                <div
+                  className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                  style={{ background: 'radial-gradient(ellipse at top right, hsl(160,84%,39%,0.06), transparent 60%)' }}
+                />
+
+                <div className="relative">
+                  {/* Icon + step number */}
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                      <StepIcon className="w-5 h-5 text-primary" />
+                    </div>
+                    <span className="text-xs font-mono font-bold text-primary/50 tracking-widest">
+                      {step.number}
+                    </span>
                   </div>
-                )}
+
+                  <h3 className="text-base font-semibold text-foreground mb-3 leading-snug">
+                    {step.title}
+                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
               </div>
             );
           })}

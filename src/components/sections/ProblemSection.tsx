@@ -2,6 +2,64 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import Section from '@/components/Section';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 
+const STATS = [
+  { value: 87, suffix: '%', label: 'מהלידים נאבדים\nללא מעקב ברור' },
+  { value: 3,  suffix: 'x', label: 'יותר המרות עם\nאוטומציה נכונה' },
+  { value: 4,  suffix: '+', label: 'שעות נחסכות\nביום בממוצע' },
+];
+
+const StatsRow = () => {
+  const [triggered, setTriggered] = useState(false);
+  const [counts, setCounts] = useState([0, 0, 0]);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setTriggered(true); },
+      { threshold: 0.5 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!triggered) return;
+    const duration = 1800;
+    const totalFrames = Math.round((duration / 1000) * 60);
+    let frame = 0;
+    const timer = setInterval(() => {
+      frame++;
+      const eased = 1 - Math.pow(1 - Math.min(frame / totalFrames, 1), 3);
+      setCounts(STATS.map(s => Math.floor(s.value * eased)));
+      if (frame >= totalFrames) clearInterval(timer);
+    }, 1000 / 60);
+    return () => clearInterval(timer);
+  }, [triggered]);
+
+  return (
+    <div ref={ref} className="grid grid-cols-3 gap-4 mb-10">
+      {STATS.map((stat, i) => (
+        <div key={i} className="relative text-center py-4">
+          {i > 0 && (
+            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-px bg-border/50" />
+          )}
+          <div
+            className="text-4xl md:text-5xl font-bold tabular-nums leading-none mb-2"
+            style={{ color: 'hsl(160,84%,39%)', textShadow: '0 0 30px hsl(160,84%,39%,0.35)' }}
+          >
+            {counts[i]}{stat.suffix}
+          </div>
+          <div className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
+            {stat.label}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
 const problems = [
   'לידים נכנסים ממקומות שונים',
   'אין מעקב ברור',
@@ -145,6 +203,8 @@ const ProblemSection = () => {
         <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-8">
           מרגיש שהעסק עובד אבל לא באמת מסודר?
         </h2>
+
+        <StatsRow />
 
         {/* ── Terminal window ── */}
         <div ref={terminalRef} style={{ ...terminalStyle,
