@@ -39,7 +39,7 @@ export interface SolutionPageData {
     title: string;
     steps: { label: string; description: string }[];
   };
-  faq: {
+  faq?: {
     title: string;
     items: { question: string; answer: string }[];
   };
