@@ -137,7 +137,7 @@ const HeroSection = () => {
           </div>
 
           <h1 ref={titleRef} className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-            הכל עובד. גם כשאתה לא.
+            הכל עובד גם כשאתה לא
           </h1>
 
           {/* Cycling subtitle */}
