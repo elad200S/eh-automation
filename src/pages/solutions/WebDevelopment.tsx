@@ -11,6 +11,7 @@ const data: SolutionPageData = {
   },
   whoIsItFor: {
     title: 'למי זה מתאים',
+    showAuditTool: true,
     audiences: [
       'עסק שעדיין אין לו אתר מקצועי',
       'אתר ישן שנראה מיושן ולא ממיר',

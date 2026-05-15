@@ -1,4 +1,5 @@
 import { ArrowLeft, CheckCircle2, Users, Zap, Target } from 'lucide-react';
+import WebsiteAuditTool from '@/components/WebsiteAuditTool';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
@@ -22,6 +23,7 @@ export interface SolutionPageData {
   whoIsItFor: {
     title: string;
     audiences: string[];
+    showAuditTool?: boolean;
   };
   problems: {
     title: string;
@@ -110,6 +112,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                 </div>
               ))}
             </div>
+            {data.whoIsItFor.showAuditTool && <WebsiteAuditTool />}
           </div>
         </Section>
 
