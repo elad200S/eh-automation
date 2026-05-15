@@ -6,9 +6,15 @@ const TARGET_TEXT = 'EH Automation';
 const GLOW_COLORS = ['#06b6d4', '#22d3ee', '#67e8f9', '#10b981', '#34d399', '#a5f3fc'];
 const CODE_CHARS = '01アイABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
 
-// Easing
+// Timing
+const CONVERGE_START = 0.45;
+const CONVERGE_DUR   = 1.2;
+const MAX_DELAY      = 0.2;
+const ALL_DONE       = CONVERGE_START + MAX_DELAY + CONVERGE_DUR; // ~1.85s
+const HOLD           = 0.35;
+const TOTAL_DUR      = ALL_DONE + HOLD;                            // ~2.2s
+
 function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
-function easeOutQuint(t: number) { return 1 - Math.pow(1 - t, 5); }
 
 // Sample text pixel positions from an offscreen canvas
 function sampleTextPixels(text: string, W: number, H: number) {
@@ -82,7 +88,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         .map(p => ({
           sx: Math.random() * W, sy: Math.random() * H,
           tx: p.x, ty: p.y,
-          delay: Math.random() * 0.5,
+          delay: Math.random() * MAX_DELAY,
           size: Math.random() * 1.6 + 0.7,
           col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
         }));
@@ -90,9 +96,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
     // ── Main draw loop ───────────────────────────────────────────────────────
     let startTime: number | null = null;
-    const CONVERGE_START = 0.45;
-    const CONVERGE_DUR = 1.5;
-    const TOTAL_DUR = 3.2;
 
     const draw = (ts: number) => {
       if (!startTime) startTime = ts;
@@ -108,7 +111,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       }
 
       // Holographic traces
-      const dt = elapsed - (startTime ? 0 : 0);
       traces.forEach(tr => {
         if (elapsed < tr.triggerAt) return;
         if (tr.progress < 0) tr.progress = 0;
@@ -143,7 +145,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         const raw = (elapsed - CONVERGE_START - p.delay) / CONVERGE_DUR;
         const prog = Math.min(Math.max(raw, 0), 1);
         if (prog === 0) return;
-        const ease = easeOutQuint(prog);
+        const ease = easeOutCubic(prog);
         const x = p.sx + (p.tx - p.sx) * ease;
         const y = p.sy + (p.ty - p.sy) * ease;
         const baseA = prog < 0.25 ? (prog / 0.25) : 1;
@@ -184,7 +186,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       // Light sweep
       if (sweepRef.current)
         gsap.fromTo(sweepRef.current,
-          { x: '-100%' }, { x: '280%', duration: 3.0, delay: 0.1, ease: 'power1.inOut' });
+          { x: '-100%' }, { x: '280%', duration: TOTAL_DUR * 0.9, delay: 0.1, ease: 'power1.inOut' });
 
       // Video Ken Burns
       if (videoRef.current)
