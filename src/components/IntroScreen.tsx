@@ -16,20 +16,23 @@ const TOTAL_DUR      = ALL_DONE + HOLD;                            // ~2.2s
 
 function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
 
+function textFontSize(W: number) {
+  return Math.min(Math.max(W * 0.05, 26), 64);
+}
+
 // Sample text pixel positions from an offscreen canvas
 function sampleTextPixels(text: string, W: number, H: number) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
   const ctx = c.getContext('2d')!;
-  const fs = Math.min(Math.max(W * 0.05, 26), 64);
-  ctx.font = `bold ${fs}px "IBM Plex Mono", monospace`;
+  ctx.font = `bold ${textFontSize(W)}px "IBM Plex Mono", monospace`;
   ctx.fillStyle = '#fff';
   ctx.textAlign = 'center';
   ctx.textBaseline = 'middle';
   ctx.fillText(text, W / 2, H / 2);
   const d = ctx.getImageData(0, 0, W, H).data;
   const pts: { x: number; y: number }[] = [];
-  const step = 3;
+  const step = 2;
   for (let y = 0; y < H; y += step)
     for (let x = 0; x < W; x += step)
       if (d[(y * W + x) * 4 + 3] > 100) pts.push({ x, y });
@@ -81,7 +84,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
     const setupParticles = () => {
       const pixels = sampleTextPixels(TARGET_TEXT, W, H);
-      const max = Math.min(pixels.length, 400);
+      const max = Math.min(pixels.length, 700);
       textParticles = pixels
         .sort(() => Math.random() - 0.5)
         .slice(0, max)
@@ -174,6 +177,21 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           ctx.shadowBlur = 0;
         }
       });
+
+      // After all particles converged — solidify text with glow
+      if (elapsed >= ALL_DONE) {
+        const solidA = Math.min((elapsed - ALL_DONE) / 0.2, 1);
+        const fs = textFontSize(W);
+        ctx.globalAlpha = solidA;
+        ctx.font = `bold ${fs}px "IBM Plex Mono", monospace`;
+        ctx.fillStyle = '#ffffff';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.shadowBlur = 18;
+        ctx.shadowColor = '#06b6d4';
+        ctx.fillText(TARGET_TEXT, W / 2, H / 2);
+        ctx.shadowBlur = 0;
+      }
 
       if (elapsed < TOTAL_DUR) rafId.current = requestAnimationFrame(draw);
     };
