@@ -81,12 +81,12 @@ const HeroSection = () => {
     }
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.9 });
-      tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' })
-        .to(titleRef.current, { opacity: 1, y: 0, duration: 0.85, ease: 'power3.out' }, '-=0.35')
-        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.65, ease: 'power2.out' }, '-=0.45')
-        .to(bulletsRef.current, { opacity: 1, y: 0, duration: 0.55, ease: 'power2.out' }, '-=0.4')
-        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.5, ease: 'back.out(1.3)' }, '-=0.3');
+      const tl = gsap.timeline({ delay: 1.8 });
+      tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
+        .to(titleRef.current, { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out' }, '-=0.3')
+        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.5')
+        .to(bulletsRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
+        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.2)' }, '-=0.4');
     }, sectionRef);
 
     const onScroll = () => {

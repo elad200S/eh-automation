@@ -3,6 +3,7 @@ import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import MatrixRain from '@/components/MatrixRain';
 import ScrollOrb from '@/components/ScrollOrb';
+import PageIntro from '@/components/PageIntro';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
@@ -27,6 +28,7 @@ const Index = () => {
       />
       <OrganizationSchema />
       
+      <PageIntro />
       <MatrixRain />
       <ScrollOrb />
       <Navbar />

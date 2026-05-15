@@ -232,8 +232,8 @@ const Navbar = () => {
     gsap.to(navRef.current, {
       y: 0,
       opacity: 1,
-      duration: 0.85,
-      delay: 0.6,
+      duration: 1.1,
+      delay: 1.4,
       ease: 'power3.out',
       clearProps: 'transform,opacity',
     });

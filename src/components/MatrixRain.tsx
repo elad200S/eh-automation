@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import gsap from 'gsap';
 
 const CHARS = 'אבגדהוזחטיכלמנסעפצקרשת01101100{}[];#!//*@><~=';
 const FONT_SIZE = 14;
@@ -67,6 +68,17 @@ const MatrixRain = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (canvasRef.current) canvasRef.current.style.opacity = '0.45';
+      return;
+    }
+    gsap.fromTo(canvasRef.current,
+      { opacity: 0 },
+      { opacity: 0.45, duration: 3.5, delay: 0.5, ease: 'power2.out' }
+    );
+  }, []);
+
   return (
     <canvas
       ref={canvasRef}
@@ -80,7 +92,6 @@ const MatrixRain = () => {
         zIndex: 0,
         pointerEvents: 'none',
         opacity: 0,
-        animation: 'matrixFadeIn 2.5s ease-out 0.3s forwards',
       }}
     />
   );
