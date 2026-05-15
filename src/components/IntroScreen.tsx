@@ -1,245 +1,257 @@
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
 const STORAGE_KEY = 'intro_played';
-
-const IMAGES = [
-  'https://images.unsplash.com/photo-1518770660439-4636190af475?w=600&q=80',
-  'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=80',
-  'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=600&q=80',
-  'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=600&q=80',
-  'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=600&q=80',
-  'https://images.unsplash.com/photo-1639322537228-f710d846310a?w=600&q=80',
-  'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=80',
-  'https://images.unsplash.com/photo-1677442135703-1787eea5ce01?w=600&q=80',
-];
-
 const TARGET_TEXT = 'EH Automation';
-const SCRAMBLE_CHARS = '01アイウABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
-const PARTICLE_COLORS = ['#06b6d4', '#22d3ee', '#10b981', '#67e8f9', '#34d399'];
-const PARTICLE_CODE = '01アABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
+const GLOW_COLORS = ['#06b6d4', '#22d3ee', '#67e8f9', '#10b981', '#34d399', '#a5f3fc'];
+const CODE_CHARS = '01アイABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
 
-interface IntroScreenProps {
-  onComplete: () => void;
+// Easing
+function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
+function easeOutQuint(t: number) { return 1 - Math.pow(1 - t, 5); }
+
+// Sample text pixel positions from an offscreen canvas
+function sampleTextPixels(text: string, W: number, H: number) {
+  const c = document.createElement('canvas');
+  c.width = W; c.height = H;
+  const ctx = c.getContext('2d')!;
+  const fs = Math.min(Math.max(W * 0.05, 26), 64);
+  ctx.font = `bold ${fs}px "IBM Plex Mono", monospace`;
+  ctx.fillStyle = '#fff';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  ctx.fillText(text, W / 2, H / 2);
+  const d = ctx.getImageData(0, 0, W, H).data;
+  const pts: { x: number; y: number }[] = [];
+  const step = 3;
+  for (let y = 0; y < H; y += step)
+    for (let x = 0; x < W; x += step)
+      if (d[(y * W + x) * 4 + 3] > 100) pts.push({ x, y });
+  return pts;
 }
 
-function scramble(el: HTMLSpanElement, target: string, delay: number, duration: number) {
-  let raf = 0;
-  let start: number | null = null;
-
-  const tick = (ts: number) => {
-    if (!start) start = ts;
-    const p = Math.min((ts - start) / duration, 1);
-    const locked = Math.floor(p * target.length);
-    let out = '';
-    for (let i = 0; i < target.length; i++) {
-      out += (i < locked || target[i] === ' ')
-        ? target[i]
-        : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)];
-    }
-    el.textContent = out;
-    if (p < 1) raf = requestAnimationFrame(tick);
-    else el.textContent = target;
-  };
-
-  const t = setTimeout(() => { raf = requestAnimationFrame(tick); }, delay);
-  return () => { clearTimeout(t); cancelAnimationFrame(raf); };
-}
+interface IntroScreenProps { onComplete: () => void; }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
-  const stripRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const textRef = useRef<HTMLSpanElement>(null);
   const sweepRef = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
   const started = useRef(false);
   const rafId = useRef(0);
-  const masterAlpha = useRef({ v: 0 });
-
-  // Set scrambled text before first paint to avoid flash of real text
-  useLayoutEffect(() => {
-    if (textRef.current) {
-      textRef.current.textContent = Array.from(TARGET_TEXT)
-        .map(c => c === ' ' ? ' ' : SCRAMBLE_CHARS[Math.floor(Math.random() * SCRAMBLE_CHARS.length)])
-        .join('');
-    }
-  }, []);
 
   useEffect(() => {
-    if (!rootRef.current || !stripRef.current) return;
+    if (!rootRef.current) return;
 
-    // === Canvas: floating code particles ===
+    const W = window.innerWidth;
+    const H = window.innerHeight;
     const canvas = canvasRef.current!;
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
+    canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d')!;
 
-    const particles = Array.from({ length: 90 }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.5,
-      vy: (Math.random() - 0.5) * 0.5,
-      a: Math.random() * 0.45 + 0.1,
-      da: (Math.random() - 0.5) * 0.012,
-      size: Math.random() < 0.3 ? 11 : 8,
-      ch: PARTICLE_CODE[Math.floor(Math.random() * PARTICLE_CODE.length)],
-      col: PARTICLE_COLORS[Math.floor(Math.random() * PARTICLE_COLORS.length)],
+    // ── Atmospheric floating code particles ──────────────────────────────────
+    const floaters = Array.from({ length: 70 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45,
+      a: Math.random() * 0.4 + 0.08, da: (Math.random() - 0.5) * 0.01,
+      size: Math.random() < 0.3 ? 10 : 7,
+      ch: CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)],
+      col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
     }));
 
-    const drawCanvas = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      const ma = masterAlpha.current.v;
-      if (ma > 0) {
-        particles.forEach(p => {
-          p.x += p.vx; p.y += p.vy;
-          p.a += p.da;
-          if (p.a <= 0.05 || p.a >= 0.6) p.da *= -1;
-          if (p.x < 0) p.x = canvas.width;
-          if (p.x > canvas.width) p.x = 0;
-          if (p.y < 0) p.y = canvas.height;
-          if (p.y > canvas.height) p.y = 0;
-          ctx.globalAlpha = p.a * ma;
-          ctx.fillStyle = p.col;
-          ctx.font = `${p.size}px monospace`;
-          ctx.fillText(p.ch, p.x, p.y);
-        });
-      }
-      rafId.current = requestAnimationFrame(drawCanvas);
+    // ── Holographic light traces ─────────────────────────────────────────────
+    const traces = [
+      { triggerAt: 0.25, y: H * 0.38, speed: W * 1.6, progress: -1, opa: 0.07 },
+      { triggerAt: 0.55, y: H * 0.52, speed: W * 1.9, progress: -1, opa: 0.05 },
+      { triggerAt: 0.80, y: H * 0.46, speed: W * 1.4, progress: -1, opa: 0.06 },
+    ];
+
+    // ── Converging text particles (built after font is ready) ────────────────
+    let textParticles: {
+      sx: number; sy: number; tx: number; ty: number;
+      delay: number; size: number; col: string;
+    }[] = [];
+
+    const setupParticles = () => {
+      const pixels = sampleTextPixels(TARGET_TEXT, W, H);
+      const max = Math.min(pixels.length, 400);
+      textParticles = pixels
+        .sort(() => Math.random() - 0.5)
+        .slice(0, max)
+        .map(p => ({
+          sx: Math.random() * W, sy: Math.random() * H,
+          tx: p.x, ty: p.y,
+          delay: Math.random() * 0.5,
+          size: Math.random() * 1.6 + 0.7,
+          col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
+        }));
     };
-    rafId.current = requestAnimationFrame(drawCanvas);
 
-    // === Main animation sequence ===
-    let cleanupScramble = () => {};
+    // ── Main draw loop ───────────────────────────────────────────────────────
+    let startTime: number | null = null;
+    const CONVERGE_START = 0.45;
+    const CONVERGE_DUR = 1.5;
+    const TOTAL_DUR = 3.2;
 
+    const draw = (ts: number) => {
+      if (!startTime) startTime = ts;
+      const elapsed = (ts - startTime) / 1000;
+
+      ctx.clearRect(0, 0, W, H);
+
+      // Digital noise — subtle grain
+      for (let i = 0; i < 180; i++) {
+        ctx.globalAlpha = Math.random() * 0.018;
+        ctx.fillStyle = Math.random() > 0.5 ? '#06b6d4' : '#fff';
+        ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+      }
+
+      // Holographic traces
+      const dt = elapsed - (startTime ? 0 : 0);
+      traces.forEach(tr => {
+        if (elapsed < tr.triggerAt) return;
+        if (tr.progress < 0) tr.progress = 0;
+        tr.progress += tr.speed / 60 / W;
+        const x = tr.progress * W * 1.2 - W * 0.1;
+        const len = W * 0.18;
+        const grad = ctx.createLinearGradient(x - len, 0, x + len, 0);
+        grad.addColorStop(0, 'transparent');
+        grad.addColorStop(0.5, `rgba(6,182,212,${tr.opa})`);
+        grad.addColorStop(1, 'transparent');
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = grad;
+        ctx.fillRect(x - len, tr.y - 0.5, len * 2, 1);
+      });
+
+      // Atmospheric floaters
+      const floatA = Math.min(elapsed / 0.4, 1);
+      floaters.forEach(p => {
+        p.x += p.vx; p.y += p.vy;
+        p.a += p.da;
+        if (p.a <= 0.05 || p.a >= 0.55) p.da *= -1;
+        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
+        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
+        ctx.globalAlpha = p.a * floatA * 0.65;
+        ctx.fillStyle = p.col;
+        ctx.font = `${p.size}px monospace`;
+        ctx.fillText(p.ch, p.x, p.y);
+      });
+
+      // Converging text particles
+      textParticles.forEach(p => {
+        const raw = (elapsed - CONVERGE_START - p.delay) / CONVERGE_DUR;
+        const prog = Math.min(Math.max(raw, 0), 1);
+        if (prog === 0) return;
+        const ease = easeOutQuint(prog);
+        const x = p.sx + (p.tx - p.sx) * ease;
+        const y = p.sy + (p.ty - p.sy) * ease;
+        const baseA = prog < 0.25 ? (prog / 0.25) : 1;
+
+        // Bloom glow
+        if (prog > 0.6) {
+          ctx.globalAlpha = (prog - 0.6) / 0.4 * 0.12;
+          ctx.shadowBlur = 8; ctx.shadowColor = p.col;
+          ctx.fillStyle = '#a5f3fc';
+          const gs = p.size * 3;
+          ctx.fillRect(x - gs / 2, y - gs / 2, gs, gs);
+          ctx.shadowBlur = 0;
+        }
+
+        // Particle dot
+        ctx.globalAlpha = baseA * 0.9;
+        ctx.fillStyle = p.col;
+        ctx.fillRect(x - p.size / 2, y - p.size / 2, p.size, p.size);
+
+        // Extra glow when arrived
+        if (prog > 0.85) {
+          ctx.globalAlpha = (prog - 0.85) / 0.15 * 0.08;
+          ctx.shadowBlur = 12; ctx.shadowColor = '#22d3ee';
+          ctx.fillStyle = '#22d3ee';
+          ctx.fillRect(x - 1, y - 1, 2, 2);
+          ctx.shadowBlur = 0;
+        }
+      });
+
+      if (elapsed < TOTAL_DUR) rafId.current = requestAnimationFrame(draw);
+    };
+
+    // ── Start sequence ───────────────────────────────────────────────────────
     const run = () => {
       if (started.current) return;
       started.current = true;
 
-      // Fade in canvas particles at 300ms
-      gsap.to(masterAlpha.current, { v: 1, duration: 0.8, delay: 0.3 });
-
-      // Light sweep across images
-      if (sweepRef.current) {
+      // Light sweep
+      if (sweepRef.current)
         gsap.fromTo(sweepRef.current,
-          { x: '-100%' },
-          { x: '280%', duration: 2.6, delay: 0.15, ease: 'power1.inOut' }
-        );
-      }
+          { x: '-100%' }, { x: '280%', duration: 3.0, delay: 0.1, ease: 'power1.inOut' });
 
-      // Text scramble: starts 500ms in, runs for 1.6s
-      if (textRef.current) {
-        cleanupScramble = scramble(textRef.current, TARGET_TEXT, 500, 1600);
-      }
+      // Video Ken Burns
+      if (videoRef.current)
+        gsap.fromTo(videoRef.current,
+          { scale: 1 }, { scale: 1.07, duration: 4.0, ease: 'none' });
 
-      // Glow builds after scramble fully resolves (500 + 1600 = 2100ms)
-      setTimeout(() => {
-        if (textRef.current) {
-          textRef.current.style.transition = 'text-shadow 1.1s ease-out';
-          textRef.current.style.textShadow =
-            '0 0 18px rgba(6,182,212,0.95), 0 0 38px rgba(6,182,212,0.55), 0 0 70px rgba(6,182,212,0.3), 0 0 120px rgba(6,182,212,0.12)';
-        }
-      }, 2100);
+      // Canvas draw loop
+      rafId.current = requestAnimationFrame(draw);
 
-      // Strip animation, then fade out
-      gsap.fromTo(
-        stripRef.current,
-        { x: '0%' },
-        {
-          x: '-50%',
-          duration: 2.8,
-          ease: 'power2.inOut',
-          onComplete: () => {
-            cancelAnimationFrame(rafId.current);
-            gsap.to(rootRef.current, {
-              opacity: 0,
-              duration: 0.8,
-              ease: 'power2.out',
-              onComplete: () => { setRemoved(true); onComplete(); },
-            });
-          },
-        }
-      );
+      // Fade out and done
+      gsap.to(rootRef.current, {
+        opacity: 0, duration: 0.85, delay: TOTAL_DUR, ease: 'power2.out',
+        onComplete: () => { cancelAnimationFrame(rafId.current); setRemoved(true); onComplete(); },
+      });
     };
 
-    // Preload images then run, fallback at 1.5s
-    let loaded = 0;
-    const fallback = setTimeout(run, 1500);
-    IMAGES.forEach(src => {
-      const img = new Image();
-      img.onload = img.onerror = () => {
-        if (++loaded >= IMAGES.length) { clearTimeout(fallback); run(); }
-      };
-      img.src = src;
+    // Wait for font + (optionally) video, then run
+    document.fonts.load(`bold 64px "IBM Plex Mono"`).finally(() => {
+      setupParticles();
+      const vid = videoRef.current;
+      const fallback = setTimeout(run, 600);
+      if (vid) {
+        const onReady = () => { clearTimeout(fallback); run(); };
+        vid.addEventListener('canplay', onReady, { once: true });
+        if (vid.readyState >= 3) onReady();
+      } else {
+        // No video element — run with fallback
+      }
     });
 
     return () => {
-      clearTimeout(fallback);
-      cleanupScramble();
       cancelAnimationFrame(rafId.current);
-      gsap.killTweensOf(stripRef.current);
       gsap.killTweensOf(rootRef.current);
-      gsap.killTweensOf(masterAlpha.current);
       gsap.killTweensOf(sweepRef.current);
+      gsap.killTweensOf(videoRef.current);
     };
   }, [onComplete]);
 
   if (removed) return null;
 
   return (
-    <div
-      ref={rootRef}
-      className="fixed inset-0 z-[9999] bg-black flex items-center overflow-hidden"
-      aria-hidden="true"
-    >
-      {/* Image strip — darker to emphasize text */}
-      <div ref={stripRef} style={{ display: 'flex', width: '200%', position: 'absolute', top: 0 }}>
-        {[...IMAGES, ...IMAGES].map((src, i) => (
-          <div key={i} style={{ flexShrink: 0, width: '300px', height: '100vh' }}>
-            <img
-              src={src}
-              alt=""
-              style={{ width: '100%', height: '100%', objectFit: 'cover', opacity: 0.38 }}
-              draggable={false}
-            />
-          </div>
-        ))}
-      </div>
+    <div ref={rootRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden" aria-hidden="true">
+
+      {/* Video background — place intro-loop.mp4 in /public */}
+      <video
+        ref={videoRef}
+        src="/intro-loop.mp4"
+        autoPlay muted loop playsInline
+        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35, transformOrigin: 'center' }}
+      />
 
       {/* Scan lines */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.1) 2px, rgba(0,0,0,0.1) 4px)',
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.09) 2px, rgba(0,0,0,0.09) 4px)',
       }} />
 
-      {/* Light sweep */}
+      {/* Holographic light sweep */}
       <div ref={sweepRef} style={{
-        position: 'absolute', top: 0, bottom: 0, width: '22%', zIndex: 2, pointerEvents: 'none',
-        background: 'linear-gradient(90deg, transparent 0%, rgba(6,182,212,0.07) 50%, transparent 100%)',
+        position: 'absolute', top: 0, bottom: 0, width: '20%', zIndex: 2, pointerEvents: 'none',
+        background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.08) 50%, transparent)',
         transform: 'translateX(-100%)',
       }} />
 
-      {/* Floating code particles */}
+      {/* All particle animation */}
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }} />
 
-      {/* Brand name reveal */}
-      <div style={{
-        position: 'absolute', inset: 0, zIndex: 4,
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        pointerEvents: 'none',
-      }}>
-        <span
-          ref={textRef}
-          style={{
-            fontFamily: "'IBM Plex Mono', monospace",
-            fontSize: 'clamp(1.6rem, 5vw, 4rem)',
-            fontWeight: 700,
-            color: '#ffffff',
-            letterSpacing: '0.14em',
-            textShadow: '0 0 2px rgba(6,182,212,0.15)',
-          }}
-        />
-      </div>
     </div>
   );
 };
