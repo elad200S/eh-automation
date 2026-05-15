@@ -4,81 +4,53 @@ import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 type ScanState = 'idle' | 'loading' | 'done' | 'error';
 
-interface AuditRule {
-  name: string;
-  explanation: string;
-}
-
-interface Category {
+interface CategoryResult {
   id: string;
   name: string;
+  score: number;
   icon: React.ReactNode;
-  context: string;
-  audits: Record<string, AuditRule>;
+  businessImpact: string;
 }
 
-const CATEGORIES: Category[] = [
-  {
-    id: 'responsive',
-    name: 'רספונסיביות',
-    icon: <Smartphone className="w-4 h-4" />,
-    context: 'האתר צריך לעבוד טוב בכל מסך — נייד, טאבלט, מחשב',
-    audits: {
-      'viewport':       { name: 'אין הגדרת מובייל', explanation: 'האתר לא מוגדר כ"מותאם לנייד" — גוגל מדרג אותו נמוך אוטומטית' },
-      'font-size':      { name: 'טקסט קטן בנייד', explanation: 'הגופן קטן מדי לקריאה נוחה במסך נייד — משתמשים עוזבים' },
-      'tap-targets':    { name: 'כפתורים קטנים מדי', explanation: 'קישורים וכפתורים קטנים מדי — קשה ללחוץ עליהם באצבע' },
-      'content-width':  { name: 'תוכן רחב מהמסך', explanation: 'יש גלילה אופקית לא רצויה — שובר את חוויית הנייד' },
-    },
-  },
-  {
-    id: 'seo',
-    name: 'אינדקס בגוגל',
-    icon: <Globe className="w-4 h-4" />,
-    context: 'גוגל צריך להיות מסוגל למצוא, לקרוא ולהבין את האתר — בלי זה אתה פשוט לא קיים בחיפוש',
-    audits: {
-      'document-title':    { name: 'חסרה כותרת לדף', explanation: 'אין כותרת — גוגל לא יודע על מה האתר ולא יכול לדרג אותו' },
-      'meta-description':  { name: 'חסר תיאור SEO', explanation: 'אין meta description — הדף לא יופיע נכון בתוצאות החיפוש' },
-      'is-crawlable':      { name: 'האתר חסום לגוגל', explanation: 'קוד באתר מונע מגוגל לסרוק את הדפים — הדף לא יאוינדקס' },
-      'link-text':         { name: 'קישורים לא ברורים', explanation: 'קישורים כתובים "לחץ כאן" — גוגל לא מבין לאן הם מובילים' },
-      'crawlable-anchors': { name: 'קישורים שגוגל לא עוקב', explanation: 'קישורים שכתובים בצורה שגוגל לא יכול לזהות כקישורים' },
-    },
-  },
-  {
-    id: 'colors',
-    name: 'צבעים וקריאות',
-    icon: <Eye className="w-4 h-4" />,
-    context: 'צבעים שלא עובדים עם התוכן גורמים לאנשים לא לקרוא — אפילו אם העיצוב נראה יפה',
-    audits: {
-      'color-contrast': { name: 'ניגודיות צבעים נמוכה', explanation: 'הטקסט לא בולט מהרקע — קשה לקרוא, במיוחד בשמש או לאנשים עם לקות ראייה' },
-      'image-alt':      { name: 'תמונות ללא תיאור', explanation: 'לתמונות אין alt text — גוגל לא יודע מה הן מציגות ולא יכול לאנדקס אותן' },
-    },
-  },
-  {
-    id: 'speed',
+const CATEGORY_META: Record<string, { name: string; icon: React.ReactNode; businessImpact: string }> = {
+  performance: {
     name: 'מהירות',
     icon: <Zap className="w-4 h-4" />,
-    context: 'כל שניה נוספת בטעינה = 20% מהמבקרים עוזבים לפני שראו כלום',
-    audits: {
-      'largest-contentful-paint': { name: 'טעינה איטית', explanation: 'האלמנט הראשי בדף טוען לאט — זה מה שהמשתמש מחכה לו' },
-      'total-blocking-time':      { name: 'דף קפוא בטעינה', explanation: 'הדף לא מגיב ללחיצות בזמן הטעינה — תחושה שהאתר תקוע' },
-      'unused-javascript':        { name: 'קוד מיותר שמאט', explanation: 'JavaScript שלא בשימוש יורד ומואט את הטעינה — צריך להסיר' },
-      'render-blocking-resources':{ name: 'קבצים שחוסמים תצוגה', explanation: 'קבצי CSS/JS שעוצרים את הצגת הדף עד שהם נטענים' },
-    },
+    businessImpact: 'כל שניה נוספת בטעינה גורמת ל-20% מהמבקרים לעזוב לפני שראו כלום',
   },
-];
+  seo: {
+    name: 'אינדקס בגוגל',
+    icon: <Globe className="w-4 h-4" />,
+    businessImpact: 'ציון נמוך = גוגל לא מדרג את האתר גבוה — לקוחות לא מוצאים אותך',
+  },
+  accessibility: {
+    name: 'נגישות וקריאות',
+    icon: <Eye className="w-4 h-4" />,
+    businessImpact: 'קריאות נמוכה = אנשים לא קוראים את התוכן — אפילו אם הגיעו לאתר',
+  },
+  'best-practices': {
+    name: 'רספונסיביות ותקנים',
+    icon: <Smartphone className="w-4 h-4" />,
+    businessImpact: 'אתר שלא עומד בתקנים נראה לא מקצועי ומרחיק לקוחות',
+  },
+};
 
+const scoreColor = (score: number) => {
+  if (score >= 90) return 'text-green-400';
+  if (score >= 50) return 'text-yellow-400';
+  return 'text-red-400';
+};
 
-interface FailingAudit {
-  categoryName: string;
-  categoryIcon: React.ReactNode;
-  categoryContext: string;
-  items: { name: string; explanation: string }[];
-}
+const scoreBg = (score: number) => {
+  if (score >= 90) return 'bg-green-400/5 border-green-400/20';
+  if (score >= 50) return 'bg-yellow-400/5 border-yellow-400/20';
+  return 'bg-red-400/5 border-red-400/20';
+};
 
 const WebsiteAuditTool = () => {
   const [url, setUrl] = useState('');
   const [scanState, setScanState] = useState<ScanState>('idle');
-  const [failingCategories, setFailingCategories] = useState<FailingAudit[]>([]);
+  const [categories, setCategories] = useState<CategoryResult[]>([]);
   const [showModal, setShowModal] = useState(false);
   const { openPopup } = useContactPopup();
 
@@ -95,43 +67,35 @@ const WebsiteAuditTool = () => {
     const normalized = normalizeUrl(url.trim());
     try {
       const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile`
+        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices`
       );
       const data = await res.json();
-      const audits = data?.lighthouseResult?.audits ?? {};
+      const cats = data?.lighthouseResult?.categories ?? {};
 
-      const failing = CATEGORIES.map(category => {
-        const failedItems = Object.entries(category.audits)
-          .filter(([id]) => {
-            const audit = audits[id];
-            return audit && audit.score !== null && audit.score !== undefined && audit.score < 0.5;
-          })
-          .map(([, rule]) => ({ name: rule.name, explanation: rule.explanation }));
+      const results: CategoryResult[] = Object.entries(cats).map(([id, cat]: [string, any]) => {
+        const score = Math.round((cat.score ?? 0) * 100);
+        const meta = CATEGORY_META[id] ?? { name: id, icon: null, businessImpact: '' };
+        return { id, name: meta.name, score, icon: meta.icon, businessImpact: meta.businessImpact };
+      });
 
-        return {
-          categoryName: category.name,
-          categoryIcon: category.icon,
-          categoryContext: category.context,
-          items: failedItems,
-        };
-      }).filter(c => c.items.length > 0);
-
-      const totalIssues = failing.reduce((sum, c) => sum + c.items.length, 0);
-
-      setFailingCategories(failing);
+      setCategories(results);
       setScanState('done');
-      if (totalIssues >= 2) setShowModal(true);
+      if (results.some(c => c.score < 90)) setShowModal(true);
     } catch {
       setScanState('error');
     }
   };
 
-  const totalIssues = failingCategories.reduce((sum, c) => sum + c.items.length, 0);
+  const failingCount = categories.filter(c => c.score < 90).length;
+  const avgScore = categories.length > 0
+    ? Math.round(categories.reduce((s, c) => s + c.score, 0) / categories.length)
+    : 0;
+  const missedPotential = 100 - avgScore;
 
   return (
     <div className="mt-8 p-6 md:p-8 rounded-2xl border border-primary/20 bg-card" dir="rtl">
       <h3 className="text-lg font-bold text-foreground mb-1">בדוק את האתר שלך בחינם</h3>
-      <p className="text-sm text-muted-foreground mb-5">הכנס כתובת אתר ונמצא תקלות תוך שניות</p>
+      <p className="text-sm text-muted-foreground mb-5">הכנס כתובת אתר ונגלה כמה פוטנציאל האתר מפסיד</p>
 
       {(scanState === 'idle' || scanState === 'error') && (
         <>
@@ -166,10 +130,10 @@ const WebsiteAuditTool = () => {
         </div>
       )}
 
-      {scanState === 'done' && totalIssues < 2 && (
+      {scanState === 'done' && failingCount === 0 && (
         <div className="flex items-center gap-3 py-4">
           <CheckCircle2 className="w-6 h-6 text-green-400 flex-shrink-0" />
-          <p className="text-sm text-foreground">האתר שלך נראה תקין! לא נמצאו בעיות משמעותיות.</p>
+          <p className="text-sm text-foreground">האתר שלך מצוין! כל הקטגוריות מעל 90.</p>
         </div>
       )}
 
@@ -188,26 +152,28 @@ const WebsiteAuditTool = () => {
               <div className="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center mb-3 mx-auto">
                 <AlertTriangle className="w-7 h-7 text-red-400" />
               </div>
-              <h3 className="text-xl font-bold text-foreground">נמצאו {totalIssues} בעיות באתר שלך</h3>
-              <p className="text-sm text-muted-foreground mt-1">הנה מה שמפסיד לך לקוחות:</p>
+              <h3 className="text-xl font-bold text-foreground">
+                האתר שלך מפסיד {missedPotential}% מהפוטנציאל שלו
+              </h3>
+              <p className="text-sm text-muted-foreground mt-1">הנה מה שגורם לך להפסיד לקוחות:</p>
             </div>
 
-            {/* Issues list */}
-            <div className="overflow-y-auto flex-1 p-6 space-y-5">
-              {failingCategories.map((cat, i) => (
-                <div key={i}>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="text-primary">{cat.categoryIcon}</span>
-                    <span className="font-semibold text-foreground text-sm">{cat.categoryName}</span>
+            {/* Category scores */}
+            <div className="overflow-y-auto flex-1 p-6 space-y-3">
+              {categories.map((cat, i) => (
+                <div key={i} className={`flex items-center gap-4 p-4 rounded-xl border ${scoreBg(cat.score)}`}>
+                  <div className={`text-2xl font-bold min-w-[3.5rem] text-center tabular-nums ${scoreColor(cat.score)}`}>
+                    {cat.score}
                   </div>
-                  <p className="text-xs text-muted-foreground mb-3 pr-6">{cat.categoryContext}</p>
-                  <div className="space-y-2 pr-6">
-                    {cat.items.map((item, j) => (
-                      <div key={j} className="bg-background rounded-xl p-3 border border-border">
-                        <p className="text-sm font-medium text-foreground mb-0.5">{item.name}</p>
-                        <p className="text-xs text-muted-foreground">{item.explanation}</p>
-                      </div>
-                    ))}
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2 mb-0.5">
+                      <span className={scoreColor(cat.score)}>{cat.icon}</span>
+                      <span className="font-semibold text-foreground text-sm">{cat.name}</span>
+                    </div>
+                    {cat.score < 90
+                      ? <p className="text-xs text-muted-foreground">{cat.businessImpact}</p>
+                      : <p className="text-xs text-green-400">תקין</p>
+                    }
                   </div>
                 </div>
               ))}
