@@ -84,15 +84,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
     const setupParticles = () => {
       const pixels = sampleTextPixels(TARGET_TEXT, W, H);
-      const max = Math.min(pixels.length, 700);
       textParticles = pixels
         .sort(() => Math.random() - 0.5)
-        .slice(0, max)
         .map(p => ({
           sx: Math.random() * W, sy: Math.random() * H,
           tx: p.x, ty: p.y,
           delay: Math.random() * MAX_DELAY,
-          size: Math.random() * 1.6 + 0.7,
+          size: 2.2,
           col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
         }));
     };
@@ -177,21 +175,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           ctx.shadowBlur = 0;
         }
       });
-
-      // After all particles converged — solidify text with glow
-      if (elapsed >= ALL_DONE) {
-        const solidA = Math.min((elapsed - ALL_DONE) / 0.2, 1);
-        const fs = textFontSize(W);
-        ctx.globalAlpha = solidA;
-        ctx.font = `bold ${fs}px "IBM Plex Mono", monospace`;
-        ctx.fillStyle = '#ffffff';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.shadowBlur = 18;
-        ctx.shadowColor = '#06b6d4';
-        ctx.fillText(TARGET_TEXT, W / 2, H / 2);
-        ctx.shadowBlur = 0;
-      }
 
       if (elapsed < TOTAL_DUR) rafId.current = requestAnimationFrame(draw);
     };
