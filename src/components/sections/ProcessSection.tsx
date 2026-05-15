@@ -28,7 +28,7 @@ const ProcessSection = () => {
   const { ref: gridRef, itemStyle } = useScrollRevealGroup(150);
 
   return (
-    <Section id="process" story className="bg-background-secondary">
+    <Section id="process" className="bg-background-secondary">
       <div className="max-w-4xl mx-auto">
         <div ref={titleRef} style={titleStyle} className="text-center mb-12">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">תהליך העבודה</p>
