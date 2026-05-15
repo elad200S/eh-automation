@@ -22,31 +22,58 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
+  const animStarted = useRef(false);
 
   useEffect(() => {
     if (!stripRef.current || !rootRef.current) return;
 
-    const tl = gsap.timeline({
-      onComplete: () => {
-        gsap.to(rootRef.current, {
-          opacity: 0,
-          duration: 0.6,
-          ease: 'power2.out',
-          onComplete: () => {
-            setRemoved(true);
-            onComplete();
-          },
-        });
-      },
+    const runAnimation = () => {
+      if (animStarted.current) return;
+      animStarted.current = true;
+
+      const tl = gsap.timeline({
+        onComplete: () => {
+          gsap.to(rootRef.current, {
+            opacity: 0,
+            duration: 0.7,
+            ease: 'power2.out',
+            onComplete: () => {
+              setRemoved(true);
+              onComplete();
+            },
+          });
+        },
+      });
+
+      tl.fromTo(
+        stripRef.current,
+        { x: '0%' },
+        { x: '-50%', duration: 2.8, ease: 'power2.inOut' }
+      );
+    };
+
+    // Wait for all images to load, then animate
+    let loaded = 0;
+    const total = IMAGES.length;
+    const fallback = setTimeout(runAnimation, 1500);
+
+    IMAGES.forEach((src) => {
+      const img = new Image();
+      img.onload = img.onerror = () => {
+        loaded++;
+        if (loaded >= total) {
+          clearTimeout(fallback);
+          runAnimation();
+        }
+      };
+      img.src = src;
     });
 
-    tl.fromTo(
-      stripRef.current,
-      { x: '0%' },
-      { x: '-50%', duration: 1.6, ease: 'power2.inOut' }
-    );
-
-    return () => { tl.kill(); };
+    return () => {
+      clearTimeout(fallback);
+      gsap.killTweensOf(stripRef.current);
+      gsap.killTweensOf(rootRef.current);
+    };
   }, [onComplete]);
 
   if (removed) return null;

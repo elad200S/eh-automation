@@ -178,14 +178,10 @@ const AppInner = () => {
 };
 
 const App = () => {
-  const [introDone, setIntroDone] = useState(() => {
-    if (typeof window === 'undefined') return true;
-    return sessionStorage.getItem(INTRO_STORAGE_KEY) === '1';
-  });
-  const [showIntro, setShowIntro] = useState(() => !introDone);
+  const [introDone, setIntroDone] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleIntroComplete = () => {
-    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };
