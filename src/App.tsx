@@ -9,7 +9,8 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
 import Lenis from "lenis";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { AnimatePresence, motion } from "framer-motion";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
 import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
@@ -72,6 +73,47 @@ const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
 const POPUP_ID_LEAD = "lead-form-popup";
 
+const pageVariants = {
+  initial: { opacity: 0, rotateY: -8, transformOrigin: 'left center' },
+  animate: { opacity: 1, rotateY: 0, transformOrigin: 'left center', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
+  exit:    { opacity: 0, rotateY:  8, transformOrigin: 'right center', transition: { duration: 0.28, ease: 'easeIn' } },
+};
+
+const RoutesWithTransition = () => {
+  const location = useLocation();
+  return (
+    <AnimatePresence mode="wait">
+      <motion.div key={location.key} variants={pageVariants} initial="initial" animate="animate" exit="exit">
+        <Routes location={location}>
+          <Route path="/" element={<Index />} />
+          <Route path="/solutions" element={<Solutions />} />
+          <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
+          <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
+          <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
+          <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
+          <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
+          <Route path="/solutions/web-development" element={<WebDevelopment />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
+          <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
+          <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
+          <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
+          <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
+          <Route path="/services/chatbots" element={<Chatbots />} />
+          <Route path="/services/crm" element={<CRM />} />
+          <Route path="/services/automation" element={<Automation />} />
+          <Route path="/services/ai-agents" element={<AIAgents />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/cookies" element={<CookiePolicy />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </motion.div>
+    </AnimatePresence>
+  );
+};
+
 /** Inner component that can use EngagementContext */
 const AppInner = () => {
   const [isTimedPopupOpen, setIsTimedPopupOpen] = useState(false);
@@ -131,42 +173,11 @@ const AppInner = () => {
           </div>
         }
       >
-        <Suspense fallback={null}>
-        <Routes>
-          <Route path="/" element={<Index />} />
-
-          {/* Solutions */}
-          <Route path="/solutions" element={<Solutions />} />
-          <Route path="/solutions/ai-agents" element={<SolutionAIAgents />} />
-          <Route path="/solutions/business-automation" element={<BusinessAutomation />} />
-          <Route path="/solutions/whatsapp-automation" element={<WhatsAppAutomation />} />
-          <Route path="/solutions/crm-automation" element={<CRMAutomation />} />
-          <Route path="/solutions/workflow-automation" element={<WorkflowAutomation />} />
-          <Route path="/solutions/web-development" element={<WebDevelopment />} />
-
-          {/* Top-level pages */}
-          <Route path="/blog" element={<Blog />} />
-          <Route path="/blog/5-automation-processes" element={<AutomationProcesses />} />
-          <Route path="/blog/ai-agent-for-business" element={<AIAgentForBusiness />} />
-          <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
-          <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
-          <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/contact" element={<Contact />} />
-
-          {/* Legacy service pages */}
-          <Route path="/services/chatbots" element={<Chatbots />} />
-          <Route path="/services/crm" element={<CRM />} />
-          <Route path="/services/automation" element={<Automation />} />
-          <Route path="/services/ai-agents" element={<AIAgents />} />
-
-          {/* Legal */}
-          <Route path="/privacy" element={<PrivacyPolicy />} />
-          <Route path="/cookies" element={<CookiePolicy />} />
-
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-        </Suspense>
+        <div style={{ perspective: '1200px' }}>
+          <Suspense fallback={null}>
+            <RoutesWithTransition />
+          </Suspense>
+        </div>
       </ErrorBoundary>
       <ChatBot />
       <AccessibilityButton />
