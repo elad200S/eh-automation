@@ -74,9 +74,9 @@ const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
 const POPUP_ID_LEAD = "lead-form-popup";
 
 const pageVariants = {
-  initial: { opacity: 0, rotateY: -8, transformOrigin: 'left center' },
-  animate: { opacity: 1, rotateY: 0, transformOrigin: 'left center', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-  exit:    { opacity: 0, rotateY:  8, transformOrigin: 'right center', transition: { duration: 0.28, ease: 'easeIn' } },
+  initial: { opacity: 0, x: -60 },
+  animate: { opacity: 1, x: 0,  transition: { duration: 0.45, ease: [0.22, 1, 0.36, 1] } },
+  exit:    { opacity: 0, x:  60, transition: { duration: 0.25, ease: 'easeIn' } },
 };
 
 const RoutesWithTransition = () => {
@@ -157,7 +157,7 @@ const AppInner = () => {
   };
 
   return (
-    <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+    <BrowserRouter future={{ v7_relativeSplatPath: true }}>
       <ScrollToTop />
       <ErrorBoundary
         fallback={
