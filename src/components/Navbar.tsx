@@ -276,6 +276,7 @@ const Navbar = () => {
     <>
       <nav
         ref={navRef}
+        style={{ transform: 'none' }}
         className={cn(
           'fixed top-3 right-4 left-4 rounded-2xl border transition-all duration-500',
           scrolled
