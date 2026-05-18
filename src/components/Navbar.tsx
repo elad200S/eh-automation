@@ -1,11 +1,10 @@
-import { useEffect, useLayoutEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronDown, Menu, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { motion } from 'framer-motion';
-import gsap from 'gsap';
 
 interface NavChild {
   label: string;
