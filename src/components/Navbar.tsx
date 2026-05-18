@@ -222,23 +222,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { openPopup } = useContactPopup();
 
-  useLayoutEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.set(navRef.current, { y: -80, opacity: 0 });
-  }, []);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.to(navRef.current, {
-      y: 0,
-      opacity: 1,
-      duration: 1.1,
-      delay: 1.4,
-      ease: 'power3.out',
-      clearProps: 'transform,opacity',
-    });
-  }, []);
-
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
