@@ -222,23 +222,6 @@ const Navbar = () => {
   const navigate = useNavigate();
   const { openPopup } = useContactPopup();
 
-  useLayoutEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.set(navRef.current, { y: -80, opacity: 0 });
-  }, []);
-
-  useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    gsap.to(navRef.current, {
-      y: 0,
-      opacity: 1,
-      duration: 1.1,
-      delay: 1.4,
-      ease: 'power3.out',
-      clearProps: 'transform,opacity',
-    });
-  }, []);
-
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
@@ -304,7 +287,7 @@ const Navbar = () => {
       >
         <div className="container flex h-12 lg:h-16 items-center justify-between px-6">
           <Link to="/" className="flex items-center">
-            <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto" fetchPriority="high" />
+            <img src="/logo-eh.png" alt="EH Automation" className="h-10 w-auto block" fetchPriority="high" />
           </Link>
 
           <div className="hidden items-center gap-7 lg:flex">
