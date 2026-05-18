@@ -5,6 +5,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import ChatBot from "@/components/ChatBot/ChatBot";
 import AccessibilityButton from "@/components/AccessibilityButton";
 import CookieConsent from "@/components/CookieConsent";
+import Navbar from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
@@ -79,8 +80,43 @@ const pageVariants: import('framer-motion').Variants = {
   exit:    { opacity: 0, rotateY:  8, transformOrigin: 'right center', transition: { duration: 0.28, ease: 'easeIn' } },
 };
 
+const REVEAL_EXCLUDE = [
+  '[class*="Navbar"]','[class*="navbar"]','[class*="ChatBot"]',
+  '[class*="Popup"]','[class*="Cookie"]','[class*="Accessibility"]',
+  '[class*="TimedCTA"]','[class*="IntroScreen"]','nav','footer',
+].join(',');
+
 const RoutesWithTransition = () => {
   const location = useLocation();
+  const revealCtx = useRef<gsap.Context | null>(null);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      revealCtx.current?.revert();
+
+      const elements = Array.from(
+        document.querySelectorAll<Element>('h1, h2, h3, p, button, a[class*="btn"], a[class*="cta"]')
+      ).filter(el => !el.closest(REVEAL_EXCLUDE));
+
+      revealCtx.current = gsap.context(() => {
+        ScrollTrigger.batch(elements, {
+          onEnter: batch => {
+            gsap.fromTo(batch,
+              { clipPath: 'inset(100% 0 0% 0)', y: 22, opacity: 0 },
+              { clipPath: 'inset(0% 0 0% 0)', y: 0, opacity: 1,
+                duration: 0.65, stagger: 0.06, ease: 'power3.out',
+                clearProps: 'all' }
+            );
+          },
+          start: 'top 92%',
+          once: true,
+        });
+      });
+    }, 350);
+
+    return () => { clearTimeout(timer); revealCtx.current?.revert(); };
+  }, [location.key]);
+
   return (
     <AnimatePresence mode="wait">
       <motion.div key={location.key} variants={pageVariants} initial="initial" animate="animate" exit="exit">
@@ -113,6 +149,8 @@ const RoutesWithTransition = () => {
     </AnimatePresence>
   );
 };
+
+
 
 /** Inner component that can use EngagementContext */
 const AppInner = () => {
@@ -173,6 +211,7 @@ const AppInner = () => {
           </div>
         }
       >
+        <Navbar />
         <div style={{ perspective: '1200px' }}>
           <Suspense fallback={null}>
             <RoutesWithTransition />

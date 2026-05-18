@@ -1,6 +1,5 @@
 import { lazy, Suspense } from 'react';
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
-import Navbar from '@/components/Navbar';
 import MatrixRain from '@/components/MatrixRain';
 import ScrollOrb from '@/components/ScrollOrb';
 import PageIntro from '@/components/PageIntro';
@@ -30,7 +29,6 @@ const Index = () => {
       <PageIntro />
       <MatrixRain />
       <ScrollOrb />
-      <Navbar />
       <main className="relative z-10 bg-transparent min-h-screen">
         <HeroSection />
         <ProblemSection />
