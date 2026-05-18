@@ -73,7 +73,7 @@ const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
 const POPUP_ID_LEAD = "lead-form-popup";
 
-const pageVariants = {
+const pageVariants: import('framer-motion').Variants = {
   initial: { opacity: 0, rotateY: -8, transformOrigin: 'left center' },
   animate: { opacity: 1, rotateY: 0, transformOrigin: 'left center', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
   exit:    { opacity: 0, rotateY:  8, transformOrigin: 'right center', transition: { duration: 0.28, ease: 'easeIn' } },
