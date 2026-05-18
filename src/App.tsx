@@ -112,7 +112,7 @@ const RoutesWithTransition = () => {
           once: true,
         });
       });
-    }, 350);
+    }, 100);
 
     return () => { clearTimeout(timer); revealCtx.current?.revert(); };
   }, [location.key]);
@@ -213,7 +213,23 @@ const AppInner = () => {
       >
         <Navbar />
         <div style={{ perspective: '1200px' }}>
-          <Suspense fallback={null}>
+          <Suspense fallback={
+            <div style={{
+              minHeight: '100vh',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <div style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                border: '3px solid rgba(16,185,129,0.2)',
+                borderTopColor: 'hsl(160,84%,39%)',
+                animation: 'spin 0.7s linear infinite',
+              }} />
+            </div>
+          }>
             <RoutesWithTransition />
           </Suspense>
         </div>

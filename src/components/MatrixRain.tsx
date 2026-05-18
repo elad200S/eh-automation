@@ -3,7 +3,7 @@ import gsap from 'gsap';
 
 const CHARS = 'אבגדהוזחטיכלמנסעפצקרשת01101100{}[];#!//*@><~=';
 const FONT_SIZE = 14;
-const FPS = 20;
+const FPS = 10;
 
 const MatrixRain = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -16,24 +16,28 @@ const MatrixRain = () => {
 
     let cols = 0;
     let drops: number[] = [];
+    let paused = false;
 
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
       cols = Math.floor(canvas.width / FONT_SIZE);
       drops = Array(cols).fill(1);
-      // Pre-fill with background color so canvas is opaque from the start
       ctx.fillStyle = 'rgb(14, 17, 20)';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     };
     resize();
     window.addEventListener('resize', resize);
 
+    const onVisibility = () => { paused = document.hidden; };
+    document.addEventListener('visibilitychange', onVisibility);
+
     let lastTime = 0;
     let rafId: number;
 
     const draw = (time: number) => {
       rafId = requestAnimationFrame(draw);
+      if (paused) return;
       if (time - lastTime < 1000 / FPS) return;
       lastTime = time;
 
@@ -65,6 +69,7 @@ const MatrixRain = () => {
     return () => {
       cancelAnimationFrame(rafId);
       window.removeEventListener('resize', resize);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, []);
 
