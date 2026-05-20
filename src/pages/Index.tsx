@@ -7,6 +7,7 @@ import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
 const PinnedStepsSection = lazy(() => import('@/components/sections/PinnedStepsSection'));
+const DemoVideoSection = lazy(() => import('@/components/sections/DemoVideoSection'));
 const AutomationShowcaseSection = lazy(() => import('@/components/sections/AutomationShowcaseSection'));
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
 const AutomationAnimation = lazy(() => import('@/components/sections/AutomationAnimation'));
@@ -34,6 +35,7 @@ const Index = () => {
         <ProblemSection />
         <Suspense fallback={null}>
           <PinnedStepsSection />
+          <DemoVideoSection />
           <AutomationShowcaseSection />
           <ToolsSection />
           <AutomationAnimation />
