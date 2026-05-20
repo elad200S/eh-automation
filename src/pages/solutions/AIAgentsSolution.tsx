@@ -8,6 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / סוכני AI',
     headline: 'סוכני AI שעובדים בשבילך סביב השעון',
     subtext: 'ב-3 בלילה, ליד שואל שאלה. הוא מקבל תשובה מדויקת, ממשיך לתהליך, ומשאיר פרטים. בבוקר אתה מתעורר עם ליד מוכן לסגירה.',
+    heroImage: '/ai-agents-hero.png',
   },
   whoIsItFor: {
     title: 'למי זה מתאים',

@@ -19,6 +19,7 @@ export interface SolutionPageData {
     label: string;
     headline: string;
     subtext: string;
+    heroImage?: string;
   };
   whoIsItFor: {
     title: string;
@@ -75,24 +76,35 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
           <div className="absolute inset-0 grid-pattern opacity-40" />
           <div className="absolute -top-40 -left-40 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
           <div className="container relative z-10">
-            <div className="max-w-3xl">
-              <Breadcrumbs items={[
-                { label: 'בית', href: '/' },
-                { label: 'פתרונות', href: '/solutions' },
-                { label: data.hero.headline },
-              ]} />
-              <p className="text-sm font-medium text-primary mb-3">{data.hero.label}</p>
-              <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
-              <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
-              <div className="flex flex-col sm:flex-row gap-4">
-                <button onClick={openPopup} className="cta-gradient group">
-                  שיחת אסטרטגיה
-                  <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-                </button>
-                <Link to="/solutions" className="btn-outline">
-                  כל הפתרונות
-                </Link>
+            <div className={`flex flex-col ${data.hero.heroImage ? 'md:flex-row items-center gap-10 md:gap-16' : ''}`}>
+              <div className="flex-1 min-w-0 max-w-3xl">
+                <Breadcrumbs items={[
+                  { label: 'בית', href: '/' },
+                  { label: 'פתרונות', href: '/solutions' },
+                  { label: data.hero.headline },
+                ]} />
+                <p className="text-sm font-medium text-primary mb-3">{data.hero.label}</p>
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
+                <div className="flex flex-col sm:flex-row gap-4">
+                  <button onClick={openPopup} className="cta-gradient group">
+                    שיחת אסטרטגיה
+                    <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+                  </button>
+                  <Link to="/solutions" className="btn-outline">
+                    כל הפתרונות
+                  </Link>
+                </div>
               </div>
+              {data.hero.heroImage && (
+                <div className="flex-1 flex items-center justify-center mt-8 md:mt-0">
+                  <img
+                    src={data.hero.heroImage}
+                    alt=""
+                    className="w-full max-w-[460px] rounded-2xl drop-shadow-[0_0_60px_rgba(11,184,112,0.20)]"
+                  />
+                </div>
+              )}
             </div>
           </div>
         </section>
