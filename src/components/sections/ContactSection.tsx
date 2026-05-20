@@ -169,7 +169,7 @@ const ContactSection = () => {
             </div>
             <div className="flex items-center gap-2 text-sm text-muted-foreground">
               <CheckCircle2 className="w-4 h-4 text-success" />
-              <span>מענה מיידי (בכל זאת אוטומציה)</span>
+              <span className="whitespace-pre-line text-center">מענה מיידי {"\n"}(בכל זאת אוטומציה)</span>
             </div>
           </div>
         </div>

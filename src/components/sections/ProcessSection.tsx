@@ -82,7 +82,7 @@ const ProcessSection = () => {
             style={{
               background: 'linear-gradient(to left, hsl(160,84%,39%) 0%, hsl(168,70%,45%) 50%, hsl(160,84%,39%,0.3) 100%)',
               transformOrigin: 'right',
-              scaleX: 0,
+              transform: 'scaleX(0)',
             }}
           />
 
