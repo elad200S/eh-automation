@@ -27,7 +27,7 @@ const steps = [
   },
 ];
 
-const clamp  = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
+const clamp    = (v: number, lo: number, hi: number) => Math.max(lo, Math.min(hi, v));
 const mapRange = (v: number, a: number, b: number, c: number, d: number) =>
   c + clamp((v - a) / (b - a), 0, 1) * (d - c);
 
@@ -38,7 +38,6 @@ const PinnedStepsSection = () => {
   const dotsRef  = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
-    // Only run the pinned version on desktop
     if (window.innerWidth < 768) return;
 
     const outer = outerRef.current;
@@ -49,7 +48,7 @@ const PinnedStepsSection = () => {
     const dots  = dotsRef.current.filter(Boolean)  as HTMLDivElement[];
     if (cards.length < 3) return;
 
-    // Start: card 0 visible, 1 & 2 below viewport
+    // Initial card positions
     gsap.set(cards[0], { yPercent: 0 });
     gsap.set(cards[1], { yPercent: 100 });
     gsap.set(cards[2], { yPercent: 100 });
@@ -61,7 +60,7 @@ const PinnedStepsSection = () => {
       dots.forEach((d, i) => {
         if (!d) return;
         gsap.to(d, {
-          scaleX: i === idx ? 4 : 1,
+          scaleX:          i === idx ? 4 : 1,
           backgroundColor: i === idx ? 'hsl(160,84%,39%)' : 'hsl(220,15%,22%)',
           duration: 0.25,
           ease: 'power2.out',
@@ -76,20 +75,45 @@ const PinnedStepsSection = () => {
       rafId = requestAnimationFrame(tick);
 
       const rect  = outer.getBoundingClientRect();
-      const total = outer.offsetHeight - window.innerHeight;
+      const viewH = window.innerHeight;
+      const total = outer.offsetHeight - viewH;
       if (total <= 0) return;
 
+      // ── Manual "sticky" via JS (bypasses Framer Motion transform issue) ──
+      if (rect.top > 0) {
+        // Section hasn't reached top of viewport yet
+        inner.style.position = 'absolute';
+        inner.style.top      = '0px';
+        inner.style.bottom   = 'auto';
+        inner.style.left     = '0';
+        inner.style.right    = '0';
+      } else if (rect.bottom <= viewH) {
+        // Section fully scrolled through
+        inner.style.position = 'absolute';
+        inner.style.top      = 'auto';
+        inner.style.bottom   = '0px';
+        inner.style.left     = '0';
+        inner.style.right    = '0';
+      } else {
+        // Section in viewport — pin it
+        inner.style.position = 'fixed';
+        inner.style.top      = '0px';
+        inner.style.bottom   = 'auto';
+        inner.style.left     = '0';
+        inner.style.right    = '0';
+      }
+
+      // ── Card animation progress ──────────────────────
       const p = clamp(-rect.top / total, 0, 1);
 
-      // ── card positions ─────────────────────────────
       // Card 0: exits  p 0.28 → 0.46
       const y0 = mapRange(p, 0.28, 0.46, 0, -100);
 
       // Card 1: enters p 0.28 → 0.46 | exits p 0.60 → 0.78
-      const y1 = p < 0.28  ? 100
-               : p < 0.46  ? mapRange(p, 0.28, 0.46, 100, 0)
-               : p < 0.60  ? 0
-               :              mapRange(p, 0.60, 0.78, 0, -100);
+      const y1 = p < 0.28 ? 100
+               : p < 0.46 ? mapRange(p, 0.28, 0.46, 100, 0)
+               : p < 0.60 ? 0
+               :             mapRange(p, 0.60, 0.78, 0, -100);
 
       // Card 2: enters p 0.60 → 0.78
       const y2 = p < 0.60 ? 100 : mapRange(p, 0.60, 0.78, 100, 0);
@@ -98,27 +122,43 @@ const PinnedStepsSection = () => {
       gsap.set(cards[1], { yPercent: y1 });
       gsap.set(cards[2], { yPercent: y2 });
 
-      // ── active dot ─────────────────────────────────
       activateDot(p < 0.43 ? 0 : p < 0.76 ? 1 : 2);
     };
 
     rafId = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(rafId);
+
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (inner) {
+        inner.style.position = '';
+        inner.style.top      = '';
+        inner.style.bottom   = '';
+        inner.style.left     = '';
+        inner.style.right    = '';
+      }
+    };
   }, []);
 
   return (
     <div id="process">
 
-      {/* ── Desktop: sticky scroll ───────────────────── */}
+      {/* ── Desktop: JS-pinned scroll ────────────────── */}
       <div
         ref={outerRef}
         className="hidden md:block relative"
         style={{ height: '380vh' }}
       >
+        {/* inner starts absolute/top:0; JS switches to fixed when in view */}
         <div
           ref={innerRef}
-          className="sticky top-0 overflow-hidden"
-          style={{ height: '100vh', background: 'hsl(220,15%,9%)' }}
+          className="overflow-hidden"
+          style={{
+            position: 'absolute',
+            top: 0, left: 0, right: 0,
+            height: '100vh',
+            background: 'hsl(220,15%,9%)',
+            zIndex: 10,
+          }}
         >
           {/* Section header */}
           <div className="absolute top-0 inset-x-0 z-20 pt-10 text-center pointer-events-none">
@@ -130,7 +170,7 @@ const PinnedStepsSection = () => {
             </h2>
           </div>
 
-          {/* Cards — absolutely stacked */}
+          {/* Stacked cards */}
           {steps.map((step, i) => {
             const StepIcon = step.Icon;
             return (
@@ -147,7 +187,11 @@ const PinnedStepsSection = () => {
                 >
                   <span
                     className="font-black leading-none"
-                    style={{ fontSize: 'clamp(10rem, 22vw, 18rem)', color: 'rgba(255,255,255,0.025)', letterSpacing: '-0.06em' }}
+                    style={{
+                      fontSize: 'clamp(10rem, 22vw, 18rem)',
+                      color: 'rgba(255,255,255,0.025)',
+                      letterSpacing: '-0.06em',
+                    }}
                   >
                     {step.number}
                   </span>
@@ -163,11 +207,13 @@ const PinnedStepsSection = () => {
                   }}
                 >
                   <div className="p-8">
-                    {/* Icon + step */}
                     <div className="flex items-center gap-3 mb-6">
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
+                        style={{
+                          background: 'rgba(16,185,129,0.1)',
+                          border: '1px solid rgba(16,185,129,0.2)',
+                        }}
                       >
                         <StepIcon className="w-6 h-6 text-primary" />
                       </div>
