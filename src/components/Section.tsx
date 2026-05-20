@@ -19,7 +19,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
         ref={ref as React.RefObject<HTMLElement>}
         id={id}
         className={cn(
-          story ? 'story-section min-h-screen flex flex-col' : 'py-16 md:py-20 section-reveal',
+          story ? 'story-section min-h-screen flex flex-col' : 'py-10 md:py-14 section-reveal',
           !story && isVisible && 'visible',
           className
         )}
@@ -28,7 +28,7 @@ const Section = forwardRef<HTMLElement, SectionProps>(
           {children}
         </div>
         {withSeparator && (
-          <div className="container mt-16 md:mt-20">
+          <div className="container mt-10 md:mt-14">
             <div className="section-separator" />
           </div>
         )}
