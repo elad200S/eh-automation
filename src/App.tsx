@@ -76,9 +76,9 @@ const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
 const POPUP_ID_LEAD = "lead-form-popup";
 
 const pageVariants: import('framer-motion').Variants = {
-  initial: { opacity: 0, rotateY: -8, transformOrigin: 'left center' },
-  animate: { opacity: 1, rotateY: 0, transformOrigin: 'left center', transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] } },
-  exit:    { opacity: 0, rotateY:  8, transformOrigin: 'right center', transition: { duration: 0.28, ease: 'easeIn' } },
+  initial: { opacity: 0 },
+  animate: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
+  exit:    { opacity: 0, transition: { duration: 0.22, ease: 'easeIn' } },
 };
 
 const REVEAL_EXCLUDE = [
@@ -215,7 +215,7 @@ const AppInner = () => {
         }
       >
         <Navbar />
-        <div style={{ perspective: '1200px' }}>
+        <div>
           <Suspense fallback={
             <div style={{
               minHeight: '100vh',

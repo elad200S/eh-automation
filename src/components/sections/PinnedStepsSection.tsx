@@ -33,7 +33,6 @@ const mapRange = (v: number, a: number, b: number, c: number, d: number) =>
 
 const PinnedStepsSection = () => {
   const outerRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
   const cardsRef = useRef<(HTMLDivElement | null)[]>([]);
   const dotsRef  = useRef<(HTMLDivElement | null)[]>([]);
 
@@ -41,8 +40,7 @@ const PinnedStepsSection = () => {
     if (window.innerWidth < 768) return;
 
     const outer = outerRef.current;
-    const inner = innerRef.current;
-    if (!outer || !inner) return;
+    if (!outer) return;
 
     const cards = cardsRef.current.filter(Boolean) as HTMLDivElement[];
     const dots  = dotsRef.current.filter(Boolean)  as HTMLDivElement[];
@@ -79,31 +77,6 @@ const PinnedStepsSection = () => {
       const total = outer.offsetHeight - viewH;
       if (total <= 0) return;
 
-      // ── Manual "sticky" via JS (bypasses Framer Motion transform issue) ──
-      if (rect.top > 0) {
-        // Section hasn't reached top of viewport yet
-        inner.style.position = 'absolute';
-        inner.style.top      = '0px';
-        inner.style.bottom   = 'auto';
-        inner.style.left     = '0';
-        inner.style.right    = '0';
-      } else if (rect.bottom <= viewH) {
-        // Section fully scrolled through
-        inner.style.position = 'absolute';
-        inner.style.top      = 'auto';
-        inner.style.bottom   = '0px';
-        inner.style.left     = '0';
-        inner.style.right    = '0';
-      } else {
-        // Section in viewport — pin it
-        inner.style.position = 'fixed';
-        inner.style.top      = '0px';
-        inner.style.bottom   = 'auto';
-        inner.style.left     = '0';
-        inner.style.right    = '0';
-      }
-
-      // ── Card animation progress ──────────────────────
       const p = clamp(-rect.top / total, 0, 1);
 
       // Card 0: exits  p 0.28 → 0.46
@@ -126,38 +99,26 @@ const PinnedStepsSection = () => {
     };
 
     rafId = requestAnimationFrame(tick);
-
-    return () => {
-      cancelAnimationFrame(rafId);
-      if (inner) {
-        inner.style.position = '';
-        inner.style.top      = '';
-        inner.style.bottom   = '';
-        inner.style.left     = '';
-        inner.style.right    = '';
-      }
-    };
+    return () => cancelAnimationFrame(rafId);
   }, []);
 
   return (
     <div id="process">
 
-      {/* ── Desktop: JS-pinned scroll ────────────────── */}
+      {/* ── Desktop: sticky scroll ───────────────────── */}
       <div
         ref={outerRef}
-        className="hidden md:block relative"
+        className="hidden md:block"
         style={{ height: '380vh' }}
       >
-        {/* inner starts absolute/top:0; JS switches to fixed when in view */}
+        {/* CSS sticky — works now that transforms are removed from ancestors */}
         <div
-          ref={innerRef}
           className="overflow-hidden"
           style={{
-            position: 'absolute',
-            top: 0, left: 0, right: 0,
+            position: 'sticky',
+            top: 0,
             height: '100vh',
             background: 'hsl(220,15%,9%)',
-            zIndex: 10,
           }}
         >
           {/* Section header */}
@@ -180,18 +141,14 @@ const PinnedStepsSection = () => {
                 className="absolute inset-0 flex items-center justify-center"
                 style={{ paddingTop: '6rem', paddingBottom: '4rem', paddingInline: '2rem' }}
               >
-                {/* Watermark number */}
+                {/* Watermark */}
                 <div
                   aria-hidden="true"
                   className="absolute inset-0 flex items-center justify-center pointer-events-none select-none overflow-hidden"
                 >
                   <span
                     className="font-black leading-none"
-                    style={{
-                      fontSize: 'clamp(10rem, 22vw, 18rem)',
-                      color: 'rgba(255,255,255,0.025)',
-                      letterSpacing: '-0.06em',
-                    }}
+                    style={{ fontSize: 'clamp(10rem, 22vw, 18rem)', color: 'rgba(255,255,255,0.025)', letterSpacing: '-0.06em' }}
                   >
                     {step.number}
                   </span>
@@ -210,10 +167,7 @@ const PinnedStepsSection = () => {
                     <div className="flex items-center gap-3 mb-6">
                       <div
                         className="w-12 h-12 rounded-xl flex items-center justify-center flex-shrink-0"
-                        style={{
-                          background: 'rgba(16,185,129,0.1)',
-                          border: '1px solid rgba(16,185,129,0.2)',
-                        }}
+                        style={{ background: 'rgba(16,185,129,0.1)', border: '1px solid rgba(16,185,129,0.2)' }}
                       >
                         <StepIcon className="w-6 h-6 text-primary" />
                       </div>
