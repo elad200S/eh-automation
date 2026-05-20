@@ -78,17 +78,15 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
           <div className="container relative z-10">
             <div className={`flex flex-col ${data.hero.heroImage ? 'md:flex-row items-center gap-10 md:gap-16' : ''}`}>
               <div className="flex-1 min-w-0 max-w-3xl">
-                <div className="hero-text-1">
-                  <Breadcrumbs items={[
-                    { label: 'בית', href: '/' },
-                    { label: 'פתרונות', href: '/solutions' },
-                    { label: data.hero.headline },
-                  ]} />
-                </div>
-                <p className="hero-text-1 text-sm font-medium text-primary mb-3">{data.hero.label}</p>
-                <h1 className="hero-text-2 text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
-                <p className="hero-text-3 text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
-                <div className="hero-text-4 flex flex-col sm:flex-row gap-4">
+                <Breadcrumbs items={[
+                  { label: 'בית', href: '/' },
+                  { label: 'פתרונות', href: '/solutions' },
+                  { label: data.hero.headline },
+                ]} />
+                <p className="text-sm font-medium text-primary mb-3">{data.hero.label}</p>
+                <h1 className="text-4xl md:text-6xl font-bold text-foreground mb-6">{data.hero.headline}</h1>
+                <p className="text-lg md:text-xl text-muted-foreground leading-relaxed mb-10 max-w-2xl">{data.hero.subtext}</p>
+                <div className="flex flex-col sm:flex-row gap-4">
                   <button onClick={openPopup} className="cta-gradient group">
                     שיחת אסטרטגיה
                     <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
@@ -103,7 +101,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                   <img
                     src={data.hero.heroImage}
                     alt=""
-                    className="hero-image w-full max-w-[460px]"
+                    className="w-full max-w-[460px]"
                   />
                 </div>
               )}
