@@ -3,6 +3,9 @@ import { ArrowLeft, CheckCircle2, Phone, Mail, MapPin, MessageCircle } from "luc
 import { useToast } from "@/hooks/use-toast";
 
 const MAKE_WEBHOOK_URL = "https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj";
+const RATE_LIMIT_KEY = 'eh_contact_last_submit';
+const RATE_LIMIT_MS = 60000;
+
 import { SEOHead, LocalBusinessSchema } from "@/lib/seo";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/sections/Footer";
@@ -11,6 +14,7 @@ import Section from "@/components/Section";
 const Contact = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({ name: "", phone: "", business: "", automationType: "" });
+  const [honeypot, setHoneypot] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValidPhone = (phone: string): boolean => /^0[5-9][0-9]-?[0-9]{7}$/.test(phone.trim());
@@ -18,6 +22,15 @@ const Contact = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (honeypot) return;
+
+    const lastSubmit = localStorage.getItem(RATE_LIMIT_KEY);
+    if (lastSubmit && Date.now() - parseInt(lastSubmit) < RATE_LIMIT_MS) {
+      toast({ title: 'נא להמתין דקה לפני שליחה נוספת', variant: 'destructive' });
+      return;
+    }
+
     const trimmedName = formData.name.trim();
     const trimmedBusiness = formData.business.trim();
 
@@ -48,6 +61,7 @@ const Contact = () => {
         full_name: formData.name.trim(),
         phone: normalizePhone(formData.phone),
         form_type: "main_form",
+        _token: "eh-auto-2024",
       };
       const biz = formData.business.trim();
       if (biz) payload.business_type = biz;
@@ -59,6 +73,7 @@ const Contact = () => {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
+      localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       toast({ title: "הטופס נשלח בהצלחה", description: "ניצור איתך קשר בהקדם." });
       setFormData({ name: "", phone: "", business: "", automationType: "" });
     } catch (error) {
@@ -101,6 +116,16 @@ const Contact = () => {
                 <div className="bg-card rounded-2xl border border-border p-8 shadow-lg">
                   <h2 className="text-xl font-semibold text-foreground mb-6">השאירו פרטים</h2>
                   <form onSubmit={handleSubmit} className="space-y-5">
+                    <input
+                      type="text"
+                      name="website_url"
+                      value={honeypot}
+                      onChange={(e) => setHoneypot(e.target.value)}
+                      style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
+                      tabIndex={-1}
+                      autoComplete="off"
+                      aria-hidden="true"
+                    />
                     <div>
                       <label htmlFor="name" className="block text-sm font-medium text-foreground mb-2">
                         שם מלא *

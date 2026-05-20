@@ -4,6 +4,9 @@ import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useToast } from '@/hooks/use-toast';
 const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
+const RATE_LIMIT_KEY = 'eh_contact_last_submit';
+const RATE_LIMIT_MS = 60000;
+
 const ContactPopup = () => {
   const { isOpen, closePopup } = useContactPopup();
   const { toast } = useToast();
@@ -13,6 +16,7 @@ const ContactPopup = () => {
     business: '',
     automationType: '',
   });
+  const [honeypot, setHoneypot] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isValidPhone = (phone: string): boolean => {
@@ -26,6 +30,14 @@ const ContactPopup = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (honeypot) return;
+
+    const lastSubmit = localStorage.getItem(RATE_LIMIT_KEY);
+    if (lastSubmit && Date.now() - parseInt(lastSubmit) < RATE_LIMIT_MS) {
+      toast({ title: 'נא להמתין דקה לפני שליחה נוספת', variant: 'destructive' });
+      return;
+    }
 
     const trimmedName = formData.name.trim();
     const trimmedBusiness = formData.business.trim();
@@ -52,6 +64,7 @@ const ContactPopup = () => {
         full_name: formData.name.trim(),
         phone: normalizePhone(formData.phone),
         form_type: 'popup_form',
+        _token: 'eh-auto-2024',
       };
       const biz = formData.business.trim();
       if (biz) payload.business_type = biz;
@@ -64,6 +77,7 @@ const ContactPopup = () => {
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
 
+      localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
       closePopup();
@@ -102,6 +116,16 @@ const ContactPopup = () => {
           </p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
+            <input
+              type="text"
+              name="website_url"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+            />
             <div>
               <label htmlFor="popup-name" className="block text-sm font-medium text-foreground mb-1.5">
                 שם מלא *
