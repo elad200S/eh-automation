@@ -1,118 +1,79 @@
 import { useEffect, useRef } from 'react';
-import gsap from 'gsap';
 
-const CustomCursor = () => {
-  const dotRef = useRef<HTMLDivElement>(null);
-  const ringRef = useRef<HTMLDivElement>(null);
+const SpotlightCursor = () => {
+  const darkRef = useRef<HTMLDivElement>(null);
+  const glowRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const dot = dotRef.current;
-    const ring = ringRef.current;
-    if (!dot || !ring) return;
+    const dark = darkRef.current;
+    const glow = glowRef.current;
+    if (!dark || !glow) return;
 
-    const isPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (!isPointer || reducedMotion) return;
-
-    document.documentElement.style.cursor = 'none';
-
-    const xDot  = gsap.quickTo(dot,  'x', { duration: 0.08, ease: 'none' });
-    const yDot  = gsap.quickTo(dot,  'y', { duration: 0.08, ease: 'none' });
-    const xRing = gsap.quickTo(ring, 'x', { duration: 0.42, ease: 'power2.out' });
-    const yRing = gsap.quickTo(ring, 'y', { duration: 0.42, ease: 'power2.out' });
+    if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     let visible = false;
 
     const onMove = (e: MouseEvent) => {
-      xDot(e.clientX);
-      yDot(e.clientY);
-      xRing(e.clientX);
-      yRing(e.clientY);
+      dark.style.setProperty('--cx', `${e.clientX}px`);
+      dark.style.setProperty('--cy', `${e.clientY}px`);
+      glow.style.setProperty('--cx', `${e.clientX}px`);
+      glow.style.setProperty('--cy', `${e.clientY}px`);
+
       if (!visible) {
         visible = true;
-        gsap.to([dot, ring], { opacity: 1, duration: 0.3 });
+        dark.style.opacity = '1';
+        glow.style.opacity = '1';
       }
     };
-
-    const isInteractive = (el: Element | null): boolean => {
-      if (!el) return false;
-      const tag = el.tagName.toLowerCase();
-      if (['a', 'button', 'input', 'textarea', 'select'].includes(tag)) return true;
-      if (el.getAttribute('role') === 'button') return true;
-      if ((el as HTMLElement).style?.cursor === 'pointer') return true;
-      return false;
-    };
-
-    const onOver = (e: MouseEvent) => {
-      if (isInteractive(e.target as Element)) {
-        gsap.to(ring, { scale: 2.2, opacity: 0.4, duration: 0.3, ease: 'power2.out' });
-        gsap.to(dot,  { scale: 0.4, duration: 0.2 });
-      }
-    };
-    const onOut = (e: MouseEvent) => {
-      if (isInteractive(e.target as Element)) {
-        gsap.to(ring, { scale: 1, opacity: 1, duration: 0.35, ease: 'power2.out' });
-        gsap.to(dot,  { scale: 1, duration: 0.25 });
-      }
-    };
-
-    // Watch for accessibility big-cursor class
-    const observer = new MutationObserver(() => {
-      const bigCursor = document.documentElement.classList.contains('big-cursor');
-      gsap.to([dot, ring], { opacity: bigCursor ? 0 : (visible ? 1 : 0), duration: 0.2 });
-      document.documentElement.style.cursor = bigCursor ? '' : 'none';
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
 
     window.addEventListener('mousemove', onMove, { passive: true });
-    document.addEventListener('mouseover', onOver, { passive: true });
-    document.addEventListener('mouseout',  onOut,  { passive: true });
-
-    return () => {
-      document.documentElement.style.cursor = '';
-      window.removeEventListener('mousemove', onMove);
-      document.removeEventListener('mouseover', onOver);
-      document.removeEventListener('mouseout',  onOut);
-      observer.disconnect();
-    };
+    return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   return (
     <>
+      {/* Dark vignette with transparent spotlight hole */}
       <div
-        ref={dotRef}
+        ref={darkRef}
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: 0, left: 0,
-          width: 10, height: 10,
-          marginLeft: -5, marginTop: -5,
-          borderRadius: '50%',
-          background: 'hsl(160,84%,39%)',
+          inset: 0,
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: 9988,
           opacity: 0,
-          boxShadow: '0 0 8px hsl(160,84%,39%), 0 0 18px rgba(16,185,129,0.4)',
+          transition: 'opacity 0.6s ease',
+          background: `radial-gradient(
+            circle 280px at var(--cx, -999px) var(--cy, -999px),
+            transparent 0%,
+            transparent 90px,
+            rgba(0, 0, 0, 0.28) 220px,
+            rgba(0, 0, 0, 0.45) 100%
+          )`,
         }}
       />
+      {/* Emerald glow at cursor center */}
       <div
-        ref={ringRef}
+        ref={glowRef}
         aria-hidden="true"
         style={{
           position: 'fixed',
-          top: 0, left: 0,
-          width: 38, height: 38,
-          marginLeft: -19, marginTop: -19,
-          borderRadius: '50%',
-          border: '1.5px solid rgba(16,185,129,0.65)',
+          inset: 0,
           pointerEvents: 'none',
-          zIndex: 99999,
+          zIndex: 9989,
           opacity: 0,
+          transition: 'opacity 0.6s ease',
+          background: `radial-gradient(
+            circle 160px at var(--cx, -999px) var(--cy, -999px),
+            rgba(16, 185, 129, 0.09) 0%,
+            rgba(6, 182, 212, 0.04) 50%,
+            transparent 100%
+          )`,
         }}
       />
     </>
   );
 };
 
-export default CustomCursor;
+export default SpotlightCursor;
