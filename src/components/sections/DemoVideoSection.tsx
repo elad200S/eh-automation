@@ -15,13 +15,13 @@ const PHASE_DURATIONS = [
 
 const CURSOR_POS = [
   { left: '58%', top: '36%' },  // 0: idle
-  { left: '13%', top: '83%' },  // 1: to button
-  { left: '13%', top: '83%' },  // 2: click
+  { left: '10%', top: '13%' },  // 1: to button (top-left)
+  { left: '10%', top: '13%' },  // 2: click
   { left: '50%', top: '44%' },  // 3: popup
   { left: '50%', top: '56%' },  // 4: form
   { left: '50%', top: '76%' },  // 5: submit
-  { left: '16%', top: '84%' },  // 6: whatsapp area
-  { left: '16%', top: '84%' },  // 7: whatsapp
+  { left: '58%', top: '50%' },  // 6: neutral after submit
+  { left: '58%', top: '50%' },  // 7: whatsapp visible
   { left: '58%', top: '36%' },  // 8: reset
 ];
 
@@ -168,9 +168,9 @@ const DemoVideoSection = () => {
               </div>
             </div>
 
-            {/* CTA button — bottom-left */}
+            {/* CTA button — top-left */}
             <div
-              className="absolute bottom-5 left-5 transition-all duration-500 select-none"
+              className="absolute top-4 left-4 transition-all duration-500 select-none"
               style={{
                 transform: buttonClick ? 'scale(0.93)' : buttonGlow ? 'scale(1.06)' : 'scale(1)',
                 boxShadow: buttonGlow ? '0 0 22px 5px rgba(16,185,129,0.45)' : undefined,
@@ -184,7 +184,7 @@ const DemoVideoSection = () => {
                 <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2}>
                   <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
                 </svg>
-                שיחת אפיון
+                שיחת אסטרטגיה
               </div>
             </div>
 
@@ -204,7 +204,7 @@ const DemoVideoSection = () => {
                 >
                   <div className="text-center mb-4">
                     <div className="text-sm font-semibold" style={{ color: 'hsl(210,20%,96%)' }}>
-                      שיחת אפיון לאוטומציה
+                      שיחת אסטרטגיה
                     </div>
                     <div className="text-xs mt-0.5" style={{ color: 'hsl(215,20%,55%)' }}>
                       מלאו פרטים ונחזור אליכם
@@ -256,38 +256,43 @@ const DemoVideoSection = () => {
               </div>
             )}
 
-            {/* WhatsApp notification */}
+            {/* WhatsApp notification — top banner (like phone notification) */}
             {showWs && (
               <div
-                className="absolute bottom-5 left-4"
+                className="absolute top-3 left-0 right-0 flex justify-center px-4"
                 style={{
-                  transform: wsEntered ? 'translateY(0)' : 'translateY(110%)',
+                  transform: wsEntered ? 'translateY(0)' : 'translateY(-120%)',
                   opacity: wsEntered ? 1 : 0,
-                  transition: 'transform 0.45s cubic-bezier(0.22,1,0.36,1), opacity 0.35s ease-out',
+                  transition: 'transform 0.5s cubic-bezier(0.22,1,0.36,1), opacity 0.3s ease-out',
+                  zIndex: 60,
                 }}
               >
                 <div
-                  className="flex items-start gap-2.5 p-3 rounded-xl border shadow-2xl"
+                  className="flex items-center gap-3 px-3.5 py-2.5 rounded-2xl border shadow-2xl w-full"
                   style={{
-                    background: 'hsl(220,15%,13%)',
-                    borderColor: 'rgba(37,211,102,0.28)',
-                    maxWidth: 230,
+                    background: 'rgba(20,26,35,0.92)',
+                    backdropFilter: 'blur(12px)',
+                    borderColor: 'rgba(37,211,102,0.22)',
+                    maxWidth: 320,
                   }}
                 >
+                  {/* WhatsApp icon */}
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5"
+                    className="w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0"
                     style={{ background: '#25D366' }}
                   >
-                    <svg viewBox="0 0 24 24" className="w-4 h-4" fill="white">
+                    <svg viewBox="0 0 24 24" className="w-5 h-5" fill="white">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z" />
                     </svg>
                   </div>
-                  <div>
-                    <div className="text-xs font-semibold mb-0.5" style={{ color: '#25D366' }}>
-                      EH Automation
+                  {/* Text */}
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="text-xs font-semibold" style={{ color: '#25D366' }}>WhatsApp</span>
+                      <span className="text-[10px]" style={{ color: 'hsl(215,20%,45%)' }}>עכשיו</span>
                     </div>
-                    <div className="text-xs leading-relaxed" style={{ color: 'hsl(210,20%,88%)' }}>
-                      שלום ישראל! קיבלנו את פנייתך 🎉 ניצור איתך קשר בהקדם לשיחת אפיון
+                    <div className="text-xs leading-snug mt-0.5 truncate" style={{ color: 'hsl(210,20%,88%)' }}>
+                      שלום ישראל! קיבלנו את פנייתך 🎉 ניצור איתך קשר בהקדם
                     </div>
                   </div>
                 </div>
