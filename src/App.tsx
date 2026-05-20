@@ -1,5 +1,6 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import CustomCursor from '@/components/CustomCursor';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import ChatBot from "@/components/ChatBot/ChatBot";
@@ -84,6 +85,7 @@ const REVEAL_EXCLUDE = [
   '[class*="Navbar"]','[class*="navbar"]','[class*="ChatBot"]',
   '[class*="Popup"]','[class*="Cookie"]','[class*="Accessibility"]',
   '[class*="TimedCTA"]','[class*="IntroScreen"]','nav','footer',
+  '#hero',
 ].join(',');
 
 const RoutesWithTransition = () => {
@@ -196,6 +198,7 @@ const AppInner = () => {
 
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+      <CustomCursor />
       <ScrollToTop />
       <ErrorBoundary
         fallback={

@@ -3,6 +3,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import HeroAutomationFlow from './HeroAutomationFlow';
 import AiEnergyCore from '@/components/AiEnergyCore';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
+import { useMagnet } from '@/hooks/useMagnet';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -20,18 +21,26 @@ const SUBTITLES = [
   'פחות עבודה ידנית, יותר תוצאות — מערכות שעובדות 24/7 ומונעות מלידים ליפול בין הכיסאות',
 ];
 
+const TITLE_WORDS = ['הכל', 'עובד', 'גם', 'כשאתה', 'לא'];
+
 const HeroSection = () => {
   const { openPopup } = useContactPopup();
-  const sectionRef = useRef<HTMLElement>(null);
-  const contentRef = useRef<HTMLDivElement>(null);
-  const eyebrowRef = useRef<HTMLDivElement>(null);
-  const titleRef = useRef<HTMLHeadingElement>(null);
+  const sectionRef  = useRef<HTMLElement>(null);
+  const contentRef  = useRef<HTMLDivElement>(null);
+  const eyebrowRef  = useRef<HTMLDivElement>(null);
   const subtitleRef = useRef<HTMLDivElement>(null);
-  const bulletsRef = useRef<HTMLDivElement>(null);
-  const ctaRef = useRef<HTMLDivElement>(null);
-  const orbRef = useRef<HTMLDivElement>(null);
+  const bulletsRef  = useRef<HTMLDivElement>(null);
+  const ctaRef      = useRef<HTMLDivElement>(null);
+  const orbRef      = useRef<HTMLDivElement>(null);
+  const ambientRef  = useRef<HTMLDivElement>(null);
 
-  const [subtitleIdx, setSubtitleIdx] = useState(0);
+  // Per-word refs for split-text reveal
+  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  // Magnet on CTA button
+  const magnetRef = useMagnet<HTMLButtonElement>(0.28, 95);
+
+  const [subtitleIdx,     setSubtitleIdx]     = useState(0);
   const [subtitleVisible, setSubtitleVisible] = useState(true);
 
   // Cycle subtitle every 4.5s
@@ -44,6 +53,22 @@ const HeroSection = () => {
       }, 450);
     }, 4500);
     return () => clearInterval(id);
+  }, []);
+
+  // Cursor-reactive ambient orbs
+  useEffect(() => {
+    if (!ambientRef.current) return;
+    if (!window.matchMedia('(hover: hover)').matches) return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const onMove = (e: MouseEvent) => {
+      const x = (e.clientX / window.innerWidth  - 0.5) * 45;
+      const y = (e.clientY / window.innerHeight - 0.5) * 28;
+      gsap.to(ambientRef.current, { x, y, duration: 2.2, ease: 'power2.out' });
+    };
+
+    window.addEventListener('mousemove', onMove, { passive: true });
+    return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   // Parallax orb on scroll
@@ -64,29 +89,41 @@ const HeroSection = () => {
     return () => ctx.revert();
   }, []);
 
+  // Set initial states before paint
   useLayoutEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     if (prefersReducedMotion) return;
-    const targets = [eyebrowRef.current, titleRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current];
-    gsap.set(targets, { opacity: 0, y: 32 });
+
+    const words = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
+    gsap.set(words, { y: '115%' });
+    gsap.set(
+      [eyebrowRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current],
+      { opacity: 0, y: 32 }
+    );
   }, []);
 
+  // Entrance animation
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const targets = [eyebrowRef.current, titleRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current];
+    const words = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
 
     if (prefersReducedMotion) {
-      gsap.set(targets, { opacity: 1, y: 0 });
+      gsap.set(words, { y: '0%' });
+      gsap.set(
+        [eyebrowRef.current, subtitleRef.current, bulletsRef.current, ctaRef.current],
+        { opacity: 1, y: 0 }
+      );
       return;
     }
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 1.8 });
+
       tl.to(eyebrowRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' })
-        .to(titleRef.current, { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out' }, '-=0.3')
-        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.5')
+        .to(words,              { y: '0%', duration: 0.9, stagger: 0.07, ease: 'power3.out' }, '-=0.35')
+        .to(subtitleRef.current,{ opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.45')
         .to(bulletsRef.current, { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, '-=0.5')
-        .to(ctaRef.current, { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.2)' }, '-=0.4');
+        .to(ctaRef.current,     { opacity: 1, y: 0, duration: 0.6, ease: 'back.out(1.2)' }, '-=0.4');
     }, sectionRef);
 
     const onScroll = () => {
@@ -94,8 +131,8 @@ const HeroSection = () => {
       const progress = Math.min(window.scrollY / 320, 1);
       gsap.set(contentRef.current, {
         opacity: 1 - progress * 0.5,
-        scale: 1 - progress * 0.03,
-        y: -progress * 24,
+        scale:   1 - progress * 0.03,
+        y:       -progress * 24,
       });
     };
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -117,15 +154,17 @@ const HeroSection = () => {
       {/* AI Energy Core */}
       <AiEnergyCore ref={orbRef} />
 
-      {/* Cinematic ambient orbs */}
-      <div className="pointer-events-none absolute -top-48 -right-48 w-[600px] h-[600px]">
-        <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.08] blur-[120px] animate-orb-1" />
-      </div>
-      <div className="pointer-events-none absolute -bottom-48 -left-48 w-[500px] h-[500px]">
-        <div className="pointer-events-none w-full h-full rounded-full bg-secondary/[0.06] blur-[100px] animate-orb-2" />
-      </div>
-      <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px]">
-        <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.04] blur-[100px] animate-orb-3" />
+      {/* Cursor-reactive ambient orbs */}
+      <div ref={ambientRef} className="pointer-events-none absolute inset-0">
+        <div className="pointer-events-none absolute -top-48 -right-48 w-[600px] h-[600px]">
+          <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.08] blur-[120px] animate-orb-1" />
+        </div>
+        <div className="pointer-events-none absolute -bottom-48 -left-48 w-[500px] h-[500px]">
+          <div className="pointer-events-none w-full h-full rounded-full bg-secondary/[0.06] blur-[100px] animate-orb-2" />
+        </div>
+        <div className="pointer-events-none absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px]">
+          <div className="pointer-events-none w-full h-full rounded-full bg-primary/[0.04] blur-[100px] animate-orb-3" />
+        </div>
       </div>
 
       {/* Content */}
@@ -136,8 +175,18 @@ const HeroSection = () => {
             <span className="text-primary font-semibold">//</span> AI Automation Studio
           </div>
 
-          <h1 ref={titleRef} className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
-            הכל עובד גם כשאתה לא
+          {/* Word-split title */}
+          <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-foreground mb-6 leading-tight">
+            {TITLE_WORDS.map((word, i) => (
+              <span key={i} className="inline-block overflow-hidden leading-none mx-[0.18em] my-1">
+                <span
+                  ref={el => { wordRefs.current[i] = el; }}
+                  className="inline-block"
+                >
+                  {word}
+                </span>
+              </span>
+            ))}
           </h1>
 
           {/* Cycling subtitle */}
@@ -160,7 +209,7 @@ const HeroSection = () => {
           </div>
 
           <div ref={ctaRef} className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button onClick={openPopup} className="cta-gradient group">
+            <button ref={magnetRef} onClick={openPopup} className="cta-gradient group">
               בדיקת התאמה לעסק
               <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
             </button>
