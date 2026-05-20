@@ -7,12 +7,13 @@ const GLOW_COLORS = ['#06b6d4', '#22d3ee', '#67e8f9', '#10b981', '#34d399', '#a5
 const CODE_CHARS = '01アイABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
 
 // Timing
-const CONVERGE_START = 0.45;
+const WIPE_DUR       = 1.4;   // left-to-right video reveal
+const CONVERGE_START = 1.05;  // particles start after wipe begins
 const CONVERGE_DUR   = 1.2;
 const MAX_DELAY      = 0.2;
-const ALL_DONE       = CONVERGE_START + MAX_DELAY + CONVERGE_DUR; // ~1.85s
+const ALL_DONE       = CONVERGE_START + MAX_DELAY + CONVERGE_DUR; // ~2.45s
 const HOLD           = 0.35;
-const TOTAL_DUR      = ALL_DONE + HOLD;                            // ~2.2s
+const TOTAL_DUR      = ALL_DONE + HOLD;                           // ~2.8s
 
 function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
 
@@ -20,7 +21,6 @@ function textFontSize(W: number) {
   return Math.min(Math.max(W * 0.05, 26), 64);
 }
 
-// Sample text pixel positions from an offscreen canvas
 function sampleTextPixels(text: string, W: number, H: number) {
   const c = document.createElement('canvas');
   c.width = W; c.height = H;
@@ -42,13 +42,14 @@ function sampleTextPixels(text: string, W: number, H: number) {
 interface IntroScreenProps { onComplete: () => void; }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
-  const rootRef = useRef<HTMLDivElement>(null);
-  const videoRef = useRef<HTMLVideoElement>(null);
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const sweepRef = useRef<HTMLDivElement>(null);
+  const rootRef       = useRef<HTMLDivElement>(null);
+  const videoWrapRef  = useRef<HTMLDivElement>(null);
+  const videoRef      = useRef<HTMLVideoElement>(null);
+  const canvasRef     = useRef<HTMLCanvasElement>(null);
+  const sweepRef      = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
   const started = useRef(false);
-  const rafId = useRef(0);
+  const rafId   = useRef(0);
 
   useEffect(() => {
     if (!rootRef.current) return;
@@ -71,12 +72,12 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
     // ── Holographic light traces ─────────────────────────────────────────────
     const traces = [
-      { triggerAt: 0.25, y: H * 0.38, speed: W * 1.6, progress: -1, opa: 0.07 },
-      { triggerAt: 0.55, y: H * 0.52, speed: W * 1.9, progress: -1, opa: 0.05 },
-      { triggerAt: 0.80, y: H * 0.46, speed: W * 1.4, progress: -1, opa: 0.06 },
+      { triggerAt: 0.5,  y: H * 0.38, speed: W * 1.6, progress: -1, opa: 0.07 },
+      { triggerAt: 0.9,  y: H * 0.52, speed: W * 1.9, progress: -1, opa: 0.05 },
+      { triggerAt: 1.2,  y: H * 0.46, speed: W * 1.4, progress: -1, opa: 0.06 },
     ];
 
-    // ── Converging text particles (built after font is ready) ────────────────
+    // ── Converging text particles ────────────────────────────────────────────
     let textParticles: {
       sx: number; sy: number; tx: number; ty: number;
       delay: number; size: number; col: string;
@@ -104,7 +105,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
       ctx.clearRect(0, 0, W, H);
 
-      // Digital noise — subtle grain
+      // Digital noise
       for (let i = 0; i < 180; i++) {
         ctx.globalAlpha = Math.random() * 0.018;
         ctx.fillStyle = Math.random() > 0.5 ? '#06b6d4' : '#fff';
@@ -151,7 +152,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         const y = p.sy + (p.ty - p.sy) * ease;
         const baseA = prog < 0.25 ? (prog / 0.25) : 1;
 
-        // Bloom glow
         if (prog > 0.6) {
           ctx.globalAlpha = (prog - 0.6) / 0.4 * 0.12;
           ctx.shadowBlur = 8; ctx.shadowColor = p.col;
@@ -161,12 +161,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           ctx.shadowBlur = 0;
         }
 
-        // Particle dot
         ctx.globalAlpha = baseA * 0.9;
         ctx.fillStyle = p.col;
         ctx.fillRect(x - p.size / 2, y - p.size / 2, p.size, p.size);
 
-        // Extra glow when arrived
         if (prog > 0.85) {
           ctx.globalAlpha = (prog - 0.85) / 0.15 * 0.08;
           ctx.shadowBlur = 12; ctx.shadowColor = '#22d3ee';
@@ -184,7 +182,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       if (started.current) return;
       started.current = true;
 
-      // Light sweep
+      // Left-to-right wipe reveal on video
+      if (videoWrapRef.current)
+        gsap.fromTo(videoWrapRef.current,
+          { clipPath: 'inset(0 100% 0 0)' },
+          { clipPath: 'inset(0 0% 0 0)', duration: WIPE_DUR, ease: 'power2.inOut' });
+
+      // Light sweep (starts with wipe)
       if (sweepRef.current)
         gsap.fromTo(sweepRef.current,
           { x: '-100%' }, { x: '280%', duration: TOTAL_DUR * 0.9, delay: 0.1, ease: 'power1.inOut' });
@@ -204,7 +208,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       });
     };
 
-    // Wait for font + (optionally) video, then run
     document.fonts.load(`bold 64px "IBM Plex Mono"`).finally(() => {
       setupParticles();
       const vid = videoRef.current;
@@ -213,8 +216,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         const onReady = () => { clearTimeout(fallback); run(); };
         vid.addEventListener('canplay', onReady, { once: true });
         if (vid.readyState >= 3) onReady();
-      } else {
-        // No video element — run with fallback
       }
     });
 
@@ -223,6 +224,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       gsap.killTweensOf(rootRef.current);
       gsap.killTweensOf(sweepRef.current);
       gsap.killTweensOf(videoRef.current);
+      gsap.killTweensOf(videoWrapRef.current);
     };
   }, [onComplete]);
 
@@ -231,13 +233,17 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   return (
     <div ref={rootRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden" aria-hidden="true">
 
-      {/* Video background — place intro-loop.mp4 in /public */}
-      <video
-        ref={videoRef}
-        src="/intro-loop.mp4"
-        autoPlay muted loop playsInline
-        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35, transformOrigin: 'center' }}
-      />
+      {/* Video with left-to-right wipe reveal */}
+      <div ref={videoWrapRef} style={{ position: 'absolute', inset: 0, clipPath: 'inset(0 100% 0 0)' }}>
+        <video
+          ref={videoRef}
+          autoPlay muted loop playsInline
+          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35, transformOrigin: 'center' }}
+        >
+          <source src="/intro-loop.webm" type="video/webm" />
+          <source src="/intro-loop.mp4" type="video/mp4" />
+        </video>
+      </div>
 
       {/* Scan lines */}
       <div style={{
@@ -252,7 +258,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         transform: 'translateX(-100%)',
       }} />
 
-      {/* All particle animation */}
+      {/* Particle animation canvas */}
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }} />
 
     </div>
