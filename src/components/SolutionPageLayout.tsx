@@ -66,7 +66,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
         setMsgIndex(i => (i + 1) % backMessages.length);
         setMsgVisible(true);
       }, 400);
-    }, 4000);
+    }, 6000);
     return () => clearInterval(interval);
   }, [backMessages.length]);
 
