@@ -8,6 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / תהליכי עבודה',
     headline: 'תהליכי עבודה שרצים לבד',
     subtext: 'כשהצוות שלך מבלה שעות על משימות שחוזרות כל שבוע — כסף יוצא וצמיחה נעצרת. אנחנו בונים את המערכות שמריצות הכל בלי שתצטרך לזכור, לתזכר, או לעקוב.',
+    heroImage: '/workflow-automation-hero.png',
   },
   whoIsItFor: {
     title: 'למי זה מתאים',

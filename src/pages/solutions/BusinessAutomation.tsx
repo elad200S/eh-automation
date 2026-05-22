@@ -8,6 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / אוטומציה עסקית',
     headline: 'אוטומציה שמשחררת את העסק מעבודה ידנית',
     subtext: 'אם אתה עדיין מעתיק נתונים בין מערכות, שולח עדכונים ידנית, ומרגיש שהעסק עוצר בלעדיך — זה בדיוק המקום שלך.',
+    heroImage: '/business-automation-hero.png',
   },
   whoIsItFor: {
     title: 'למי זה מתאים',

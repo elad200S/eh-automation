@@ -8,6 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / בניית אתרים',
     headline: 'אתר שעובד בשבילך לא רק נראה טוב',
     subtext: 'אתר עסקי הוא הפנים של העסק ברשת. אנחנו בונים אתרים שמייצרים רושם ראשוני חזק, טוענים מהר, ומחוברים לאוטומציות שממירות מבקרים ללידים.',
+    heroImage: '/web-development-hero.jpg',
   },
   whoIsItFor: {
     title: 'למי זה מתאים',
