@@ -1,6 +1,7 @@
 import { ArrowLeft } from 'lucide-react';
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import AiEnergyCore from '@/components/AiEnergyCore';
+import { lazy, Suspense } from 'react';
+const EnergyCore = lazy(() => import('@/components/EnergyCore'));
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useMagnet } from '@/hooks/useMagnet';
 import gsap from 'gsap';
@@ -14,7 +15,7 @@ const SUBTITLES = [
   'מערכות שעובדות 24/7 ומונעות מלידים ליפול בין הכיסאות',
 ];
 
-const TITLE_WORDS = ['הכל', 'עובד', 'גם', 'כשאתה', 'לא'];
+const TITLE_WORDS = ['Everything', 'works', 'even', 'when', "you don't."];
 
 const HeroSection = () => {
   const { openPopup } = useContactPopup();
@@ -24,7 +25,6 @@ const HeroSection = () => {
   const subtitleRef = useRef<HTMLParagraphElement>(null);
   const ctaRef      = useRef<HTMLDivElement>(null);
   const orbRef      = useRef<HTMLDivElement>(null);
-  const ambientRef  = useRef<HTMLDivElement>(null);
   const scrollHintRef = useRef<HTMLDivElement>(null);
 
   const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
@@ -42,20 +42,6 @@ const HeroSection = () => {
       }, 400);
     }, 4500);
     return () => clearInterval(id);
-  }, []);
-
-  // Cursor-reactive ambient orbs
-  useEffect(() => {
-    if (!ambientRef.current) return;
-    if (!window.matchMedia('(hover: hover)').matches) return;
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const onMove = (e: MouseEvent) => {
-      const x = (e.clientX / window.innerWidth  - 0.5) * 50;
-      const y = (e.clientY / window.innerHeight - 0.5) * 32;
-      gsap.to(ambientRef.current, { x, y, duration: 2.4, ease: 'power2.out' });
-    };
-    window.addEventListener('mousemove', onMove, { passive: true });
-    return () => window.removeEventListener('mousemove', onMove);
   }, []);
 
   // Parallax orb on scroll
@@ -106,23 +92,22 @@ const HeroSection = () => {
         .to(subtitleRef.current,  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4')
         .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, '-=0.45')
         .to(scrollHintRef.current,{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
+
+      // Scrub fade-out as user scrolls away — reversible
+      gsap.to(contentRef.current, {
+        opacity: 0.4,
+        y: -30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '+=380',
+          scrub: true,
+        },
+      });
     }, sectionRef);
 
-    // Subtle scroll-out on the content block
-    const onScroll = () => {
-      if (!contentRef.current) return;
-      const progress = Math.min(window.scrollY / 380, 1);
-      gsap.set(contentRef.current, {
-        opacity: 1 - progress * 0.55,
-        y:       -progress * 30,
-      });
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-
-    return () => {
-      ctx.revert();
-      window.removeEventListener('scroll', onScroll);
-    };
+    return () => ctx.revert();
   }, []);
 
   return (
@@ -137,18 +122,33 @@ const HeroSection = () => {
       {/* Top gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-light/40 via-transparent to-transparent pointer-events-none" />
 
-      {/* AI Energy Core */}
-      <AiEnergyCore ref={orbRef} />
-
-      {/* Cursor-reactive ambient orbs */}
-      <div ref={ambientRef} className="pointer-events-none absolute inset-0">
-        <div className="absolute -top-64 -right-64 w-[700px] h-[700px]">
-          <div className="w-full h-full rounded-full bg-primary/[0.07] blur-[140px] animate-orb-1" />
-        </div>
-        <div className="absolute -bottom-64 -left-64 w-[600px] h-[600px]">
-          <div className="w-full h-full rounded-full bg-secondary/[0.05] blur-[120px] animate-orb-2" />
-        </div>
+      {/* 3D Energy Core */}
+      <div
+        ref={orbRef}
+        className="pointer-events-none absolute"
+        style={{
+          width: 560, height: 560,
+          left: '50%', top: '42%',
+          marginLeft: -280, marginTop: -280,
+        }}
+      >
+        <Suspense fallback={null}>
+          <EnergyCore />
+        </Suspense>
       </div>
+
+      {/* Ambient glow behind the core */}
+      <div
+        className="pointer-events-none absolute"
+        style={{
+          width: 600, height: 600,
+          left: '50%', top: '42%',
+          marginLeft: -300, marginTop: -300,
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, rgba(6,182,212,0.05) 40%, transparent 70%)',
+          filter: 'blur(72px)',
+        }}
+      />
 
       {/* Main content */}
       <div ref={contentRef} className="container relative z-10">
@@ -161,8 +161,9 @@ const HeroSection = () => {
 
           {/* Word-split headline */}
           <h1
+            dir="ltr"
             className="font-bold text-foreground mb-8 leading-[1.02]"
-            style={{ fontSize: 'clamp(3rem, 8.5vw, 7.2rem)', letterSpacing: '-0.04em' }}
+            style={{ fontSize: 'clamp(3rem, 8.5vw, 7.2rem)', letterSpacing: '-0.01em', fontFamily: "'Dancing Script', cursive" }}
           >
             {TITLE_WORDS.map((word, i) => (
               <span key={i} className="inline-block overflow-hidden leading-[1.1] mx-[0.15em] my-1">
