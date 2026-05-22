@@ -352,13 +352,14 @@
 }
 
 
-/* Hero image rotation */
-@keyframes heroSpin {
-  from { transform: rotate(0deg); }
-  to   { transform: rotate(360deg); }
+/* Hero image swing */
+@keyframes heroSwing {
+  0%   { transform: rotate(6deg); }
+  50%  { transform: rotate(-6deg); }
+  100% { transform: rotate(6deg); }
 }
 .hero-image-spin {
-  animation: heroSpin 20s linear infinite;
+  animation: heroSwing 4s ease-in-out infinite;
   transform-origin: center center;
 }
 @media (prefers-reduced-motion: reduce) {
