@@ -13,11 +13,15 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(delay = 
     if (prefersReduced()) { setRevealed(true); return; }
     const el = ref.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
-      { threshold: 0 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+        } else if (entry.boundingClientRect.bottom < 0) {
+          setRevealed(false);
+        }
+      },
+      { threshold: 0.15 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -25,14 +29,14 @@ export function useScrollReveal<T extends HTMLElement = HTMLDivElement>(delay = 
 
   const style: CSSProperties = {
     opacity: revealed ? 1 : 0,
-    transform: revealed ? 'translateY(0)' : 'translateY(16px)',
-    transition: `opacity 600ms ease-out ${delay}ms, transform 600ms ease-out ${delay}ms`,
+    transform: revealed ? 'translateY(0)' : 'translateY(60px)',
+    transition: `opacity 1200ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms, transform 1200ms cubic-bezier(0.16, 1, 0.3, 1) ${delay}ms`,
   };
 
   return { ref, revealed, style };
 }
 
-export function useScrollRevealGroup(stagger = 120) {
+export function useScrollRevealGroup(stagger = 100) {
   const ref = useRef<HTMLDivElement>(null);
   const [revealed, setRevealed] = useState(false);
 
@@ -40,11 +44,15 @@ export function useScrollRevealGroup(stagger = 120) {
     if (prefersReduced()) { setRevealed(true); return; }
     const el = ref.current;
     if (!el) return;
-    const rect = el.getBoundingClientRect();
-    if (rect.top < window.innerHeight && rect.bottom > 0) { setRevealed(true); return; }
     const observer = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting) { setRevealed(true); observer.disconnect(); } },
-      { threshold: 0.1 }
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setRevealed(true);
+        } else if (entry.boundingClientRect.bottom < 0) {
+          setRevealed(false);
+        }
+      },
+      { threshold: 0.15 }
     );
     observer.observe(el);
     return () => observer.disconnect();
@@ -52,8 +60,8 @@ export function useScrollRevealGroup(stagger = 120) {
 
   const itemStyle = (index: number): CSSProperties => ({
     opacity: revealed ? 1 : 0,
-    transform: revealed ? 'translateY(0)' : 'translateY(20px)',
-    transition: `opacity 600ms ease-out ${index * stagger}ms, transform 600ms ease-out ${index * stagger}ms`,
+    transform: revealed ? 'translateY(0)' : 'translateY(40px)',
+    transition: `opacity 1200ms cubic-bezier(0.16, 1, 0.3, 1) ${index * stagger}ms, transform 1200ms cubic-bezier(0.16, 1, 0.3, 1) ${index * stagger}ms`,
   });
 
   return { ref, revealed, itemStyle };
