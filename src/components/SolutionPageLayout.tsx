@@ -98,11 +98,16 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
               </div>
               {data.hero.heroImage && (
                 <div className="flex-1 flex items-center justify-center mt-8 md:mt-0">
-                  <img
-                    src={data.hero.heroImage}
-                    alt=""
-                    className="w-full max-w-[460px] hero-image-spin"
-                  />
+                  <div className="hero-3d-scene w-full max-w-[460px]">
+                    <div className="hero-3d-card">
+                      <img
+                        src={data.hero.heroImage}
+                        alt=""
+                        className="hero-3d-front"
+                      />
+                      <div className="hero-3d-back" />
+                    </div>
+                  </div>
                 </div>
               )}
             </div>
