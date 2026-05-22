@@ -144,8 +144,8 @@ function Scene() {
   }, []);
 
   useFrame((_, dt) => {
-    rot.current.x += (mouse.current.y * 0.18 - rot.current.x) * 0.05;
-    rot.current.y += (mouse.current.x * 0.22 - rot.current.y) * 0.05;
+    rot.current.x += (mouse.current.y * 0.32 - rot.current.x) * 0.04;
+    rot.current.y += (mouse.current.x * 0.40 - rot.current.y) * 0.04;
     if (groupRef.current) {
       groupRef.current.rotation.x = rot.current.x;
       groupRef.current.rotation.y = rot.current.y;

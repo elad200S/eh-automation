@@ -63,14 +63,12 @@ const lenis = new Lenis({
   touchMultiplier: 1.5,
 });
 
-function raf(time: number) {
-  lenis.raf(time);
-  requestAnimationFrame(raf);
-}
-requestAnimationFrame(raf);
-
 gsap.registerPlugin(ScrollTrigger);
-lenis.on('scroll', () => ScrollTrigger.update());
+
+// Drive Lenis through GSAP's ticker so ScrollTrigger scrub stays in sync
+gsap.ticker.add((time) => lenis.raf(time * 1000));
+gsap.ticker.lagSmoothing(0);
+lenis.on('scroll', ScrollTrigger.update);
 
 const LEAD_POPUP_DELAY_MS = 40_000; // 40s
 const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";

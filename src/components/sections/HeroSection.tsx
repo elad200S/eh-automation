@@ -49,7 +49,8 @@ const HeroSection = () => {
     if (!orbRef.current || !sectionRef.current) return;
     const ctx = gsap.context(() => {
       gsap.to(orbRef.current, {
-        y: -180,
+        y: -260,
+        scale: 0.82,
         ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
@@ -122,33 +123,37 @@ const HeroSection = () => {
       {/* Top gradient */}
       <div className="absolute inset-0 bg-gradient-to-b from-primary-light/40 via-transparent to-transparent pointer-events-none" />
 
-      {/* 3D Energy Core */}
-      <div
-        ref={orbRef}
-        className="pointer-events-none absolute"
-        style={{
-          width: 560, height: 560,
-          left: '50%', top: '42%',
-          marginLeft: -280, marginTop: -280,
-        }}
-      >
-        <Suspense fallback={null}>
-          <EnergyCore />
-        </Suspense>
-      </div>
-
-      {/* Ambient glow behind the core */}
+      {/* Ambient glow — behind core */}
       <div
         className="pointer-events-none absolute"
         style={{
-          width: 600, height: 600,
-          left: '50%', top: '42%',
-          marginLeft: -300, marginTop: -300,
+          width: 820, height: 820,
+          left: '50%', top: '50%',
+          marginLeft: -410, marginTop: -410,
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.08) 0%, rgba(6,182,212,0.05) 40%, transparent 70%)',
-          filter: 'blur(72px)',
+          background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, rgba(6,182,212,0.06) 35%, transparent 68%)',
+          filter: 'blur(80px)',
         }}
       />
+
+      {/* 3D Energy Core — dominant hero centerpiece */}
+      <div
+        style={{
+          position: 'absolute',
+          left: '50%', top: '50%',
+          width: 'min(88vmin, 740px)',
+          height: 'min(88vmin, 740px)',
+          transform: 'translate(-50%, -50%)',
+          pointerEvents: 'none',
+        }}
+      >
+        {/* GSAP parallax target */}
+        <div ref={orbRef} style={{ width: '100%', height: '100%' }}>
+          <Suspense fallback={null}>
+            <EnergyCore />
+          </Suspense>
+        </div>
+      </div>
 
       {/* Main content */}
       <div ref={contentRef} className="container relative z-10">
@@ -163,7 +168,7 @@ const HeroSection = () => {
           <h1
             dir="ltr"
             className="font-bold text-foreground mb-8 leading-[1.02]"
-            style={{ fontSize: 'clamp(3rem, 8.5vw, 7.2rem)', letterSpacing: '-0.01em', fontFamily: "'Dancing Script', cursive" }}
+            style={{ fontSize: 'clamp(3rem, 8.5vw, 7.2rem)', letterSpacing: '-0.04em' }}
           >
             {TITLE_WORDS.map((word, i) => (
               <span key={i} className="inline-block overflow-hidden leading-[1.1] mx-[0.15em] my-1">
