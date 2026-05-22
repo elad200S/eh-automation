@@ -161,21 +161,47 @@ const AutomationShowcaseSection = () => {
             </p>
           </div>
 
+          {/* ── Mobile header: counter + dots ─────────────────── */}
+          <div className="md:hidden mb-5" dir="rtl">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-base font-semibold text-foreground">
+                {scenarios[active].title}
+              </h3>
+              <span className="font-mono text-xs text-primary font-bold">
+                {String(active + 1).padStart(2, '0')} / {String(scenarios.length).padStart(2, '0')}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              {scenarios.map((_, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className="h-1.5 rounded-full transition-all duration-300"
+                  style={{
+                    width:      active === i ? 28 : 8,
+                    opacity:    active === i ? 1 : 0.3,
+                    background: 'hsl(160,84%,39%)',
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+
           <div className="flex flex-col md:grid md:grid-cols-5 gap-5 items-start">
-            {/* Scenario tabs — indicators on desktop, scrollable on mobile */}
-            <div className="md:col-span-2">
-              <div className="flex md:flex-col gap-2 overflow-x-auto pb-2 md:pb-0 md:overflow-x-visible">
+            {/* Scenario tabs — desktop only */}
+            <div className="hidden md:block md:col-span-2">
+              <div className="flex flex-col gap-2">
                 {scenarios.map((s, i) => (
                   <div
                     key={i}
                     className={cn(
-                      'flex-shrink-0 md:w-full text-right p-3 md:p-4 rounded-xl border transition-all duration-300',
+                      'w-full text-right p-4 rounded-xl border transition-all duration-300',
                       active === i
                         ? 'bg-card border-primary/40 shadow-lg shadow-primary/10'
                         : 'bg-card/40 border-border/40'
                     )}
                   >
-                    <div className="flex items-center gap-2 md:gap-3" dir="rtl">
+                    <div className="flex items-center gap-3" dir="rtl">
                       <span className={cn(
                         'font-mono text-xs font-bold transition-colors shrink-0',
                         active === i ? 'text-primary' : 'text-muted-foreground/60'
@@ -183,16 +209,14 @@ const AutomationShowcaseSection = () => {
                         {s.tag}
                       </span>
                       <span className={cn(
-                        'font-medium text-xs md:text-sm transition-colors text-right whitespace-nowrap md:whitespace-normal',
+                        'font-medium text-sm transition-colors',
                         active === i ? 'text-foreground' : 'text-muted-foreground'
                       )}>
                         {s.title}
                       </span>
                     </div>
-
-                    {/* Scroll progress bar — desktop active tab only */}
                     {active === i && (
-                      <div className="hidden md:block mt-3 h-0.5 bg-border/40 rounded-full overflow-hidden">
+                      <div className="mt-3 h-0.5 bg-border/40 rounded-full overflow-hidden">
                         <div
                           ref={progressBarRef}
                           className="h-full bg-primary rounded-full"
