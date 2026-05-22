@@ -1,4 +1,5 @@
 import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageLayout';
+import webDevHero from '@/assets/web-development-hero.png';
 
 const data: SolutionPageData = {
   slug: 'solutions/web-development',
@@ -8,7 +9,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / בניית אתרים',
     headline: 'אתר שעובד בשבילך לא רק נראה טוב',
     subtext: 'אתר עסקי הוא הפנים של העסק ברשת. אנחנו בונים אתרים שמייצרים רושם ראשוני חזק, טוענים מהר, ומחוברים לאוטומציות שממירות מבקרים ללידים.',
-    heroImage: '/web-development-hero.jpg',
+    heroImage: webDevHero,
   },
   whoIsItFor: {
     title: 'למי זה מתאים',
