@@ -12,8 +12,10 @@ const footerNav = [
       { label: 'אוטומציית WhatsApp', href: '/solutions/whatsapp-automation' },
       { label: 'אוטומציית CRM', href: '/solutions/crm-automation' },
       { label: 'אוטומציית תהליכי עבודה', href: '/solutions/workflow-automation' },
+      { label: 'בניית אתרים', href: '/solutions/web-development' },
     ],
   },
+
   {
     title: 'החברה',
     links: [
