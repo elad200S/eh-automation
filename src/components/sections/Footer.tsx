@@ -15,16 +15,6 @@ const footerNav = [
     ],
   },
   {
-    title: 'תעשיות',
-    links: [
-      { label: 'סוכנויות', href: '/industries/agencies' },
-      { label: 'יועצים', href: '/industries/consultants' },
-      { label: 'מאמנים', href: '/industries/coaches' },
-      { label: 'נדל"ן', href: '/industries/real-estate' },
-      { label: 'מסחר אלקטרוני', href: '/industries/ecommerce' },
-    ],
-  },
-  {
     title: 'החברה',
     links: [
       { label: 'אודות', href: '/about' },
