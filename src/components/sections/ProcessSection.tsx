@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 import Section from '@/components/Section';
 import { Search, Settings, Rocket } from 'lucide-react';
 import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
@@ -52,7 +53,8 @@ const ProcessSection = () => {
           scrollTrigger: {
             trigger: containerRef.current,
             start: 'top 72%',
-            once: true,
+            end: 'center 55%',
+            scrub: 1,
           },
         }
       );
@@ -66,9 +68,9 @@ const ProcessSection = () => {
       <div ref={containerRef} className="max-w-4xl mx-auto">
         <div ref={titleRef} style={titleStyle} className="text-center mb-12">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">תהליך העבודה</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+          <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
             איך אנחנו עובדים יחד
-          </h2>
+          </RevealText>
         </div>
 
         {/* Grid + connector line wrapper */}

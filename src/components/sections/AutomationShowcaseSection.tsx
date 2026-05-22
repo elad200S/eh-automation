@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
+import RevealText from '@/components/RevealText';
 
 const INTERVAL = 5200;
 
@@ -148,9 +149,9 @@ const AutomationShowcaseSection = () => {
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-12">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">הדגמה חיה</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+          <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-4">
             ראה איך זה עובד בפועל
-          </h2>
+          </RevealText>
           <p className="text-muted-foreground text-lg max-w-xl mx-auto">
             4 תרחישים אמיתיים שאנחנו בונים ללקוחות — כך האוטומציה נראית מאחורי הקלעים
           </p>

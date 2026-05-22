@@ -7,7 +7,7 @@ import { useScrollReveal } from '@/hooks/useScrollReveal';
 const mainSteps = [
   {
     Icon: ClipboardList,
-    label: 'fills out a form',
+    label: 'ליד ממלא טופס',
     sublabel: ' ',
     color: 'text-primary',
     bg: 'bg-primary/10',
@@ -15,7 +15,7 @@ const mainSteps = [
   },
   {
     Icon: Zap,
-    label: 'sent Webhook ',
+    label: 'Webhook נשלח',
     sublabel: ' ',
     color: 'text-secondary',
     bg: 'bg-secondary/10',
@@ -23,7 +23,7 @@ const mainSteps = [
   },
   {
     Icon: Settings2,
-    label: 'Automatic automation',
+    label: 'אוטומציה רצה',
     sublabel: ' ',
     color: 'text-accent-foreground',
     bg: 'bg-accent/10',

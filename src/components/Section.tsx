@@ -1,5 +1,4 @@
 import { ReactNode, forwardRef } from 'react';
-import { useScrollReveal } from '@/hooks/useScrollReveal';
 import { cn } from '@/lib/utils';
 
 interface SectionProps {
@@ -11,16 +10,13 @@ interface SectionProps {
 }
 
 const Section = forwardRef<HTMLElement, SectionProps>(
-  ({ children, className, id, withSeparator = true, story = false }, _ref) => {
-    const { ref, revealed: isVisible } = useScrollReveal();
-
+  ({ children, className, id, withSeparator = true, story = false }, ref) => {
     return (
       <section
         ref={ref as React.RefObject<HTMLElement>}
         id={id}
         className={cn(
-          story ? 'story-section min-h-screen flex flex-col' : 'py-10 md:py-14 section-reveal',
-          !story && isVisible && 'visible',
+          story ? 'story-section min-h-screen flex flex-col' : 'py-10 md:py-14',
           className
         )}
       >
@@ -38,5 +34,4 @@ const Section = forwardRef<HTMLElement, SectionProps>(
 );
 
 Section.displayName = 'Section';
-
 export default Section;

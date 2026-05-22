@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import Section from '@/components/Section';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
 
 const STATS = [
   { value: 87, suffix: '%', label: 'מהלידים נאבדים\nללא מעקב ברור' },
@@ -41,7 +42,15 @@ const StatsRow = () => {
   return (
     <div ref={ref} className="grid grid-cols-3 gap-4 mb-10">
       {STATS.map((stat, i) => (
-        <div key={i} className="relative text-center py-4">
+        <div
+          key={i}
+          className="relative text-center py-4"
+          style={{
+            opacity: triggered ? 1 : 0,
+            transform: triggered ? 'translateY(0)' : 'translateY(24px)',
+            transition: `opacity 0.5s ease ${i * 150}ms, transform 0.5s ease ${i * 150}ms`,
+          }}
+        >
           {i > 0 && (
             <div className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-px bg-border/50" />
           )}
@@ -200,9 +209,9 @@ const ProblemSection = () => {
   return (
     <Section id="problem">
       <div ref={sectionRef} className="max-w-3xl mx-auto text-center">
-        <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-8">
+        <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
           מרגיש שהעסק עובד אבל לא באמת מסודר?
-        </h2>
+        </RevealText>
 
         <StatsRow />
 

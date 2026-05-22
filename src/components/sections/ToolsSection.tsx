@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import Section from '@/components/Section';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
 import gmailIcon from '@/assets/icons/gmail.png';
 
 // SVG Brand Logos
@@ -152,9 +153,9 @@ const ToolsSection = () => {
     <Section id="tools">
       <div className="max-w-4xl mx-auto text-center">
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">אינטגרציות</p>
-        <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-4">
+        <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-4">
           מתחבר למערכות שכבר יש לך
-        </h2>
+        </RevealText>
         <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground mb-10 max-w-xl mx-auto">
           אין צורך להחליף את כל מה שעובד. המערכת נבנית סביב הכלים הקיימים ומחברת ביניהם בצורה חכמה.
         </p>

@@ -10,6 +10,7 @@ import Navbar from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useEffect, useState, useRef, lazy, Suspense } from "react";
+// Note: gsap + ScrollTrigger kept for Lenis sync only
 import Lenis from "lenis";
 import { AnimatePresence, motion } from "framer-motion";
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
@@ -81,43 +82,8 @@ const pageVariants: import('framer-motion').Variants = {
   exit:    { opacity: 0, transition: { duration: 0.22, ease: 'easeIn' } },
 };
 
-const REVEAL_EXCLUDE = [
-  '[class*="Navbar"]','[class*="navbar"]','[class*="ChatBot"]',
-  '[class*="Popup"]','[class*="Cookie"]','[class*="Accessibility"]',
-  '[class*="TimedCTA"]','[class*="IntroScreen"]','nav','footer',
-  '#hero',
-].join(',');
-
 const RoutesWithTransition = () => {
   const location = useLocation();
-  const revealCtx = useRef<gsap.Context | null>(null);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      revealCtx.current?.revert();
-
-      const elements = Array.from(
-        document.querySelectorAll<Element>('h1, h2, h3, p, button, a[class*="btn"], a[class*="cta"]')
-      ).filter(el => !el.closest(REVEAL_EXCLUDE));
-
-      revealCtx.current = gsap.context(() => {
-        ScrollTrigger.batch(elements, {
-          onEnter: batch => {
-            gsap.fromTo(batch,
-              { clipPath: 'inset(100% 0 0% 0)', y: 22, opacity: 0 },
-              { clipPath: 'inset(0% 0 0% 0)', y: 0, opacity: 1,
-                duration: 0.65, stagger: 0.06, ease: 'power3.out',
-                clearProps: 'all' }
-            );
-          },
-          start: 'top 92%',
-          once: true,
-        });
-      });
-    }, 100);
-
-    return () => { clearTimeout(timer); revealCtx.current?.revert(); };
-  }, [location.key]);
 
   return (
     <AnimatePresence mode="wait">
