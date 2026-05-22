@@ -352,6 +352,19 @@
 }
 
 
+/* Hero image rotation */
+@keyframes heroSpin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.hero-image-spin {
+  animation: heroSpin 20s linear infinite;
+  transform-origin: center center;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-image-spin { animation: none; }
+}
+
 /* AI Energy Core animations */
 @keyframes spinCW {
   from { transform: rotate(0deg); }

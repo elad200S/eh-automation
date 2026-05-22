@@ -101,7 +101,7 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                   <img
                     src={data.hero.heroImage}
                     alt=""
-                    className="w-full max-w-[460px]"
+                    className="w-full max-w-[460px] hero-image-spin"
                   />
                 </div>
               )}
