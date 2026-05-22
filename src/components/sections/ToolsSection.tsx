@@ -1,12 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
+import Section from '@/components/Section';
 import { useIsMobile } from '@/hooks/use-mobile';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import RevealText from '@/components/RevealText';
 import gmailIcon from '@/assets/icons/gmail.png';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-
-gsap.registerPlugin(ScrollTrigger);
 
 // SVG Brand Logos
 const MakeLogo = () => (
@@ -119,7 +116,6 @@ const duplicatedTools = [...tools, ...tools];
 
 const ToolsSection = () => {
   const { ref: subtitleRef, style: subtitleStyle } = useScrollReveal<HTMLParagraphElement>(0);
-  const sectionRef   = useRef<HTMLElement>(null);
   const isMobile     = useIsMobile();
   const [activeTooltip, setActiveTooltip] = useState<number | null>(null);
   const scrollRef    = useRef<HTMLDivElement>(null);
@@ -144,26 +140,8 @@ const ToolsSection = () => {
     return () => { if (animationRef.current) cancelAnimationFrame(animationRef.current); };
   }, []);
 
-  // Desktop pin — hold section while carousel plays
-  useEffect(() => {
-    const section = sectionRef.current;
-    if (!section || window.innerWidth < 768) return;
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        pin: true,
-        pinSpacing: true,
-        anticipatePin: 1,
-        start: 'top top',
-        end: '+=700',
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
   return (
-    <section ref={sectionRef} id="tools" className="py-10 md:py-14">
-      <div className="container">
+    <Section id="tools">
       <div className="max-w-4xl mx-auto text-center">
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">אינטגרציות</p>
         <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-4">
@@ -211,8 +189,7 @@ const ToolsSection = () => {
           </div>
         </div>
       </div>
-      </div>
-    </section>
+    </Section>
   );
 };
 

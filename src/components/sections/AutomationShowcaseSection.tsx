@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useLayoutEffect } from 'react';
 import { cn } from '@/lib/utils';
 import RevealText from '@/components/RevealText';
 import gsap from 'gsap';
@@ -53,18 +53,20 @@ const scenarios = [
 ];
 
 const StepVisual = ({ steps, scenarioKey }: { steps: typeof scenarios[0]['steps']; scenarioKey: number }) => {
-  const [visible, setVisible] = useState<number[]>([]);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // Fade the whole container in when scenario changes — no per-step stagger
+  useLayoutEffect(() => {
+    if (containerRef.current) gsap.set(containerRef.current, { opacity: 0, y: 8 });
+  }, [scenarioKey]);
 
   useEffect(() => {
-    setVisible([]);
-    const timers = steps.map((step, i) =>
-      setTimeout(() => setVisible(prev => [...prev, i]), step.delay)
-    );
-    return () => timers.forEach(clearTimeout);
+    if (!containerRef.current) return;
+    gsap.to(containerRef.current, { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' });
   }, [scenarioKey]);
 
   return (
-    <div className="bg-background rounded-xl border border-border p-5" dir="rtl">
+    <div ref={containerRef} className="bg-background rounded-xl border border-border p-5" dir="rtl">
       <div className="flex items-center gap-2 mb-5">
         <div className="w-3 h-3 rounded-full bg-red-500/70" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
@@ -74,14 +76,7 @@ const StepVisual = ({ steps, scenarioKey }: { steps: typeof scenarios[0]['steps'
 
       <div className="space-y-3">
         {steps.map((step, i) => (
-          <div
-            key={i}
-            className="flex items-center gap-3 transition-all duration-500"
-            style={{
-              opacity:   visible.includes(i) ? 1 : 0,
-              transform: visible.includes(i) ? 'translateX(0)' : 'translateX(10px)',
-            }}
-          >
+          <div key={i} className="flex items-center gap-3">
             <div
               style={{
                 width: 10, height: 10, borderRadius: '50%', flexShrink: 0,
@@ -89,19 +84,15 @@ const StepVisual = ({ steps, scenarioKey }: { steps: typeof scenarios[0]['steps'
               }}
             />
             <span className="text-sm text-foreground/80 font-mono flex-1">{step.label}</span>
-            {visible.includes(i) && (
-              <span className="text-xs font-mono" style={{ color: '#10b981' }}>✓ done</span>
-            )}
+            <span className="text-xs font-mono" style={{ color: '#10b981' }}>✓ done</span>
           </div>
         ))}
       </div>
 
-      {visible.length === steps.length && (
-        <div className="mt-5 pt-4 border-t border-border/50 flex items-center gap-2" dir="rtl">
-          <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-          <span className="text-xs text-green-400 font-mono">כל השלבים הושלמו בהצלחה</span>
-        </div>
-      )}
+      <div className="mt-5 pt-4 border-t border-border/50 flex items-center gap-2" dir="rtl">
+        <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
+        <span className="text-xs text-green-400 font-mono">כל השלבים הושלמו בהצלחה</span>
+      </div>
     </div>
   );
 };

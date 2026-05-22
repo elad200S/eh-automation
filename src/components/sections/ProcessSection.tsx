@@ -34,10 +34,9 @@ const ProcessSection = () => {
 
   useLayoutEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (window.innerWidth < 768) return;
     const cards = cardRefs.current.filter(Boolean) as HTMLDivElement[];
     gsap.set(cards, { opacity: 0, y: 44 });
-    if (lineRef.current) gsap.set(lineRef.current, { scaleX: 0 });
+    if (window.innerWidth >= 768 && lineRef.current) gsap.set(lineRef.current, { scaleX: 0 });
   }, []);
 
   useEffect(() => {
@@ -56,18 +55,25 @@ const ProcessSection = () => {
 
     const ctx = gsap.context(() => {
       if (isMobile) {
-        // Mobile: simple scrub reveal, no pin
-        cards.forEach(card => {
-          gsap.fromTo(card,
-            { opacity: 0, y: 40 },
-            { opacity: 1, y: 0, ease: 'none',
-              scrollTrigger: { trigger: card, start: 'top 88%', end: 'top 62%', scrub: 0.9 } }
-          );
+        // Mobile: pin — cards appear one by one (no connector line)
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            pin: true,
+            pinSpacing: true,
+            anticipatePin: 1,
+            start: 'top top',
+            end: '+=1200',
+            scrub: 1.0,
+          },
         });
+        tl.to(cards[0], { opacity: 1, y: 0, ease: 'none' }, 0.05)
+          .to(cards[1], { opacity: 1, y: 0, ease: 'none' }, 0.38)
+          .to(cards[2], { opacity: 1, y: 0, ease: 'none' }, 0.72);
         return;
       }
 
-      // Desktop: pin — cards appear one by one with scroll
+      // Desktop: pin — cards appear with connector line
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
@@ -80,11 +86,11 @@ const ProcessSection = () => {
         },
       });
 
-      tl.to(cards[0],      { opacity: 1, y: 0, ease: 'none' }, 0.05)
-        .to(lineRef.current, { scaleX: 0.5,     ease: 'none' }, 0.28)
-        .to(cards[1],      { opacity: 1, y: 0, ease: 'none' }, 0.38)
-        .to(lineRef.current, { scaleX: 1,       ease: 'none' }, 0.63)
-        .to(cards[2],      { opacity: 1, y: 0, ease: 'none' }, 0.72);
+      tl.to(cards[0],       { opacity: 1, y: 0, ease: 'none' }, 0.05)
+        .to(lineRef.current, { scaleX: 0.5,      ease: 'none' }, 0.28)
+        .to(cards[1],       { opacity: 1, y: 0, ease: 'none' }, 0.38)
+        .to(lineRef.current, { scaleX: 1,        ease: 'none' }, 0.63)
+        .to(cards[2],       { opacity: 1, y: 0, ease: 'none' }, 0.72);
     });
 
     return () => ctx.revert();
