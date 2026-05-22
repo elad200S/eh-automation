@@ -354,11 +354,11 @@
 
 /* Hero image 3D spin */
 @keyframes heroSpin3D {
-  0%   { transform: perspective(800px) rotateY(0deg); }
-  100% { transform: perspective(800px) rotateY(360deg); }
+  0%   { transform: perspective(1000px) rotateX(15deg) rotateY(0deg); }
+  100% { transform: perspective(1000px) rotateX(15deg) rotateY(360deg); }
 }
 .hero-image-spin {
-  animation: heroSpin3D 6s linear infinite;
+  animation: heroSpin3D 12s linear infinite;
   transform-origin: center center;
 }
 @media (prefers-reduced-motion: reduce) {
