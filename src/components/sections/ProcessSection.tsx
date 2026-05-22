@@ -38,13 +38,12 @@ const ProcessSection = () => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
     if (window.innerWidth < 768) {
-      // Mobile: card 0 visible, others hidden below
       const [c0, c1, c2] = mobileCardRefs.current;
-      if (c0) gsap.set(c0, { opacity: 1, y: 0 });
-      if (c1) gsap.set(c1, { opacity: 0, y: 28 });
-      if (c2) gsap.set(c2, { opacity: 0, y: 28 });
+      // c0 at front, c1 and c2 behind (scaled, invisible)
+      if (c0) gsap.set(c0, { opacity: 1, scale: 1,    zIndex: 30 });
+      if (c1) gsap.set(c1, { opacity: 0, scale: 0.93, zIndex: 20 });
+      if (c2) gsap.set(c2, { opacity: 0, scale: 0.93, zIndex: 10 });
     } else {
-      // Desktop: all cards hidden
       const cards = desktopCardRefs.current.filter(Boolean) as HTMLDivElement[];
       gsap.set(cards, { opacity: 0, y: 44 });
       if (lineRef.current) gsap.set(lineRef.current, { scaleX: 0 });
@@ -70,6 +69,7 @@ const ProcessSection = () => {
         const [c0, c1, c2] = mobileCardRefs.current;
         const [d0, d1, d2] = dotRefs.current;
 
+        // Anchor at 1s so fractions map cleanly to scroll %
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section,
@@ -82,16 +82,26 @@ const ProcessSection = () => {
           },
         });
 
-        // card 0 exits → card 1 enters
-        tl.to(c0, { opacity: 0, y: -28, ease: 'none' }, 0.28)
-          .to(d0, { width: 8,  opacity: 0.25, ease: 'none' }, 0.28)
-          .to(c1, { opacity: 1, y: 0,   ease: 'none' }, 0.33)
-          .to(d1, { width: 24, opacity: 1,    ease: 'none' }, 0.33)
-        // card 1 exits → card 2 enters
-          .to(c1, { opacity: 0, y: -28, ease: 'none' }, 0.61)
-          .to(d1, { width: 8,  opacity: 0.25, ease: 'none' }, 0.61)
-          .to(c2, { opacity: 1, y: 0,   ease: 'none' }, 0.66)
-          .to(d2, { width: 24, opacity: 1,    ease: 'none' }, 0.66);
+        // ── transition 1: c0 sinks back, c1 rises to front ──
+        // c0 shrinks/fades out (goes "behind")
+        tl.to(c0, { scale: 0.82, opacity: 0, ease: 'none', duration: 0.09 }, 0.20)
+          .to(d0, { width: 8, opacity: 0.25, ease: 'none', duration: 0.09 }, 0.20)
+        // z-index crossover: c1 claims the front
+          .to(c0, { zIndex: 5,  duration: 0.001, ease: 'none' }, 0.265)
+          .to(c1, { zIndex: 35, duration: 0.001, ease: 'none' }, 0.265)
+        // c1 grows to front
+          .to(c1, { scale: 1, opacity: 1, ease: 'none', duration: 0.09 }, 0.29)
+          .to(d1, { width: 24, opacity: 1, ease: 'none', duration: 0.09 }, 0.29)
+
+        // ── transition 2: c1 sinks back, c2 rises to front ──
+          .to(c1, { scale: 0.82, opacity: 0, ease: 'none', duration: 0.09 }, 0.55)
+          .to(d1, { width: 8, opacity: 0.25, ease: 'none', duration: 0.09 }, 0.55)
+          .to(c1, { zIndex: 5,  duration: 0.001, ease: 'none' }, 0.605)
+          .to(c2, { zIndex: 35, duration: 0.001, ease: 'none' }, 0.605)
+          .to(c2, { scale: 1, opacity: 1, ease: 'none', duration: 0.09 }, 0.62)
+          .to(d2, { width: 24, opacity: 1, ease: 'none', duration: 0.09 }, 0.62)
+        // pad timeline to 1 full second
+          .to({}, {}, 1.0);
 
         return;
       }
@@ -136,39 +146,58 @@ const ProcessSection = () => {
 
           {/* ── Mobile layout ───────────────────────────────────── */}
           <div className="md:hidden">
-            {/* Step dots indicator */}
+            {/* Step dots */}
             <div className="flex justify-center items-center gap-2 mb-6">
               {steps.map((_, i) => (
                 <div
                   key={i}
                   ref={el => { dotRefs.current[i] = el; }}
-                  className="h-2 rounded-full"
-                  style={{
-                    width:      i === 0 ? 24 : 8,
-                    opacity:    i === 0 ? 1 : 0.25,
-                    background: 'hsl(160,84%,39%)',
-                  }}
+                  className="h-2 rounded-full transition-none"
+                  style={{ width: i === 0 ? 24 : 8, opacity: i === 0 ? 1 : 0.25, background: 'hsl(160,84%,39%)' }}
                 />
               ))}
             </div>
 
-            {/* Cards stacked absolutely — only one visible at a time */}
-            <div className="relative" style={{ minHeight: 216 }}>
+            {/* Card stack — pages visual */}
+            <div className="relative" style={{ minHeight: 224 }}>
+
+              {/* Ghost page 2 — furthest back */}
+              <div
+                className="absolute rounded-2xl border border-border/20 bg-card/25 pointer-events-none"
+                style={{ inset: 0, transform: 'translateY(10px) scale(0.94)', zIndex: 1 }}
+              />
+              {/* Ghost page 1 — middle */}
+              <div
+                className="absolute rounded-2xl border border-border/35 bg-card/40 pointer-events-none"
+                style={{ inset: 0, transform: 'translateY(5px) scale(0.97)', zIndex: 2 }}
+              />
+
+              {/* Real cards */}
               {steps.map((step, index) => {
                 const StepIcon = step.Icon;
                 return (
                   <div
                     key={index}
                     ref={el => { mobileCardRefs.current[index] = el; }}
-                    className="absolute inset-0 bg-card/50 backdrop-blur-sm rounded-2xl border border-border/60 p-6 overflow-hidden"
+                    className="absolute inset-0 rounded-2xl border border-border/60 p-6 overflow-hidden"
+                    style={{
+                      background: 'hsl(var(--card))',
+                      boxShadow: '0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18)',
+                    }}
                   >
+                    {/* Watermark number */}
                     <div
                       className="absolute top-1 right-3 font-mono font-black leading-none pointer-events-none select-none"
-                      style={{ fontSize: 72, color: 'rgba(16,185,129,0.06)', lineHeight: 1 }}
+                      style={{ fontSize: 80, color: 'rgba(16,185,129,0.07)', lineHeight: 1 }}
                     >
                       {step.number}
                     </div>
-                    <div className="relative">
+                    {/* Top accent line */}
+                    <div
+                      className="absolute top-0 left-6 right-6 h-px"
+                      style={{ background: 'linear-gradient(to right, transparent, hsl(160,84%,39%,0.5), transparent)' }}
+                    />
+                    <div className="relative pt-2">
                       <div className="flex items-center gap-3 mb-4">
                         <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
                           <StepIcon className="w-5 h-5 text-primary" />
