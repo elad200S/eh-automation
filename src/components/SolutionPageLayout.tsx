@@ -1,7 +1,7 @@
 import { ArrowLeft, CheckCircle2, Users, Zap, Target } from 'lucide-react';
 import WebsiteAuditTool from '@/components/WebsiteAuditTool';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SEOHead, BreadcrumbSchema, FAQSchema } from '@/lib/seo';
@@ -20,6 +20,7 @@ export interface SolutionPageData {
     headline: string;
     subtext: string;
     heroImage?: string;
+    heroBackMessages?: string[];
   };
   whoIsItFor: {
     title: string;
@@ -53,6 +54,21 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
   const { openPopup } = useContactPopup();
   const faqItems = data?.faq?.items ?? [];
   const hasFaq = faqItems.length > 0;
+  const backMessages = data.hero.heroBackMessages ?? [];
+  const [msgIndex, setMsgIndex] = useState(0);
+  const [msgVisible, setMsgVisible] = useState(true);
+
+  useEffect(() => {
+    if (backMessages.length < 2) return;
+    const interval = setInterval(() => {
+      setMsgVisible(false);
+      setTimeout(() => {
+        setMsgIndex(i => (i + 1) % backMessages.length);
+        setMsgVisible(true);
+      }, 400);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, [backMessages.length]);
 
   return (
     <>
@@ -105,7 +121,20 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                         alt=""
                         className="hero-3d-front"
                       />
-                      <div className="hero-3d-back" />
+                      <div className="hero-3d-back flex items-center justify-center p-8">
+                        {backMessages.length > 0 && (
+                          <p
+                            className="text-center text-lg font-semibold leading-relaxed transition-opacity duration-400"
+                            style={{
+                              color: 'hsl(160 84% 55%)',
+                              opacity: msgVisible ? 1 : 0,
+                              direction: 'rtl',
+                            }}
+                          >
+                            {backMessages[msgIndex]}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
                 </div>

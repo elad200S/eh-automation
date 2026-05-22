@@ -9,6 +9,12 @@ const data: SolutionPageData = {
     headline: 'הפכו את ה-WhatsApp למנוע מכירות ושירות',
     subtext: 'לקוח שלח הודעה ב-11 בלילה. הוא קיבל מענה תוך דקה. למחרת — עסקה סגורה. זה מה שמערכת WhatsApp חכמה עושה לעסק שלך.',
     heroImage: '/whatsapp-automation-hero.png',
+    heroBackMessages: [
+      'מענה אוטומטי תוך פחות מדקה',
+      'לידים שלא נופלים בין הכיסאות',
+      'שיחות שמסתיימות בעסקאות',
+      'הלקוח מרגיש שיש מישהו תמיד שם',
+    ],
   },
   whoIsItFor: {
     title: 'למי זה מתאים',
