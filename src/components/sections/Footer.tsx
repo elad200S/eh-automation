@@ -1,7 +1,10 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+
+const NEWSLETTER_WEBHOOK = 'https://script.google.com/macros/s/AKfycbzKNGnoiCqfq7qBFTS1QvNbbSxROFKEjFtfX-aZ-qaudOa34Ov0PUwgw5asEa1yUWUoyg/exec';
 
 const footerNav = [
   {
@@ -59,6 +62,27 @@ const socialLinks = [
 const Footer = () => {
   const { openPopup } = useContactPopup();
   const { ref, style } = useScrollReveal(0);
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleNewsletter = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    const formData = new URLSearchParams();
+    formData.append('email', email);
+    formData.append('phone', phone);
+    await fetch(NEWSLETTER_WEBHOOK, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: formData.toString(),
+    }).catch(() => {});
+    setLoading(false);
+    setSubmitted(true);
+  };
+
   return (
     <footer className="bg-muted/50 border-t border-border">
       <div ref={ref} style={style} className="container py-12">
@@ -126,6 +150,43 @@ const Footer = () => {
               </nav>
             </div>
           ))}
+        </div>
+
+        {/* Newsletter */}
+        <div className="mt-10 pt-8 border-t border-border">
+          <div className="max-w-md">
+            <h4 className="text-sm font-semibold text-foreground mb-1">הרשמה לעדכונים</h4>
+            <p className="text-xs text-muted-foreground mb-4">טיפים ואוטומציות ישירות לתיבת הדואר שלך.</p>
+            {submitted ? (
+              <p className="text-sm text-primary font-medium">תודה! נהיה בקשר 🙌</p>
+            ) : (
+              <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="אימייל"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="flex-1 px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                />
+                <input
+                  type="tel"
+                  required
+                  placeholder="טלפון"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="flex-1 px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="px-4 py-2 text-sm font-medium rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60 whitespace-nowrap"
+                >
+                  {loading ? '...' : 'שלח'}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* CTA row */}
