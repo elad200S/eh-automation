@@ -2,10 +2,12 @@ import { lazy, Suspense } from 'react';
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import ParticleField from '@/components/ParticleField';
 import ScrollOrb from '@/components/ScrollOrb';
+import SpotlightCursor from '@/components/CustomCursor';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
 const ProcessSection = lazy(() => import('@/components/sections/ProcessSection'));
+const AutomationSolutionsSection = lazy(() => import('@/components/sections/AutomationSolutionsSection'));
 const DemoVideoSection = lazy(() => import('@/components/sections/DemoVideoSection'));
 const AutomationShowcaseSection = lazy(() => import('@/components/sections/AutomationShowcaseSection'));
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
@@ -14,6 +16,7 @@ const SolutionsOverviewSection = lazy(() => import('@/components/sections/Soluti
 const AboutSection = lazy(() => import('@/components/sections/AboutSection'));
 const FAQSection = lazy(() => import('@/components/sections/FAQSection'));
 const ContactSection = lazy(() => import('@/components/sections/ContactSection'));
+const NewsletterSection = lazy(() => import('@/components/sections/NewsletterSection'));
 const Footer = lazy(() => import('@/components/sections/Footer'));
 
 const Index = () => {
@@ -28,11 +31,13 @@ const Index = () => {
       
       <ParticleField />
       <ScrollOrb />
+      <SpotlightCursor />
       <main className="relative z-10 bg-transparent min-h-screen">
         <HeroSection />
         <ProblemSection />
         <Suspense fallback={null}>
           <ProcessSection />
+          <AutomationSolutionsSection />
           <DemoVideoSection />
           <AutomationShowcaseSection />
           <ToolsSection />
@@ -41,6 +46,7 @@ const Index = () => {
           <AboutSection />
           <FAQSection />
           <ContactSection />
+          <NewsletterSection />
           <Footer />
         </Suspense>
       </main>
