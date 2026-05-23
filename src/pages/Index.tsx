@@ -16,7 +16,6 @@ const SolutionsOverviewSection = lazy(() => import('@/components/sections/Soluti
 const AboutSection = lazy(() => import('@/components/sections/AboutSection'));
 const FAQSection = lazy(() => import('@/components/sections/FAQSection'));
 const ContactSection = lazy(() => import('@/components/sections/ContactSection'));
-const NewsletterSection = lazy(() => import('@/components/sections/NewsletterSection'));
 const Footer = lazy(() => import('@/components/sections/Footer'));
 
 const Index = () => {
@@ -46,7 +45,6 @@ const Index = () => {
           <AboutSection />
           <FAQSection />
           <ContactSection />
-          <NewsletterSection />
           <Footer />
         </Suspense>
       </main>
