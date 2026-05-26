@@ -118,8 +118,13 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                     <div className="hero-3d-card">
                       <img
                         src={data.hero.heroImage}
-                        alt=""
+                        alt={data.hero.headline}
                         className="hero-3d-front"
+                        width={920}
+                        height={920}
+                        loading="eager"
+                        fetchPriority="high"
+                        decoding="async"
                       />
                       <div className="hero-3d-back flex items-center justify-center p-8">
                         {backMessages.length > 0 && (
