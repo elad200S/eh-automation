@@ -62,7 +62,7 @@ export default function RevealText({
   }, []);
 
   return (
-    // @ts-expect-error — dynamic tag
+    
     <Tag ref={containerRef} className={className}>
       {words.map((word, i) => (
         <span
