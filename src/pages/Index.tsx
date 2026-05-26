@@ -36,7 +36,7 @@ const Index = () => {
         <ProblemSection />
         <Suspense fallback={null}>
           <ProcessSection />
-          <AutomationSolutionsSection />
+          
           <DemoVideoSection />
           <AutomationShowcaseSection />
           <ToolsSection />
