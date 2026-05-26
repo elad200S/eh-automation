@@ -94,17 +94,25 @@ const HeroSection = () => {
         .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, '-=0.45')
         .to(scrollHintRef.current,{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
 
-      // Scrub fade-out as user scrolls away — reversible
-      gsap.to(contentRef.current, {
-        opacity: 0.4,
-        y: -30,
-        ease: 'none',
+      // Per-word cascade exit — each word sinks back through its overflow-hidden mask
+      const exitWords = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
+      const exitTl = gsap.timeline({
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
-          end: '+=380',
-          scrub: true,
+          end: '+=520',
+          scrub: 1.4,
         },
+      });
+
+      exitTl.to(
+        [eyebrowRef.current, subtitleRef.current, ctaRef.current, scrollHintRef.current],
+        { opacity: 0, y: 44, ease: 'none', duration: 0.4 },
+        0
+      );
+
+      exitWords.forEach((word, i) => {
+        exitTl.to(word, { y: '115%', ease: 'none', duration: 0.45 }, i * 0.08);
       });
     }, sectionRef);
 
