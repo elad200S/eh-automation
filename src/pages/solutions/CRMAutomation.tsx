@@ -8,7 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / אוטומציית CRM',
     headline: 'CRM שעובד בשבילך, לא נגדך',
     subtext: 'בנייה והטמעה של תהליכי CRM אוטומטיים שמוודאים שאף ליד לא נופל בין הכיסאות, והצוות שלך תמיד יודע מה הצעד הבא.',
-    heroImage: '/crm-automation-hero.png',
+    heroImage: '/crm-automation-hero.webp',
     heroBackMessages: [
       'הידעת? בעל עסק מפספס בממוצע 10 לידים בשבוע רק בגלל חוסר מעקב',
       'הידעת? 80% מהמכירות דורשות לפחות 5 נגיעות — רוב העסקים מוותרים אחרי 2',

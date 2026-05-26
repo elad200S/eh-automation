@@ -1,5 +1,5 @@
 import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageLayout';
-import webDevHero from '@/assets/web-development-hero.png';
+import webDevHero from '@/assets/web-development-hero.webp';
 
 const data: SolutionPageData = {
   slug: 'solutions/web-development',

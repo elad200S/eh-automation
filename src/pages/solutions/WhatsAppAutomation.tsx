@@ -8,7 +8,7 @@ const data: SolutionPageData = {
     label: 'פתרונות / אוטומציית WhatsApp',
     headline: 'הפכו את ה-WhatsApp למנוע מכירות ושירות',
     subtext: 'לקוח שלח הודעה ב-11 בלילה. הוא קיבל מענה תוך דקה. למחרת — עסקה סגורה. זה מה שמערכת WhatsApp חכמה עושה לעסק שלך.',
-    heroImage: '/whatsapp-automation-hero.png',
+    heroImage: '/whatsapp-automation-hero.webp',
     heroBackMessages: [
       'הידעת? 98% מהודעות WhatsApp נפתחות תוך 3 דקות — לעומת 20% בלבד באימייל',
       'הידעת? עסקים שמגיבים ב-WhatsApp תוך דקה סוגרים 40% יותר עסקאות',
