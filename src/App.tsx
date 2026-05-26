@@ -1,6 +1,5 @@
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import CustomCursor from '@/components/CustomCursor';
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import ChatBot from "@/components/ChatBot/ChatBot";
@@ -162,7 +161,6 @@ const AppInner = () => {
 
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <CustomCursor />
       <ScrollToTop />
       <ErrorBoundary
         fallback={

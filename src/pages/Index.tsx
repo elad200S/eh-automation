@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { SEOHead, OrganizationSchema } from '@/lib/seo';
 import ParticleField from '@/components/ParticleField';
 import ScrollOrb from '@/components/ScrollOrb';
-import SpotlightCursor from '@/components/CustomCursor';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
 
@@ -30,7 +29,6 @@ const Index = () => {
       
       <ParticleField />
       <ScrollOrb />
-      <SpotlightCursor />
       <main className="relative z-10 bg-transparent min-h-screen">
         <HeroSection />
         <ProblemSection />
