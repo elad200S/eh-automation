@@ -34,9 +34,8 @@ const MAX_MESSAGES_PER_MINUTE = 10;
 const MAX_INPUT_LENGTH = 1500;
 const MAX_HISTORY = 30;
 
-// Build URL/key from the supabase client to avoid undefined env vars at runtime
-const SUPABASE_URL = (supabase as any).supabaseUrl as string;
-const SUPABASE_KEY = (supabase as any).supabaseKey as string;
+const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) ?? "https://dgsuukvywkxoecrpwddh.supabase.co";
+const SUPABASE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnc3V1a3Z5d2t4b2VjcnB3ZGRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTQ2OTEsImV4cCI6MjA4MjU3MDY5MX0.0TTLLjD6Zp-0M4hpe9b6BZIG5wtkw1npd5sZ7EXm2cg";
 const CHAT_URL = `${SUPABASE_URL}/functions/v1/chat`;
 
 export function useChatBot() {
