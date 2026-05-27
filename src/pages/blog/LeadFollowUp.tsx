@@ -14,6 +14,7 @@ const LeadFollowUp = () => {
         title="למה הלידים שלך לא סוגרים — ואיך פולו-אפ אוטומטי עוזר | EH Automation"
         description="הסיבה האמיתית שלידים נעלמים — וסדר פעולות פשוט שעוזר לסגור יותר, בלי מאמץ נוסף."
         path="/blog/lead-follow-up"
+        type="article"
       />
       <BreadcrumbSchema items={[
         { name: 'בית', path: '/' },

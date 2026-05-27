@@ -14,6 +14,7 @@ const AutomationProcesses = () => {
         title="5 תהליכים שכל עסק קטן צריך לאטמט היום | EH Automation"
         description="סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע."
         path="/blog/5-automation-processes"
+        type="article"
       />
       <BreadcrumbSchema items={[
         { name: 'בית', path: '/' },
