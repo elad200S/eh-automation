@@ -102,6 +102,14 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
   };
 
   const handleLeadSubmit = (name: string, phone: string) => {
+    // Send to Make.com webhook (fire-and-forget)
+    fetch('https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ full_name: name, phone, form_type: 'chatbot' }),
+    }).catch(() => {});
+
+    // Also open WhatsApp with pre-filled message
     const text = encodeURIComponent(`שלום אלעד, שמי ${name}. מספרי ${phone}. דיברתי עם הבוט שלך ואשמח לשמוע עוד!`);
     window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${text}`, '_blank');
   };
@@ -176,6 +184,8 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
               content={message.content}
               showQuickReplies={message.showQuickReplies}
               showLeadForm={message.showLeadForm}
+              quickReplies={message.quickReplies}
+              showWhatsApp={message.showWhatsApp}
               onQuickReply={handleQuickReply}
               onLeadSubmit={handleLeadSubmit}
               isLoading={isLoading}

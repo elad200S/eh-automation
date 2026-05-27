@@ -8,6 +8,8 @@ interface ChatMessageProps {
   content: string;
   showQuickReplies?: boolean;
   showLeadForm?: boolean;
+  quickReplies?: string[];
+  showWhatsApp?: boolean;
   onQuickReply?: (text: string) => void;
   onLeadSubmit?: (name: string, phone: string) => void;
   isLoading?: boolean;
@@ -37,7 +39,7 @@ const linkifyContent = (text: string) => {
   });
 };
 
-const ChatMessage = memo(({ role, content, showQuickReplies, showLeadForm, onQuickReply, onLeadSubmit, isLoading }: ChatMessageProps) => {
+const ChatMessage = memo(({ role, content, showQuickReplies, showLeadForm, quickReplies, showWhatsApp, onQuickReply, onLeadSubmit, isLoading }: ChatMessageProps) => {
   const isUser = role === 'user';
   const linkedContent = useMemo(() => linkifyContent(content), [content]);
 
@@ -54,6 +56,31 @@ const ChatMessage = memo(({ role, content, showQuickReplies, showLeadForm, onQui
         <p className="text-sm whitespace-pre-wrap leading-relaxed">{linkedContent}</p>
         {showQuickReplies && onQuickReply && (
           <QuickReplies onSelect={onQuickReply} disabled={isLoading} />
+        )}
+        {quickReplies && quickReplies.length > 0 && onQuickReply && (
+          <div className="flex flex-col gap-2 mt-3">
+            {quickReplies.map((text, i) => (
+              <button
+                key={i}
+                onClick={() => onQuickReply(text)}
+                disabled={isLoading}
+                className="text-right px-3 py-2 bg-primary/10 hover:bg-primary/20 text-foreground text-sm rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {text}
+              </button>
+            ))}
+          </div>
+        )}
+        {showWhatsApp && (
+          <a
+            href="https://wa.link/kw53y2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-3 flex items-center justify-center gap-2 w-full py-2 px-4 bg-[#25D366] hover:bg-[#1fba59] text-white text-sm font-medium rounded-lg transition-colors"
+          >
+            <img src="/whatsapp-icon.png" alt="" className="w-4 h-4 object-cover rounded" />
+            דבר עם אלעד ישירות בוואטסאפ
+          </a>
         )}
         {showLeadForm && onLeadSubmit && (
           <LeadCaptureForm onSubmit={onLeadSubmit} />

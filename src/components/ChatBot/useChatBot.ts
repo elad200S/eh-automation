@@ -1,5 +1,4 @@
 import { useState, useCallback, useRef, useEffect } from 'react';
-import { supabase } from '@/integrations/supabase/client';
 
 export interface Message {
   id: string;
@@ -7,7 +6,11 @@ export interface Message {
   content: string;
   showQuickReplies?: boolean;
   showLeadForm?: boolean;
+  quickReplies?: string[];
+  showWhatsApp?: boolean;
 }
+
+// ─── Script ───────────────────────────────────────────────────────────────────
 
 const INITIAL_MESSAGE: Message = {
   id: 'welcome',
@@ -16,27 +19,80 @@ const INITIAL_MESSAGE: Message = {
   showQuickReplies: true,
 };
 
+type Step = {
+  botMessages: string[];
+  quickReplies?: string[];
+  showLeadForm?: boolean;
+  showWhatsApp?: boolean;
+};
+
+const SCRIPT: Record<string, Step[]> = {
+  'יש לי תהליך ידני שמבזבז זמן': [
+    {
+      botMessages: ['איזה תהליך? לדוגמה — הכנסת נתונים, מעקב לידים, שליחת עדכונים ללקוחות...'],
+      quickReplies: ['הכנסת נתונים ידנית', 'מעקב אחרי לידים', 'עדכונים ללקוחות', 'משהו אחר'],
+    },
+    {
+      botMessages: [
+        'נשמע קלאסי 😅\nרוב העסקים שמגיעים אלינו מבזבזים 5-10 שעות בשבוע בדיוק על זה.',
+        'אפשר לאוטמט את זה לגמרי — ולפנות לך את הזמן לדברים שבאמת מניעים את העסק.',
+        'רוצה שאלעד יציג לך בדיוק איך? 15 דקות ומקבלים תמונה ברורה.',
+      ],
+      showLeadForm: true,
+      showWhatsApp: true,
+    },
+  ],
+  'אני רוצה יותר לידים בלי כאב ראש': [
+    {
+      botMessages: ['מאיפה מגיעים הלידים שלך היום? (אתר, פייסבוק, המלצות, כמה מהם?)'],
+      quickReplies: ['בעיקר מאתר / פייסבוק', 'בעיקר מהמלצות', 'ממקורות שונים', 'עדיין בונה את זה'],
+    },
+    {
+      botMessages: [
+        'מעולה — זה בדיוק המקום שבו אוטומציה עושה הכי הרבה הבדל.',
+        'מעקב אוטומטי, תזכורות, חיבור ל-CRM — הכל בלי לזכור ידנית.',
+        'רוצה לראות מה מתאים לעסק שלך? שיחה של 15 דקות עם אלעד וכבר יש הצעה.',
+      ],
+      showLeadForm: true,
+      showWhatsApp: true,
+    },
+  ],
+  'אני רוצה סדר ודוחות בעסק': [
+    {
+      botMessages: ['באיזה תחום הכי חסר לך סדר? מכירות, פיננסי, לקוחות, משהו אחר?'],
+      quickReplies: ['מכירות ולידים', 'פיננסים והוצאות', 'ניהול לקוחות', 'הכל ביחד 😅'],
+    },
+    {
+      botMessages: [
+        'ברור — בלי נתונים מסודרים קשה לקבל החלטות.',
+        'דשבורד חי, דוחות אוטומטיים, התראות — הכל אפשרי בלי לגעת בזה.',
+        'אלעד יכול למפות את זה בדיוק לעסק שלך. 15 דקות, לא מתחייבים.',
+      ],
+      showLeadForm: true,
+      showWhatsApp: true,
+    },
+  ],
+};
+
+// Generic fallback for free-text or unrecognized inputs
+const FALLBACK_STEP: Step = {
+  botMessages: [
+    'מעניין! כל עסק שונה — לכן אנחנו מתאימים אוטומציה ספציפית לך.',
+    'אלעד יכול לשמוע ממך 15 דקות ולתת תמונה ברורה של מה אפשרי.',
+  ],
+  showLeadForm: true,
+  showWhatsApp: true,
+};
+
 const NUDGE_MESSAGE: Message = {
   id: 'nudge',
   role: 'assistant',
   content: 'רוב העסקים שמגיעים לפה מבזבזים זמן על תהליכים ידניים.\nרוצה לבדוק אם זה גם המצב אצלך?',
 };
 
-const LEAD_CAPTURE_MESSAGE: Message = {
-  id: 'lead-capture',
-  role: 'assistant',
-  content: 'נשמע שיש פה פוטנציאל 💡\nרוצה שאלעד יחזור אליך לשיחה קצרה? השאר שם ומספר:',
-  showLeadForm: true,
-};
-
 const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', 'reset', 'new chat', 'פתיחת שיחה חדשה'];
-const MAX_MESSAGES_PER_MINUTE = 10;
-const MAX_INPUT_LENGTH = 1500;
-const MAX_HISTORY = 30;
 
-const SUPABASE_URL = (import.meta.env.VITE_SUPABASE_URL as string) ?? "https://dgsuukvywkxoecrpwddh.supabase.co";
-const SUPABASE_KEY = (import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY as string) ?? "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnc3V1a3Z5d2t4b2VjcnB3ZGRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTQ2OTEsImV4cCI6MjA4MjU3MDY5MX0.0TTLLjD6Zp-0M4hpe9b6BZIG5wtkw1npd5sZ7EXm2cg";
-const CHAT_URL = `${SUPABASE_URL}/functions/v1/chat`;
+// ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useChatBot() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,21 +100,19 @@ export function useChatBot() {
   const [isOpen, setIsOpen] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
   const [showNudge, setShowNudge] = useState(false);
-  const messageTimestamps = useRef<number[]>([]);
-  const nudgeTimerRef = useRef<number | null>(null);
-  const botResponseCountRef = useRef(0);
-  const leadShownRef = useRef(false);
 
-  // Setup nudge timer - show after 20-30 seconds if chat not opened
+  // Track where we are in the script per topic
+  const scriptStateRef = useRef<{ topic: string; stepIndex: number } | null>(null);
+  const nudgeTimerRef = useRef<number | null>(null);
+
+  // Nudge timer
   useEffect(() => {
     if (!hasBeenOpened && !showNudge) {
-      const delay = 20000 + Math.random() * 10000; // 20-30 seconds
+      const delay = 20000 + Math.random() * 10000;
       nudgeTimerRef.current = window.setTimeout(() => {
         if (!hasBeenOpened) {
           setShowNudge(true);
-          // Add nudge message to chat (will be visible when opened)
           setMessages(prev => {
-            // Only add if not already there
             if (!prev.some(m => m.id === 'nudge')) {
               return [...prev, { ...NUDGE_MESSAGE, id: `nudge-${Date.now()}` }];
             }
@@ -67,26 +121,15 @@ export function useChatBot() {
         }
       }, delay);
     }
-
     return () => {
-      if (nudgeTimerRef.current) {
-        clearTimeout(nudgeTimerRef.current);
-      }
+      if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
     };
   }, [hasBeenOpened, showNudge]);
-
-  const checkRateLimit = useCallback((): boolean => {
-    const now = Date.now();
-    const oneMinuteAgo = now - 60000;
-    messageTimestamps.current = messageTimestamps.current.filter(t => t > oneMinuteAgo);
-    return messageTimestamps.current.length < MAX_MESSAGES_PER_MINUTE;
-  }, []);
 
   const resetChat = useCallback(() => {
     setMessages([]);
     setIsLoading(false);
-    botResponseCountRef.current = 0;
-    leadShownRef.current = false;
+    scriptStateRef.current = null;
   }, []);
 
   const isResetCommand = useCallback((text: string): boolean => {
@@ -94,192 +137,100 @@ export function useChatBot() {
     return RESET_PHRASES.some(phrase => normalized === phrase.toLowerCase());
   }, []);
 
-  const sendMessage = useCallback(async (text: string) => {
+  // Deliver bot messages one by one with a small delay (typing feel)
+  const deliverBotMessages = useCallback((steps: string[], extras: Partial<Message> = {}) => {
+    setIsLoading(true);
+    steps.forEach((content, i) => {
+      const isLast = i === steps.length - 1;
+      setTimeout(() => {
+        setMessages(prev => [
+          ...prev,
+          {
+            id: `bot-${Date.now()}-${i}`,
+            role: 'assistant',
+            content,
+            ...(isLast ? extras : {}),
+          },
+        ]);
+        if (isLast) setIsLoading(false);
+      }, 600 + i * 900);
+    });
+  }, []);
+
+  const sendMessage = useCallback((text: string) => {
     const trimmedText = text.trim();
     if (!trimmedText || isLoading) return;
 
-    // Check for reset command
     if (isResetCommand(trimmedText)) {
       resetChat();
       return;
     }
 
-    // Rate limit check
-    if (!checkRateLimit()) {
-      const errorMessage: Message = {
-        id: `error-${Date.now()}`,
-        role: 'assistant',
-        content: 'לאט לאט... נסה שוב בעוד כמה שניות',
-      };
-      setMessages(prev => [...prev, errorMessage]);
-      return;
-    }
-
-    // Validate input length
-    const validatedText = trimmedText.slice(0, MAX_INPUT_LENGTH);
-
     // Add user message
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: 'user',
-      content: validatedText,
+      content: trimmedText,
     };
+    setMessages(prev => [...prev, userMessage]);
 
-    setMessages(prev => {
-      const updated = [...prev, userMessage];
-      // Limit history
-      if (updated.length > MAX_HISTORY) {
-        return updated.slice(-MAX_HISTORY);
+    // Determine next script step
+    const state = scriptStateRef.current;
+
+    if (!state) {
+      // First message — look up topic in script
+      const topic = Object.keys(SCRIPT).find(k => k === trimmedText);
+      if (topic) {
+        const step = SCRIPT[topic][0];
+        scriptStateRef.current = { topic, stepIndex: 0 };
+        deliverBotMessages(step.botMessages, {
+          quickReplies: step.quickReplies,
+          showLeadForm: step.showLeadForm,
+          showWhatsApp: step.showWhatsApp,
+        });
+      } else {
+        // Free-text input on first message — use fallback
+        scriptStateRef.current = { topic: '__fallback__', stepIndex: 0 };
+        deliverBotMessages(FALLBACK_STEP.botMessages, {
+          showLeadForm: FALLBACK_STEP.showLeadForm,
+          showWhatsApp: FALLBACK_STEP.showWhatsApp,
+        });
       }
-      return updated;
-    });
-
-    messageTimestamps.current.push(Date.now());
-    setIsLoading(true);
-
-    try {
-      // Prepare messages for API (exclude welcome message quick replies flag)
-      const apiMessages = messages
-        .filter(m => m.id !== 'welcome' || m.content)
-        .map(m => ({ role: m.role, content: m.content }))
-        .concat([{ role: 'user' as const, content: validatedText }]);
-
-      const response = await fetch(CHAT_URL, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_KEY,
-        },
-        body: JSON.stringify({ messages: apiMessages }),
-      });
-
-      if (!response.ok) {
-        let errorText = 'משהו השתבש, נסה שוב';
-        if (response.status === 429) {
-          errorText = 'יותר מדי בקשות, נסה שוב בעוד דקה';
-        } else if (response.status === 402) {
-          errorText = 'השירות לא זמין כרגע';
-        }
-
-        const errorMessage: Message = {
-          id: `error-${Date.now()}`,
-          role: 'assistant',
-          content: errorText,
-        };
-        setMessages(prev => [...prev, errorMessage]);
-        setIsLoading(false);
-        return;
-      }
-
-      // Handle streaming response
-      if (!response.body) {
-        throw new Error('No response body');
-      }
-
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
-      let textBuffer = '';
-      let assistantContent = '';
-      const assistantId = `assistant-${Date.now()}`;
-
-      // Add empty assistant message
-      setMessages(prev => [...prev, { id: assistantId, role: 'assistant', content: '' }]);
-
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
-
-        textBuffer += decoder.decode(value, { stream: true });
-
-        let newlineIndex: number;
-        while ((newlineIndex = textBuffer.indexOf('\n')) !== -1) {
-          let line = textBuffer.slice(0, newlineIndex);
-          textBuffer = textBuffer.slice(newlineIndex + 1);
-
-          if (line.endsWith('\r')) line = line.slice(0, -1);
-          if (line.startsWith(':') || line.trim() === '') continue;
-          if (!line.startsWith('data: ')) continue;
-
-          const jsonStr = line.slice(6).trim();
-          if (jsonStr === '[DONE]') break;
-
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantContent += content;
-              setMessages(prev =>
-                prev.map(m =>
-                  m.id === assistantId ? { ...m, content: assistantContent } : m
-                )
-              );
-            }
-          } catch {
-            // Incomplete JSON, put back and wait
-            textBuffer = line + '\n' + textBuffer;
-            break;
-          }
-        }
-      }
-
-      // Final flush
-      if (textBuffer.trim()) {
-        for (let raw of textBuffer.split('\n')) {
-          if (!raw) continue;
-          if (raw.endsWith('\r')) raw = raw.slice(0, -1);
-          if (raw.startsWith(':') || raw.trim() === '') continue;
-          if (!raw.startsWith('data: ')) continue;
-          const jsonStr = raw.slice(6).trim();
-          if (jsonStr === '[DONE]') continue;
-          try {
-            const parsed = JSON.parse(jsonStr);
-            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
-            if (content) {
-              assistantContent += content;
-              setMessages(prev =>
-                prev.map(m =>
-                  m.id === assistantId ? { ...m, content: assistantContent } : m
-                )
-              );
-            }
-          } catch {
-            /* ignore partial leftovers */
-          }
-        }
-      }
-
-      // After 3rd bot response, show lead capture form
-      botResponseCountRef.current += 1;
-      if (botResponseCountRef.current >= 3 && !leadShownRef.current) {
-        leadShownRef.current = true;
-        setMessages(prev => [
-          ...prev,
-          { ...LEAD_CAPTURE_MESSAGE, id: `lead-${Date.now()}` },
-        ]);
-      }
-
-    } catch (error) {
-      console.error('Chat error:', error);
-      const errorMessage: Message = {
-        id: `error-${Date.now()}`,
-        role: 'assistant',
-        content: 'משהו השתבש, נסה שוב',
-      };
-      setMessages(prev => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
+      return;
     }
-  }, [messages, isLoading, checkRateLimit, isResetCommand, resetChat]);
+
+    // Subsequent messages — advance script
+    const { topic, stepIndex } = state;
+
+    if (topic === '__fallback__') {
+      // Already showed fallback — just show closing message
+      deliverBotMessages(['מעולה! אלעד יחזור אליך בהקדם 👍']);
+      return;
+    }
+
+    const steps = SCRIPT[topic];
+    const nextIndex = stepIndex + 1;
+
+    if (nextIndex < steps.length) {
+      scriptStateRef.current = { topic, stepIndex: nextIndex };
+      const step = steps[nextIndex];
+      deliverBotMessages(step.botMessages, {
+        quickReplies: step.quickReplies,
+        showLeadForm: step.showLeadForm,
+        showWhatsApp: step.showWhatsApp,
+      });
+    } else {
+      // End of script
+      deliverBotMessages(['תודה! אלעד יחזור אליך בהקדם 👍']);
+    }
+  }, [isLoading, isResetCommand, resetChat, deliverBotMessages]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen(prev => {
       const newState = !prev;
       if (newState) {
         setHasBeenOpened(true);
-        // Clear nudge timer when opened
-        if (nudgeTimerRef.current) {
-          clearTimeout(nudgeTimerRef.current);
-        }
+        if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
       }
       return newState;
     });
@@ -288,9 +239,7 @@ export function useChatBot() {
   const openChat = useCallback(() => {
     setIsOpen(true);
     setHasBeenOpened(true);
-    if (nudgeTimerRef.current) {
-      clearTimeout(nudgeTimerRef.current);
-    }
+    if (nudgeTimerRef.current) clearTimeout(nudgeTimerRef.current);
   }, []);
 
   return {
@@ -302,6 +251,6 @@ export function useChatBot() {
     resetChat,
     toggleOpen,
     openChat,
-    maxInputLength: MAX_INPUT_LENGTH,
+    maxInputLength: 500,
   };
 }
