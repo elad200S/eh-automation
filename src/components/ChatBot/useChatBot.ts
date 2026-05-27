@@ -148,7 +148,6 @@ export function useChatBot() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${SUPABASE_KEY}`,
           'apikey': SUPABASE_KEY,
         },
         body: JSON.stringify({ messages: apiMessages }),
