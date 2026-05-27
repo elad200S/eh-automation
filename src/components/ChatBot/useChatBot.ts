@@ -95,7 +95,7 @@ const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', '
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useChatBot() {
-  const [messages, setMessages] = useState<Message[]>([]);
+  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
@@ -127,7 +127,7 @@ export function useChatBot() {
   }, [hasBeenOpened, showNudge]);
 
   const resetChat = useCallback(() => {
-    setMessages([]);
+    setMessages([INITIAL_MESSAGE]);
     setIsLoading(false);
     scriptStateRef.current = null;
   }, []);
