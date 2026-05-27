@@ -25,7 +25,6 @@ const AutomationProcesses = () => {
         title="5 תהליכים שכל עסק קטן צריך לאטמט היום"
         description="סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע."
         path="/blog/5-automation-processes"
-        type="article"
         datePublished="2026-04-08"
       />
 

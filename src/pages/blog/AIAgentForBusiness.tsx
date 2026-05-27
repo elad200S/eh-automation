@@ -25,7 +25,6 @@ const AIAgentForBusiness = () => {
         title="סוכן AI לעסק: מתי זה שווה ומתי לא"
         description="מדריך מעשי שעוזר לבעלי עסקים להבין אם סוכן AI מתאים לעסק שלהם – ומה הציפיות הריאליות."
         path="/blog/ai-agent-for-business"
-        type="article"
         datePublished="2026-04-08"
       />
 

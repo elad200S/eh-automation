@@ -25,7 +25,6 @@ const LeadFollowUp = () => {
         title="למה הלידים שלך לא סוגרים — ואיך פולו-אפ אוטומטי עוזר"
         description="הסיבה האמיתית שלידים נעלמים — וסדר פעולות פשוט שעוזר לסגור יותר, בלי מאמץ נוסף."
         path="/blog/lead-follow-up"
-        type="article"
         datePublished="2026-05-08"
       />
 

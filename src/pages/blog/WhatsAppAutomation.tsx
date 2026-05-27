@@ -25,7 +25,6 @@ const WhatsAppAutomation = () => {
         title="WhatsApp לעסק: מה לאטמט ומה להשאיר אנושי"
         description="מדריך מעשי לאוטומציית WhatsApp לעסקים — אילו הודעות אפשר לאטמט ואילו חייבות להישאר אנושיות."
         path="/blog/whatsapp-automation"
-        type="article"
         datePublished="2026-05-08"
       />
 

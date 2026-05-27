@@ -25,7 +25,6 @@ const HowToChooseCRM = () => {
         title="איך לבחור CRM שבאמת ישתמשו בו"
         description="הבעיה לא הכלי – הבעיה היא ההטמעה. טיפים מעשיים לבחירת CRM שהצוות שלך באמת ישתמש בו."
         path="/blog/how-to-choose-crm"
-        type="article"
         datePublished="2026-04-08"
       />
 
