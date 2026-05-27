@@ -1,54 +1,30 @@
+## האבחנה
 
-## אנימציות Scroll-Reveal דרמטיות בכל האתר
+הבדיקה מראה שה-edge function `chat` תקינה לחלוטין:
+- מחזירה 200 עם stream תקין
+- המודל (google/gemini-3-flash) עונה בעברית כצפוי
+- אין בעיית טוקנים, פרומפט או API key (LOVABLE_API_KEY מוגדר)
 
-### על השאיפה מ-lusion.co
-lusion.co בנוי על WebGL/Three.js עם סצנות 3D — אי-אפשר לשחזר 1:1 בלי לשנות את הסטאק. אנחנו ניקח את **השפה הויזואלית**: כניסות חלקות, תזוזה דרמטית כלפי מעלה, עקומת easing מקצועית (`power3.out` / `expo.out`), ו-stagger מדורג בין אלמנטים — כל זה בכלים הקיימים (GSAP + ScrollTrigger + ה-hook `useScrollReveal` הקיים).
+הבעיה היא **בצד הלקוח בלבד**: ה-`fetch` הידני ב-`useChatBot.ts` נכשל עם `TypeError: Failed to fetch` לפני שהבקשה יוצאת בכלל מהדפדפן. אף בקשה לא מגיעה ל-function (אין לוגים). זה נובע מהקריאה הידנית עם headers של `Authorization` + `apikey` שמפעילה CORS preflight שנחנק ב-fetch wrapper של ה-preview.
 
-### פרמטרים — סגנון "דרמטי יותר"
-- **תזוזה:** 60px מלמטה
-- **משך:** 1.2s
-- **Easing:** `cubic-bezier(0.16, 1, 0.3, 1)` (expo.out — חלק וניחת רך)
-- **Stagger בין ילדים:** 100ms בין אלמנטים פנימיים
-- **טריגר:** כשהמקטע 15% בתוך ה-viewport
-- **ריצה:** פעם אחת בלבד (לא חוזר בגלילה הפוכה)
-- **נגישות:** מכובד `prefers-reduced-motion` — מציג מיידית בלי אנימציה
+## הפתרון
 
-### היקף — כל האתר
-המנגנון המרכזי כבר קיים: רוב המקטעים עוברים דרך `<Section>` שמשתמש ב-`useScrollReveal` + class `.section-reveal`. נשדרג את הליבה במקום אחד וכל האתר ישתנה אוטומטית.
+להחליף את ה-`fetch` הידני ב-`src/components/ChatBot/useChatBot.ts` בקריאה דרך ה-SDK של Supabase שמטפלת נכון ב-headers וב-auth, תוך שמירה על הסטרימינג.
 
-### השינויים
+### שינויים ב-`src/components/ChatBot/useChatBot.ts`
 
-**1. `src/index.css` — שדרוג `.section-reveal`**
-- תזוזה מ-`translate-y-8` (32px) ל-`translate-y-[60px]`
-- משך מ-`duration-700` ל-`duration-[1200ms]`
-- החלפת `ease-out` ב-`cubic-bezier(0.16, 1, 0.3, 1)` מותאם
+1. במקום `fetch(CHAT_URL, ...)` עם headers ידניים, להשתמש ב-`supabase.functions.invoke('chat', { body: { messages }, ... })` במצב streaming — או חלופית להשאיר fetch אבל לקרוא ל-URL דרך `supabase.functions.url` ולהסיר את ה-`Authorization` הכפול (להשתמש רק ב-`apikey`).
+2. הגישה המועדפת: להשתמש ב-`fetch` רגיל אבל לקחת את ה-URL וה-key ישירות מה-SDK (`supabase.functions.url('chat')`) ולהוסיף רק את ה-header `apikey` — בלי `Authorization: Bearer` כפול שמפעיל preflight מיותר.
+3. לוודא שהפענוח של ה-SSE stream (line-by-line, [DONE], CRLF, flush סופי) נשמר כמו שהוא.
 
-**2. `src/hooks/useScrollReveal.ts` — חיזוק ה-hook**
-- שינוי `translateY(16px)` ל-`translateY(60px)` ב-style ה-inline
-- משך מ-600ms ל-1200ms
-- Easing חדש ל-expo.out
-- שינוי `threshold` מ-0 ל-0.15 כדי לטרגר רק כשהמקטע באמת נכנס
-- `useScrollRevealGroup`: stagger ברירת-מחדל מ-120ms ל-100ms, תזוזה ל-40px
+### למה זה יפתור
 
-**3. `src/components/sections/HeroSection.tsx`**
-ה-Hero לא נכנס בגלילה (הוא בראש הדף). נשאיר את אנימציית ה-GSAP הקיימת שלו כפי שהיא — היא כבר מטופלת בנפרד ("Hero Animation" בזיכרון).
+- מסיר את ה-CORS preflight המיותר שגורם ל-`Failed to fetch` ב-preview של Lovable.
+- ה-edge function כבר מוגדרת `verify_jwt = false` (גישה אנונימית מכוונת), אז `apikey` לבד מספיק.
+- שאר הלוגיקה (rate limit, lead capture, nudge, history) נשארת זהה.
 
-**4. עמודי שירות/פתרון פנימיים**
-`ServicePageLayout`, `SolutionPageLayout`, `IndustryPageLayout` — נוודא שגם הם משתמשים ב-Section או ב-useScrollReveal. אם לא, נעטוף את הבלוקים העיקריים שלהם.
+## מה לא משתנה
 
-### למה הגישה הזו
-- **שינוי מינימלי:** עורכים 2 קבצים מרכזיים → כל האתר מתעדכן.
-- **עקבי:** כל מקטע מקבל בדיוק את אותה שפה ויזואלית.
-- **בטוח:** ה-Hero, ה-Navbar, ה-Footer וה-Popups לא נפגעים.
-- **ביצועים:** IntersectionObserver (כבר בשימוש) — אפס עלות גלילה.
-
-### קבצים שיערכו
-- `src/index.css`
-- `src/hooks/useScrollReveal.ts`
-- אולי `src/components/ServicePageLayout.tsx` / `SolutionPageLayout.tsx` / `IndustryPageLayout.tsx` (לבדיקה והוספת ref במידת הצורך)
-
-### מה שלא יקרה
-- אין הוספת תלויות חדשות
-- אין שינוי לוגיקה עסקית, טקסטים, או צבעים
-- אין שינוי ל-Hero, Navbar, ChatBot או Popups
-- אין שימוש ב-Three.js / WebGL
+- ה-edge function `supabase/functions/chat/index.ts` — לא נוגעים.
+- ה-system prompt, רשימת המודלים, ה-webhook ל-Make — לא משתנים.
+- ה-UI של הצ'אט (`ChatWindow`, `ChatMessage` וכו') — לא משתנה.
