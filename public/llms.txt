@@ -1,0 +1,33 @@
+# EH Automation
+
+> סטודיו לאוטומציה עסקית ובינה מלאכותית — סוכני AI, אוטומציית WhatsApp, תהליכי CRM ומערכות חכמות לעסקים קטנים, סוכנויות ויועצים.
+
+## Pages
+
+- [Home](/): סקירת השירותים, תהליך העבודה והפתרונות של EH Automation.
+- [Solutions](/solutions): סקירת כל פתרונות האוטומציה ו-AI לעסקים.
+- [About](/about): על אלעד חנינה והסטודיו.
+- [Contact](/contact): יצירת קשר ושיחת אסטרטגיה.
+- [Blog](/blog): מאמרים על אוטומציה, AI ו-CRM לעסקים.
+
+## Solutions
+
+- [AI Agents](/solutions/ai-agents): סוכני AI לעסקים — מענה אוטומטי, סיווג פניות וקבלת החלטות.
+- [Business Automation](/solutions/business-automation): אוטומציה של תהליכים עסקיים מקצה לקצה.
+- [WhatsApp Automation](/solutions/whatsapp-automation): אוטומציית WhatsApp ללידים, תזכורות ושירות.
+- [CRM Automation](/solutions/crm-automation): אוטומציה של תהליכי CRM ומעקב לקוחות.
+- [Workflow Automation](/solutions/workflow-automation): חיבור מערכות ואוטומציה של תהליכי עבודה פנימיים.
+- [Web Development](/solutions/web-development): בניית אתרים ומערכות מותאמים אישית.
+
+## Blog
+
+- [5 Automation Processes](/blog/5-automation-processes): 5 תהליכים שכל עסק קטן צריך לאטמט.
+- [AI Agent for Business](/blog/ai-agent-for-business): מתי סוכן AI שווה לעסק ומתי לא.
+- [How to Choose a CRM](/blog/how-to-choose-crm): איך לבחור CRM שבאמת ישתמשו בו.
+- [WhatsApp Automation](/blog/whatsapp-automation): מה לאטמט ב-WhatsApp ומה להשאיר אנושי.
+- [Lead Follow-up](/blog/lead-follow-up): למה לידים לא סוגרים ואיך פולו-אפ אוטומטי עוזר.
+
+## Optional
+
+- [Privacy](/privacy): מדיניות פרטיות.
+- [Cookies](/cookies): מדיניות עוגיות.
