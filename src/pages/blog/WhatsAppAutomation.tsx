@@ -93,6 +93,10 @@ const WhatsAppAutomation = () => {
               </p>
             </div>
 
+            <p className="text-sm text-muted-foreground">
+              לפרטים על השירות: <Link to="/solutions/whatsapp-automation" className="text-primary hover:underline font-medium">אוטומציית WhatsApp לעסקים</Link> — כולל דוגמאות, תהליך ועלויות.
+            </p>
+
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה לראות איך זה עובד לעסק שלך?</h3>
               <p className="text-sm text-muted-foreground mb-6">שיחה קצרה ואבנה לך תמונה של מה אפשר לאטמט ומה לא.</p>

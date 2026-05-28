@@ -107,6 +107,10 @@ const HowToChooseCRM = () => {
               </p>
             </div>
 
+            <p className="text-sm text-muted-foreground">
+              רוצה לראות איך אנחנו מטמיעים CRM? <Link to="/solutions/crm-automation" className="text-primary hover:underline font-medium">ראה את הפתרון לאוטומציית CRM</Link> — תהליך, כלים ותוצאות.
+            </p>
+
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה עזרה לבחור CRM לעסק שלך?</h3>
               <p className="text-sm text-muted-foreground mb-6">שיחה קצרה — ואמליץ על מה שמתאים לגודל ולסגנון של העסק שלך.</p>
