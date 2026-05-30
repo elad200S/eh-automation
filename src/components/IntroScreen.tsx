@@ -3,24 +3,25 @@ import { gsap } from 'gsap';
 
 export const INTRO_STORAGE_KEY = 'intro_played';
 
-const TOTAL_DUR = 4.4;
-const MAX_PS    = 320;
+const TOTAL_DUR = 5.2;
+const MAX_PS    = 480;
 
-type PType = 'spark' | 'flame' | 'trail' | 'ember';
+type PType = 'spark' | 'flame_lg' | 'flame_md' | 'flame_sm' | 'trail' | 'ember';
+
 interface P {
   x: number; y: number;
   vx: number; vy: number;
   life: number; maxLife: number;
-  r: number; hue: number;
+  r: number; hue: number; lit: number;
   type: PType;
 }
 
 interface IntroScreenProps { onComplete: () => void; }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
-  const rootRef  = useRef<HTMLDivElement>(null);
+  const rootRef   = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const textRef  = useRef<HTMLDivElement>(null);
+  const textRef   = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
 
   useEffect(() => {
@@ -31,25 +32,97 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     const ctx = canvas.getContext('2d')!;
     const textEl = textRef.current!;
 
-    // Fireball
-    const fb = { x: W / 2, y: -85, radius: 28 };
-    const fbTargetY = H * 0.47;
+    const CX = W / 2;
+    const CY = H * 0.48;
 
+    // ── Fireball ─────────────────────────────────────────────────
+    const fb = { x: CX, y: -110, r: 48 };
+
+    // ── Shockwave rings ──────────────────────────────────────────
+    const rings: { r: number; targetR: number; a: number; w: number }[] = [];
+
+    // ── Particles ────────────────────────────────────────────────
     const ps: P[] = [];
 
-    const add = (
-      x: number, y: number,
-      vx: number, vy: number,
-      life: number, r: number,
-      hue: number, type: PType
-    ) => {
-      if (ps.length >= MAX_PS) return;
-      ps.push({ x, y, vx, vy, life, maxLife: life, r, hue, type });
+    const push = (p: P) => { if (ps.length < MAX_PS) ps.push(p); };
+
+    const addTrail = () => {
+      const isGreen = Math.random() > 0.42;
+      push({
+        x: fb.x + (Math.random() - 0.5) * fb.r * 1.6,
+        y: fb.y + (Math.random() - 0.5) * fb.r * 1.6,
+        vx: (Math.random() - 0.5) * 1.8,
+        vy:  Math.random() * 2.4 + 0.5,
+        life: 0.3 + Math.random() * 0.22,
+        maxLife: 0.3 + Math.random() * 0.22,
+        r: Math.random() * 12 + 6,
+        hue: isGreen ? 150 + Math.random() * 24 : 28 + Math.random() * 20,
+        lit: isGreen ? 52 : 62,
+        type: 'trail',
+      });
+    };
+
+    const addEmber = () => {
+      const a = Math.random() * Math.PI * 2;
+      const d = fb.r + Math.random() * 24;
+      push({
+        x: fb.x + Math.cos(a) * d, y: fb.y + Math.sin(a) * d,
+        vx: Math.cos(a) * 2.2, vy: Math.sin(a) * 2.2 - 0.8,
+        life: 0.14 + Math.random() * 0.1,
+        maxLife: 0.14 + Math.random() * 0.1,
+        r: Math.random() * 5 + 2,
+        hue: Math.random() > 0.4 ? 158 : 36,
+        lit: 68, type: 'ember',
+      });
+    };
+
+    const addSpark = (x: number, y: number) => {
+      const a  = Math.random() * Math.PI * 2;
+      const sp = Math.random() * 9 + 2.5;
+      const g  = Math.random() > 0.5;
+      push({
+        x, y,
+        vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - Math.random() * 2.5,
+        life: 0.45 + Math.random() * 0.9,
+        maxLife: 0.45 + Math.random() * 0.9,
+        r: Math.random() * 5 + 1.5,
+        hue: g ? 150 + Math.random() * 24 : 26 + Math.random() * 26,
+        lit: 68, type: 'spark',
+      });
+    };
+
+    const addFlame = (x0: number, tW: number, type: PType) => {
+      const x = x0 + Math.random() * tW;
+      let r: number, life: number, hue: number, lit: number, vy: number;
+
+      if (type === 'flame_lg') {
+        r = Math.random() * 18 + 14; life = 0.6 + Math.random() * 0.55;
+        vy = -(Math.random() * 2.8 + 2.2);
+        hue = Math.random() > 0.45 ? 150 + Math.random() * 22 : 28 + Math.random() * 20;
+        lit = hue > 100 ? 52 : 60;
+      } else if (type === 'flame_md') {
+        r = Math.random() * 9 + 6; life = 0.32 + Math.random() * 0.38;
+        vy = -(Math.random() * 4 + 2.8);
+        hue = Math.random() > 0.4 ? 150 + Math.random() * 24 : 26 + Math.random() * 22;
+        lit = hue > 100 ? 56 : 64;
+      } else {
+        r = Math.random() * 4 + 2; life = 0.14 + Math.random() * 0.2;
+        vy = -(Math.random() * 6 + 4.5);
+        hue = Math.random() > 0.3 ? 155 : 44 + Math.random() * 20;
+        lit = 72;
+      }
+
+      push({
+        x: x + (Math.random() - 0.5) * 10, y: CY + 22,
+        vx: (Math.random() - 0.5) * 1.2, vy,
+        life, maxLife: life, r, hue, lit, type,
+      });
     };
 
     let startTime = 0;
     let rafId     = 0;
     let impacted  = false;
+    let textShown = false;
     let frame     = 0;
 
     const draw = (ts: number) => {
@@ -59,164 +132,147 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
       ctx.clearRect(0, 0, W, H);
 
-      // ── 1. FALLING FIREBALL (0 → 0.72s) ──────────────────────
-      if (t < 0.72) {
-        const prog = Math.min(t / 0.72, 1);
-        const ease = 1 - Math.pow(1 - prog, 2.6);
-        fb.y = -85 + (fbTargetY + 85) * ease;
+      // ── HEAT COLUMN (post-impact atmosphere) ─────────────────
+      if (t > 1.2 && t < 4.0) {
+        const age  = t - 1.2;
+        const colA = age < 0.4
+          ? (age / 0.4) * 0.22
+          : Math.max(0, 0.22 - (age - 0.4) / 2.4 * 0.22);
+        const cW = Math.min(W * 0.72, 600);
+        const cX = (W - cW) / 2;
+        const grad = ctx.createLinearGradient(cX, CY - H * 0.45, cX, CY + 80);
+        grad.addColorStop(0, 'rgba(16,185,129,0)');
+        grad.addColorStop(0.55, `rgba(16,185,129,${colA})`);
+        grad.addColorStop(1, 'rgba(16,185,129,0)');
+        ctx.fillStyle = grad;
+        ctx.fillRect(cX, CY - H * 0.45, cW, H * 0.45 + 80);
+      }
 
-        if (frame % 2 === 0) {
-          for (let k = 0; k < 4; k++) {
-            add(
-              fb.x + (Math.random() - 0.5) * fb.radius,
-              fb.y + (Math.random() - 0.5) * fb.radius,
-              (Math.random() - 0.5) * 1.4,
-              Math.random() * 1.8 + 0.4,
-              0.22 + Math.random() * 0.16,
-              Math.random() * 9 + 4,
-              Math.random() > 0.55 ? 155 + Math.random() * 20 : 32 + Math.random() * 16,
-              'trail'
-            );
-          }
-          // Orbiting embers
-          for (let k = 0; k < 2; k++) {
-            const a = Math.random() * Math.PI * 2;
-            const d = fb.radius + Math.random() * 16;
-            add(
-              fb.x + Math.cos(a) * d, fb.y + Math.sin(a) * d,
-              Math.cos(a) * 1.8, Math.sin(a) * 1.8 - 0.6,
-              0.15 + Math.random() * 0.12, Math.random() * 4 + 1.5,
-              Math.random() > 0.4 ? 160 : 36,
-              'ember'
-            );
-          }
+      // ── FIREBALL DESCENT (0.1 → 1.2s) ────────────────────────
+      if (t < 1.2) {
+        const raw  = Math.max(0, (t - 0.08) / 1.12);
+        const ease = 1 - Math.pow(1 - Math.min(raw, 1), 2.5);
+        fb.y = -110 + (CY + 110) * ease;
+
+        if (t > 0.08 && frame % 2 === 0) {
+          for (let k = 0; k < 10; k++) addTrail();
+          for (let k = 0; k < 4; k++)  addEmber();
         }
       }
 
-      // ── 2. IMPACT (t ≈ 0.72s) ────────────────────────────────
-      if (t >= 0.72 && !impacted) {
+      // ── IMPACT (t ≈ 1.2s) ────────────────────────────────────
+      if (t >= 1.2 && !impacted) {
         impacted = true;
-        fb.y = fbTargetY;
+        fb.y = CY;
 
-        // 140 explosion sparks
-        for (let k = 0; k < 140; k++) {
-          const a = Math.random() * Math.PI * 2;
-          const sp = Math.random() * 7 + 2;
-          add(
-            fb.x + (Math.random() - 0.5) * 10,
-            fb.y + (Math.random() - 0.5) * 10,
-            Math.cos(a) * sp, Math.sin(a) * sp - 1.8,
-            0.45 + Math.random() * 0.75,
-            Math.random() * 4 + 1,
-            Math.random() > 0.45 ? 152 + Math.random() * 22 : 28 + Math.random() * 22,
-            'spark'
+        // 280 explosion sparks
+        for (let k = 0; k < 280; k++) addSpark(fb.x, fb.y);
+
+        // 3 expanding shockwave rings
+        rings.push(
+          { r: 0, targetR: W * 0.38, a: 0.75, w: 3.5 },
+          { r: 0, targetR: W * 0.54, a: 0.48, w: 2   },
+          { r: 0, targetR: W * 0.72, a: 0.26, w: 1.5 },
+        );
+
+        // Screen shake
+        if (rootRef.current) {
+          const el = rootRef.current;
+          gsap.timeline()
+            .to(el, { x: -12, y: 8,  duration: 0.06, ease: 'none' })
+            .to(el, { x: 10,  y: -6, duration: 0.06, ease: 'none' })
+            .to(el, { x: -7,  y: 5,  duration: 0.06, ease: 'none' })
+            .to(el, { x: 5,   y: -3, duration: 0.06, ease: 'none' })
+            .to(el, { x: -3,  y: 2,  duration: 0.06, ease: 'none' })
+            .to(el, { x: 0,   y: 0,  duration: 0.06, ease: 'none' });
+        }
+
+        // Text ignition
+        if (!textShown) {
+          textShown = true;
+          gsap.fromTo(textEl,
+            { opacity: 0, scale: 1.18, filter: 'blur(22px) brightness(6)' },
+            { opacity: 1, scale: 1,    filter: 'blur(0px)  brightness(1)',
+              duration: 1.1, delay: 0.12, ease: 'power2.out' }
           );
         }
-
-        // Ignite text: orange-hot → cool green-white
-        gsap.fromTo(textEl,
-          {
-            opacity: 0,
-            filter: 'blur(14px) brightness(3) hue-rotate(130deg)',
-            scale: 1.1,
-          },
-          {
-            opacity: 1,
-            filter: 'blur(0px) brightness(1) hue-rotate(0deg)',
-            scale: 1,
-            duration: 1.1,
-            delay: 0.08,
-            ease: 'power2.out',
-          }
-        );
       }
 
-      // ── 3. DRAW FIREBALL ──────────────────────────────────────
-      if (t < 2.2) {
-        const age      = Math.max(t - 0.72, 0);
-        const fbAlpha  = t < 0.72 ? 1 : Math.max(0, 1 - age / 1.48);
-        const fbRadius = t < 0.72 ? fb.radius : fb.radius * Math.max(0.1, 1 - age / 1.1);
+      // ── FIREBALL RENDER ───────────────────────────────────────
+      if (t < 2.6) {
+        const age  = Math.max(t - 1.2, 0);
+        const fbA  = t < 1.2 ? 1 : Math.max(0, 1 - age / 1.4);
+        const r    = fb.r * (t < 1.2 ? 1 : Math.max(0.05, 1 - age / 1.15));
 
-        if (fbAlpha > 0.01) {
-          // Atmospheric halo
-          const halo = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, fbRadius * 5.5);
-          halo.addColorStop(0,   `rgba(16,185,129,${0.3  * fbAlpha})`);
-          halo.addColorStop(0.5, `rgba(16,185,129,${0.08 * fbAlpha})`);
+        if (fbA > 0.01) {
+          // Wide atmospheric halo
+          const halo = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, r * 7);
+          halo.addColorStop(0,   `rgba(16,185,129,${0.38 * fbA})`);
+          halo.addColorStop(0.4, `rgba(16,185,129,${0.10 * fbA})`);
           halo.addColorStop(1,   'rgba(16,185,129,0)');
           ctx.fillStyle = halo;
-          ctx.beginPath();
-          ctx.arc(fb.x, fb.y, fbRadius * 5.5, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(fb.x, fb.y, r * 7, 0, Math.PI * 2); ctx.fill();
 
-          // Core
-          const core = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, fbRadius);
-          core.addColorStop(0,   `rgba(255,255,255,${fbAlpha})`);
-          core.addColorStop(0.3, `rgba(187,247,208,${0.97 * fbAlpha})`);
-          core.addColorStop(0.65,`rgba(16,185,129,${0.88 * fbAlpha})`);
-          core.addColorStop(1,   'rgba(4,120,87,0)');
+          // Bright core
+          const core = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, r);
+          core.addColorStop(0,    `rgba(255,255,255,${fbA})`);
+          core.addColorStop(0.22, `rgba(220,255,232,${0.98 * fbA})`);
+          core.addColorStop(0.6,  `rgba(16,185,129,${0.92 * fbA})`);
+          core.addColorStop(1,    'rgba(4,120,87,0)');
           ctx.fillStyle = core;
-          ctx.beginPath();
-          ctx.arc(fb.x, fb.y, fbRadius, 0, Math.PI * 2);
-          ctx.fill();
+          ctx.beginPath(); ctx.arc(fb.x, fb.y, r, 0, Math.PI * 2); ctx.fill();
         }
       }
 
-      // ── 4. SHOCKWAVE RING ─────────────────────────────────────
-      if (t > 0.72 && t < 1.08) {
-        const age  = t - 0.72;
-        const rRad = (age / 0.36) * W * 0.32;
-        const rAlpha = Math.max(0, 1 - age / 0.36) * 0.38;
-        ctx.strokeStyle = `rgba(16,185,129,${rAlpha})`;
-        ctx.lineWidth = 2.5;
+      // ── SHOCKWAVE RINGS ───────────────────────────────────────
+      for (const sw of rings) {
+        const speed = (sw.targetR - sw.r) * 0.13 + 4;
+        sw.r    = Math.min(sw.r + speed, sw.targetR);
+        sw.a   *= 0.865;
+        if (sw.a < 0.008) continue;
+        ctx.strokeStyle = `rgba(16,185,129,${sw.a})`;
+        ctx.lineWidth   = sw.w;
         ctx.beginPath();
-        ctx.arc(fb.x, fb.y, rRad, 0, Math.PI * 2);
+        ctx.arc(fb.x, CY, sw.r, 0, Math.PI * 2);
         ctx.stroke();
       }
 
-      // ── 5. IMPACT FLASH ───────────────────────────────────────
-      if (t > 0.72 && t < 1.05) {
-        const age    = t - 0.72;
-        const flashA = Math.max(0, 0.28 - age / 1.16);
-        const radial = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, W * 0.55);
-        radial.addColorStop(0,   `rgba(210,255,235,${flashA})`);
-        radial.addColorStop(0.35,`rgba(16,185,129,${flashA * 0.6})`);
-        radial.addColorStop(1,   'rgba(16,185,129,0)');
-        ctx.globalAlpha = 1;
+      // ── IMPACT FLASH ──────────────────────────────────────────
+      if (t > 1.2 && t < 1.75) {
+        const age    = t - 1.2;
+        const flashA = Math.max(0, 0.65 - age / 0.55 * 0.65);
+        const radial = ctx.createRadialGradient(fb.x, CY, 0, fb.x, CY, W * 0.72);
+        radial.addColorStop(0,    `rgba(230,255,245,${flashA})`);
+        radial.addColorStop(0.28, `rgba(16,185,129,${flashA * 0.75})`);
+        radial.addColorStop(1,    'rgba(16,185,129,0)');
         ctx.fillStyle = radial;
         ctx.fillRect(0, 0, W, H);
       }
 
-      // ── 6. SPAWN TEXT FLAMES ──────────────────────────────────
-      if (t > 1.05 && t < 3.15 && frame % 2 === 0) {
-        const tW = Math.min(W * 0.66, 520);
+      // ── SPAWN FLAMES ──────────────────────────────────────────
+      if (t > 1.3 && t < 3.8 && frame % 2 === 0) {
+        const tW = Math.min(W * 0.68, 540);
         const x0 = (W - tW) / 2;
-        const density = t < 1.9 ? 6 : t < 2.7 ? 4 : 2;
-        for (let k = 0; k < density; k++) {
-          add(
-            x0 + Math.random() * tW,
-            H * 0.5 + 16,
-            (Math.random() - 0.5) * 0.9,
-            -(Math.random() * 3.0 + 1.8),
-            0.32 + Math.random() * 0.42,
-            Math.random() * 11 + 5,
-            Math.random() > 0.52 ? 152 + Math.random() * 22 : 30 + Math.random() * 18,
-            'flame'
-          );
-        }
+
+        const intensity = t < 2.1 ? 1.0 : t < 3.0 ? 0.75 : 0.35;
+
+        for (let k = 0; k < Math.round(5 * intensity);  k++) addFlame(x0, tW, 'flame_lg');
+        for (let k = 0; k < Math.round(8 * intensity);  k++) addFlame(x0, tW, 'flame_md');
+        for (let k = 0; k < Math.round(6 * intensity);  k++) addFlame(x0, tW, 'flame_sm');
       }
 
-      // ── 7. UPDATE + DRAW PARTICLES ────────────────────────────
+      // ── UPDATE + DRAW PARTICLES ───────────────────────────────
       for (let i = ps.length - 1; i >= 0; i--) {
         const p = ps[i];
 
         if (p.type === 'spark') {
-          p.vy += 0.13; p.vx *= 0.97;
-        } else if (p.type === 'flame') {
-          p.vy -= 0.05;
-          p.vx += (Math.random() - 0.5) * 0.18;
-          p.r  *= 0.993;
+          p.vy += 0.14; p.vx *= 0.966;
+        } else if (p.type.startsWith('flame')) {
+          p.vy -= 0.05 + (p.type === 'flame_lg' ? 0.01 : 0);
+          p.vx += (Math.random() - 0.5) * 0.26;
+          p.r  *= 0.989;
         } else {
-          p.vx *= 0.91; p.vy *= 0.91;
+          p.vx *= 0.88; p.vy *= 0.88;
         }
 
         p.x += p.vx; p.y += p.vy;
@@ -225,19 +281,18 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
         const pct = p.life / p.maxLife;
 
-        if (p.type === 'flame') {
+        if (p.type.startsWith('flame')) {
           const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
-          const l = p.hue > 100 ? 55 : 62;
-          g.addColorStop(0, `hsla(${p.hue},95%,${l}%,${pct * 0.52})`);
-          g.addColorStop(0.55, `hsla(${p.hue},95%,${l - 12}%,${pct * 0.28})`);
-          g.addColorStop(1,   `hsla(${p.hue},95%,${l - 20}%,0)`);
+          g.addColorStop(0,    `hsla(${p.hue},98%,${p.lit + 15}%,${pct * 0.62})`);
+          g.addColorStop(0.45, `hsla(${p.hue},98%,${p.lit}%,${pct * 0.38})`);
+          g.addColorStop(1,    `hsla(${p.hue},95%,${p.lit - 20}%,0)`);
           ctx.fillStyle = g;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
           ctx.fill();
         } else {
-          ctx.globalAlpha = pct * (p.type === 'trail' ? 0.6 : 0.88);
-          ctx.fillStyle   = `hsl(${p.hue},90%,65%)`;
+          ctx.globalAlpha = pct * (p.type === 'trail' ? 0.52 : 0.88);
+          ctx.fillStyle   = `hsl(${p.hue},95%,${p.lit}%)`;
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r * pct + 0.5, 0, Math.PI * 2);
           ctx.fill();
@@ -245,9 +300,9 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         }
       }
 
-      // ── 8. FADE OUT ───────────────────────────────────────────
-      if (t > 3.5) {
-        const a = Math.min((t - 3.5) / 0.8, 1);
+      // ── FADE OUT ──────────────────────────────────────────────
+      if (t > 4.3) {
+        const a = Math.min((t - 4.3) / 0.8, 1);
         ctx.globalAlpha = a;
         ctx.fillStyle   = '#000';
         ctx.fillRect(0, 0, W, H);
@@ -263,19 +318,14 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       }
     };
 
-    // Fade text out before the black overlay covers it
-    gsap.to(textEl, {
-      opacity: 0,
-      filter: 'blur(6px)',
-      duration: 0.65,
-      delay: 3.55,
-    });
+    gsap.to(textEl, { opacity: 0, filter: 'blur(10px)', duration: 0.7, delay: 4.4 });
 
     rafId = requestAnimationFrame(draw);
 
     return () => {
       cancelAnimationFrame(rafId);
       gsap.killTweensOf(textEl);
+      if (rootRef.current) gsap.killTweensOf(rootRef.current);
     };
   }, [onComplete]);
 
@@ -284,24 +334,21 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   return (
     <div ref={rootRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden" aria-hidden="true">
 
-      {/* CRT scan lines */}
+      {/* CRT scanlines */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)',
+        backgroundImage: 'repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,0.06) 2px,rgba(0,0,0,0.06) 4px)',
       }} />
 
       {/* Particle canvas */}
       <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }} />
 
-      {/* Text — appears via GSAP */}
-      <div
-        ref={textRef}
-        style={{
-          position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none',
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          opacity: 0,
-        }}
-      >
+      {/* Text */}
+      <div ref={textRef} style={{
+        position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        opacity: 0,
+      }}>
         <span style={{
           fontFamily: '"IBM Plex Mono", monospace',
           fontWeight: 700,
@@ -310,9 +357,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           color: '#fff',
           whiteSpace: 'nowrap',
           textShadow: [
-            '0 0 18px rgba(16,185,129,0.95)',
-            '0 0 38px rgba(16,185,129,0.55)',
-            '0 0 70px rgba(16,185,129,0.25)',
+            '0 0 16px rgba(16,185,129,1)',
+            '0 0 36px rgba(16,185,129,0.72)',
+            '0 0 72px rgba(16,185,129,0.38)',
+            '0 0 120px rgba(16,185,129,0.18)',
           ].join(', '),
         }}>
           EH Automation
