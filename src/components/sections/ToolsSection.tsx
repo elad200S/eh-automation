@@ -3,19 +3,29 @@ import Section from '@/components/Section';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
 import RevealText from '@/components/RevealText';
 
-const tools = [
-  { name: 'WhatsApp',        weight: 700, spacing: '-0.01em', upper: false, mono: false },
-  { name: 'Gmail',           weight: 400, spacing: '0.06em',  upper: false, mono: false },
-  { name: 'HubSpot',         weight: 700, spacing: '-0.02em', upper: false, mono: false },
-  { name: 'Google Sheets',   weight: 300, spacing: '0.04em',  upper: false, mono: false },
-  { name: 'Make',            weight: 500, spacing: '0.12em',  upper: true,  mono: true  },
-  { name: 'n8n',             weight: 700, spacing: '0.01em',  upper: false, mono: true  },
-  { name: 'Airtable',        weight: 400, spacing: '0.02em',  upper: false, mono: false },
-  { name: 'Calendly',        weight: 600, spacing: '-0.01em', upper: false, mono: false },
-  { name: 'Google Calendar', weight: 300, spacing: '0.03em',  upper: false, mono: false },
-  { name: 'Zapier',          weight: 700, spacing: '0.01em',  upper: false, mono: false },
-  { name: 'Slack',           weight: 400, spacing: '0.05em',  upper: false, mono: false },
-  { name: 'Stripe',          weight: 600, spacing: '-0.01em', upper: false, mono: false },
+type ToolEntry = {
+  name: string;
+  weight: number;
+  spacing: string;
+  upper?: boolean;
+  lower?: boolean;
+  mono?: boolean;
+  size?: string;
+};
+
+const tools: ToolEntry[] = [
+  { name: 'WhatsApp',        weight: 600, spacing: '-0.01em', size: '1.15rem' },
+  { name: 'Gmail',           weight: 400, spacing: '0.07em',  size: '1.05rem' },
+  { name: 'HubSpot',         weight: 700, spacing: '-0.02em', size: '1.2rem'  },
+  { name: 'Google Sheets',   weight: 300, spacing: '0.04em',  size: '1rem'    },
+  { name: 'MAKE',            weight: 500, spacing: '0.14em',  size: '0.95rem', upper: true, mono: true },
+  { name: 'n8n',             weight: 800, spacing: '0.02em',  size: '1.25rem', mono: true  },
+  { name: 'Airtable',        weight: 400, spacing: '0.03em',  size: '1.1rem'  },
+  { name: 'Calendly',        weight: 600, spacing: '-0.015em',size: '1.15rem' },
+  { name: 'Google Calendar', weight: 300, spacing: '0.04em',  size: '1rem'    },
+  { name: 'ZAPIER',          weight: 800, spacing: '-0.01em', size: '1.2rem',  upper: true },
+  { name: 'slack',           weight: 500, spacing: '0.01em',  size: '1.15rem', lower: true },
+  { name: 'Stripe',          weight: 600, spacing: '-0.01em', size: '1.2rem'  },
 ];
 
 const duplicatedTools = [...tools, ...tools];
@@ -30,7 +40,7 @@ const ToolsSection = () => {
     const el = scrollRef.current;
     if (!el) return;
     let scrollPos = 0;
-    const speed = 1.3;
+    const speed = 1.1;
     const animate = () => {
       if (!isPaused.current && el) {
         scrollPos += speed;
@@ -45,41 +55,49 @@ const ToolsSection = () => {
 
   return (
     <Section id="tools">
-      <div className="max-w-4xl mx-auto text-center">
+      <div className="max-w-4xl mx-auto text-center mb-10">
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">אינטגרציות</p>
         <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-4">
           מתחבר למערכות שכבר יש לך
         </RevealText>
-        <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground mb-10 max-w-xl mx-auto">
+        <p ref={subtitleRef} style={subtitleStyle} className="text-muted-foreground max-w-xl mx-auto">
           אין צורך להחליף את כל מה שעובד. המערכת נבנית סביב הכלים הקיימים ומחברת ביניהם בצורה חכמה.
         </p>
+      </div>
 
+      {/* White marquee strip */}
+      <div
+        className="w-full overflow-hidden"
+        style={{ background: '#fff', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb' }}
+        onMouseEnter={() => { isPaused.current = true; }}
+        onMouseLeave={() => { isPaused.current = false; }}
+      >
         <div
           ref={scrollRef}
-          className="overflow-hidden"
+          className="overflow-hidden py-5"
           style={{ direction: 'ltr' }}
-          onMouseEnter={() => { isPaused.current = true; }}
-          onMouseLeave={() => { isPaused.current = false; }}
         >
           <div className="flex items-center w-max">
             {duplicatedTools.map((tool, index) => (
               <div key={index} className="flex items-center">
                 <span
-                  className="whitespace-nowrap cursor-default select-none px-7 transition-colors duration-200 hover:text-primary"
+                  className="whitespace-nowrap cursor-default select-none px-8 transition-colors duration-200"
                   style={{
                     fontWeight: tool.weight,
                     fontFamily: tool.mono ? '"IBM Plex Mono", monospace' : 'Heebo, sans-serif',
                     letterSpacing: tool.spacing,
-                    textTransform: tool.upper ? 'uppercase' : 'none',
-                    fontSize: '1.15rem',
-                    color: 'hsl(215,20%,72%)',
+                    fontSize: tool.size ?? '1.1rem',
+                    textTransform: tool.upper ? 'uppercase' : tool.lower ? 'lowercase' : 'none',
+                    color: '#111827',
                   }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLSpanElement).style.color = 'hsl(160,84%,32%)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLSpanElement).style.color = '#111827'; }}
                 >
                   {tool.name}
                 </span>
                 <span
                   className="select-none"
-                  style={{ color: 'hsl(215,20%,28%)', fontSize: '0.5rem' }}
+                  style={{ color: '#d1d5db', fontSize: '0.45rem', flexShrink: 0 }}
                 >
                   ◆
                 </span>
