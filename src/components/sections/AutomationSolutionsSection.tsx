@@ -203,31 +203,54 @@ const AutomationSolutionsSection = () => {
                   key={index}
                   ref={el => { desktopCardRefs.current[index] = el; }}
                   className={cn(
-                    'group relative bg-card/50 backdrop-blur-sm rounded-2xl border border-border/60 p-7 overflow-hidden transition-colors duration-300 hover:border-primary/30 hover:bg-card/70',
+                    'group relative bg-card/60 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300',
                     isFeatured && 'md:col-span-2'
                   )}
-                  style={{ perspective: '800px' }}
-                  onMouseMove={handleTilt}
-                  onMouseLeave={resetTilt}
+                  style={{
+                    perspective: '800px',
+                    border: `1px solid ${sol.color}28`,
+                    transition: 'border-color 0.3s, box-shadow 0.3s, background 0.3s',
+                  }}
+                  onMouseMove={(e) => {
+                    handleTilt(e);
+                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}55`;
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 28px ${sol.color}18`;
+                  }}
+                  onMouseLeave={(e) => {
+                    resetTilt(e);
+                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}28`;
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
+                  }}
                 >
-                  <div
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{ background: `radial-gradient(ellipse at top right, ${sol.color}18, transparent 60%)` }}
-                  />
+                  {/* Static ambient gradient */}
+                  <div className="absolute inset-0 pointer-events-none"
+                    style={{ background: `radial-gradient(ellipse at top right, ${sol.color}0e, transparent 65%)` }} />
+                  {/* Hover gradient (stronger) */}
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
+                    style={{ background: `radial-gradient(ellipse at top right, ${sol.color}1a, transparent 60%)` }} />
+                  {/* Top accent line */}
+                  <div className="absolute top-0 left-0 right-0 h-px pointer-events-none"
+                    style={{ background: `linear-gradient(to right, transparent, ${sol.color}70, transparent)` }} />
+                  {/* Watermark number */}
+                  <div className="absolute bottom-2 left-4 font-mono font-black pointer-events-none select-none"
+                    style={{ fontSize: 72, color: `${sol.color}0c`, lineHeight: 1 }}>{sol.tag}</div>
 
-                  <div className={cn('relative', isFeatured && 'flex items-center gap-6')} dir="rtl">
+                  <div className={cn('relative p-7', isFeatured && 'flex items-center gap-6')} dir="rtl">
                     <div className={cn('flex items-center gap-3 flex-shrink-0', !isFeatured && 'mb-5')}>
                       <div
                         className={cn(
-                          'rounded-xl flex items-center justify-center transition-transform duration-300 group-hover:scale-110',
-                          isFeatured ? 'w-14 h-14' : 'w-11 h-11'
+                          'rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110',
+                          isFeatured ? 'w-14 h-14' : 'w-12 h-12'
                         )}
-                        style={{ background: `${sol.color}18` }}
+                        style={{
+                          background: `${sol.color}20`,
+                          boxShadow: `0 0 18px ${sol.color}25`,
+                        }}
                       >
-                        <SolIcon className={isFeatured ? 'w-7 h-7' : 'w-5 h-5'} style={{ color: sol.color }} />
+                        <SolIcon className={isFeatured ? 'w-7 h-7' : 'w-6 h-6'} style={{ color: sol.color }} />
                       </div>
                       {!isFeatured && (
-                        <span className="text-xs font-mono font-bold tracking-widest" style={{ color: `${sol.color}70` }}>
+                        <span className="text-xs font-mono font-bold tracking-widest" style={{ color: `${sol.color}60` }}>
                           {sol.tag}
                         </span>
                       )}

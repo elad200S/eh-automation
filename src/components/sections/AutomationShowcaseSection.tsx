@@ -106,25 +106,18 @@ const FlipCard = ({ active }: { active: number }) => {
 
     gsap.killTweensOf(el);
     gsap.timeline()
-      // Flip out — right edge rotates away (book turning forward)
-      .to(el, { rotateY: -90, duration: 0.26, ease: 'power2.in', transformOrigin: 'left center' })
-      // Swap content at the invisible midpoint
+      .to(el, { opacity: 0, y: -8, duration: 0.18, ease: 'power2.in' })
       .call(() => setShown(next))
-      // Flip in — new page rotates in from behind
-      .fromTo(el,
-        { rotateY: 90 },
-        { rotateY: 0, duration: 0.26, ease: 'power2.out', transformOrigin: 'left center' }
-      );
+      .fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.24, ease: 'power2.out' });
   }, [active]);
 
   const scenario = scenarios[shown];
 
   return (
-    <div style={{ perspective: '1000px' }}>
+    <div>
       <div
         ref={pageRef}
         className="bg-background rounded-xl border border-border p-5"
-        style={{ backfaceVisibility: 'hidden', transformStyle: 'preserve-3d' }}
         dir="rtl"
       >
         {/* macOS-style bar */}

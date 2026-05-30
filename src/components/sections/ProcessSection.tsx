@@ -75,18 +75,19 @@ const ProcessSection = () => {
           pinSpacing: true,
           anticipatePin: 1,
           start: 'top top',
-          end: '+=1800',
-          scrub: 1.0,
+          end: '+=2400',
+          scrub: 1.8,
         },
       });
 
-      // 4 transitions for 5 cards — starts almost immediately at 0.03
+      // card exits first, then new card enters — creates breathing room between transitions
       for (let i = 0; i < steps.length - 1; i++) {
-        const start = 0.03 + i * 0.24;
-        tl.fromTo(cards[i],   { y: '0%'    }, { y: '-100%', ease: 'none', duration: 0.16 }, start)
-          .fromTo(cards[i+1], { y: '100%' }, { y: '0%',    ease: 'none', duration: 0.16 }, start)
-          .to(dots[i],   { width: 8,  opacity: 0.25, ease: 'none', duration: 0.10 }, start)
-          .to(dots[i+1], { width: 24, opacity: 1,    ease: 'none', duration: 0.10 }, start + 0.06);
+        const start = 0.05 + i * 0.22;
+        const enter = start + 0.09;
+        tl.fromTo(cards[i],   { y: '0%'    }, { y: '-105%', ease: 'none', duration: 0.10 }, start)
+          .fromTo(cards[i+1], { y: '105%' }, { y: '0%',    ease: 'none', duration: 0.12 }, enter)
+          .to(dots[i],   { width: 8,  opacity: 0.25, ease: 'none', duration: 0.08 }, start)
+          .to(dots[i+1], { width: 24, opacity: 1,    ease: 'none', duration: 0.08 }, enter);
       }
 
       tl.to({}, {}, 1.0);
@@ -120,16 +121,19 @@ const ProcessSection = () => {
             ))}
           </div>
 
-          {/* Card stack — overflow:hidden clips slide-in/out */}
+          {/* Card stack */}
+          <div className="relative" style={{ paddingBottom: 18 }}>
+            {/* Stacked shadow cards — give a physical deck feeling */}
+            <div className="absolute inset-x-0 top-0 rounded-2xl border border-border/15 pointer-events-none"
+              style={{ background: 'hsl(var(--card))', height: '100%', transform: 'translateY(14px) scale(0.91)', zIndex: 1, opacity: 0.35 }} />
+            <div className="absolute inset-x-0 top-0 rounded-2xl border border-border/25 pointer-events-none"
+              style={{ background: 'hsl(var(--card))', height: '100%', transform: 'translateY(7px) scale(0.96)', zIndex: 2, opacity: 0.6 }} />
+
+          {/* overflow:hidden clips slide-in/out */}
           <div
             className="relative overflow-hidden"
-            style={{ minHeight: 'clamp(230px, 35vw, 280px)' }}
+            style={{ minHeight: 'clamp(230px, 35vw, 280px)', zIndex: 10 }}
           >
-            {/* Depth shadow behind active card */}
-            <div
-              className="absolute inset-0 rounded-2xl border border-border/20 pointer-events-none"
-              style={{ background: 'hsl(var(--card))', transform: 'translateY(4px) scale(0.98)', zIndex: 1, opacity: 0.5 }}
-            />
 
             {steps.map((step, index) => {
               const StepIcon = step.Icon;
@@ -176,6 +180,7 @@ const ProcessSection = () => {
                 </div>
               );
             })}
+          </div>
           </div>
 
         </div>
