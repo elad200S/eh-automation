@@ -20,7 +20,7 @@ import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext"
 import ContactPopup from "@/components/ContactPopup";
 import TimedCTAPopup from "@/components/TimedCTAPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
+import IntroScreen from "@/components/IntroScreen";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
@@ -224,12 +224,7 @@ const App = () => {
           <EngagementProvider>
             <TooltipProvider>
               {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
-              <div
-                style={{
-                  opacity: introDone ? 1 : 0,
-                  transition: 'opacity 0.6s ease-out',
-                }}
-              >
+              <div style={{ opacity: introDone ? 1 : 0, transition: 'opacity 0.6s ease-out' }}>
                 <Toaster />
                 <Sonner />
                 <AppInner />

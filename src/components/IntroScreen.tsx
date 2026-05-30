@@ -43,8 +43,6 @@ interface IntroScreenProps { onComplete: () => void; }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const rootRef       = useRef<HTMLDivElement>(null);
-  const videoWrapRef  = useRef<HTMLDivElement>(null);
-  const videoRef      = useRef<HTMLVideoElement>(null);
   const canvasRef     = useRef<HTMLCanvasElement>(null);
   const sweepRef      = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
@@ -182,21 +180,10 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       if (started.current) return;
       started.current = true;
 
-      // Left-to-right wipe reveal on video
-      if (videoWrapRef.current)
-        gsap.fromTo(videoWrapRef.current,
-          { clipPath: 'inset(0 100% 0 0)' },
-          { clipPath: 'inset(0 0% 0 0)', duration: WIPE_DUR, ease: 'power2.inOut' });
-
-      // Light sweep (starts with wipe)
+      // Light sweep
       if (sweepRef.current)
         gsap.fromTo(sweepRef.current,
           { x: '-100%' }, { x: '280%', duration: TOTAL_DUR * 0.9, delay: 0.1, ease: 'power1.inOut' });
-
-      // Video Ken Burns
-      if (videoRef.current)
-        gsap.fromTo(videoRef.current,
-          { scale: 1 }, { scale: 1.07, duration: 4.0, ease: 'none' });
 
       // Canvas draw loop
       rafId.current = requestAnimationFrame(draw);
@@ -210,21 +197,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
     document.fonts.load(`bold 64px "IBM Plex Mono"`).finally(() => {
       setupParticles();
-      const vid = videoRef.current;
-      const fallback = setTimeout(run, 600);
-      if (vid) {
-        const onReady = () => { clearTimeout(fallback); run(); };
-        vid.addEventListener('canplay', onReady, { once: true });
-        if (vid.readyState >= 3) onReady();
-      }
+      run();
     });
 
     return () => {
       cancelAnimationFrame(rafId.current);
       gsap.killTweensOf(rootRef.current);
       gsap.killTweensOf(sweepRef.current);
-      gsap.killTweensOf(videoRef.current);
-      gsap.killTweensOf(videoWrapRef.current);
     };
   }, [onComplete]);
 
@@ -232,18 +211,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
   return (
     <div ref={rootRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden" aria-hidden="true">
-
-      {/* Video with left-to-right wipe reveal */}
-      <div ref={videoWrapRef} style={{ position: 'absolute', inset: 0, clipPath: 'inset(0 100% 0 0)' }}>
-        <video
-          ref={videoRef}
-          autoPlay muted loop playsInline
-          style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', opacity: 0.35, transformOrigin: 'center' }}
-        >
-          <source src="/intro-loop.webm" type="video/webm" />
-          <source src="/intro-loop.mp4" type="video/mp4" />
-        </video>
-      </div>
 
       {/* Scan lines */}
       <div style={{
