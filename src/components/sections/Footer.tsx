@@ -150,57 +150,6 @@ const Footer = () => {
               ))}
             </div>
 
-            {/* Newsletter */}
-            <div className="mt-6 pt-6 border-t border-border/40">
-              <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Newsletter</p>
-              {submitted ? (
-                <div
-                  className={`transition-all duration-500 ${showAnim ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2'}`}
-                >
-                  <div className="relative p-4 rounded-xl bg-primary/10 border border-primary/20 text-center overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-                    <div className="relative z-10">
-                      <div className="text-3xl mb-2 animate-bounce">🎉</div>
-                      <p className="text-base font-bold text-foreground">Welcome!</p>
-                      <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
-                        אתה חלק מהמשפחה.<br />נשלח לך רק את הטוב ביותר.
-                      </p>
-                      <div className="mt-3 flex justify-center gap-1">
-                        {['✦','✦','✦'].map((s, i) => (
-                          <span key={i} className="text-primary text-xs animate-pulse" style={{ animationDelay: `${i * 150}ms` }}>{s}</span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <form onSubmit={handleNewsletter} className="flex flex-col gap-2">
-                  <input
-                    type="email"
-                    required
-                    placeholder="כתובת אימייל"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-                  />
-                  <input
-                    type="tel"
-                    required
-                    placeholder="מספר טלפון"
-                    value={phone}
-                    onChange={(e) => setPhone(e.target.value)}
-                    className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
-                  />
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full py-2.5 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
-                  >
-                    {loading ? '...' : 'להרשמה'}
-                  </button>
-                </form>
-              )}
-            </div>
           </div>
 
           {/* Nav columns */}
@@ -220,6 +169,58 @@ const Footer = () => {
               </nav>
             </div>
           ))}
+
+          {/* Newsletter */}
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-widest text-primary mb-3">Newsletter</p>
+            {submitted ? (
+              <div
+                className={`transition-all duration-500 ${showAnim ? 'opacity-100 scale-100 translate-y-0' : 'opacity-0 scale-95 translate-y-2'}`}
+              >
+                <div className="relative p-4 rounded-xl bg-primary/10 border border-primary/20 text-center overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
+                  <div className="relative z-10">
+                    <div className="text-3xl mb-2 animate-bounce">🎉</div>
+                    <p className="text-base font-bold text-foreground">Welcome!</p>
+                    <p className="text-xs text-muted-foreground mt-1 leading-relaxed">
+                      אתה חלק מהמשפחה.<br />נשלח לך רק את הטוב ביותר.
+                    </p>
+                    <div className="mt-3 flex justify-center gap-1">
+                      {['✦','✦','✦'].map((s, i) => (
+                        <span key={i} className="text-primary text-xs animate-pulse" style={{ animationDelay: `${i * 150}ms` }}>{s}</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleNewsletter} className="flex flex-col gap-2">
+                <input
+                  type="email"
+                  required
+                  placeholder="כתובת אימייל"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                />
+                <input
+                  type="tel"
+                  required
+                  placeholder="מספר טלפון"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  className="w-full px-3 py-2 text-sm rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50"
+                />
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full py-2.5 text-sm font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors disabled:opacity-60"
+                >
+                  {loading ? '...' : 'להרשמה'}
+                </button>
+              </form>
+            )}
+          </div>
         </div>
 
         {/* CTA row */}

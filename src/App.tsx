@@ -20,7 +20,7 @@ import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext"
 import ContactPopup from "@/components/ContactPopup";
 import TimedCTAPopup from "@/components/TimedCTAPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import IntroScreen from "@/components/IntroScreen";
+import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
@@ -209,10 +209,11 @@ const AppInner = () => {
 };
 
 const App = () => {
-  const [introDone, setIntroDone] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const [introDone, setIntroDone] = useState(() => !!sessionStorage.getItem(INTRO_STORAGE_KEY));
+  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_STORAGE_KEY));
 
   const handleIntroComplete = () => {
+    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };

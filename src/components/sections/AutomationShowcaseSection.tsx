@@ -204,7 +204,7 @@ const AutomationShowcaseSection = () => {
           <div className="text-center mb-12">
             <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">הדגמה חיה</p>
             <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-4">
-              ראה איך זה עובד בפועל
+              4 תרחישים מהשטח
             </RevealText>
             <p className="text-muted-foreground text-lg max-w-xl mx-auto">
               4 תרחישים אמיתיים שאנחנו בונים ללקוחות — כך האוטומציה נראית מאחורי הקלעים

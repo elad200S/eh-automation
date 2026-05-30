@@ -77,42 +77,10 @@ const DemoVideoSection = () => {
         {/* Title */}
         <div className="text-center mb-10">
           <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">הדגמה חיה</p>
-          <h2 className="text-4xl md:text-5xl font-bold text-foreground">ראה איך זה עובד</h2>
+          <h2 className="text-4xl md:text-5xl font-bold text-foreground">כך זה יראה אצלך</h2>
           <p className="text-muted-foreground mt-4 text-lg">
             מהכניסה לאתר ועד קבלת הודעת ווצאפ — תוך שניות
           </p>
-        </div>
-
-        {/* Step indicators */}
-        <div className="flex justify-center items-center mb-10 gap-0">
-          {['נכנסים לאתר', 'לוחצים כפתור', 'ממלאים פרטים', 'מקבלים ווצאפ'].map((label, i) => (
-            <div key={i} className="flex items-center">
-              <div className="flex flex-col items-center px-3">
-                <div
-                  className="w-8 h-8 rounded-full border-2 flex items-center justify-center text-xs font-bold transition-all duration-500"
-                  style={{
-                    borderColor: activeStep >= i ? 'hsl(160,84%,39%)' : 'hsl(215,20%,30%)',
-                    background: activeStep >= i ? 'hsl(160,84%,39%,0.12)' : 'transparent',
-                    color: activeStep >= i ? 'hsl(160,84%,39%)' : 'hsl(215,20%,50%)',
-                  }}
-                >
-                  {i + 1}
-                </div>
-                <span
-                  className="text-xs mt-1.5 whitespace-nowrap transition-colors duration-500"
-                  style={{ color: activeStep >= i ? 'hsl(160,84%,39%)' : 'hsl(215,20%,50%)' }}
-                >
-                  {label}
-                </span>
-              </div>
-              {i < 3 && (
-                <div
-                  className="h-px w-8 transition-all duration-700"
-                  style={{ background: activeStep > i ? 'hsl(160,84%,39%)' : 'hsl(215,20%,25%)' }}
-                />
-              )}
-            </div>
-          ))}
         </div>
 
         {/* Browser mockup */}
