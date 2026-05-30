@@ -1,7 +1,7 @@
 import { ArrowLeft, CheckCircle2, Users, Zap, Target } from 'lucide-react';
 import WebsiteAuditTool from '@/components/WebsiteAuditTool';
 import { Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { SEOHead, BreadcrumbSchema, FAQSchema } from '@/lib/seo';
@@ -57,6 +57,24 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
   const backMessages = data.hero.heroBackMessages ?? [];
   const [msgIndex, setMsgIndex] = useState(0);
   const [msgVisible, setMsgVisible] = useState(true);
+  const [isSpinning, setIsSpinning] = useState(false);
+  const heroImageRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = heroImageRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsSpinning(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     if (backMessages.length < 2) return;
@@ -111,11 +129,22 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
                     כל הפתרונות
                   </Link>
                 </div>
+                {backMessages.length > 0 && (
+                  <div className="flex flex-col sm:flex-row gap-3 mt-6">
+                    {backMessages.map((msg, i) => (
+                      <div key={i} className="flex items-start gap-2.5 px-4 py-3 rounded-xl border"
+                        style={{ background: 'hsl(160,84%,39%,0.07)', borderColor: 'hsl(160,84%,39%,0.22)' }}>
+                        <span className="text-primary text-xs mt-0.5 flex-shrink-0 font-bold">✦</span>
+                        <p className="text-xs text-muted-foreground leading-relaxed" dir="rtl">{msg}</p>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
               {data.hero.heroImage && (
-                <div className="flex-1 flex items-center justify-center mt-8 md:mt-0">
+                <div className="flex-1 flex items-center justify-center mt-8 md:mt-0" ref={heroImageRef}>
                   <div className="hero-3d-scene w-full max-w-[460px]">
-                    <div className="hero-3d-card">
+                    <div className={`hero-3d-card${isSpinning ? ' is-spinning' : ''}`}>
                       <img
                         src={data.hero.heroImage}
                         alt={data.hero.headline}
@@ -174,11 +203,18 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
               <Target className="w-6 h-6 text-primary" />
               <h2 className="text-3xl md:text-4xl font-semibold text-foreground">{data.problems.title}</h2>
             </div>
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-2 gap-5">
               {data.problems.items.map((item, i) => (
-                <div key={i} className="p-6 info-card rounded-xl">
-                  <h3 className="text-lg font-medium text-foreground mb-2">{item.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                <div key={i} className="relative p-6 bg-card rounded-xl border border-border overflow-hidden"
+                  style={{ borderRight: '3px solid hsl(160,84%,39%)' }}>
+                  <div className="absolute top-0 left-3 font-mono font-black pointer-events-none select-none leading-none"
+                    style={{ fontSize: 72, color: 'rgba(16,185,129,0.06)' }}>
+                    {String(i + 1).padStart(2, '0')}
+                  </div>
+                  <div className="relative">
+                    <h3 className="text-base font-semibold text-foreground mb-2">{item.title}</h3>
+                    <p className="text-sm text-muted-foreground leading-relaxed">{item.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
@@ -192,14 +228,39 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
               <Zap className="w-6 h-6 text-primary" />
               <h2 className="text-3xl md:text-4xl font-semibold text-foreground">{data.useCases.title}</h2>
             </div>
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-3 gap-5">
               {data.useCases.cases.map((c, i) => (
-                <div key={i} className="p-6 bg-card rounded-xl border border-border hover:border-primary/30 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200">
-                  <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center mb-4">
-                    <span className="font-mono text-sm font-bold text-primary">0{i + 1}</span>
+                <div key={i} className="bg-background rounded-xl border border-border overflow-hidden hover:border-primary/40 hover:-translate-y-0.5 transition-all duration-200">
+                  {/* Terminal bar */}
+                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-border"
+                    style={{ background: 'hsl(220,15%,11%)' }}>
+                    <div className="flex gap-1.5">
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
+                    </div>
+                    <span className="text-[10px] font-mono text-muted-foreground mr-2">
+                      case_{String(i + 1).padStart(2, '0')}.run
+                    </span>
                   </div>
-                  <h3 className="text-base font-medium text-foreground mb-2">{c.title}</h3>
-                  <p className="text-sm text-muted-foreground leading-relaxed">{c.description}</p>
+                  <div className="p-5" dir="rtl">
+                    <h3 className="text-sm font-semibold text-foreground mb-3">{c.title}</h3>
+                    <div className="space-y-2">
+                      {c.description.split('→').map((step, j) => (
+                        <div key={j} className="flex items-start gap-2">
+                          {j === 0
+                            ? <div className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                            : <span className="text-primary text-xs font-mono mt-0.5 flex-shrink-0">→</span>
+                          }
+                          <span className="text-xs text-muted-foreground leading-relaxed">{step.trim()}</span>
+                        </div>
+                      ))}
+                    </div>
+                    <div className="mt-4 flex items-center gap-2 pt-3 border-t border-border/50">
+                      <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                      <span className="text-[10px] font-mono text-green-400">completed ✓</span>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
@@ -225,14 +286,42 @@ const SolutionPageLayout = ({ data }: { data: SolutionPageData }) => {
         <Section id="process">
           <div className="max-w-5xl">
             <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">{data.process.title}</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+            {/* Desktop timeline */}
+            <div className="hidden md:flex items-start relative">
+              <div className="absolute top-5 right-5 left-5 h-px bg-border/60" style={{ zIndex: 0 }} />
               {data.process.steps.map((step, i) => (
-                <div key={i} className="text-center">
-                  <div className="w-10 h-10 mx-auto rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-sm mb-3">
-                    {i + 1}
+                <div key={i} className="flex-1 flex flex-col items-center text-center relative z-10 px-2">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-mono font-bold text-xs mb-3 flex-shrink-0"
+                    style={{
+                      background: 'hsl(var(--background))',
+                      border: '2px solid hsl(160,84%,39%)',
+                      color: 'hsl(160,84%,39%)',
+                      boxShadow: '0 0 14px hsl(160,84%,39%,0.18)',
+                    }}>
+                    {String(i + 1).padStart(2, '0')}
                   </div>
-                  <h3 className="font-semibold text-foreground mb-1 text-sm">{step.label}</h3>
+                  <h3 className="text-sm font-semibold text-foreground mb-1">{step.label}</h3>
                   <p className="text-xs text-muted-foreground">{step.description}</p>
+                </div>
+              ))}
+            </div>
+            {/* Mobile vertical timeline */}
+            <div className="md:hidden space-y-2">
+              {data.process.steps.map((step, i) => (
+                <div key={i} className="flex items-start gap-4">
+                  <div className="flex flex-col items-center flex-shrink-0">
+                    <div className="w-9 h-9 rounded-full flex items-center justify-center font-mono font-bold text-xs"
+                      style={{ border: '2px solid hsl(160,84%,39%)', color: 'hsl(160,84%,39%)', background: 'hsl(var(--background))' }}>
+                      {String(i + 1).padStart(2, '0')}
+                    </div>
+                    {i < data.process.steps.length - 1 && (
+                      <div className="w-px h-6 bg-border/50 mt-1" />
+                    )}
+                  </div>
+                  <div className="pt-1.5 pb-2">
+                    <h3 className="text-sm font-semibold text-foreground">{step.label}</h3>
+                    <p className="text-xs text-muted-foreground mt-0.5">{step.description}</p>
+                  </div>
                 </div>
               ))}
             </div>
