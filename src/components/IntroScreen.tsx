@@ -4,22 +4,35 @@ import { gsap } from 'gsap';
 
 export const INTRO_STORAGE_KEY = 'intro_played';
 
-// ── Logo grid: 3×3 squares with staggered formation delays ─────────
-// Scene 3 starts at t=0.9s; delays below are relative to that start
-const FORMATION: { row: number; col: number; delay: number }[] = [
-  { row: 0, col: 0, delay: 0.00 }, // 1
-  { row: 0, col: 1, delay: 0.10 }, // 2
-  { row: 0, col: 2, delay: 0.20 }, // 3
-  { row: 1, col: 0, delay: 0.36 }, // 4 — slight pause
-  { row: 1, col: 1, delay: 0.52 }, // 5
-  { row: 1, col: 2, delay: 0.63 }, // 6
-  { row: 2, col: 0, delay: 0.76 }, // 7
-  { row: 2, col: 1, delay: 0.86 }, // 8
-  { row: 2, col: 2, delay: 0.96 }, // 9
+// 3×3 grid — formation order per brief
+const FORMATION = [
+  { row: 0, col: 0, delay: 0.00 },
+  { row: 0, col: 1, delay: 0.10 },
+  { row: 0, col: 2, delay: 0.20 },
+  { row: 1, col: 0, delay: 0.36 },
+  { row: 1, col: 1, delay: 0.50 },
+  { row: 1, col: 2, delay: 0.63 },
+  { row: 2, col: 0, delay: 0.76 },
+  { row: 2, col: 1, delay: 0.87 },
+  { row: 2, col: 2, delay: 0.97 },
 ];
 
-const SQ  = 44; // square side px
-const GAP = 5;  // gap px
+const SQ  = 44; // square px
+const GAP = 5;
+
+// Draw a bezier-curve flame shape (organic, not a circle)
+function drawFlame(
+  ctx: CanvasRenderingContext2D,
+  bx: number, by: number,
+  w: number, h: number, lean: number,
+) {
+  const hw = w * 0.5;
+  ctx.beginPath();
+  ctx.moveTo(bx - hw, by);
+  ctx.bezierCurveTo(bx - hw, by - h * 0.3, bx - hw * 0.3 + lean * 0.6, by - h * 0.75, bx + lean, by - h);
+  ctx.bezierCurveTo(bx + hw * 0.3 + lean * 0.6, by - h * 0.75, bx + hw, by - h * 0.3, bx + hw, by);
+  ctx.closePath();
+}
 
 interface IntroScreenProps { onComplete: () => void; }
 
@@ -27,52 +40,59 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef   = useRef<HTMLDivElement>(null);
 
-  // Shared phase ref (no stale closures in RAF) + state for React renders
-  const phaseRef = useRef<'ball' | 'impact' | 'form' | 'polish' | 'text' | 'exit'>('ball');
-  const [phase, _setPhase] = useState(phaseRef.current);
+  const phaseRef  = useRef<'ball'|'impact'|'fire'|'polish'|'exit'>('ball');
+  const [phase, _set] = useState(phaseRef.current);
   const setPhase = (p: typeof phaseRef.current) => {
     if (phaseRef.current === p) return;
     phaseRef.current = p;
-    _setPhase(p);
+    _set(p);
   };
 
   const [removed, setRemoved] = useState(false);
 
-  // ── Canvas: energy ball + shockwave + particles ─────────────────
+  // ── Canvas: energy ball → shockwave → green fire (frames 1/2/3) ──
   useEffect(() => {
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-    const canvas = canvasRef.current!;
-    canvas.width = W; canvas.height = H;
-    const ctx = canvas.getContext('2d')!;
+    const W  = window.innerWidth;
+    const H  = window.innerHeight;
+    const c  = canvasRef.current!;
+    c.width  = W; c.height = H;
+    const ctx = c.getContext('2d')!;
     const CX = W / 2, CY = H / 2;
 
-    // Background micro-particles
-    const micro = Array.from({ length: 40 }, () => ({
-      x: Math.random() * W,
-      y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.18,
-      vy: (Math.random() - 0.5) * 0.18,
-      r: Math.random() * 1.3 + 0.2,
-      a: Math.random() * 0.35 + 0.08,
+    // Logo area bottom (flames spawn here, rise upward)
+    const FIRE_Y = CY + 95;
+    const FIRE_W = 260;
+
+    // Ambient particles (always visible)
+    const pts = Array.from({ length: 38 }, () => ({
+      x: Math.random() * W, y: Math.random() * H,
+      vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16,
+      r: Math.random() * 1.3 + 0.2, a: Math.random() * 0.28 + 0.07,
     }));
 
-    // Spark particles (post-impact)
-    type Sp = { x: number; y: number; vx: number; vy: number; life: number; };
+    // Post-impact sparks
+    type Sp = { x: number; y: number; vx: number; vy: number; life: number };
     const sparks: Sp[] = [];
 
-    let t0 = 0, raf = 0;
-    // Energy ball y-position (driven by RAF)
-    let ballY = -90;
+    // Bezier flames (fire phase — frame 3 style)
+    type Fl = {
+      x: number; y: number; vx: number; vy: number;
+      life: number; w: number; h: number; lean: number; hue: number;
+    };
+    const fls: Fl[] = [];
+    let ff = 0; // flame frame counter
 
-    const draw = (ts: number) => {
+    let t0 = 0, raf = 0;
+
+    const tick = (ts: number) => {
       if (!t0) t0 = ts;
       const t = (ts - t0) / 1000;
+      ff++;
 
       ctx.clearRect(0, 0, W, H);
 
-      // ── Background micro-particles ─────────────────────────────
-      micro.forEach(p => {
+      // ── Ambient floating particles ──────────────────────────────
+      pts.forEach(p => {
         p.x += p.vx; p.y += p.vy;
         if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
         if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
@@ -82,156 +102,188 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       });
       ctx.globalAlpha = 1;
 
-      // ── Scene 1: Energy ball falls (0 → 0.7s) ─────────────────
+      // ── Scene 1 — Energy core falls (frame 1) ──────────────────
       if (t < 0.7) {
-        const prog = t / 0.7;
-        const ease = 1 - Math.pow(1 - prog, 2.2); // ease-in
-        ballY = -90 + (CY + 90) * ease;
+        const ease = 1 - Math.pow(1 - Math.min(t / 0.7, 1), 2.2);
+        const by   = -90 + (CY + 90) * ease;
 
-        // Motion-blur trail (4 ghost frames)
+        // Plasma trail (4 ghost layers — motion blur)
         for (let k = 4; k >= 1; k--) {
-          const gy = ballY + k * 20;
-          const ga = 0.15 / k;
-          const gg = ctx.createRadialGradient(CX, gy, 0, CX, gy, 28);
-          gg.addColorStop(0, `rgba(11,184,112,${ga * 3})`);
-          gg.addColorStop(1, 'rgba(11,184,112,0)');
-          ctx.fillStyle = gg;
-          ctx.beginPath(); ctx.arc(CX, gy, 28, 0, Math.PI * 2); ctx.fill();
+          const ty = by + k * 22;
+          const tg = ctx.createRadialGradient(CX, ty, 0, CX, ty, 32);
+          tg.addColorStop(0, `rgba(11,184,112,${0.16 / k})`);
+          tg.addColorStop(1, 'rgba(11,184,112,0)');
+          ctx.fillStyle = tg;
+          ctx.beginPath(); ctx.arc(CX, ty, 32, 0, Math.PI * 2); ctx.fill();
         }
-
-        // Wide atmospheric glow
-        const gA = ctx.createRadialGradient(CX, ballY, 0, CX, ballY, 90);
-        gA.addColorStop(0, 'rgba(11,184,112,0.30)');
-        gA.addColorStop(0.5,'rgba(34,201,160,0.10)');
-        gA.addColorStop(1, 'rgba(11,184,112,0)');
-        ctx.fillStyle = gA;
-        ctx.beginPath(); ctx.arc(CX, ballY, 90, 0, Math.PI * 2); ctx.fill();
-
-        // Ball core (white-hot center → emerald)
-        const gC = ctx.createRadialGradient(CX, ballY, 0, CX, ballY, 22);
-        gC.addColorStop(0,   'rgba(255,255,255,0.98)');
-        gC.addColorStop(0.18,'rgba(210,255,240,0.95)');
-        gC.addColorStop(0.55,'rgba(11,184,112,0.90)');
-        gC.addColorStop(1,   'rgba(7,125,115,0)');
-        ctx.fillStyle = gC;
-        ctx.beginPath(); ctx.arc(CX, ballY, 22, 0, Math.PI * 2); ctx.fill();
+        // Soft bloom
+        const gA = ctx.createRadialGradient(CX, by, 0, CX, by, 100);
+        gA.addColorStop(0,   'rgba(11,184,112,0.32)');
+        gA.addColorStop(0.5, 'rgba(34,201,160,0.10)');
+        gA.addColorStop(1,   'rgba(11,184,112,0)');
+        ctx.fillStyle = gA; ctx.beginPath(); ctx.arc(CX, by, 100, 0, Math.PI * 2); ctx.fill();
+        // White-hot core
+        const gC = ctx.createRadialGradient(CX, by, 0, CX, by, 22);
+        gC.addColorStop(0,    'rgba(255,255,255,0.98)');
+        gC.addColorStop(0.18, 'rgba(210,255,240,0.95)');
+        gC.addColorStop(0.55, 'rgba(11,184,112,0.90)');
+        gC.addColorStop(1,    'rgba(7,125,115,0)');
+        ctx.fillStyle = gC; ctx.beginPath(); ctx.arc(CX, by, 22, 0, Math.PI * 2); ctx.fill();
       }
 
-      // ── Scene 1→2 trigger ─────────────────────────────────────
+      // Trigger impact
       if (t >= 0.7 && phaseRef.current === 'ball') {
         setPhase('impact');
-        ballY = CY;
-        for (let k = 0; k < 60; k++) {
-          const a = Math.random() * Math.PI * 2;
+        for (let k = 0; k < 65; k++) {
+          const a  = Math.random() * Math.PI * 2;
           const sp = Math.random() * 8 + 2;
-          sparks.push({ x: CX, y: CY, vx: Math.cos(a)*sp, vy: Math.sin(a)*sp - 1, life: 1 });
+          sparks.push({ x: CX, y: CY, vx: Math.cos(a) * sp, vy: Math.sin(a) * sp - 1, life: 1 });
         }
       }
 
-      // ── Scene 2: Impact (0.7–0.9s) ────────────────────────────
-      if (t >= 0.7 && t < 1.4) {
+      // ── Scene 2 — Impact / shockwave ───────────────────────────
+      if (t >= 0.7 && t < 1.15) {
         const age = t - 0.7;
-
-        // Expanding shockwave ring
-        const swR = Math.min(age / 0.4 * W * 0.4, W * 0.4);
-        const swA = Math.max(0, 1 - age / 0.5);
-        ctx.strokeStyle = `rgba(79,224,196,${swA * 0.65})`;
-        ctx.lineWidth   = 2.5;
-        ctx.shadowColor = '#4FE0C4';
-        ctx.shadowBlur  = 10;
+        // Flash
+        const fA = Math.max(0, 0.55 - age / 0.3 * 0.55);
+        if (fA > 0) {
+          const fg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 260);
+          fg.addColorStop(0,   `rgba(200,255,235,${fA})`);
+          fg.addColorStop(0.4, `rgba(11,184,112,${fA * 0.5})`);
+          fg.addColorStop(1,   'rgba(11,184,112,0)');
+          ctx.fillStyle = fg; ctx.fillRect(0, 0, W, H);
+        }
+        // Shockwave rings
+        const swR  = Math.min(age / 0.45 * W * 0.44, W * 0.44);
+        const swA  = Math.max(0, 1 - age / 0.5);
+        ctx.shadowColor = '#4FE0C4'; ctx.shadowBlur = 10;
+        ctx.strokeStyle = `rgba(79,224,196,${swA * 0.65})`; ctx.lineWidth = 2.5;
         ctx.beginPath(); ctx.arc(CX, CY, swR, 0, Math.PI * 2); ctx.stroke();
-        // Second inner ring
-        if (swR > 20) {
-          ctx.strokeStyle = `rgba(34,201,160,${swA * 0.35})`;
-          ctx.lineWidth   = 1.5;
+        if (swR > 30) {
+          ctx.strokeStyle = `rgba(34,201,160,${swA * 0.38})`; ctx.lineWidth = 1.5;
           ctx.beginPath(); ctx.arc(CX, CY, swR * 0.55, 0, Math.PI * 2); ctx.stroke();
         }
         ctx.shadowBlur = 0;
-
-        // Impact flash
-        const flashA = Math.max(0, 0.5 - age / 0.25 * 0.5);
-        if (flashA > 0) {
-          const fg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 220);
-          fg.addColorStop(0,   `rgba(200,255,235,${flashA})`);
-          fg.addColorStop(0.35,`rgba(11,184,112,${flashA * 0.55})`);
-          fg.addColorStop(1,   'rgba(11,184,112,0)');
-          ctx.fillStyle = fg;
-          ctx.fillRect(0, 0, W, H);
-        }
       }
+      if (t >= 0.9 && phaseRef.current === 'impact') setPhase('fire');
 
-      // ── Scene 2→3 trigger ─────────────────────────────────────
-      if (t >= 0.9 && phaseRef.current === 'impact') {
-        setPhase('form');
-      }
-
-      // ── Sparks (decay over time) ───────────────────────────────
+      // Sparks decay
       for (let k = sparks.length - 1; k >= 0; k--) {
         const s = sparks[k];
-        s.x += s.vx; s.y += s.vy;
-        s.vy += 0.14; s.vx *= 0.97;
+        s.x += s.vx; s.y += s.vy; s.vy += 0.14; s.vx *= 0.97;
         s.life -= 0.028;
         if (s.life <= 0) { sparks.splice(k, 1); continue; }
         ctx.globalAlpha = s.life * 0.8;
-        ctx.fillStyle   = s.life > 0.5 ? '#4FE0C4' : '#0BB870';
+        ctx.fillStyle   = s.life > 0.55 ? '#4FE0C4' : '#0BB870';
         ctx.beginPath(); ctx.arc(s.x, s.y, s.life * 2.5, 0, Math.PI * 2); ctx.fill();
       }
       ctx.globalAlpha = 1;
 
-      // ── Persistent center glow (scenes 2–5) ───────────────────
-      if (phaseRef.current !== 'ball') {
-        const gA = phaseRef.current === 'impact' ? 0.16 : 0.09;
-        const cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 170);
-        cg.addColorStop(0, `rgba(11,184,112,${gA})`);
-        cg.addColorStop(0.5, `rgba(11,184,112,${gA * 0.4})`);
-        cg.addColorStop(1, 'rgba(11,184,112,0)');
-        ctx.fillStyle = cg;
-        ctx.beginPath(); ctx.arc(CX, CY, 170, 0, Math.PI * 2); ctx.fill();
+      // ── Scenes 3-4 — Green fire around logo (frames 3 → 5) ─────
+      const ph = phaseRef.current;
+      if (ph === 'fire' || ph === 'polish') {
+        const fireAge   = Math.max(0, t - 0.9);
+        // Amber → green colour shift over 1.6s
+        const hueShift  = Math.min(fireAge / 1.6, 1);
+        // Intensity: ramp up → full → die down in polish
+        const intensity = ph === 'polish'
+          ? Math.max(0, 1 - (t - 2.5) / 0.85)
+          : Math.min(fireAge / 0.55, 1);
+
+        // Spawn bezier flames (frame 3 style organic fire)
+        if (ff % 2 === 0 && intensity > 0.04) {
+          const density = Math.round(9 * intensity);
+          for (let k = 0; k < density; k++) {
+            const sx    = CX - FIRE_W / 2 + Math.random() * FIRE_W;
+            const baseH = 30 + hueShift * 125;           // 30(amber) → 155(green)
+            fls.push({
+              x: sx, y: FIRE_Y,
+              vx: (Math.random() - 0.5) * 0.9,
+              vy: -(Math.random() * 3.0 + 2.2),
+              life: 1,
+              w:    Math.random() * 20 + 9,
+              h:    Math.random() * 60 + 38,
+              lean: (Math.random() - 0.5) * 9,
+              hue:  baseH + (Math.random() - 0.5) * 28,
+            });
+          }
+        }
+
+        // Update + draw flames
+        for (let k = fls.length - 1; k >= 0; k--) {
+          const f = fls[k];
+          f.x += f.vx; f.y += f.vy;
+          f.vy -= 0.045; f.vx += (Math.random() - 0.5) * 0.22;
+          f.h  *= 0.993; f.w *= 0.997;
+          f.life -= 1 / (0.5 * 60);
+          if (f.life <= 0) { fls.splice(k, 1); continue; }
+
+          const pct = f.life;
+          const lit = f.hue > 100 ? 55 : 62;
+
+          ctx.save();
+          ctx.globalAlpha = pct * 0.75 * intensity;
+          drawFlame(ctx, f.x, f.y, f.w, f.h * pct, f.lean);
+          const fg = ctx.createLinearGradient(f.x, f.y, f.x + f.lean * 0.3, f.y - f.h);
+          fg.addColorStop(0,    `hsla(${f.hue},100%,${lit + 15}%,1)`);
+          fg.addColorStop(0.3,  `hsla(${f.hue},100%,${lit}%,0.88)`);
+          fg.addColorStop(0.68, `hsla(${f.hue},90%,${lit - 12}%,0.42)`);
+          fg.addColorStop(1,    `hsla(${f.hue},80%,${lit - 22}%,0)`);
+          ctx.fillStyle = fg; ctx.fill();
+          ctx.restore();
+        }
+
+        // Ground embers glow
+        const eHue = 30 + hueShift * 125;
+        const eg   = ctx.createRadialGradient(CX, FIRE_Y, 0, CX, FIRE_Y, FIRE_W * 0.75);
+        eg.addColorStop(0, `hsla(${eHue},90%,52%,${0.28 * intensity})`);
+        eg.addColorStop(1, 'rgba(11,184,112,0)');
+        ctx.fillStyle = eg;
+        ctx.beginPath(); ctx.arc(CX, FIRE_Y, FIRE_W * 0.75, 0, Math.PI * 2); ctx.fill();
       }
 
-      raf = requestAnimationFrame(draw);
+      // Persistent center glow (fades after fire)
+      if (ph !== 'ball') {
+        const ga = ph === 'impact' ? 0.14 : ph === 'fire' ? 0.09 : 0.05;
+        const cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 165);
+        cg.addColorStop(0, `rgba(11,184,112,${ga})`);
+        cg.addColorStop(1, 'rgba(11,184,112,0)');
+        ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(CX, CY, 165, 0, Math.PI * 2); ctx.fill();
+      }
+
+      raf = requestAnimationFrame(tick);
     };
 
-    raf = requestAnimationFrame(draw);
+    raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // ── Phase chain (React side) ────────────────────────────────────
+  // Phase chain
   useEffect(() => {
-    let timer: ReturnType<typeof setTimeout>;
-    if (phase === 'form')   timer = setTimeout(() => setPhase('polish'), 1000);
-    if (phase === 'polish') timer = setTimeout(() => setPhase('text'),   500);
-    if (phase === 'text')   timer = setTimeout(() => setPhase('exit'),   400);
-    return () => clearTimeout(timer);
+    let t: ReturnType<typeof setTimeout>;
+    if (phase === 'fire')   t = setTimeout(() => setPhase('polish'), 1600);
+    if (phase === 'polish') t = setTimeout(() => setPhase('exit'),   850);
+    return () => clearTimeout(t);
   }, [phase]);
 
-  // ── Scene 6: Logo → navbar (GSAP) ──────────────────────────────
+  // Scene 6 — logo → navbar top-right
   useEffect(() => {
     if (phase !== 'exit') return;
-    const el  = logoRef.current;
-    if (!el)  return;
-    const W = window.innerWidth;
-    const H = window.innerHeight;
-
-    // Target: top-right corner (RTL navbar logo position)
-    const targetX =  W / 2 - 52;   // ≈ 52px from right edge
-    const targetY = -(H / 2 - 24); // ≈ 24px from top
-
+    const el = logoRef.current;
+    if (!el) return;
+    const W = window.innerWidth, H = window.innerHeight;
     gsap.to(el, {
-      x: targetX, y: targetY,
-      scale: 0.18,
-      opacity: 0,
-      duration: 0.78,
-      ease: 'power2.inOut',
+      x: W / 2 - 52, y: -(H / 2 - 24),
+      scale: 0.18, opacity: 0,
+      duration: 0.75, ease: 'power2.inOut',
       onComplete: () => { setRemoved(true); onComplete(); },
     });
   }, [phase, onComplete]);
 
   if (removed) return null;
 
-  const inForm   = phase === 'form' || phase === 'polish' || phase === 'text' || phase === 'exit';
-  const inPolish = phase === 'polish' || phase === 'text' || phase === 'exit';
-  const inText   = phase === 'text'  || phase === 'exit';
+  const inFire   = phase === 'fire'   || phase === 'polish' || phase === 'exit';
+  const inPolish = phase === 'polish' || phase === 'exit';
 
   return (
     <div className="fixed inset-0 z-[9999] overflow-hidden" style={{ background: '#050B0D' }}>
@@ -243,74 +295,76 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           'linear-gradient(90deg, rgba(11,184,112,0.45) 1px, transparent 1px)',
         ].join(', '),
         backgroundSize: '52px 52px',
-        opacity: 0.045,
+        opacity: 0.042,
       }} />
 
-      {/* Canvas: energy ball, shockwave, sparks, particles */}
+      {/* Canvas — energy ball, shockwave, bezier flames */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
 
-      {/* Logo + text: centered, GSAP moves it in scene 6 */}
+      {/* Logo container — centered, GSAP moves it in scene 6 */}
       <div
         ref={logoRef}
         className="absolute inset-0 z-20 flex flex-col items-center justify-center pointer-events-none"
       >
-        {/* 3×3 logo grid */}
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: `repeat(3, ${SQ}px)`,
-            gridTemplateRows: `repeat(3, ${SQ}px)`,
-            gap: GAP,
-          }}
-        >
+        {/* ── 3×3 grid icon (frame 3 → frame 5) ─────────────────── */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: `repeat(3, ${SQ}px)`,
+          gridTemplateRows: `repeat(3, ${SQ}px)`,
+          gap: GAP,
+        }}>
           {FORMATION.map(({ row, col, delay }) => (
             <motion.div
               key={`${row}-${col}`}
               initial={{ scale: 0, opacity: 0, filter: 'blur(18px)' }}
-              animate={inForm ? {
-                scale: 1,
+              animate={inFire ? {
+                scale:  1,
                 opacity: 1,
                 filter: 'blur(0px)',
+                // Frame 3: amber glow while fire burns
+                // Frame 5: clean emerald neon glow
                 boxShadow: inPolish
                   ? [
-                    '0 0 14px rgba(11,184,112,0.75)',
-                    '0 0 28px rgba(11,184,112,0.35)',
-                    'inset 0 0 10px rgba(255,255,255,0.12)',
+                    '0 0 18px rgba(11,184,112,0.9)',
+                    '0 0 36px rgba(11,184,112,0.4)',
+                    'inset 0 0 10px rgba(255,255,255,0.14)',
                   ].join(', ')
-                  : '0 0 6px rgba(11,184,112,0.4)',
+                  : '0 0 10px rgba(255,140,30,0.55), 0 0 20px rgba(11,184,112,0.35)',
               } : {}}
               transition={{
-                duration: 0.36,
-                delay: 0.9 + delay, // 0.9s offset = after scenes 1+2
-                ease: [0.22, 1, 0.36, 1],
+                duration: 0.34,
+                delay:    0.9 + delay, // 0.9s = after scenes 1+2
+                ease:     [0.22, 1, 0.36, 1],
               }}
               style={{
                 width: SQ, height: SQ,
                 borderRadius: 8,
                 background: 'linear-gradient(135deg, #0BB870 0%, #22C9A0 52%, #4FE0C4 100%)',
-                backdropFilter: 'blur(6px)',
-                border: inPolish ? '1px solid rgba(79,224,196,0.5)' : '1px solid rgba(11,184,112,0.2)',
+                border: inPolish
+                  ? '1px solid rgba(79,224,196,0.55)'
+                  : '1px solid rgba(255,140,30,0.30)',
               }}
             />
           ))}
         </div>
 
-        {/* "EH automation" text */}
+        {/* ── Text reveal (frame 3 → frame 5) ─────────────────────── */}
         <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={inText ? { opacity: 1, y: 0 } : {}}
-          transition={{ duration: 0.38, ease: 'easeOut' }}
+          initial={{ opacity: 0, y: 8, filter: 'blur(8px)' }}
+          animate={inFire ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
+          transition={{ duration: 0.45, delay: 2.05, ease: 'easeOut' }}
           style={{
             marginTop: 18,
-            fontFamily: '"IBM Plex Mono", monospace',
-            fontWeight: 400,
-            fontSize: 'clamp(13px, 2.2vw, 26px)',
+            fontFamily:    '"IBM Plex Mono", monospace',
+            fontWeight:    400,
+            fontSize:      'clamp(13px, 2.2vw, 26px)',
             letterSpacing: '0.22em',
             textTransform: 'uppercase',
-            color: '#fff',
+            color:         '#fff',
+            // Frame 5: clean neon green text-shadow
             textShadow: [
-              '0 0 14px rgba(11,184,112,0.9)',
-              '0 0 30px rgba(11,184,112,0.45)',
+              '0 0 14px rgba(11,184,112,0.95)',
+              '0 0 30px rgba(11,184,112,0.5)',
             ].join(', '),
           }}
         >
