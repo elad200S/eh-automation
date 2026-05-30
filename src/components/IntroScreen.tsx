@@ -51,10 +51,20 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     const CY = H / 2;
     const RING_R = Math.min(W, H) * 0.22;
 
-    // Per-flame random personality
-    const ph  = Array.from({ length: N }, () => Math.random() * Math.PI * 2);
-    const hSd = Array.from({ length: N }, () => 0.75 + Math.random() * 0.5);
-    const wSd = Array.from({ length: N }, () => 0.80 + Math.random() * 0.4);
+    // Per-flame random personality — wide variation so no two flames look alike
+    const ph   = Array.from({ length: N }, () => Math.random() * Math.PI * 2);
+    const hSd  = Array.from({ length: N }, () => 0.28 + Math.random() * 1.55); // 0.28–1.83 range
+    const wSd  = Array.from({ length: N }, () => 0.70 + Math.random() * 0.55);
+    // Each flame has its OWN flicker frequencies → no two move in sync
+    const fq1  = Array.from({ length: N }, () => 2.8 + Math.random() * 4.2);
+    const fq2  = Array.from({ length: N }, () => 6.5 + Math.random() * 6.0);
+    const fq3  = Array.from({ length: N }, () => 14  + Math.random() * 9.0);
+    const fqL  = Array.from({ length: N }, () => 1.5 + Math.random() * 1.8); // lean freq
+
+    // Flare-up state per flame: when a flame suddenly shoots tall
+    const flareNext  = Array.from({ length: N }, () => 0.8 + Math.random() * 3.5);
+    const flareMag   = Array.from({ length: N }, () => 0);
+    const flareStart = Array.from({ length: N }, () => -99);
 
     // Spark particles
     interface Spark { x: number; y: number; vx: number; vy: number; life: number; }
@@ -85,6 +95,9 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
       // Slow "breath" on top
       const breath = 1 + Math.sin(t * 1.8) * 0.06;
+
+      // Global wind — drifts slowly, makes all flames lean together
+      const wind = Math.sin(t * 0.38) * 0.28 + Math.sin(t * 0.71) * 0.14;
 
       // Text reveal
       if (!textShown && t > 1.1) {
@@ -129,16 +142,35 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           const by    = CY + Math.sin(angle) * RING_R;
 
           const p = ph[i];
-          // Multi-frequency flicker for organic movement
+
+          // Per-flame flicker — own frequencies, truly independent movement
           const flicker =
-            Math.sin(t * 4.2 + p)        * 0.20 +
-            Math.sin(t * 7.8 + p * 1.9)  * 0.12 +
-            Math.sin(t * 13.1 + p * 0.7) * 0.06;
+            Math.sin(t * fq1[i] + p)          * 0.22 +
+            Math.sin(t * fq2[i] + p * 2.1)    * 0.14 +
+            Math.sin(t * fq3[i] + p * 0.6)    * 0.08;
+
+          // Flare-up: occasionally one flame suddenly shoots tall
+          if (t > flareNext[i] && flareMag[i] === 0) {
+            flareMag[i]   = 0.9 + Math.random() * 1.1;
+            flareStart[i] = t;
+            flareNext[i]  = t + 1.5 + Math.random() * 4;
+          }
+          let flareBoost = 0;
+          if (flareMag[i] > 0) {
+            const age = t - flareStart[i];
+            const dur = 0.45 + Math.random() * 0.25;
+            if (age < dur) {
+              flareBoost = flareMag[i] * Math.sin((age / dur) * Math.PI);
+            } else {
+              flareMag[i] = 0;
+            }
+          }
 
           const maxH = RING_R * 1.15 * breath;
-          const h    = maxH * intensity * hSd[i] * (1 + flicker);
+          const h    = maxH * intensity * hSd[i] * (1 + flicker + flareBoost);
           const w    = RING_R * 0.19 * wSd[i];
-          const lean = Math.sin(t * 2.4 + p * 1.2) * w * 0.55;
+          // Personal lean + global wind
+          const lean = Math.sin(t * fqL[i] + p) * w * 0.5 + wind * w;
 
           if (h < 2) continue;
 
