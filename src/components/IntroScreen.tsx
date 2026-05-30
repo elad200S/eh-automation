@@ -1,209 +1,281 @@
 import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 
-const STORAGE_KEY = 'intro_played';
-const TARGET_TEXT = 'EH Automation';
-const GLOW_COLORS = ['#06b6d4', '#22d3ee', '#67e8f9', '#10b981', '#34d399', '#a5f3fc'];
-const CODE_CHARS = '01アイABCDEF{}[]<>|@#$%^&*█▓░◈∆⊗ΛΣΠ';
+export const INTRO_STORAGE_KEY = 'intro_played';
 
-// Timing
-const WIPE_DUR       = 1.4;   // left-to-right video reveal
-const CONVERGE_START = 1.05;  // particles start after wipe begins
-const CONVERGE_DUR   = 1.2;
-const MAX_DELAY      = 0.2;
-const ALL_DONE       = CONVERGE_START + MAX_DELAY + CONVERGE_DUR; // ~2.45s
-const HOLD           = 0.35;
-const TOTAL_DUR      = ALL_DONE + HOLD;                           // ~2.8s
+const TOTAL_DUR = 4.4;
+const MAX_PS    = 320;
 
-function easeOutCubic(t: number) { return 1 - Math.pow(1 - t, 3); }
-
-function textFontSize(W: number) {
-  return Math.min(Math.max(W * 0.05, 26), 64);
-}
-
-function sampleTextPixels(text: string, W: number, H: number) {
-  const c = document.createElement('canvas');
-  c.width = W; c.height = H;
-  const ctx = c.getContext('2d')!;
-  ctx.font = `bold ${textFontSize(W)}px "IBM Plex Mono", monospace`;
-  ctx.fillStyle = '#fff';
-  ctx.textAlign = 'center';
-  ctx.textBaseline = 'middle';
-  ctx.fillText(text, W / 2, H / 2);
-  const d = ctx.getImageData(0, 0, W, H).data;
-  const pts: { x: number; y: number }[] = [];
-  const step = 2;
-  for (let y = 0; y < H; y += step)
-    for (let x = 0; x < W; x += step)
-      if (d[(y * W + x) * 4 + 3] > 100) pts.push({ x, y });
-  return pts;
+type PType = 'spark' | 'flame' | 'trail' | 'ember';
+interface P {
+  x: number; y: number;
+  vx: number; vy: number;
+  life: number; maxLife: number;
+  r: number; hue: number;
+  type: PType;
 }
 
 interface IntroScreenProps { onComplete: () => void; }
 
 const IntroScreen = ({ onComplete }: IntroScreenProps) => {
-  const rootRef       = useRef<HTMLDivElement>(null);
-  const canvasRef     = useRef<HTMLCanvasElement>(null);
-  const sweepRef      = useRef<HTMLDivElement>(null);
+  const rootRef  = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const textRef  = useRef<HTMLDivElement>(null);
   const [removed, setRemoved] = useState(false);
-  const started = useRef(false);
-  const rafId   = useRef(0);
 
   useEffect(() => {
-    if (!rootRef.current) return;
-
     const W = window.innerWidth;
     const H = window.innerHeight;
     const canvas = canvasRef.current!;
     canvas.width = W; canvas.height = H;
     const ctx = canvas.getContext('2d')!;
+    const textEl = textRef.current!;
 
-    // ── Atmospheric floating code particles ──────────────────────────────────
-    const floaters = Array.from({ length: 70 }, () => ({
-      x: Math.random() * W, y: Math.random() * H,
-      vx: (Math.random() - 0.5) * 0.45, vy: (Math.random() - 0.5) * 0.45,
-      a: Math.random() * 0.4 + 0.08, da: (Math.random() - 0.5) * 0.01,
-      size: Math.random() < 0.3 ? 10 : 7,
-      ch: CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)],
-      col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
-    }));
+    // Fireball
+    const fb = { x: W / 2, y: -85, radius: 28 };
+    const fbTargetY = H * 0.47;
 
-    // ── Holographic light traces ─────────────────────────────────────────────
-    const traces = [
-      { triggerAt: 0.5,  y: H * 0.38, speed: W * 1.6, progress: -1, opa: 0.07 },
-      { triggerAt: 0.9,  y: H * 0.52, speed: W * 1.9, progress: -1, opa: 0.05 },
-      { triggerAt: 1.2,  y: H * 0.46, speed: W * 1.4, progress: -1, opa: 0.06 },
-    ];
+    const ps: P[] = [];
 
-    // ── Converging text particles ────────────────────────────────────────────
-    let textParticles: {
-      sx: number; sy: number; tx: number; ty: number;
-      delay: number; size: number; col: string;
-    }[] = [];
-
-    const setupParticles = () => {
-      const pixels = sampleTextPixels(TARGET_TEXT, W, H);
-      textParticles = pixels
-        .sort(() => Math.random() - 0.5)
-        .map(p => ({
-          sx: Math.random() * W, sy: Math.random() * H,
-          tx: p.x, ty: p.y,
-          delay: Math.random() * MAX_DELAY,
-          size: 2.2,
-          col: GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)],
-        }));
+    const add = (
+      x: number, y: number,
+      vx: number, vy: number,
+      life: number, r: number,
+      hue: number, type: PType
+    ) => {
+      if (ps.length >= MAX_PS) return;
+      ps.push({ x, y, vx, vy, life, maxLife: life, r, hue, type });
     };
 
-    // ── Main draw loop ───────────────────────────────────────────────────────
-    let startTime: number | null = null;
+    let startTime = 0;
+    let rafId     = 0;
+    let impacted  = false;
+    let frame     = 0;
 
     const draw = (ts: number) => {
       if (!startTime) startTime = ts;
-      const elapsed = (ts - startTime) / 1000;
+      const t = (ts - startTime) / 1000;
+      frame++;
 
       ctx.clearRect(0, 0, W, H);
 
-      // Digital noise
-      for (let i = 0; i < 180; i++) {
-        ctx.globalAlpha = Math.random() * 0.018;
-        ctx.fillStyle = Math.random() > 0.5 ? '#06b6d4' : '#fff';
-        ctx.fillRect(Math.random() * W, Math.random() * H, 1, 1);
+      // ── 1. FALLING FIREBALL (0 → 0.72s) ──────────────────────
+      if (t < 0.72) {
+        const prog = Math.min(t / 0.72, 1);
+        const ease = 1 - Math.pow(1 - prog, 2.6);
+        fb.y = -85 + (fbTargetY + 85) * ease;
+
+        if (frame % 2 === 0) {
+          for (let k = 0; k < 4; k++) {
+            add(
+              fb.x + (Math.random() - 0.5) * fb.radius,
+              fb.y + (Math.random() - 0.5) * fb.radius,
+              (Math.random() - 0.5) * 1.4,
+              Math.random() * 1.8 + 0.4,
+              0.22 + Math.random() * 0.16,
+              Math.random() * 9 + 4,
+              Math.random() > 0.55 ? 155 + Math.random() * 20 : 32 + Math.random() * 16,
+              'trail'
+            );
+          }
+          // Orbiting embers
+          for (let k = 0; k < 2; k++) {
+            const a = Math.random() * Math.PI * 2;
+            const d = fb.radius + Math.random() * 16;
+            add(
+              fb.x + Math.cos(a) * d, fb.y + Math.sin(a) * d,
+              Math.cos(a) * 1.8, Math.sin(a) * 1.8 - 0.6,
+              0.15 + Math.random() * 0.12, Math.random() * 4 + 1.5,
+              Math.random() > 0.4 ? 160 : 36,
+              'ember'
+            );
+          }
+        }
       }
 
-      // Holographic traces
-      traces.forEach(tr => {
-        if (elapsed < tr.triggerAt) return;
-        if (tr.progress < 0) tr.progress = 0;
-        tr.progress += tr.speed / 60 / W;
-        const x = tr.progress * W * 1.2 - W * 0.1;
-        const len = W * 0.18;
-        const grad = ctx.createLinearGradient(x - len, 0, x + len, 0);
-        grad.addColorStop(0, 'transparent');
-        grad.addColorStop(0.5, `rgba(6,182,212,${tr.opa})`);
-        grad.addColorStop(1, 'transparent');
+      // ── 2. IMPACT (t ≈ 0.72s) ────────────────────────────────
+      if (t >= 0.72 && !impacted) {
+        impacted = true;
+        fb.y = fbTargetY;
+
+        // 140 explosion sparks
+        for (let k = 0; k < 140; k++) {
+          const a = Math.random() * Math.PI * 2;
+          const sp = Math.random() * 7 + 2;
+          add(
+            fb.x + (Math.random() - 0.5) * 10,
+            fb.y + (Math.random() - 0.5) * 10,
+            Math.cos(a) * sp, Math.sin(a) * sp - 1.8,
+            0.45 + Math.random() * 0.75,
+            Math.random() * 4 + 1,
+            Math.random() > 0.45 ? 152 + Math.random() * 22 : 28 + Math.random() * 22,
+            'spark'
+          );
+        }
+
+        // Ignite text: orange-hot → cool green-white
+        gsap.fromTo(textEl,
+          {
+            opacity: 0,
+            filter: 'blur(14px) brightness(3) hue-rotate(130deg)',
+            scale: 1.1,
+          },
+          {
+            opacity: 1,
+            filter: 'blur(0px) brightness(1) hue-rotate(0deg)',
+            scale: 1,
+            duration: 1.1,
+            delay: 0.08,
+            ease: 'power2.out',
+          }
+        );
+      }
+
+      // ── 3. DRAW FIREBALL ──────────────────────────────────────
+      if (t < 2.2) {
+        const age      = Math.max(t - 0.72, 0);
+        const fbAlpha  = t < 0.72 ? 1 : Math.max(0, 1 - age / 1.48);
+        const fbRadius = t < 0.72 ? fb.radius : fb.radius * Math.max(0.1, 1 - age / 1.1);
+
+        if (fbAlpha > 0.01) {
+          // Atmospheric halo
+          const halo = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, fbRadius * 5.5);
+          halo.addColorStop(0,   `rgba(16,185,129,${0.3  * fbAlpha})`);
+          halo.addColorStop(0.5, `rgba(16,185,129,${0.08 * fbAlpha})`);
+          halo.addColorStop(1,   'rgba(16,185,129,0)');
+          ctx.fillStyle = halo;
+          ctx.beginPath();
+          ctx.arc(fb.x, fb.y, fbRadius * 5.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Core
+          const core = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, fbRadius);
+          core.addColorStop(0,   `rgba(255,255,255,${fbAlpha})`);
+          core.addColorStop(0.3, `rgba(187,247,208,${0.97 * fbAlpha})`);
+          core.addColorStop(0.65,`rgba(16,185,129,${0.88 * fbAlpha})`);
+          core.addColorStop(1,   'rgba(4,120,87,0)');
+          ctx.fillStyle = core;
+          ctx.beginPath();
+          ctx.arc(fb.x, fb.y, fbRadius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+
+      // ── 4. SHOCKWAVE RING ─────────────────────────────────────
+      if (t > 0.72 && t < 1.08) {
+        const age  = t - 0.72;
+        const rRad = (age / 0.36) * W * 0.32;
+        const rAlpha = Math.max(0, 1 - age / 0.36) * 0.38;
+        ctx.strokeStyle = `rgba(16,185,129,${rAlpha})`;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.arc(fb.x, fb.y, rRad, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // ── 5. IMPACT FLASH ───────────────────────────────────────
+      if (t > 0.72 && t < 1.05) {
+        const age    = t - 0.72;
+        const flashA = Math.max(0, 0.28 - age / 1.16);
+        const radial = ctx.createRadialGradient(fb.x, fb.y, 0, fb.x, fb.y, W * 0.55);
+        radial.addColorStop(0,   `rgba(210,255,235,${flashA})`);
+        radial.addColorStop(0.35,`rgba(16,185,129,${flashA * 0.6})`);
+        radial.addColorStop(1,   'rgba(16,185,129,0)');
         ctx.globalAlpha = 1;
-        ctx.fillStyle = grad;
-        ctx.fillRect(x - len, tr.y - 0.5, len * 2, 1);
-      });
+        ctx.fillStyle = radial;
+        ctx.fillRect(0, 0, W, H);
+      }
 
-      // Atmospheric floaters
-      const floatA = Math.min(elapsed / 0.4, 1);
-      floaters.forEach(p => {
+      // ── 6. SPAWN TEXT FLAMES ──────────────────────────────────
+      if (t > 1.05 && t < 3.15 && frame % 2 === 0) {
+        const tW = Math.min(W * 0.66, 520);
+        const x0 = (W - tW) / 2;
+        const density = t < 1.9 ? 6 : t < 2.7 ? 4 : 2;
+        for (let k = 0; k < density; k++) {
+          add(
+            x0 + Math.random() * tW,
+            H * 0.5 + 16,
+            (Math.random() - 0.5) * 0.9,
+            -(Math.random() * 3.0 + 1.8),
+            0.32 + Math.random() * 0.42,
+            Math.random() * 11 + 5,
+            Math.random() > 0.52 ? 152 + Math.random() * 22 : 30 + Math.random() * 18,
+            'flame'
+          );
+        }
+      }
+
+      // ── 7. UPDATE + DRAW PARTICLES ────────────────────────────
+      for (let i = ps.length - 1; i >= 0; i--) {
+        const p = ps[i];
+
+        if (p.type === 'spark') {
+          p.vy += 0.13; p.vx *= 0.97;
+        } else if (p.type === 'flame') {
+          p.vy -= 0.05;
+          p.vx += (Math.random() - 0.5) * 0.18;
+          p.r  *= 0.993;
+        } else {
+          p.vx *= 0.91; p.vy *= 0.91;
+        }
+
         p.x += p.vx; p.y += p.vy;
-        p.a += p.da;
-        if (p.a <= 0.05 || p.a >= 0.55) p.da *= -1;
-        if (p.x < 0) p.x = W; if (p.x > W) p.x = 0;
-        if (p.y < 0) p.y = H; if (p.y > H) p.y = 0;
-        ctx.globalAlpha = p.a * floatA * 0.65;
-        ctx.fillStyle = p.col;
-        ctx.font = `${p.size}px monospace`;
-        ctx.fillText(p.ch, p.x, p.y);
-      });
+        p.life -= 1 / (p.maxLife * 60);
+        if (p.life <= 0) { ps.splice(i, 1); continue; }
 
-      // Converging text particles
-      textParticles.forEach(p => {
-        const raw = (elapsed - CONVERGE_START - p.delay) / CONVERGE_DUR;
-        const prog = Math.min(Math.max(raw, 0), 1);
-        if (prog === 0) return;
-        const ease = easeOutCubic(prog);
-        const x = p.sx + (p.tx - p.sx) * ease;
-        const y = p.sy + (p.ty - p.sy) * ease;
-        const baseA = prog < 0.25 ? (prog / 0.25) : 1;
+        const pct = p.life / p.maxLife;
 
-        if (prog > 0.6) {
-          ctx.globalAlpha = (prog - 0.6) / 0.4 * 0.12;
-          ctx.shadowBlur = 8; ctx.shadowColor = p.col;
-          ctx.fillStyle = '#a5f3fc';
-          const gs = p.size * 3;
-          ctx.fillRect(x - gs / 2, y - gs / 2, gs, gs);
-          ctx.shadowBlur = 0;
+        if (p.type === 'flame') {
+          const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r);
+          const l = p.hue > 100 ? 55 : 62;
+          g.addColorStop(0, `hsla(${p.hue},95%,${l}%,${pct * 0.52})`);
+          g.addColorStop(0.55, `hsla(${p.hue},95%,${l - 12}%,${pct * 0.28})`);
+          g.addColorStop(1,   `hsla(${p.hue},95%,${l - 20}%,0)`);
+          ctx.fillStyle = g;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fill();
+        } else {
+          ctx.globalAlpha = pct * (p.type === 'trail' ? 0.6 : 0.88);
+          ctx.fillStyle   = `hsl(${p.hue},90%,65%)`;
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * pct + 0.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.globalAlpha = 1;
         }
+      }
 
-        ctx.globalAlpha = baseA * 0.9;
-        ctx.fillStyle = p.col;
-        ctx.fillRect(x - p.size / 2, y - p.size / 2, p.size, p.size);
+      // ── 8. FADE OUT ───────────────────────────────────────────
+      if (t > 3.5) {
+        const a = Math.min((t - 3.5) / 0.8, 1);
+        ctx.globalAlpha = a;
+        ctx.fillStyle   = '#000';
+        ctx.fillRect(0, 0, W, H);
+        ctx.globalAlpha = 1;
+      }
 
-        if (prog > 0.85) {
-          ctx.globalAlpha = (prog - 0.85) / 0.15 * 0.08;
-          ctx.shadowBlur = 12; ctx.shadowColor = '#22d3ee';
-          ctx.fillStyle = '#22d3ee';
-          ctx.fillRect(x - 1, y - 1, 2, 2);
-          ctx.shadowBlur = 0;
-        }
-      });
-
-      if (elapsed < TOTAL_DUR) rafId.current = requestAnimationFrame(draw);
+      if (t < TOTAL_DUR) {
+        rafId = requestAnimationFrame(draw);
+      } else {
+        cancelAnimationFrame(rafId);
+        setRemoved(true);
+        onComplete();
+      }
     };
 
-    // ── Start sequence ───────────────────────────────────────────────────────
-    const run = () => {
-      if (started.current) return;
-      started.current = true;
-
-      // Light sweep
-      if (sweepRef.current)
-        gsap.fromTo(sweepRef.current,
-          { x: '-100%' }, { x: '280%', duration: TOTAL_DUR * 0.9, delay: 0.1, ease: 'power1.inOut' });
-
-      // Canvas draw loop
-      rafId.current = requestAnimationFrame(draw);
-
-      // Fade out and done
-      gsap.to(rootRef.current, {
-        opacity: 0, duration: 0.85, delay: TOTAL_DUR, ease: 'power2.out',
-        onComplete: () => { cancelAnimationFrame(rafId.current); setRemoved(true); onComplete(); },
-      });
-    };
-
-    document.fonts.load(`bold 64px "IBM Plex Mono"`).finally(() => {
-      setupParticles();
-      run();
+    // Fade text out before the black overlay covers it
+    gsap.to(textEl, {
+      opacity: 0,
+      filter: 'blur(6px)',
+      duration: 0.65,
+      delay: 3.55,
     });
 
+    rafId = requestAnimationFrame(draw);
+
     return () => {
-      cancelAnimationFrame(rafId.current);
-      gsap.killTweensOf(rootRef.current);
-      gsap.killTweensOf(sweepRef.current);
+      cancelAnimationFrame(rafId);
+      gsap.killTweensOf(textEl);
     };
   }, [onComplete]);
 
@@ -212,25 +284,43 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   return (
     <div ref={rootRef} className="fixed inset-0 z-[9999] bg-black overflow-hidden" aria-hidden="true">
 
-      {/* Scan lines */}
+      {/* CRT scan lines */}
       <div style={{
         position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
-        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.09) 2px, rgba(0,0,0,0.09) 4px)',
+        backgroundImage: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,0,0,0.07) 2px, rgba(0,0,0,0.07) 4px)',
       }} />
 
-      {/* Holographic light sweep */}
-      <div ref={sweepRef} style={{
-        position: 'absolute', top: 0, bottom: 0, width: '20%', zIndex: 2, pointerEvents: 'none',
-        background: 'linear-gradient(90deg, transparent, rgba(6,182,212,0.08) 50%, transparent)',
-        transform: 'translateX(-100%)',
-      }} />
+      {/* Particle canvas */}
+      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none' }} />
 
-      {/* Particle animation canvas */}
-      <canvas ref={canvasRef} style={{ position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none' }} />
+      {/* Text — appears via GSAP */}
+      <div
+        ref={textRef}
+        style={{
+          position: 'absolute', inset: 0, zIndex: 3, pointerEvents: 'none',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          opacity: 0,
+        }}
+      >
+        <span style={{
+          fontFamily: '"IBM Plex Mono", monospace',
+          fontWeight: 700,
+          fontSize: 'clamp(26px, 4.8vw, 62px)',
+          letterSpacing: '0.05em',
+          color: '#fff',
+          whiteSpace: 'nowrap',
+          textShadow: [
+            '0 0 18px rgba(16,185,129,0.95)',
+            '0 0 38px rgba(16,185,129,0.55)',
+            '0 0 70px rgba(16,185,129,0.25)',
+          ].join(', '),
+        }}>
+          EH Automation
+        </span>
+      </div>
 
     </div>
   );
 };
 
 export default IntroScreen;
-export { STORAGE_KEY as INTRO_STORAGE_KEY };
