@@ -208,35 +208,11 @@ const AppInner = () => {
   );
 };
 
-// Detect browser refresh (F5 / reload button) vs regular navigation.
-// Uses both new PerformanceNavigationTiming API and the legacy fallback.
-const detectReload = (): boolean => {
-  try {
-    // New API (Chrome, Firefox, Safari)
-    const entries = performance.getEntriesByType('navigation');
-    if (entries.length > 0) {
-      return (entries[0] as PerformanceNavigationTiming).type === 'reload';
-    }
-    // Legacy API fallback
-    if (performance.navigation) {
-      return performance.navigation.type === 1; // 1 = TYPE_RELOAD
-    }
-  } catch {
-    // ignore
-  }
-  return false;
-};
-
 const App = () => {
-  const isReload  = detectReload();
-  const hasPlayed = !!sessionStorage.getItem(INTRO_STORAGE_KEY);
-
-  // Show intro on: first visit this session OR browser refresh (F5)
-  const [showIntro, setShowIntro] = useState(isReload || !hasPlayed);
-  const [introDone, setIntroDone] = useState(!isReload && hasPlayed);
+  const [showIntro, setShowIntro] = useState(true);
+  const [introDone, setIntroDone] = useState(false);
 
   const handleIntroComplete = () => {
-    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };
