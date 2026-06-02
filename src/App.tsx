@@ -208,11 +208,23 @@ const AppInner = () => {
   );
 };
 
+// Detect if this load is a genuine browser refresh (F5 / reload button)
+// vs a regular navigation between pages
+const isPageReload = (): boolean => {
+  const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+  return nav?.type === 'reload';
+};
+
 const App = () => {
-  const [introDone, setIntroDone] = useState(false);
-  const [showIntro, setShowIntro] = useState(true);
+  const reload   = isPageReload();
+  const hasPlayed = !!sessionStorage.getItem(INTRO_STORAGE_KEY);
+
+  // Show intro on: first visit this session OR genuine browser refresh
+  const [showIntro, setShowIntro] = useState(reload || !hasPlayed);
+  const [introDone, setIntroDone] = useState(!reload && hasPlayed);
 
   const handleIntroComplete = () => {
+    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };
