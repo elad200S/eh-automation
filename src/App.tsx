@@ -209,11 +209,10 @@ const AppInner = () => {
 };
 
 const App = () => {
-  const [introDone, setIntroDone] = useState(() => !!sessionStorage.getItem(INTRO_STORAGE_KEY));
-  const [showIntro, setShowIntro] = useState(() => !sessionStorage.getItem(INTRO_STORAGE_KEY));
+  const [introDone, setIntroDone] = useState(false);
+  const [showIntro, setShowIntro] = useState(true);
 
   const handleIntroComplete = () => {
-    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };
