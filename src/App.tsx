@@ -209,10 +209,13 @@ const AppInner = () => {
 };
 
 const App = () => {
+  const navType   = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined)?.type;
+  const isReload  = navType === 'reload';
   const hasPlayed = !!localStorage.getItem(INTRO_STORAGE_KEY);
 
-  const [showIntro, setShowIntro] = useState(!hasPlayed);
-  const [introDone, setIntroDone] = useState(hasPlayed);
+  // Play intro on: first ever visit OR when user presses the browser refresh button
+  const [showIntro, setShowIntro] = useState(isReload || !hasPlayed);
+  const [introDone, setIntroDone] = useState(!isReload && hasPlayed);
 
   const handleIntroComplete = () => {
     localStorage.setItem(INTRO_STORAGE_KEY, '1');

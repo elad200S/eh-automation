@@ -4,17 +4,18 @@ import { gsap } from 'gsap';
 
 export const INTRO_STORAGE_KEY = 'intro_played';
 
-// 3×3 grid — formation order per brief
+// 3×3 grid — colours sampled from the actual logo-eh.png
+// Gradient: light cyan-blue (top-left) → darker blue (bottom-right)
 const FORMATION = [
-  { row: 0, col: 0, delay: 0.00 },
-  { row: 0, col: 1, delay: 0.10 },
-  { row: 0, col: 2, delay: 0.20 },
-  { row: 1, col: 0, delay: 0.36 },
-  { row: 1, col: 1, delay: 0.50 },
-  { row: 1, col: 2, delay: 0.63 },
-  { row: 2, col: 0, delay: 0.76 },
-  { row: 2, col: 1, delay: 0.87 },
-  { row: 2, col: 2, delay: 0.97 },
+  { row: 0, col: 0, delay: 0.00, color: '#7DC8E0', glow: 'rgba(125,200,224,0.7)' },
+  { row: 0, col: 1, delay: 0.10, color: '#52B8D2', glow: 'rgba(82,184,210,0.7)'  },
+  { row: 0, col: 2, delay: 0.20, color: '#4490CA', glow: 'rgba(68,144,202,0.7)'  },
+  { row: 1, col: 0, delay: 0.36, color: '#5AC4CC', glow: 'rgba(90,196,204,0.7)'  },
+  { row: 1, col: 1, delay: 0.50, color: '#4088BE', glow: 'rgba(64,136,190,0.7)'  },
+  { row: 1, col: 2, delay: 0.63, color: '#3272AA', glow: 'rgba(50,114,170,0.7)'  },
+  { row: 2, col: 0, delay: 0.76, color: '#6AD8D0', glow: 'rgba(106,216,208,0.7)' },
+  { row: 2, col: 1, delay: 0.87, color: '#4AC0BA', glow: 'rgba(74,192,186,0.7)'  },
+  { row: 2, col: 2, delay: 0.97, color: '#3A8CC2', glow: 'rgba(58,140,194,0.7)'  },
 ];
 
 const SQ  = 44; // square px
@@ -313,36 +314,31 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           gridTemplateRows: `repeat(3, ${SQ}px)`,
           gap: GAP,
         }}>
-          {FORMATION.map(({ row, col, delay }) => (
+          {FORMATION.map(({ row, col, delay, color, glow }) => (
             <motion.div
               key={`${row}-${col}`}
               initial={{ scale: 0, opacity: 0, filter: 'blur(18px)' }}
               animate={inFire ? {
-                scale:  1,
+                scale:   1,
                 opacity: 1,
-                filter: 'blur(0px)',
-                // Frame 3: amber glow while fire burns
-                // Frame 5: clean emerald neon glow
+                filter:  'blur(0px)',
                 boxShadow: inPolish
-                  ? [
-                    '0 0 18px rgba(11,184,112,0.9)',
-                    '0 0 36px rgba(11,184,112,0.4)',
-                    'inset 0 0 10px rgba(255,255,255,0.14)',
-                  ].join(', ')
-                  : '0 0 10px rgba(255,140,30,0.55), 0 0 20px rgba(11,184,112,0.35)',
+                  ? `0 0 14px ${glow}, 0 0 28px ${glow.replace('0.7', '0.35')}, inset 0 0 8px rgba(255,255,255,0.18)`
+                  : `0 0 8px rgba(255,140,30,0.5), 0 0 14px ${glow.replace('0.7', '0.3')}`,
               } : {}}
               transition={{
                 duration: 0.34,
-                delay:    0.9 + delay, // 0.9s = after scenes 1+2
+                delay:    0.9 + delay,
                 ease:     [0.22, 1, 0.36, 1],
               }}
               style={{
-                width: SQ, height: SQ,
+                width:        SQ,
+                height:       SQ,
                 borderRadius: 8,
-                background: 'linear-gradient(135deg, #0BB870 0%, #22C9A0 52%, #4FE0C4 100%)',
-                border: inPolish
-                  ? '1px solid rgba(79,224,196,0.55)'
-                  : '1px solid rgba(255,140,30,0.30)',
+                background:   color,
+                border:       inPolish
+                  ? `1px solid ${color}99`
+                  : '1px solid rgba(255,140,30,0.25)',
               }}
             />
           ))}
