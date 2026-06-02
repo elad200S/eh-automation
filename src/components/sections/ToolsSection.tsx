@@ -65,10 +65,14 @@ const ToolsSection = () => {
         </p>
       </div>
 
-      {/* White marquee strip */}
+      {/* Dark marquee strip — lusion.co style */}
       <div
         className="w-full overflow-hidden"
-        style={{ background: '#fff', borderTop: '1px solid #e5e7eb', borderBottom: '1px solid #e5e7eb' }}
+        style={{
+          background: 'hsl(220,15%,11%)',
+          borderTop: '1px solid hsl(220,15%,18%)',
+          borderBottom: '1px solid hsl(220,15%,18%)',
+        }}
         onMouseEnter={() => { isPaused.current = true; }}
         onMouseLeave={() => { isPaused.current = false; }}
       >
@@ -81,25 +85,25 @@ const ToolsSection = () => {
             {duplicatedTools.map((tool, index) => (
               <div key={index} className="flex items-center">
                 <span
-                  className="whitespace-nowrap cursor-default select-none px-8 transition-colors duration-200"
+                  className="whitespace-nowrap cursor-default select-none px-7 transition-colors duration-200"
                   style={{
                     fontWeight: tool.weight,
                     fontFamily: tool.mono ? '"IBM Plex Mono", monospace' : 'Heebo, sans-serif',
                     letterSpacing: tool.spacing,
                     fontSize: tool.size ?? '1.1rem',
                     textTransform: tool.upper ? 'uppercase' : tool.lower ? 'lowercase' : 'none',
-                    color: '#111827',
+                    color: 'hsl(215,20%,72%)',
                   }}
-                  onMouseEnter={e => { (e.currentTarget as HTMLSpanElement).style.color = 'hsl(160,84%,32%)'; }}
-                  onMouseLeave={e => { (e.currentTarget as HTMLSpanElement).style.color = '#111827'; }}
+                  onMouseEnter={e => { (e.currentTarget as HTMLSpanElement).style.color = 'hsl(160,84%,55%)'; }}
+                  onMouseLeave={e => { (e.currentTarget as HTMLSpanElement).style.color = 'hsl(215,20%,72%)'; }}
                 >
                   {tool.name}
                 </span>
                 <span
                   className="select-none"
-                  style={{ color: '#d1d5db', fontSize: '0.45rem', flexShrink: 0 }}
+                  style={{ color: 'hsl(220,15%,30%)', fontSize: '0.75rem', flexShrink: 0 }}
                 >
-                  ◆
+                  /
                 </span>
               </div>
             ))}

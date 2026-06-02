@@ -55,9 +55,9 @@ const AIAgents = lazy(() => import("./pages/services/AIAgents"));
 
 const queryClient = new QueryClient();
 
-// Initialize Lenis smooth scroll
+// Initialize Lenis smooth scroll — heavier duration for cinematic feel
 const lenis = new Lenis({
-  duration: 1.4,
+  duration: 1.85,
   easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   touchMultiplier: 1.5,
 });
@@ -208,11 +208,27 @@ const AppInner = () => {
   );
 };
 
+const detectReload = (): boolean => {
+  try {
+    const nav = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming | undefined;
+    if (nav?.type === 'reload') return true;
+    if (typeof performance.navigation !== 'undefined') {
+      return (performance.navigation as { type: number }).type === 1;
+    }
+  } catch { /* ignore */ }
+  return false;
+};
+
 const App = () => {
-  const [showIntro, setShowIntro] = useState(true);
-  const [introDone, setIntroDone] = useState(false);
+  const [showIntro, setShowIntro] = useState(() =>
+    detectReload() || !sessionStorage.getItem(INTRO_STORAGE_KEY)
+  );
+  const [introDone, setIntroDone] = useState(() =>
+    !detectReload() && !!sessionStorage.getItem(INTRO_STORAGE_KEY)
+  );
 
   const handleIntroComplete = () => {
+    sessionStorage.setItem(INTRO_STORAGE_KEY, '1');
     setShowIntro(false);
     setIntroDone(true);
   };

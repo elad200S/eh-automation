@@ -11,9 +11,9 @@ interface RevealTextProps {
 }
 
 /*
-  Splits a heading into individual words.
-  Each word rises from clip-hidden to visible as the user scrolls,
-  with a slight stagger. Fully reverses on scroll-up.
+  Splits heading into words.
+  Each word rises from clip-hidden — fires once as section enters viewport.
+  60ms stagger between words → clean premium feel (lusion.co style).
 */
 export default function RevealText({
   children,
@@ -27,8 +27,7 @@ export default function RevealText({
     const el = containerRef.current;
     if (!el) return;
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const inners = el.querySelectorAll<HTMLSpanElement>('.rv-inner');
-    gsap.set(inners, { y: '108%' });
+    gsap.set(el.querySelectorAll('.rv-inner'), { y: '110%' });
   }, []);
 
   useEffect(() => {
@@ -43,18 +42,20 @@ export default function RevealText({
     }
 
     const ctx = gsap.context(() => {
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: el,
+          start: 'top 88%',
+          toggleActions: 'play none none none',
+        },
+      });
+
       inners.forEach((inner, i) => {
-        gsap.to(inner, {
-          y: '0%',
-          ease: 'none',
-          scrollTrigger: {
-            trigger: el,
-            // Each word starts slightly later — creates the stagger via scroll position
-            start: `top ${90 - i * 1.5}%`,
-            end:   `top ${62 - i * 1.5}%`,
-            scrub: 0.8,
-          },
-        });
+        tl.to(
+          inner,
+          { y: '0%', duration: 0.75, ease: 'power3.out' },
+          i * 0.065,
+        );
       });
     });
 
@@ -62,7 +63,6 @@ export default function RevealText({
   }, []);
 
   return (
-    
     <Tag ref={containerRef} className={className}>
       {words.map((word, i) => (
         <span

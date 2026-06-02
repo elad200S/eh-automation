@@ -240,46 +240,54 @@ const AutomationShowcaseSection = () => {
           </div>
 
           {/* ── Desktop layout ───────────────────────────────── */}
-          <div className="hidden md:grid md:grid-cols-5 gap-5 items-start">
+          <div className="hidden md:grid md:grid-cols-5 gap-6 items-start">
             {/* Scenario tabs */}
-            <div className="md:col-span-2">
-              <div className="flex flex-col gap-2">
-                {scenarios.map((s, i) => (
-                  <div
-                    key={i}
-                    className={cn(
-                      'w-full text-right p-4 rounded-xl border transition-all duration-300',
-                      active === i
-                        ? 'bg-card border-primary/40 shadow-lg shadow-primary/10'
-                        : 'bg-card/40 border-border/40'
-                    )}
-                  >
-                    <div className="flex items-center gap-3" dir="rtl">
-                      <span className={cn('font-mono text-xs font-bold transition-colors shrink-0', active === i ? 'text-primary' : 'text-muted-foreground/60')}>
-                        {s.tag}
-                      </span>
-                      <span className={cn('font-medium text-sm transition-colors', active === i ? 'text-foreground' : 'text-muted-foreground')}>
-                        {s.title}
-                      </span>
-                    </div>
-                    {active === i && (
-                      <div className="mt-3 h-0.5 bg-border/40 rounded-full overflow-hidden">
-                        <div ref={progressBarRef} className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
-                      </div>
-                    )}
+            <div className="md:col-span-2 flex flex-col gap-2">
+              {scenarios.map((s, i) => (
+                <button
+                  key={i}
+                  onClick={() => setActive(i)}
+                  className={cn(
+                    'w-full text-right px-5 py-4 rounded-xl border transition-all duration-300 cursor-pointer',
+                    active === i
+                      ? 'bg-card border-primary/50 shadow-lg shadow-primary/8'
+                      : 'bg-card/30 border-border/30 hover:bg-card/50 hover:border-border/50'
+                  )}
+                >
+                  <div className="flex items-center gap-3" dir="rtl">
+                    <span className={cn(
+                      'font-mono text-xs font-bold shrink-0 transition-colors',
+                      active === i ? 'text-primary' : 'text-muted-foreground/50'
+                    )}>
+                      {s.tag}
+                    </span>
+                    <span className={cn(
+                      'font-medium text-sm transition-colors text-right',
+                      active === i ? 'text-foreground' : 'text-muted-foreground'
+                    )}>
+                      {s.title}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  {active === i && (
+                    <div className="mt-3 h-px bg-border/30 rounded-full overflow-hidden">
+                      <div ref={progressBarRef} className="h-full bg-primary rounded-full" style={{ width: '0%' }} />
+                    </div>
+                  )}
+                </button>
+              ))}
             </div>
 
             {/* Step visual */}
             <div className="md:col-span-3">
-              <div className="relative">
-                <div className="absolute -inset-px rounded-2xl bg-gradient-to-br from-primary/15 via-transparent to-secondary/10 pointer-events-none" />
-                <div className="relative bg-card/80 backdrop-blur-sm rounded-2xl border border-border/60 p-6">
-                  <div className="mb-4" dir="rtl">
-                    <h3 className="text-base font-semibold text-foreground">{scenarios[active].title}</h3>
-                  </div>
+              <div className="relative rounded-2xl overflow-hidden border border-border/50"
+                style={{ background: 'hsl(220,15%,11%)' }}>
+                <div className="p-6" dir="rtl">
+                  <p className="text-xs font-mono text-primary/70 mb-1 tracking-widest">
+                    תרחיש {scenarios[active].tag}
+                  </p>
+                  <h3 className="text-base font-semibold text-foreground mb-4">
+                    {scenarios[active].title}
+                  </h3>
                   <StepVisual key={active} steps={scenarios[active].steps} scenarioKey={active} />
                 </div>
               </div>

@@ -33,34 +33,34 @@ const Section = forwardRef<HTMLElement, SectionProps>(
       }
 
       const ctx = gsap.context(() => {
-        // Lift in as section enters viewport
+        // Dramatic lift-in — lusion.co style
         gsap.fromTo(
           el,
-          { opacity: 0, y: 64, scale: 0.96 },
+          { opacity: 0, y: 90, scale: 0.93 },
           {
             opacity: 1, y: 0, scale: 1,
             ease: 'none',
             scrollTrigger: {
               trigger: el,
-              start: 'top 92%',
-              end: 'top 52%',
-              scrub: 1.0,
+              start: 'top 94%',
+              end: 'top 48%',
+              scrub: 1.2,
             },
           }
         );
 
-        // Push back as section scrolls out top
+        // Subtle push-back as section exits
         gsap.fromTo(
           el,
           { opacity: 1, y: 0, scale: 1 },
           {
-            opacity: 0.55, y: -48, scale: 0.97,
+            opacity: 0.45, y: -60, scale: 0.96,
             ease: 'none',
             scrollTrigger: {
               trigger: el,
-              start: 'top 6%',
-              end: 'top -28%',
-              scrub: 1.2,
+              start: 'top 4%',
+              end: 'top -32%',
+              scrub: 1.4,
             },
           }
         );
