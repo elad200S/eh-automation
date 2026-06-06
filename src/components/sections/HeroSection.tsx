@@ -36,7 +36,7 @@ const LINES = [
   { text: "you don't.", weight: 300, color: 'hsl(160,84%,52%)' },
 ];
 
-const duplicatedTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
+const duplicatedTicker = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
 
 const HeroSection = () => {
   const { openPopup } = useContactPopup();
@@ -287,7 +287,7 @@ const HeroSection = () => {
       <style>{`
         @keyframes hero-ticker {
           from { transform: translateX(0); }
-          to   { transform: translateX(-50%); }
+          to   { transform: translateX(-25%); }
         }
       `}</style>
     </section>
