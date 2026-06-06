@@ -70,7 +70,13 @@ const WebsiteAuditTool = () => {
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices`
       );
       const data = await res.json();
-      const cats = data?.lighthouseResult?.categories ?? {};
+
+      if (!res.ok || data.error || !data.lighthouseResult) {
+        setScanState('error');
+        return;
+      }
+
+      const cats = data.lighthouseResult.categories ?? {};
 
       const results: CategoryResult[] = Object.entries(cats).map(([id, cat]: [string, any]) => {
         const score = Math.round((cat.score ?? 0) * 100);
