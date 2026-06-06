@@ -9,20 +9,42 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 gsap.registerPlugin(ScrollTrigger);
 
 const solutions = [
-  { Icon: Bot,           tag: '01', color: '#10b981', title: 'סוכני AI חכמים',      description: 'בוטים חכמים שעובדים 24/7 – מענה ללקוחות וטיפול בלידים באופן מלא.' },
-  { Icon: Zap,           tag: '02', color: '#facc15', title: 'אוטומציה עסקית',      description: 'ביטול משימות ידניות וייעול תהליכים — כדי שתתמקד במה שמכניס כסף.' },
-  { Icon: MessageCircle, tag: '03', color: '#4ade80', title: 'WhatsApp אוטומטי',   description: 'מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות אישית.' },
-  { Icon: GitBranch,     tag: '04', color: '#38bdf8', title: 'אוטומציית CRM',       description: 'תהליכי CRM שמוודאים שאף ליד לא נופל בין הכיסאות.' },
-  { Icon: Workflow,      tag: '05', color: '#fb923c', title: 'תהליכי עבודה חכמים', description: 'מיפוי ואוטומציה של דוחות, אישורים ועדכונים בצוות.' },
+  { Icon: Bot,           tag: '01', color: '#10b981', title: 'סוכני AI חכמים',       description: 'בוטים חכמים שעובדים 24/7 – מענה ללקוחות וטיפול בלידים באופן מלא.' },
+  { Icon: Zap,           tag: '02', color: '#facc15', title: 'אוטומציה עסקית',       description: 'ביטול משימות ידניות וייעול תהליכים — כדי שתתמקד במה שמכניס כסף.' },
+  { Icon: MessageCircle, tag: '03', color: '#4ade80', title: 'WhatsApp אוטומטי',    description: 'מענה אוטומטי, ניהול לידים ושליחת הודעות מותאמות אישית.' },
+  { Icon: GitBranch,     tag: '04', color: '#38bdf8', title: 'אוטומציית CRM',        description: 'תהליכי CRM שמוודאים שאף ליד לא נופל בין הכיסאות.' },
+  { Icon: Workflow,      tag: '05', color: '#fb923c', title: 'תהליכי עבודה חכמים',  description: 'מיפוי ואוטומציה של דוחות, אישורים ועדכונים בצוות.' },
   { Icon: BarChart3,     tag: '06', color: '#c084fc', title: 'דוחות וניתוח נתונים', description: 'מעקב אוטומטי אחרי ביצועים והפקת תובנות לעסק בזמן אמת.' },
-  { Icon: Globe,         tag: '07', color: '#60a5fa', title: 'בניית אתרים',         description: 'אתרים מודרניים, מהירים ומותאמים — מחוברים לאוטומציות מהיום הראשון.', featured: true },
+  { Icon: Globe,         tag: '07', color: '#60a5fa', title: 'בניית אתרים',          description: 'אתרים מודרניים, מהירים ומותאמים — מחוברים לאוטומציות מהיום הראשון.', featured: true },
+];
+
+// [gridColumn, minHeight px]
+const GRID: Array<{ col: string; h: number }> = [
+  { col: 'span 6', h: 250 },  // 01
+  { col: 'span 6', h: 250 },  // 02
+  { col: 'span 4', h: 200 },  // 03
+  { col: 'span 4', h: 200 },  // 04
+  { col: 'span 4', h: 200 },  // 05
+  { col: 'span 5', h: 215 },  // 06
+  { col: 'span 7', h: 215 },  // 07 featured
+];
+
+// Gradient origin per card — varies for visual rhythm
+const GRAD_ORIGIN = [
+  'top right',    // 01
+  'top left',     // 02
+  'bottom right', // 03
+  'top right',    // 04
+  'bottom left',  // 05
+  'top left',     // 06
+  'top right',    // 07
 ];
 
 const AutomationSolutionsSection = () => {
   const sectionRef      = useRef<HTMLElement>(null);
-  const desktopCardRefs = useRef<(HTMLDivElement | null)[]>([null, null, null, null, null, null, null]);
-  const mobileCardRefs  = useRef<(HTMLDivElement | null)[]>([null, null, null, null, null, null, null]);
-  const dotRefs         = useRef<(HTMLDivElement | null)[]>([null, null, null, null, null, null, null]);
+  const desktopCardRefs = useRef<(HTMLDivElement | null)[]>(Array(7).fill(null));
+  const mobileCardRefs  = useRef<(HTMLDivElement | null)[]>(Array(7).fill(null));
+  const dotRefs         = useRef<(HTMLDivElement | null)[]>(Array(7).fill(null));
 
   useLayoutEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -85,7 +107,7 @@ const AutomationSolutionsSection = () => {
         return;
       }
 
-      // Desktop: stagger reveal — each card slides up individually
+      // Desktop: bento stagger reveal
       const cards = desktopCardRefs.current.filter(Boolean) as HTMLDivElement[];
 
       const tl = gsap.timeline({
@@ -99,9 +121,9 @@ const AutomationSolutionsSection = () => {
       cards.forEach((card, i) => {
         tl.fromTo(
           card,
-          { opacity: 0, y: 60, scale: 0.95 },
-          { opacity: 1, y: 0,  scale: 1, duration: 0.55, ease: 'power3.out' },
-          i * 0.1,
+          { opacity: 0, y: 48, scale: 0.96 },
+          { opacity: 1, y: 0,  scale: 1, duration: 0.6, ease: 'power3.out' },
+          i * 0.08,
         );
       });
     });
@@ -112,8 +134,8 @@ const AutomationSolutionsSection = () => {
   const handleTilt = (e: MouseEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     const r  = el.getBoundingClientRect();
-    const x  = ((e.clientX - r.left) / r.width  - 0.5) * 8;
-    const y  = ((e.clientY - r.top)  / r.height - 0.5) * 8;
+    const x  = ((e.clientX - r.left) / r.width  - 0.5) * 7;
+    const y  = ((e.clientY - r.top)  / r.height - 0.5) * 7;
     gsap.to(el, { rotateY: x, rotateX: -y, duration: 0.15, ease: 'power2.out', overwrite: 'auto' });
   };
 
@@ -139,7 +161,7 @@ const AutomationSolutionsSection = () => {
             </p>
           </div>
 
-          {/* ── Mobile: stacked cards ───────────────────────── */}
+          {/* ── Mobile: stacked cards ── */}
           <div className="md:hidden">
             <div className="flex justify-center items-center gap-1.5 mb-6">
               {solutions.map((_, i) => (
@@ -170,7 +192,7 @@ const AutomationSolutionsSection = () => {
                     <div className="absolute top-0 left-6 right-6 h-px"
                       style={{ background: `linear-gradient(to right, transparent, ${sol.color}80, transparent)` }} />
                     <div className="absolute top-1 right-3 font-mono font-black pointer-events-none select-none"
-                      style={{ fontSize: 80, color: `${sol.color}12`, lineHeight: 1 }}>{sol.tag}</div>
+                      style={{ fontSize: 80, color: `${sol.color}10`, lineHeight: 1 }}>{sol.tag}</div>
 
                     <div className="relative pt-2" dir="rtl">
                       <div className="flex items-center gap-3 mb-4">
@@ -178,7 +200,7 @@ const AutomationSolutionsSection = () => {
                           style={{ background: `${sol.color}18` }}>
                           <SolIcon className="w-5 h-5" style={{ color: sol.color }} />
                         </div>
-                        <span className="text-xs font-mono font-bold tracking-widest" style={{ color: `${sol.color}80` }}>
+                        <span className="text-xs font-mono font-bold tracking-widest" style={{ color: `${sol.color}70` }}>
                           {sol.tag}
                         </span>
                       </div>
@@ -191,77 +213,130 @@ const AutomationSolutionsSection = () => {
             </div>
           </div>
 
-          {/* ── Desktop: 2-column grid ──────────────────────── */}
-          <div className="hidden md:grid md:grid-cols-2 gap-5">
+          {/* ── Desktop: Bento grid ── */}
+          <div
+            className="hidden md:grid gap-3"
+            style={{ gridTemplateColumns: 'repeat(12, 1fr)' }}
+            dir="rtl"
+          >
             {solutions.map((sol, index) => {
-              const SolIcon = sol.Icon;
+              const SolIcon    = sol.Icon;
+              const grid       = GRID[index];
               const isFeatured = !!sol.featured;
+              const origin     = GRAD_ORIGIN[index];
+
               return (
                 <div
                   key={index}
                   ref={el => { desktopCardRefs.current[index] = el; }}
-                  className={cn(
-                    'group relative bg-card/60 backdrop-blur-sm rounded-2xl overflow-hidden transition-all duration-300',
-                    isFeatured && 'md:col-span-2'
-                  )}
+                  className="group relative rounded-2xl overflow-hidden"
                   style={{
-                    perspective: '800px',
-                    border: `1px solid ${sol.color}28`,
-                    transition: 'border-color 0.3s, box-shadow 0.3s, background 0.3s',
+                    gridColumn: grid.col,
+                    minHeight: grid.h,
+                    perspective: '900px',
+                    border: `1px solid ${sol.color}20`,
+                    background: 'hsl(var(--card))',
+                    transition: 'border-color 0.3s, box-shadow 0.3s',
+                    cursor: 'default',
                   }}
                   onMouseMove={(e) => {
                     handleTilt(e);
-                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}55`;
-                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 28px ${sol.color}18`;
+                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}52`;
+                    (e.currentTarget as HTMLDivElement).style.boxShadow = `0 0 36px ${sol.color}16, 0 8px 40px rgba(0,0,0,0.3)`;
                   }}
                   onMouseLeave={(e) => {
                     resetTilt(e);
-                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}28`;
+                    (e.currentTarget as HTMLDivElement).style.borderColor = `${sol.color}20`;
                     (e.currentTarget as HTMLDivElement).style.boxShadow = 'none';
                   }}
                 >
-                  {/* Static ambient gradient */}
+                  {/* Ambient gradient */}
                   <div className="absolute inset-0 pointer-events-none"
-                    style={{ background: `radial-gradient(ellipse at top right, ${sol.color}0e, transparent 65%)` }} />
-                  {/* Hover gradient (stronger) */}
+                    style={{ background: `radial-gradient(ellipse at ${origin}, ${sol.color}0e, transparent 62%)` }} />
+                  {/* Hover gradient */}
                   <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-                    style={{ background: `radial-gradient(ellipse at top right, ${sol.color}1a, transparent 60%)` }} />
+                    style={{ background: `radial-gradient(ellipse at ${origin}, ${sol.color}1c, transparent 58%)` }} />
                   {/* Top accent line */}
                   <div className="absolute top-0 left-0 right-0 h-px pointer-events-none"
-                    style={{ background: `linear-gradient(to right, transparent, ${sol.color}70, transparent)` }} />
+                    style={{ background: `linear-gradient(to left, transparent, ${sol.color}65, transparent)` }} />
                   {/* Watermark number */}
-                  <div className="absolute bottom-2 left-4 font-mono font-black pointer-events-none select-none"
-                    style={{ fontSize: 72, color: `${sol.color}0c`, lineHeight: 1 }}>{sol.tag}</div>
+                  <div className="absolute bottom-1 left-3 font-mono font-black pointer-events-none select-none leading-none"
+                    style={{ fontSize: 90, color: `${sol.color}07` }}>{sol.tag}</div>
 
-                  <div className={cn('relative p-7', isFeatured && 'flex items-center gap-6')} dir="rtl">
-                    <div className={cn('flex items-center gap-3 flex-shrink-0', !isFeatured && 'mb-5')}>
+                  {/* Card content */}
+                  <div className="relative p-6 h-full flex flex-col" dir="rtl"
+                    style={{ minHeight: grid.h }}>
+
+                    {/* Featured badge */}
+                    {isFeatured && (
+                      <div className="mb-4">
+                        <span
+                          className="inline-flex items-center gap-1.5 font-mono text-[0.62rem] tracking-[0.12em] uppercase"
+                          style={{
+                            background: `${sol.color}15`,
+                            border: `1px solid ${sol.color}32`,
+                            borderRadius: 100,
+                            padding: '3px 12px',
+                            color: sol.color,
+                          }}
+                        >
+                          ✦ Featured
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Icon + tag row */}
+                    <div className="flex items-center gap-3 mb-5">
                       <div
-                        className={cn(
-                          'rounded-xl flex items-center justify-center transition-all duration-300 group-hover:scale-110',
-                          isFeatured ? 'w-14 h-14' : 'w-12 h-12'
-                        )}
+                        className="rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:scale-110"
                         style={{
-                          background: `${sol.color}20`,
-                          boxShadow: `0 0 18px ${sol.color}25`,
+                          width: isFeatured ? 52 : 44,
+                          height: isFeatured ? 52 : 44,
+                          background: `${sol.color}18`,
+                          boxShadow: `0 0 22px ${sol.color}20`,
                         }}
                       >
-                        <SolIcon className={isFeatured ? 'w-7 h-7' : 'w-6 h-6'} style={{ color: sol.color }} />
+                        <SolIcon
+                          style={{
+                            color: sol.color,
+                            width: isFeatured ? 26 : 22,
+                            height: isFeatured ? 26 : 22,
+                          }}
+                        />
                       </div>
-                      {!isFeatured && (
-                        <span className="text-xs font-mono font-bold tracking-widest" style={{ color: `${sol.color}60` }}>
-                          {sol.tag}
-                        </span>
-                      )}
+                      <span
+                        className="font-mono text-xs font-bold tracking-[0.16em]"
+                        style={{ color: `${sol.color}55` }}
+                      >
+                        {sol.tag}
+                      </span>
                     </div>
 
-                    <div className={cn(isFeatured && 'flex-1')}>
-                      <h3 className={cn('font-semibold text-foreground mb-2', isFeatured ? 'text-lg' : 'text-base')}>
-                        {sol.title}
-                      </h3>
-                      <p className={cn('text-muted-foreground leading-relaxed text-sm', isFeatured && 'max-w-xl')}>
-                        {sol.description}
-                      </p>
-                    </div>
+                    {/* Title */}
+                    <h3
+                      className={cn(
+                        'font-semibold text-foreground mb-2 leading-snug',
+                        isFeatured ? 'text-xl' : 'text-base'
+                      )}
+                    >
+                      {sol.title}
+                    </h3>
+
+                    {/* Description */}
+                    <p className="text-sm text-muted-foreground leading-relaxed flex-1">
+                      {sol.description}
+                    </p>
+
+                    {/* Featured: bottom arrow hint */}
+                    {isFeatured && (
+                      <div
+                        className="mt-5 flex items-center gap-2 text-xs font-mono transition-colors duration-200"
+                        style={{ color: `${sol.color}60` }}
+                      >
+                        <span>←</span>
+                        <span>לפרטים נוספים</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               );
