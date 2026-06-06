@@ -88,29 +88,6 @@ const HeroSection = () => {
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
         .to(ctaRef.current,      { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, 1.3);
 
-      // Scroll exit
-      gsap.to([eyebrowRef.current, subtitleRef.current, ctaRef.current], {
-        opacity: 0, y: -50, ease: 'none',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=480',
-          scrub: 1.4,
-        },
-      });
-
-      lines.forEach((line, i) => {
-        gsap.to(line, {
-          y: '-110%', ease: 'none',
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: 'top top',
-            end: '+=480',
-            scrub: 1.2 + i * 0.08,
-          },
-        });
-      });
-
       // Orb parallax
       gsap.to(orbRef.current, {
         y: -180, scale: 0.88, ease: 'none',
