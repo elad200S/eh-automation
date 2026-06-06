@@ -1,6 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { lazy, Suspense } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, lazy, Suspense } from 'react';
 const EnergyCore = lazy(() => import('@/components/EnergyCore'));
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useMagnet } from '@/hooks/useMagnet';
@@ -13,106 +12,114 @@ const SUBTITLES = [
   'מערכות שמחברות לידים, לקוחות ותהליכים — כל פנייה מטופלת, הכל מתועד',
   'כל ליד שנכנס מטופל אוטומטית — CRM מתעדכן, WhatsApp נשלח בשניות',
   'מערכות שעובדות 24/7 ומונעות מלידים ליפול בין הכיסאות',
+  'פניות מהאתר, מוואטסאפ ומהרשתות — מגיעות ישר לצינור המכירה שלך',
+  'הבוט עונה, ה-CRM מתעדכן, ואתה ממוקד רק בסגירות',
 ];
 
-const TITLE_WORDS = ['Everything', 'works', 'even', 'when', "you don't."];
+const TICKER_ITEMS = [
+  'מענה אוטומטי לכל ליד',
+  'אפס פניות שנשכחות',
+  'CRM מתעדכן בשניות',
+  '24/7 ללא הפסקה',
+  'WhatsApp אוטומטי',
+  'זמן תגובה של שניות',
+  'פולו-אפ ללא טעויות',
+  'תהליכים שעובדים לבד',
+  'אוטומציה מיום ראשון',
+  'אינטגרציות ללא קוד',
+];
+
+const LINES = [
+  { text: 'Everything', weight: 800, color: 'inherit' },
+  { text: 'works',      weight: 300, color: 'hsl(215,20%,58%)' },
+  { text: 'even when',  weight: 800, color: 'inherit' },
+  { text: "you don't.", weight: 300, color: 'hsl(160,84%,52%)' },
+];
+
+const duplicatedTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
 const HeroSection = () => {
   const { openPopup } = useContactPopup();
-  const sectionRef  = useRef<HTMLElement>(null);
-  const contentRef  = useRef<HTMLDivElement>(null);
-  const eyebrowRef  = useRef<HTMLDivElement>(null);
-  const subtitleRef = useRef<HTMLParagraphElement>(null);
-  const ctaRef      = useRef<HTMLDivElement>(null);
-  const orbRef      = useRef<HTMLDivElement>(null);
-  const scrollHintRef = useRef<HTMLDivElement>(null);
+  const sectionRef   = useRef<HTMLElement>(null);
+  const eyebrowRef   = useRef<HTMLDivElement>(null);
+  const subtitleRef  = useRef<HTMLDivElement>(null);
+  const ctaRef       = useRef<HTMLDivElement>(null);
+  const orbRef       = useRef<HTMLDivElement>(null);
+  const lineRefs     = useRef<(HTMLSpanElement | null)[]>([]);
 
-  const wordRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const [subtitleIdx, setSubtitleIdx] = useState(0);
+  const [subtitleKey, setSubtitleKey] = useState(0);
   const magnetRef = useMagnet<HTMLButtonElement>(0.28, 95);
-
-  const [subtitleIdx,     setSubtitleIdx]     = useState(0);
-  const [subtitleVisible, setSubtitleVisible] = useState(true);
 
   useEffect(() => {
     const id = setInterval(() => {
-      setSubtitleVisible(false);
-      setTimeout(() => {
-        setSubtitleIdx(i => (i + 1) % SUBTITLES.length);
-        setSubtitleVisible(true);
-      }, 400);
+      setSubtitleIdx(i => (i + 1) % SUBTITLES.length);
+      setSubtitleKey(k => k + 1);
     }, 4500);
     return () => clearInterval(id);
   }, []);
 
-  // Parallax orb on scroll
+  // Set hidden states before paint
+  useLayoutEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const lines = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
+    gsap.set(lines, { y: '110%' });
+    gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current], { opacity: 0, y: 32 });
+    gsap.set(orbRef.current, { opacity: 0, x: -40 });
+  }, []);
+
+  // Entrance + exit animations
   useEffect(() => {
-    if (!orbRef.current || !sectionRef.current) return;
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const lines   = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
+
+    if (reduced) {
+      gsap.set(lines, { y: '0%' });
+      gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current, orbRef.current], { opacity: 1, y: 0, x: 0 });
+      return;
+    }
+
     const ctx = gsap.context(() => {
+      const tl = gsap.timeline({ delay: 1.9 });
+
+      tl.to(orbRef.current,      { opacity: 1, x: 0, duration: 1.4, ease: 'power3.out' }, 0)
+        .to(eyebrowRef.current,  { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.4)
+        .to(lines,               { y: '0%', duration: 0.9, stagger: 0.1, ease: 'power3.out' }, 0.6)
+        .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
+        .to(ctaRef.current,      { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, 1.3);
+
+      // Scroll exit
+      gsap.to([eyebrowRef.current, subtitleRef.current, ctaRef.current], {
+        opacity: 0, y: -50, ease: 'none',
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: '+=480',
+          scrub: 1.4,
+        },
+      });
+
+      lines.forEach((line, i) => {
+        gsap.to(line, {
+          y: '-110%', ease: 'none',
+          scrollTrigger: {
+            trigger: sectionRef.current,
+            start: 'top top',
+            end: '+=480',
+            scrub: 1.2 + i * 0.08,
+          },
+        });
+      });
+
+      // Orb parallax
       gsap.to(orbRef.current, {
-        y: -260,
-        scale: 0.82,
-        ease: 'none',
+        y: -180, scale: 0.88, ease: 'none',
         scrollTrigger: {
           trigger: sectionRef.current,
           start: 'top top',
           end: 'bottom top',
           scrub: 1.2,
         },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
-
-  // Set initial hidden states before paint
-  useLayoutEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const words = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
-    gsap.set(words, { y: '115%' });
-    gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current, scrollHintRef.current], {
-      opacity: 0, y: 28,
-    });
-  }, []);
-
-  // Entrance animation
-  useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const words   = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
-
-    if (reduced) {
-      gsap.set(words, { y: '0%' });
-      gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current, scrollHintRef.current], {
-        opacity: 1, y: 0,
-      });
-      return;
-    }
-
-    const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 1.9 });
-      tl.to(eyebrowRef.current,   { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' })
-        .to(words,                { y: '0%', duration: 1.0, stagger: 0.08, ease: 'power3.out' }, '-=0.3')
-        .to(subtitleRef.current,  { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, '-=0.4')
-        .to(ctaRef.current,       { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, '-=0.45')
-        .to(scrollHintRef.current,{ opacity: 1, y: 0, duration: 0.5, ease: 'power2.out' }, '-=0.2');
-
-      // Per-word cascade exit — each word sinks back through its overflow-hidden mask
-      const exitWords = wordRefs.current.filter(Boolean) as HTMLSpanElement[];
-      const exitTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: '+=520',
-          scrub: 1.4,
-        },
-      });
-
-      exitTl.to(
-        [eyebrowRef.current, subtitleRef.current, ctaRef.current, scrollHintRef.current],
-        { opacity: 0, y: 44, ease: 'none', duration: 0.4 },
-        0
-      );
-
-      exitWords.forEach((word, i) => {
-        exitTl.to(word, { y: '115%', ease: 'none', duration: 0.45 }, i * 0.08);
       });
     }, sectionRef);
 
@@ -123,100 +130,189 @@ const HeroSection = () => {
     <section
       ref={sectionRef}
       id="hero"
-      className="min-h-screen flex flex-col justify-center relative overflow-hidden"
+      className="min-h-screen flex flex-col relative overflow-hidden"
+      dir="rtl"
     >
-      {/* Subtle grid */}
-      <div className="absolute inset-0 grid-pattern opacity-30" />
+      {/* Background grid */}
+      <div className="absolute inset-0 grid-pattern opacity-20 pointer-events-none" />
 
-      {/* Top gradient */}
-      <div className="absolute inset-0 bg-gradient-to-b from-primary-light/40 via-transparent to-transparent pointer-events-none" />
+      {/* Top ambient glow */}
+      <div className="absolute inset-0 bg-gradient-to-b from-primary/6 via-transparent to-transparent pointer-events-none" />
 
-      {/* Ambient glow — behind core */}
+      {/* ── Main content ── */}
+      <div className="container flex-1 flex items-center">
+        <div className="w-full flex flex-col md:flex-row items-center gap-10 py-24 md:py-0 md:gap-0">
+
+          {/* Text column — right in RTL */}
+          <div className="flex-1 flex flex-col items-start text-right z-10">
+
+            {/* Eyebrow badge */}
+            <div ref={eyebrowRef} className="mb-10">
+              <span
+                className="inline-flex items-center gap-2.5 font-mono text-[0.7rem] tracking-[0.14em] uppercase"
+                style={{
+                  border: '1px solid hsl(160,84%,39%,0.3)',
+                  borderRadius: 100,
+                  padding: '7px 18px',
+                  color: 'hsl(160,84%,62%)',
+                  background: 'hsl(160,84%,39%,0.05)',
+                  boxShadow: '0 0 22px hsl(160,84%,39%,0.1), inset 0 0 12px hsl(160,84%,39%,0.04)',
+                }}
+              >
+                <span
+                  style={{
+                    width: 7, height: 7, borderRadius: '50%',
+                    background: 'hsl(160,84%,50%)',
+                    boxShadow: '0 0 8px hsl(160,84%,50%)',
+                    display: 'inline-block',
+                    animation: 'pulse 2s ease-in-out infinite',
+                  }}
+                />
+                AI Automation Studio
+              </span>
+            </div>
+
+            {/* Headline — line-by-line reveal */}
+            <h1
+              dir="ltr"
+              className="text-foreground mb-10"
+              style={{
+                fontSize: 'clamp(3rem, 7.2vw, 6.6rem)',
+                letterSpacing: '-0.045em',
+                lineHeight: 1.0,
+              }}
+            >
+              {LINES.map((line, i) => (
+                <span
+                  key={i}
+                  className="block overflow-hidden"
+                  style={{ lineHeight: 1.08, paddingBottom: '0.04em' }}
+                >
+                  <span
+                    ref={el => { lineRefs.current[i] = el; }}
+                    className="block"
+                    style={{ fontWeight: line.weight, color: line.color }}
+                  >
+                    {line.text}
+                  </span>
+                </span>
+              ))}
+            </h1>
+
+            {/* Subtitle */}
+            <div ref={subtitleRef} className="overflow-hidden mb-12" dir="rtl">
+              <p
+                key={subtitleKey}
+                className="text-lg md:text-xl text-muted-foreground max-w-md leading-relaxed"
+                style={{ animation: 'subtitle-reveal 0.55s cubic-bezier(0.22, 1, 0.36, 1) both' }}
+              >
+                {SUBTITLES[subtitleIdx]}
+              </p>
+            </div>
+
+            {/* CTA */}
+            <div ref={ctaRef}>
+              <button ref={magnetRef} onClick={openPopup} className="cta-gradient group text-lg px-9 py-5">
+                בדיקת התאמה לעסק
+                <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
+              </button>
+            </div>
+          </div>
+
+          {/* Visual column — left in RTL (desktop only) */}
+          <div
+            ref={orbRef}
+            className="hidden md:flex flex-none items-center justify-center relative"
+            style={{
+              width: 'min(44vw, 520px)',
+              height: 'min(44vw, 520px)',
+            }}
+          >
+            {/* Ambient glow behind orb */}
+            <div style={{
+              position: 'absolute',
+              inset: -80,
+              borderRadius: '50%',
+              background: 'radial-gradient(circle, rgba(16,185,129,0.13) 0%, rgba(6,182,212,0.07) 40%, transparent 70%)',
+              filter: 'blur(50px)',
+              pointerEvents: 'none',
+            }} />
+            <Suspense fallback={null}>
+              <EnergyCore />
+            </Suspense>
+          </div>
+
+          {/* Mobile: orb behind text */}
+          <div className="md:hidden absolute inset-0 flex items-center justify-center pointer-events-none" style={{ opacity: 0.22 }}>
+            <div style={{ width: '92vmin', height: '92vmin' }}>
+              <Suspense fallback={null}>
+                <EnergyCore />
+              </Suspense>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      {/* ── Ticker strip ── */}
       <div
-        className="pointer-events-none absolute"
         style={{
-          width: 820, height: 820,
-          left: '50%', top: '50%',
-          marginLeft: -410, marginTop: -410,
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(16,185,129,0.10) 0%, rgba(6,182,212,0.06) 35%, transparent 68%)',
-          filter: 'blur(80px)',
+          borderTop: '1px solid hsl(220,15%,16%)',
+          background: 'hsl(220,15%,10%)',
+          overflow: 'hidden',
+          padding: '11px 0',
+          position: 'relative',
+          zIndex: 10,
+          flexShrink: 0,
+        }}
+      >
+        <div
+          style={{
+            display: 'flex',
+            width: 'max-content',
+            animation: 'hero-ticker 32s linear infinite',
+            direction: 'ltr',
+          }}
+        >
+          {duplicatedTicker.map((item, i) => (
+            <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>
+              <span
+                style={{
+                  fontFamily: '"IBM Plex Mono", monospace',
+                  fontSize: '0.72rem',
+                  fontWeight: 400,
+                  letterSpacing: '0.1em',
+                  color: 'hsl(215,20%,52%)',
+                  whiteSpace: 'nowrap',
+                  padding: '0 28px',
+                  textTransform: 'uppercase',
+                }}
+              >
+                {item}
+              </span>
+              <span style={{ color: 'hsl(160,84%,35%)', fontSize: '0.45rem', flexShrink: 0 }}>◆</span>
+            </span>
+          ))}
+        </div>
+      </div>
+
+      {/* Right edge glowing track */}
+      <div
+        className="absolute right-0 w-px"
+        style={{
+          top: '15%',
+          height: '70%',
+          background: 'linear-gradient(to bottom, transparent, hsl(160,84%,39%) 40%, hsl(160,84%,39%) 60%, transparent)',
+          boxShadow: '0 0 12px hsl(160,84%,39%), 0 0 28px hsl(160,84%,39%,0.4)',
         }}
       />
 
-      {/* 3D Energy Core — dominant hero centerpiece */}
-      <div
-        style={{
-          position: 'absolute',
-          left: '50%', top: '50%',
-          width: 'min(88vmin, 740px)',
-          height: 'min(88vmin, 740px)',
-          transform: 'translate(-50%, -50%)',
-          pointerEvents: 'none',
-        }}
-      >
-        {/* GSAP parallax target */}
-        <div ref={orbRef} style={{ width: '100%', height: '100%' }}>
-          <Suspense fallback={null}>
-            <EnergyCore />
-          </Suspense>
-        </div>
-      </div>
-
-      {/* Main content */}
-      <div ref={contentRef} className="container relative z-10">
-        <div className="max-w-5xl mx-auto text-center">
-
-          {/* Eyebrow */}
-          <div ref={eyebrowRef} className="text-technical mb-8 tracking-widest">
-            <span className="text-primary font-semibold">//</span>&nbsp; AI Automation Studio
-          </div>
-
-          {/* Word-split headline */}
-          <h1
-            dir="ltr"
-            className="font-bold text-foreground mb-8 leading-[1.02]"
-            style={{ fontSize: 'clamp(3rem, 8.5vw, 7.2rem)', letterSpacing: '-0.04em' }}
-          >
-            {TITLE_WORDS.map((word, i) => (
-              <span key={i} className="inline-block overflow-hidden leading-[1.1] mx-[0.15em] my-1">
-                <span ref={el => { wordRefs.current[i] = el; }} className="inline-block">
-                  {word}
-                </span>
-              </span>
-            ))}
-          </h1>
-
-          {/* Cycling subtitle */}
-          <p
-            ref={subtitleRef}
-            className="text-xl md:text-2xl text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed transition-opacity duration-[380ms]"
-            style={{ opacity: subtitleVisible ? 1 : 0 }}
-          >
-            {SUBTITLES[subtitleIdx]}
-          </p>
-
-          {/* Single CTA */}
-          <div ref={ctaRef}>
-            <button ref={magnetRef} onClick={openPopup} className="cta-gradient group text-xl px-10 py-5">
-              בדיקת התאמה לעסק
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Scroll hint */}
-      <div
-        ref={scrollHintRef}
-        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10"
-      >
-        <span className="text-xs font-mono text-muted-foreground/50 tracking-widest uppercase">scroll</span>
-        <div className="w-px h-10 bg-gradient-to-b from-primary/40 to-transparent animate-pulse" />
-      </div>
-
-      {/* Right edge accent line */}
-      <div className="absolute bottom-0 right-0 w-px h-40 bg-gradient-to-t from-primary to-transparent" />
+      <style>{`
+        @keyframes hero-ticker {
+          from { transform: translateX(0); }
+          to   { transform: translateX(-50%); }
+        }
+      `}</style>
     </section>
   );
 };
