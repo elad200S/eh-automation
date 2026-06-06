@@ -1,11 +1,11 @@
 import { useEffect, useRef } from 'react';
 
-const PARTICLE_COUNT = 110;
-const CONNECT_DIST   = 130;
-const MOUSE_RADIUS   = 180;
-const MOUSE_PULL     = 0.012;
+const PARTICLE_COUNT = 30;
+const CONNECT_DIST   = 65;
+const MOUSE_RADIUS   = 160;
+const MOUSE_PULL     = 0.010;
 const DAMPING        = 0.98;
-const BASE_SPEED     = 0.38;
+const BASE_SPEED     = 0.16;
 
 interface Particle {
   x: number; y: number;
@@ -39,7 +39,7 @@ const ParticleField = () => {
       canvas.style.height = `${H}px`;
       ctx.scale(dpr, dpr);
 
-      const count = W < 640 ? 55 : PARTICLE_COUNT;
+      const count = W < 640 ? 15 : PARTICLE_COUNT;
       particles = Array.from({ length: count }, () => ({
         x:     Math.random() * W,
         y:     Math.random() * H,
@@ -136,7 +136,7 @@ const ParticleField = () => {
         width: '100vw', height: '100vh',
         zIndex: 0,
         pointerEvents: 'none',
-        opacity: 0.55,
+        opacity: 0.2,
       }}
     />
   );

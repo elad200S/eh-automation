@@ -57,7 +57,7 @@ const queryClient = new QueryClient();
 
 // Initialize Lenis smooth scroll — heavier duration for cinematic feel
 const lenis = new Lenis({
-  duration: 1.85,
+  duration: 1.2,
   easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
   touchMultiplier: 1.5,
 });
@@ -221,10 +221,10 @@ const detectReload = (): boolean => {
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(() =>
-    detectReload() || !sessionStorage.getItem(INTRO_STORAGE_KEY)
+    !sessionStorage.getItem(INTRO_STORAGE_KEY)
   );
   const [introDone, setIntroDone] = useState(() =>
-    !detectReload() && !!sessionStorage.getItem(INTRO_STORAGE_KEY)
+    !!sessionStorage.getItem(INTRO_STORAGE_KEY)
   );
 
   const handleIntroComplete = () => {
