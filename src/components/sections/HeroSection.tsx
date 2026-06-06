@@ -1,5 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
-import { useEffect, useLayoutEffect, useRef, useState, lazy, Suspense } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, lazy, Suspense, useCallback } from 'react';
 const EnergyCore = lazy(() => import('@/components/EnergyCore'));
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useMagnet } from '@/hooks/useMagnet';
@@ -36,7 +36,7 @@ const LINES = [
   { text: "you don't.", weight: 300, color: 'hsl(160,84%,52%)' },
 ];
 
-const duplicatedTicker = [...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS, ...TICKER_ITEMS];
+const duplicatedTicker = [...TICKER_ITEMS, ...TICKER_ITEMS];
 
 const HeroSection = () => {
   const { openPopup } = useContactPopup();
@@ -46,6 +46,10 @@ const HeroSection = () => {
   const ctaRef       = useRef<HTMLDivElement>(null);
   const orbRef       = useRef<HTMLDivElement>(null);
   const lineRefs     = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const tickerScrollRef  = useRef<HTMLDivElement>(null);
+  const tickerAnimRef    = useRef<number>();
+  const tickerPosRef     = useRef(0);
 
   const [subtitleIdx, setSubtitleIdx] = useState(0);
   const [subtitleKey, setSubtitleKey] = useState(0);
@@ -57,6 +61,21 @@ const HeroSection = () => {
       setSubtitleKey(k => k + 1);
     }, 4500);
     return () => clearInterval(id);
+  }, []);
+
+  // Ticker scroll via RAF
+  useEffect(() => {
+    const el = tickerScrollRef.current;
+    if (!el) return;
+    const speed = 0.7;
+    const animate = () => {
+      tickerPosRef.current += speed;
+      if (tickerPosRef.current >= el.scrollWidth / 2) tickerPosRef.current = 0;
+      el.scrollLeft = tickerPosRef.current;
+      tickerAnimRef.current = requestAnimationFrame(animate);
+    };
+    tickerAnimRef.current = requestAnimationFrame(animate);
+    return () => { if (tickerAnimRef.current) cancelAnimationFrame(tickerAnimRef.current); };
   }, []);
 
   // Set hidden states before paint
@@ -236,7 +255,6 @@ const HeroSection = () => {
         style={{
           borderTop: '1px solid hsl(220,15%,16%)',
           background: 'hsl(220,15%,10%)',
-          overflow: 'hidden',
           padding: '11px 0',
           position: 'relative',
           zIndex: 10,
@@ -244,32 +262,30 @@ const HeroSection = () => {
         }}
       >
         <div
-          style={{
-            display: 'flex',
-            width: 'max-content',
-            animation: 'hero-ticker 32s linear infinite',
-            direction: 'ltr',
-          }}
+          ref={tickerScrollRef}
+          style={{ overflow: 'hidden', direction: 'ltr' }}
         >
-          {duplicatedTicker.map((item, i) => (
-            <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>
-              <span
-                style={{
-                  fontFamily: '"IBM Plex Mono", monospace',
-                  fontSize: '0.72rem',
-                  fontWeight: 400,
-                  letterSpacing: '0.1em',
-                  color: 'hsl(215,20%,52%)',
-                  whiteSpace: 'nowrap',
-                  padding: '0 28px',
-                  textTransform: 'uppercase',
-                }}
-              >
-                {item}
+          <div style={{ display: 'flex', width: 'max-content' }}>
+            {duplicatedTicker.map((item, i) => (
+              <span key={i} style={{ display: 'inline-flex', alignItems: 'center' }}>
+                <span
+                  style={{
+                    fontFamily: '"IBM Plex Mono", monospace',
+                    fontSize: '0.72rem',
+                    fontWeight: 400,
+                    letterSpacing: '0.1em',
+                    color: 'hsl(215,20%,52%)',
+                    whiteSpace: 'nowrap',
+                    padding: '0 28px',
+                    textTransform: 'uppercase',
+                  }}
+                >
+                  {item}
+                </span>
+                <span style={{ color: 'hsl(160,84%,35%)', fontSize: '0.45rem', flexShrink: 0 }}>◆</span>
               </span>
-              <span style={{ color: 'hsl(160,84%,35%)', fontSize: '0.45rem', flexShrink: 0 }}>◆</span>
-            </span>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
 
@@ -284,12 +300,6 @@ const HeroSection = () => {
         }}
       />
 
-      <style>{`
-        @keyframes hero-ticker {
-          from { transform: translateX(0); }
-          to   { transform: translateX(-25%); }
-        }
-      `}</style>
     </section>
   );
 };
