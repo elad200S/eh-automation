@@ -85,27 +85,25 @@ const AutomationSolutionsSection = () => {
         return;
       }
 
-      // Desktop: reveal in rows using fromTo for reliable scrub
-      const [c0, c1, c2, c3, c4, c5, c6] = desktopCardRefs.current;
-      const from = { opacity: 0, y: 44 };
-      const to   = { opacity: 1, y: 0, ease: 'none' };
+      // Desktop: stagger reveal — each card slides up individually
+      const cards = desktopCardRefs.current.filter(Boolean) as HTMLDivElement[];
 
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: section,
-          pin: true,
-          pinSpacing: true,
-          anticipatePin: 1,
-          start: 'top top',
-          end: '+=2000',
-          scrub: 1.2,
+          start: 'top 70%',
+          toggleActions: 'play none none none',
         },
       });
 
-      tl.fromTo([c0, c1], from, to, 0.05)
-        .fromTo([c2, c3], from, to, 0.33)
-        .fromTo([c4, c5], from, to, 0.60)
-        .fromTo(c6,       from, to, 0.82);
+      cards.forEach((card, i) => {
+        tl.fromTo(
+          card,
+          { opacity: 0, y: 60, scale: 0.95 },
+          { opacity: 1, y: 0,  scale: 1, duration: 0.55, ease: 'power3.out' },
+          i * 0.1,
+        );
+      });
     });
 
     return () => ctx.revert();

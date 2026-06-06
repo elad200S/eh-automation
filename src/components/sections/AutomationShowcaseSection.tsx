@@ -52,37 +52,50 @@ const scenarios = [
   },
 ];
 
-// ── Desktop: fade-in step visual ──────────────────────────────
+// ── Desktop: presentation-style slide-up per step ─────────────
 const StepVisual = ({ steps, scenarioKey }: { steps: typeof scenarios[0]['steps']; scenarioKey: number }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const rowRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useLayoutEffect(() => {
-    if (containerRef.current) gsap.set(containerRef.current, { opacity: 0, y: 8 });
+    rowRefs.current.forEach(r => r && gsap.set(r, { opacity: 0, y: 22 }));
   }, [scenarioKey]);
 
   useEffect(() => {
-    if (!containerRef.current) return;
-    gsap.to(containerRef.current, { opacity: 1, y: 0, duration: 0.38, ease: 'power2.out' });
+    rowRefs.current.forEach((r, i) => {
+      if (!r) return;
+      gsap.to(r, {
+        opacity: 1, y: 0,
+        duration: 0.45,
+        delay: i * 0.1,
+        ease: 'power3.out',
+      });
+    });
   }, [scenarioKey]);
 
   return (
-    <div ref={containerRef} className="bg-background rounded-xl border border-border p-5" dir="rtl">
-      <div className="flex items-center gap-2 mb-5" dir="ltr">
+    <div className="rounded-xl border border-border overflow-hidden" style={{ background: 'hsl(220,15%,9%)' }} dir="rtl">
+      <div className="flex items-center gap-2 px-5 py-3 border-b border-border/50" dir="ltr"
+        style={{ background: 'hsl(220,15%,11%)' }}>
         <div className="w-3 h-3 rounded-full bg-red-500/70" />
         <div className="w-3 h-3 rounded-full bg-yellow-500/70" />
         <div className="w-3 h-3 rounded-full bg-green-500/70" />
         <span className="text-muted-foreground text-xs font-mono ml-3">automation.run</span>
       </div>
-      <div className="space-y-3">
+      <div className="p-5 space-y-3">
         {steps.map((step, i) => (
-          <div key={i} className="flex items-center gap-3">
-            <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: step.color, boxShadow: `0 0 10px ${step.color}90` }} />
-            <span className="text-sm text-foreground/80 font-mono flex-1">{step.label}</span>
-            <span className="text-xs font-mono" style={{ color: '#10b981' }}>✓ done</span>
+          <div
+            key={i}
+            ref={el => { rowRefs.current[i] = el; }}
+            className="flex items-center gap-3"
+          >
+            <div style={{ width: 10, height: 10, borderRadius: '50%', flexShrink: 0, background: step.color, boxShadow: `0 0 12px ${step.color}` }} />
+            <span className="text-sm text-foreground/85 font-mono flex-1">{step.label}</span>
+            <span className="text-xs font-mono" style={{ color: '#10b981' }}>✓</span>
           </div>
         ))}
       </div>
-      <div className="mt-5 pt-4 border-t border-border/50 flex items-center gap-2" dir="rtl">
+      <div className="px-5 py-3 border-t border-border/40 flex items-center gap-2" dir="rtl"
+        style={{ background: 'hsl(220,15%,11%)' }}>
         <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
         <span className="text-xs text-green-400 font-mono">כל השלבים הושלמו בהצלחה</span>
       </div>
@@ -106,9 +119,9 @@ const FlipCard = ({ active }: { active: number }) => {
 
     gsap.killTweensOf(el);
     gsap.timeline()
-      .to(el, { opacity: 0, y: -8, duration: 0.18, ease: 'power2.in' })
+      .to(el, { opacity: 0, y: -14, duration: 0.22, ease: 'power2.in' })
       .call(() => setShown(next))
-      .fromTo(el, { opacity: 0, y: 12 }, { opacity: 1, y: 0, duration: 0.24, ease: 'power2.out' });
+      .fromTo(el, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.32, ease: 'power3.out' });
   }, [active]);
 
   const scenario = scenarios[shown];

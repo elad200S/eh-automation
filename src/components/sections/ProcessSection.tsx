@@ -109,7 +109,7 @@ const ProcessSection = () => {
           </div>
 
           {/* Progress dots */}
-          <div className="flex justify-center items-center gap-2 mb-6">
+          <div className="flex justify-center items-center gap-2 mb-4">
             {steps.map((_, i) => (
               <div
                 key={i}
