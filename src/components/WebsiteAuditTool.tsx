@@ -67,7 +67,7 @@ const WebsiteAuditTool = () => {
     const normalized = normalizeUrl(url.trim());
     try {
       const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices`
+        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`
       );
       const data = await res.json();
 
