@@ -4,6 +4,8 @@ import { useEffect, useRef } from 'react';
 import Section from '@/components/Section';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
+import ScrambleText from '@/components/ScrambleText';
 
 const solutions = [
   {
@@ -105,20 +107,18 @@ const SolutionsOverviewSection = () => {
     <Section id="solutions-overview" className="bg-background-secondary">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
-        <div
-          ref={headerRef}
-          style={headerStyle}
-          className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12"
-        >
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
           <div className="text-center md:text-right flex-1">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">מה אנחנו בונים</p>
-            <h2 className="text-4xl md:text-5xl font-bold text-foreground">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">
+              <ScrambleText text="מה אנחנו בונים" />
+            </p>
+            <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
               פתרונות אוטומציה לעסקים
-            </h2>
+            </RevealText>
           </div>
           <Link
             to="/solutions"
-            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors mx-auto md:mx-0"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors mx-auto md:mx-0 flex-shrink-0"
           >
             לכל הפתרונות
             <ArrowLeft className="w-4 h-4" />

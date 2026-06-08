@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { Plus } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FAQSchema } from '@/lib/seo';
 import Section from '@/components/Section';
-import { useScrollReveal, useScrollRevealGroup } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
 
 const faqs = [
   {
@@ -29,59 +29,101 @@ const faqs = [
 ];
 
 const FAQSection = () => {
-  const { ref: titleRef, style: titleStyle } = useScrollReveal<HTMLHeadingElement>(0);
-  const { ref: listRef, itemStyle } = useScrollRevealGroup(80);
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
     <div className="relative">
-      {/* Gradient backdrop */}
+      {/* Subtle ambient */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden" aria-hidden="true">
         <div
-          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[1000px] h-[700px] rounded-full opacity-30"
-          style={{ background: 'radial-gradient(ellipse at center, hsl(var(--primary)) 0%, hsl(var(--secondary) / 0.5) 40%, transparent 70%)' }}
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[500px] rounded-full opacity-20"
+          style={{ background: 'radial-gradient(ellipse at center, hsl(160,84%,39%) 0%, transparent 70%)' }}
         />
       </div>
+
       <FAQSchema items={faqs} />
+
       <Section id="faq">
         <div className="max-w-3xl mx-auto">
-          <h2 ref={titleRef} style={titleStyle} className="text-3xl md:text-4xl font-semibold text-foreground mb-10 text-center">
-            שאלות נפוצות
-          </h2>
 
-          <div ref={listRef} className="space-y-3 text-center">
-            {faqs.map((faq, index) => (
-              <div key={index} style={itemStyle(index)}>
-              <div
-                className={cn(
-                  'bg-card/80 backdrop-blur-sm rounded-xl border border-border overflow-hidden transition-colors',
-                  openIndex === index && 'border-primary/30'
-                )}
-              >
-                <button
-                  onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                  className="w-full flex items-center justify-between gap-4 p-5 text-right"
-                >
-                  <span className="text-base font-medium text-foreground">{faq.question}</span>
-                  <ChevronDown
-                    className={cn(
-                      'w-5 h-5 text-muted-foreground flex-shrink-0 transition-transform duration-300',
-                      openIndex === index && 'rotate-180'
-                    )}
-                  />
-                </button>
-                <div
-                  className={cn(
-                    'overflow-hidden transition-all duration-300',
-                    openIndex === index ? 'max-h-60' : 'max-h-0'
-                  )}
-                >
-                  <p className="px-5 pb-5 text-muted-foreground leading-relaxed">{faq.answer}</p>
-                </div>
-              </div>
-              </div>
-            ))}
+          {/* Header */}
+          <div className="text-center mb-12">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">יש שאלות?</p>
+            <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
+              שאלות נפוצות
+            </RevealText>
           </div>
+
+          {/* Accordion */}
+          <div className="space-y-2" dir="rtl">
+            {faqs.map((faq, index) => {
+              const isOpen = openIndex === index;
+              return (
+                <div
+                  key={index}
+                  className="relative rounded-2xl overflow-hidden transition-all duration-300"
+                  style={{
+                    border: `1px solid ${isOpen ? 'hsl(160,84%,39%,0.35)' : 'hsl(215,20%,18%)'}`,
+                    background: isOpen ? 'hsl(var(--card))' : 'hsl(var(--card)/0.5)',
+                    boxShadow: isOpen ? '0 0 24px hsl(160,84%,39%,0.08)' : 'none',
+                    transition: 'border-color 0.25s, box-shadow 0.25s, background 0.25s',
+                  }}
+                >
+                  {/* Left accent bar when open */}
+                  {isOpen && (
+                    <div
+                      className="absolute top-0 bottom-0 right-0 w-[3px] rounded-full"
+                      style={{ background: 'linear-gradient(to bottom, hsl(160,84%,39%,0.8), hsl(160,84%,39%,0.2))' }}
+                    />
+                  )}
+
+                  <button
+                    onClick={() => setOpenIndex(isOpen ? null : index)}
+                    className="w-full flex items-center gap-4 px-6 py-5 text-right"
+                  >
+                    {/* Number tag */}
+                    <span
+                      className="font-mono text-xs font-bold flex-shrink-0 tabular-nums"
+                      style={{ color: isOpen ? 'hsl(160,84%,50%)' : 'hsl(215,20%,40%)' }}
+                    >
+                      {String(index + 1).padStart(2, '0')}
+                    </span>
+
+                    {/* Question */}
+                    <span className={cn(
+                      'flex-1 text-base font-medium transition-colors duration-200',
+                      isOpen ? 'text-foreground' : 'text-foreground/80'
+                    )}>
+                      {faq.question}
+                    </span>
+
+                    {/* Plus/Minus icon */}
+                    <div
+                      className="w-7 h-7 rounded-full flex items-center justify-center flex-shrink-0 transition-all duration-300"
+                      style={{
+                        background: isOpen ? 'hsl(160,84%,39%,0.15)' : 'hsl(215,20%,18%)',
+                        border: `1px solid ${isOpen ? 'hsl(160,84%,39%,0.4)' : 'transparent'}`,
+                        transform: isOpen ? 'rotate(45deg)' : 'rotate(0deg)',
+                      }}
+                    >
+                      <Plus className="w-3.5 h-3.5" style={{ color: isOpen ? 'hsl(160,84%,50%)' : 'hsl(215,20%,55%)' }} />
+                    </div>
+                  </button>
+
+                  {/* Answer */}
+                  <div
+                    className="overflow-hidden transition-all duration-300"
+                    style={{ maxHeight: isOpen ? '200px' : '0px' }}
+                  >
+                    <p className="px-6 pb-5 text-muted-foreground leading-relaxed pr-16">
+                      {faq.answer}
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
         </div>
       </Section>
     </div>
