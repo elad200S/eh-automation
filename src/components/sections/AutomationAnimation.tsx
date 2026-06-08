@@ -3,6 +3,8 @@ import Section from '@/components/Section';
 import { ClipboardList, Zap, Settings2, Database, MessageCircle, Mail, CalendarCheck } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import RevealText from '@/components/RevealText';
+import ScrambleText from '@/components/ScrambleText';
 
 const mainSteps = [
   {
@@ -99,9 +101,14 @@ const AutomationAnimation = () => {
     <Section id="automation-demo" withSeparator={false}>
       <div ref={revealRef} style={revealStyle}>
       <div ref={sectionRef} className="max-w-5xl mx-auto">
-        <h2 className="text-3xl md:text-4xl font-semibold text-foreground mb-12 text-center">
-          איך זה עובד בפועל
-        </h2>
+        <div className="text-center mb-12">
+          <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3">
+            <ScrambleText text="מאחורי הקלעים" />
+          </p>
+          <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
+            איך זה עובד בפועל
+          </RevealText>
+        </div>
 
         {/* ── Row: main flow ── */}
         <div className="flex flex-col md:flex-row items-center gap-4 md:gap-0 justify-center">
