@@ -65,10 +65,14 @@ const WebsiteAuditTool = () => {
     if (!url.trim()) return;
     setScanState('loading');
     const normalized = normalizeUrl(url.trim());
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 20000);
     try {
       const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`
+        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`,
+        { signal: controller.signal }
       );
+      clearTimeout(timeout);
       const data = await res.json();
 
       if (!res.ok || data.error || !data.lighthouseResult) {
@@ -88,6 +92,7 @@ const WebsiteAuditTool = () => {
       setScanState('done');
       if (results.some(c => c.score < 90)) setShowModal(true);
     } catch {
+      clearTimeout(timeout);
       setScanState('error');
     }
   };
@@ -132,7 +137,7 @@ const WebsiteAuditTool = () => {
       {scanState === 'loading' && (
         <div className="flex flex-col items-center justify-center py-8 gap-3">
           <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-sm text-muted-foreground">סורק את האתר...</p>
+          <p className="text-sm text-muted-foreground">סורק את האתר... (עד 20 שניות)</p>
         </div>
       )}
 
