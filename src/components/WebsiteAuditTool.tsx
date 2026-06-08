@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Search, X, AlertTriangle, CheckCircle2, Loader2, Smartphone, Globe, Eye, Zap } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
-type ScanState = 'idle' | 'loading' | 'done' | 'error';
+type ScanState = 'idle' | 'loading' | 'done' | 'error' | 'timeout';
 
 interface CategoryResult {
   id: string;
@@ -35,6 +35,8 @@ const CATEGORY_META: Record<string, { name: string; icon: React.ReactNode; busin
   },
 };
 
+const CATEGORY_ORDER = ['performance', 'seo', 'accessibility', 'best-practices'];
+
 const scoreColor = (score: number) => {
   if (score >= 90) return 'text-green-400';
   if (score >= 50) return 'text-yellow-400';
@@ -52,7 +54,29 @@ const WebsiteAuditTool = () => {
   const [scanState, setScanState] = useState<ScanState>('idle');
   const [categories, setCategories] = useState<CategoryResult[]>([]);
   const [showModal, setShowModal] = useState(false);
+  const [animScores, setAnimScores] = useState<Record<string, number>>({
+    performance: 94, seo: 91, accessibility: 88, 'best-practices': 93,
+  });
+  const animRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { openPopup } = useContactPopup();
+
+  useEffect(() => {
+    if (scanState === 'loading') {
+      animRef.current = setInterval(() => {
+        setAnimScores(prev => {
+          const next = { ...prev };
+          CATEGORY_ORDER.forEach(key => {
+            const delta = Math.floor(Math.random() * 9) - 6;
+            next[key] = Math.max(18, Math.min(99, next[key] + delta));
+          });
+          return next;
+        });
+      }, 140);
+    } else {
+      if (animRef.current) clearInterval(animRef.current);
+    }
+    return () => { if (animRef.current) clearInterval(animRef.current); };
+  }, [scanState]);
 
   const normalizeUrl = (input: string) => {
     if (!input.startsWith('http://') && !input.startsWith('https://')) {
@@ -66,7 +90,7 @@ const WebsiteAuditTool = () => {
     setScanState('loading');
     const normalized = normalizeUrl(url.trim());
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 20000);
+    const timeout = setTimeout(() => controller.abort(), 30000);
     try {
       const res = await fetch(
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`,
@@ -91,9 +115,13 @@ const WebsiteAuditTool = () => {
       setCategories(results);
       setScanState('done');
       if (results.some(c => c.score < 90)) setShowModal(true);
-    } catch {
+    } catch (err: any) {
       clearTimeout(timeout);
-      setScanState('error');
+      if (err?.name === 'AbortError') {
+        setScanState('timeout');
+      } else {
+        setScanState('error');
+      }
     }
   };
 
@@ -103,12 +131,14 @@ const WebsiteAuditTool = () => {
     : 0;
   const missedPotential = 100 - avgScore;
 
+  const isErrorState = scanState === 'error' || scanState === 'timeout';
+
   return (
     <div className="mt-8 p-6 md:p-8 rounded-2xl border border-primary/20 bg-card" dir="rtl">
       <h3 className="text-lg font-bold text-foreground mb-1">בדוק את האתר שלך בחינם</h3>
       <p className="text-sm text-muted-foreground mb-5">הכנס כתובת אתר ונגלה כמה פוטנציאל האתר מפסיד</p>
 
-      {(scanState === 'idle' || scanState === 'error') && (
+      {(scanState === 'idle' || isErrorState) && (
         <>
           <div className="flex gap-3 flex-col sm:flex-row">
             <input
@@ -129,15 +159,38 @@ const WebsiteAuditTool = () => {
             </button>
           </div>
           {scanState === 'error' && (
-            <p className="mt-3 text-sm text-red-400">לא הצלחנו לסרוק את האתר. בדוק שהכתובת נכונה ונסה שוב.</p>
+            <p className="mt-3 text-sm text-red-400">לא הצלחנו לסרוק. ייתכן שהאתר חסום לסריקה — נסה כתובת אחרת.</p>
+          )}
+          {scanState === 'timeout' && (
+            <p className="mt-3 text-sm text-yellow-400">הסריקה לקחה יותר מדי זמן. האתר גדול מדי — נסה אתר אחר.</p>
           )}
         </>
       )}
 
       {scanState === 'loading' && (
-        <div className="flex flex-col items-center justify-center py-8 gap-3">
-          <Loader2 className="w-8 h-8 text-primary animate-spin" />
-          <p className="text-sm text-muted-foreground">סורק את האתר... (עד 20 שניות)</p>
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 mb-4">
+            <Loader2 className="w-5 h-5 text-primary animate-spin flex-shrink-0" />
+            <p className="text-sm text-muted-foreground">סורק את האתר... עד 30 שניות</p>
+          </div>
+          {CATEGORY_ORDER.map(id => {
+            const meta = CATEGORY_META[id];
+            const score = animScores[id] ?? 50;
+            return (
+              <div key={id} className={`flex items-center gap-4 p-4 rounded-xl border ${scoreBg(score)}`}>
+                <div className={`text-2xl font-bold min-w-[3.5rem] text-center tabular-nums transition-none ${scoreColor(score)}`}>
+                  {score}
+                </div>
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className={scoreColor(score)}>{meta.icon}</span>
+                    <span className="font-semibold text-foreground text-sm">{meta.name}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground">מנתח...</p>
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
 
@@ -158,7 +211,6 @@ const WebsiteAuditTool = () => {
               <X className="w-5 h-5" />
             </button>
 
-            {/* Header */}
             <div className="p-6 pb-4 text-center border-b border-border">
               <div className="w-14 h-14 rounded-full bg-red-500/10 flex items-center justify-center mb-3 mx-auto">
                 <AlertTriangle className="w-7 h-7 text-red-400" />
@@ -169,7 +221,6 @@ const WebsiteAuditTool = () => {
               <p className="text-sm text-muted-foreground mt-1">הנה מה שגורם לך להפסיד לקוחות:</p>
             </div>
 
-            {/* Category scores */}
             <div className="overflow-y-auto flex-1 p-6 space-y-3">
               {categories.map((cat, i) => (
                 <div key={i} className={`flex items-center gap-4 p-4 rounded-xl border ${scoreBg(cat.score)}`}>
@@ -190,7 +241,6 @@ const WebsiteAuditTool = () => {
               ))}
             </div>
 
-            {/* Footer CTA */}
             <div className="p-6 pt-4 border-t border-border">
               <button
                 onClick={() => { setShowModal(false); openPopup(); }}
