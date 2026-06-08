@@ -167,10 +167,21 @@ const AutomationShowcaseSection = () => {
   const progressBarRef       = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+
+    if (isMobile) {
+      const timer = setInterval(() => {
+        setActive(prev => {
+          const next = (prev + 1) % scenarios.length;
+          activeRef.current = next;
+          return next;
+        });
+      }, MOBILE_INTERVAL);
+      return () => clearInterval(timer);
+    }
+
     const section = sectionRef.current;
     if (!section) return;
-
-    const isMobile = window.innerWidth < 768;
 
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
@@ -179,11 +190,11 @@ const AutomationShowcaseSection = () => {
         pinSpacing: true,
         anticipatePin: 1,
         start: 'top top',
-        end: isMobile ? '+=2000' : `+=${SCENARIO_SCROLL * scenarios.length}`,
+        end: `+=${SCENARIO_SCROLL * scenarios.length}`,
         onUpdate: (self) => {
           const n    = scenarios.length;
           const next = Math.min(Math.floor(self.progress * n), n - 1);
-          if (!isMobile && progressBarRef.current) {
+          if (progressBarRef.current) {
             const pct = Math.min((self.progress - next / n) * n * 100, 100);
             progressBarRef.current.style.width = `${pct}%`;
           }
