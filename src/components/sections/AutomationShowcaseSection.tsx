@@ -172,13 +172,6 @@ const AutomationShowcaseSection = () => {
 
     const isMobile = window.innerWidth < 768;
 
-    if (isMobile) {
-      const id = setInterval(() => {
-        setActive(prev => (prev + 1) % scenarios.length);
-      }, MOBILE_INTERVAL);
-      return () => clearInterval(id);
-    }
-
     const ctx = gsap.context(() => {
       ScrollTrigger.create({
         trigger: section,
@@ -186,12 +179,14 @@ const AutomationShowcaseSection = () => {
         pinSpacing: true,
         anticipatePin: 1,
         start: 'top top',
-        end: `+=${SCENARIO_SCROLL * scenarios.length}`,
+        end: isMobile ? '+=2000' : `+=${SCENARIO_SCROLL * scenarios.length}`,
         onUpdate: (self) => {
           const n    = scenarios.length;
           const next = Math.min(Math.floor(self.progress * n), n - 1);
-          const pct  = Math.min((self.progress - next / n) * n * 100, 100);
-          if (progressBarRef.current) progressBarRef.current.style.width = `${pct}%`;
+          if (!isMobile && progressBarRef.current) {
+            const pct = Math.min((self.progress - next / n) * n * 100, 100);
+            progressBarRef.current.style.width = `${pct}%`;
+          }
           if (next !== activeRef.current) {
             activeRef.current = next;
             setActive(next);
