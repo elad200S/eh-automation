@@ -40,27 +40,34 @@ const StatsRow = () => {
   }, [triggered]);
 
   return (
-    <div ref={ref} className="grid grid-cols-3 gap-4 mb-10">
+    <div ref={ref} className="grid grid-cols-3 gap-3 mb-12">
       {STATS.map((stat, i) => (
         <div
           key={i}
-          className="relative text-center py-4"
+          className="relative text-center rounded-2xl py-6 px-3 overflow-hidden"
           style={{
             opacity: triggered ? 1 : 0,
-            transform: triggered ? 'translateY(0)' : 'translateY(24px)',
-            transition: `opacity 0.5s ease ${i * 150}ms, transform 0.5s ease ${i * 150}ms`,
+            transform: triggered ? 'translateY(0)' : 'translateY(28px)',
+            transition: `opacity 0.6s ease ${i * 150}ms, transform 0.6s ease ${i * 150}ms`,
+            border: '1px solid hsl(160,84%,39%,0.15)',
+            background: 'hsl(var(--card))',
           }}
         >
-          {i > 0 && (
-            <div className="absolute right-0 top-1/2 -translate-y-1/2 h-10 w-px bg-border/50" />
-          )}
           <div
-            className="text-4xl md:text-5xl font-bold tabular-nums leading-none mb-2"
-            style={{ color: 'hsl(160,84%,39%)', textShadow: '0 0 30px hsl(160,84%,39%,0.35)' }}
+            className="absolute inset-0 pointer-events-none"
+            style={{ background: 'radial-gradient(ellipse at top, hsl(160,84%,39%,0.07), transparent 70%)' }}
+          />
+          <div
+            className="text-5xl md:text-6xl font-bold tabular-nums leading-none mb-3 relative"
+            style={{
+              color: 'hsl(160,84%,52%)',
+              textShadow: '0 0 40px hsl(160,84%,39%,0.5)',
+              letterSpacing: '-0.03em',
+            }}
           >
             {counts[i]}{stat.suffix}
           </div>
-          <div className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line">
+          <div className="text-xs text-muted-foreground leading-relaxed whitespace-pre-line relative">
             {stat.label}
           </div>
         </div>
@@ -209,6 +216,9 @@ const ProblemSection = () => {
   return (
     <Section id="problem">
       <div ref={sectionRef} className="max-w-3xl mx-auto text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-4 text-center">
+          האמת המספרית
+        </p>
         <RevealText className="text-4xl md:text-5xl font-bold text-foreground mb-8 text-center">
           מרגיש שהעסק עובד אבל לא באמת מסודר?
         </RevealText>
