@@ -15,6 +15,48 @@ const categories = [
 
 const articles = [
   {
+    title: 'בוט WhatsApp לעסקים — המדריך המלא 2026',
+    category: 'אוטומציה',
+    excerpt: 'כל מה שצריך לדעת על בוט WhatsApp לעסקים: איך עובד, מה עולה, מה אפשר לאטמט — ומה לא.',
+    readTime: '6 דקות קריאה',
+    href: '/blog/whatsapp-bot-guide',
+  },
+  {
+    title: 'Make.com vs Zapier vs n8n — מה מתאים לעסק שלך?',
+    category: 'כלי אוטומציה',
+    excerpt: 'השוואה מעשית בין שלושת כלי האוטומציה הפופולריים ביותר: מחיר, יכולות וקלות שימוש.',
+    readTime: '7 דקות קריאה',
+    href: '/blog/automation-tools-comparison',
+  },
+  {
+    title: 'תזכורות פגישות אוטומטיות — איך מורידים no-show ב-60%',
+    category: 'אוטומציה',
+    excerpt: 'תזכורת פגישה אוטומטית דרך WhatsApp מורידה ביטולים ב-40-60%. כך בונים את זה נכון.',
+    readTime: '5 דקות קריאה',
+    href: '/blog/appointment-reminder-automation',
+  },
+  {
+    title: 'סוכן AI לשירות לקוחות — עונה 24/7 בלי לשכור עובד',
+    category: 'סוכני AI',
+    excerpt: '80% מהפניות לשירות לקוחות חוזרות על עצמן. סוכן AI מטפל בהן אוטומטית, כל הזמן.',
+    readTime: '6 דקות קריאה',
+    href: '/blog/ai-customer-service',
+  },
+  {
+    title: 'CRM + WhatsApp — האינטגרציה שכל עסק ישראלי צריך',
+    category: 'מערכות עסקיות',
+    excerpt: 'חיבור CRM לWhatsApp מייצר תמונה שלמה על כל לקוח: שיחות, סטטוסים, עסקאות — במקום אחד.',
+    readTime: '6 דקות קריאה',
+    href: '/blog/crm-whatsapp-integration',
+  },
+  {
+    title: 'אוטומציה שיווקית — מהליד הראשון ועד לסגירה',
+    category: 'שיווק',
+    excerpt: 'איך לבנות מסע לקוח אוטומטי שמסנן, מחמם וסוגר לידים — בלי לעסוק בכל אחד ידנית.',
+    readTime: '7 דקות קריאה',
+    href: '/blog/marketing-automation',
+  },
+  {
     title: '5 תהליכים שכל עסק קטן צריך לאטמט היום',
     category: 'אוטומציה',
     excerpt: 'סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע.',

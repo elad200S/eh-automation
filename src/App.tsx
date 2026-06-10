@@ -34,6 +34,12 @@ const AIAgentForBusiness = lazy(() => import("./pages/blog/AIAgentForBusiness"))
 const HowToChooseCRM = lazy(() => import("./pages/blog/HowToChooseCRM"));
 const BlogWhatsAppAutomation = lazy(() => import("./pages/blog/WhatsAppAutomation"));
 const BlogLeadFollowUp = lazy(() => import("./pages/blog/LeadFollowUp"));
+const BlogWhatsAppBotGuide = lazy(() => import("./pages/blog/WhatsAppBotGuide"));
+const BlogAutomationToolsComparison = lazy(() => import("./pages/blog/AutomationToolsComparison"));
+const BlogAppointmentReminderAutomation = lazy(() => import("./pages/blog/AppointmentReminderAutomation"));
+const BlogAICustomerService = lazy(() => import("./pages/blog/AICustomerService"));
+const BlogCRMWhatsAppIntegration = lazy(() => import("./pages/blog/CRMWhatsAppIntegration"));
+const BlogMarketingAutomation = lazy(() => import("./pages/blog/MarketingAutomation"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 
@@ -100,6 +106,12 @@ const RoutesWithTransition = () => {
           <Route path="/blog/how-to-choose-crm" element={<HowToChooseCRM />} />
           <Route path="/blog/whatsapp-automation" element={<BlogWhatsAppAutomation />} />
           <Route path="/blog/lead-follow-up" element={<BlogLeadFollowUp />} />
+          <Route path="/blog/whatsapp-bot-guide" element={<BlogWhatsAppBotGuide />} />
+          <Route path="/blog/automation-tools-comparison" element={<BlogAutomationToolsComparison />} />
+          <Route path="/blog/appointment-reminder-automation" element={<BlogAppointmentReminderAutomation />} />
+          <Route path="/blog/ai-customer-service" element={<BlogAICustomerService />} />
+          <Route path="/blog/crm-whatsapp-integration" element={<BlogCRMWhatsAppIntegration />} />
+          <Route path="/blog/marketing-automation" element={<BlogMarketingAutomation />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
