@@ -41,6 +41,41 @@ const trafficProjection = [
 
 const maxVisits = 1600;
 
+const agents = [
+  {
+    name: 'EH Blog — 16 לחודש',
+    id: 'trig_0138J2bzMqN1fKBpmebXkowQ',
+    cron: 'כל ה-16 לחודש',
+    nextRun: '16/06/2026 09:03',
+    nextArticle: 'אוטומציה לנדל"ן — 5 תהליכים שחוסכים שעות',
+    enabled: true,
+  },
+  {
+    name: 'EH Blog — 25 לחודש',
+    id: 'trig_01WgvegRBXjW2ShJb1sgoBdL',
+    cron: 'כל ה-25 לחודש',
+    nextRun: '25/06/2026 09:02',
+    nextArticle: 'בינה מלאכותית לעסקים קטנים — מאיפה מתחילים?',
+    enabled: true,
+  },
+  {
+    name: 'EH Blog — 1 לחודש',
+    id: 'trig_01Kdih14qZ32veLgi4QJy9HE',
+    cron: 'כל ה-1 לחודש',
+    nextRun: '01/07/2026 09:03',
+    nextArticle: 'אוטומציה לקליניקות — קביעת תורים בלי מזכירה',
+    enabled: true,
+  },
+  {
+    name: 'EH Blog — 8 לחודש',
+    id: 'trig_01G3DebSBq6cZmkxFmPpvzem',
+    cron: 'כל ה-8 לחודש',
+    nextRun: '08/07/2026 09:01',
+    nextArticle: 'Chatbot לאתר עסקי — כמה זה שווה ב-2026?',
+    enabled: true,
+  },
+];
+
 const Dashboard = () => {
   const nextPublish = upcomingArticles[0];
   const daysToNext = Math.ceil((new Date('2026-06-16').getTime() - new Date('2026-06-12').getTime()) / (1000 * 60 * 60 * 24));
@@ -74,6 +109,61 @@ const Dashboard = () => {
         <div className="bg-muted/30 border border-border rounded-xl p-5">
           <div className="text-3xl font-bold text-yellow-400 mb-1">{daysToNext}י</div>
           <div className="text-sm text-muted-foreground">לפרסום הבא</div>
+        </div>
+      </div>
+
+      {/* Agents */}
+      <div className="bg-muted/30 border border-border rounded-xl p-6 mb-10">
+        <div className="flex items-center justify-between mb-5">
+          <div>
+            <h2 className="text-xl font-bold">סוכני פרסום — Claude Cloud Agents</h2>
+            <p className="text-xs text-muted-foreground mt-1">רצים בענן Anthropic — לא תלויים במחשב שלך</p>
+          </div>
+          <a
+            href="https://claude.ai/code/routines"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-xs text-primary hover:underline border border-primary/30 px-3 py-1.5 rounded-full"
+          >
+            ניהול סוכנים ←
+          </a>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {agents.map((agent) => (
+            <div key={agent.id} className="border border-border rounded-xl p-5 bg-background/40">
+              <div className="flex items-start justify-between mb-3">
+                <div>
+                  <div className="font-semibold text-foreground">{agent.name}</div>
+                  <div className="text-xs text-muted-foreground mt-0.5">{agent.cron} — 09:00 ישראל</div>
+                </div>
+                <span className="px-2 py-1 rounded-full bg-primary/20 text-primary text-xs font-medium">🟢 פעיל</span>
+              </div>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">פרסום הבא:</span>
+                  <span className="font-medium text-foreground">{agent.nextRun}</span>
+                </div>
+                <div className="flex justify-between gap-4">
+                  <span className="text-muted-foreground shrink-0">מאמר הבא:</span>
+                  <span className="text-xs text-foreground text-left">{agent.nextArticle}</span>
+                </div>
+              </div>
+              <a
+                href={`https://claude.ai/code/routines/${agent.id}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-4 block text-center text-xs text-primary hover:underline border border-primary/20 rounded-lg py-2"
+              >
+                פתח סוכן → שלח פקודות ישירות
+              </a>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 p-4 bg-primary/5 border border-primary/20 rounded-xl text-sm">
+          <p className="font-medium text-foreground mb-1">💬 איך לדבר עם הסוכן ישירות?</p>
+          <p className="text-muted-foreground text-xs leading-relaxed">
+            לחץ "פתח סוכן" על הסוכן הרצוי → תיפתח סביבת Claude עם הסוכן. שם אפשר לתת פקודות ישירות: לשנות נושא, לבקש פרסום מוקדם, לערוך את תוכנית התוכן, או להריץ את הסוכן עכשיו.
+          </p>
         </div>
       </div>
 
