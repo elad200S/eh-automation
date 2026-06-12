@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'מה ההבדל בין בוט רגיל לסוכן AI?', answer: 'בוט רגיל עובד עם תסריטים קבועים — "לחץ 1, לחץ 2". סוכן AI מבין שפה טבעית ויכול לענות על שאלות פתוחות, לאסוף מידע ולקבל החלטות. הפרש המחיר ביניהם ב-2026 כמעט נסגר.' },
+  { question: 'כמה עולה סוכן AI לעסק?', answer: 'עלות חודשית נעה בין ₪200 ל-₪1,500, תלוי בנפח השיחות ובפלטפורמה. עלות הקמה חד-פעמית: ₪2,000-8,000. ברוב העסקים ה-ROI מגיע תוך חודש-שניים.' },
+  { question: 'כמה זמן לוקח להטמיע סוכן AI?', answer: 'שבוע עד שלושה, תלוי במורכבות. שלב ההכנה (ריכוז שאלות נפוצות, מדיניות, מידע על שירותים) הוא החלק שלוקח הכי הרבה זמן — ולא הטכנולוגיה.' },
+  { question: 'האם סוכן AI יכול לסגור עסקאות?', answer: 'לא ברוב המקרים. הסוכן מטפל במענה ראשוני, איסוף פרטים וחימום הליד — ואז מעביר לאדם לשיחת הסגירה. עסקים שמנסים להפוך את כל המכירה לאוטומטית מאבדים לקוחות.' },
+  { question: 'לאילו עסקים סוכן AI הכי מתאים?', answer: 'עסקים שמקבלים שאלות חוזרות על עצמן, שרוצים מענה מחוץ לשעות העבודה, ושתהליך המכירה שלהם כולל כמה שלבים לפני הסגירה. קליניקות, שירותי B2B, ועסקי שירות — מרוויחים הכי הרבה.' },
+];
 
 const AIAgentForBusiness = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const AIAgentForBusiness = () => {
         path="/blog/ai-agent-for-business"
         datePublished="2026-04-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -99,6 +108,16 @@ const AIAgentForBusiness = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות מה בדיוק כולל הפתרון? <Link to="/solutions/ai-agents" className="text-primary hover:underline font-medium">סוכני AI לעסקים</Link> — דוגמאות, יכולות ותהליך עבודה.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על סוכן AI לעסקים</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">לא בטוח אם זה מתאים לעסק שלך?</h3>

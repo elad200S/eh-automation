@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'כמה פולו-אפים לשלוח לליד שלא ענה?', answer: 'מחקרים מראים שרוב הסגירות קורות אחרי 3-5 נגיעות. רוב העסקים נעצרים אחרי אחת. רצף של 4 הודעות לאורך שבוע — עם ערך בכל אחת — הוא הנוסחה שעובדת ברוב הענפים.' },
+  { question: 'מה הזמן האידיאלי בין פולו-אפ לפולו-אפ?', answer: 'הודעה 1: מיד עם קבלת הפנייה. הודעה 2: 24 שעות לאחר מכן. הודעה 3: 3 ימים אחר כך. הודעה 4: שבוע לאחר מכן. הרווחים הארוכים יותר מאפשרים ללקוח לנשום — ולא מרגישים כהטרדה.' },
+  { question: 'מה לכתוב בהודעת פולו-אפ?', answer: 'לא "נזכרתי בך" — אלא ערך קטן: טיפ רלוונטי, שאלה שמראה עניין, או מידע שעוזר לו לקבל החלטה. כל הודעה צריכה להצדיק את עצמה גם אם הוא לא יחזור.' },
+  { question: 'האם פולו-אפ אוטומטי מרגיש כמו ספאם?', answer: 'לא כשהוא כתוב בשפה אנושית ומתייחס לשם הלקוח ולהקשר. לקוח שמקבל הודעה אישית עם תוכן רלוונטי לא מרגיש ספאם — הוא מרגיש שמתייחסים אליו.' },
+  { question: 'באיזה ערוץ הכי כדאי לשלוח פולו-אפ?', answer: 'WhatsApp הוא הערוץ הכי אפקטיבי בישראל — שיעור פתיחה של 95-98% לעומת 20-30% למייל. אם הליד יצר קשר בוואטסאפ — המשיכו שם. אל תעברו ערוץ ללא סיבה.' },
+];
 
 const LeadFollowUp = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const LeadFollowUp = () => {
         path="/blog/lead-follow-up"
         datePublished="2026-05-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -110,6 +119,16 @@ const LeadFollowUp = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות איך בונים מערכת כזו? <Link to="/solutions/business-automation" className="text-primary hover:underline font-medium">ראה את הפתרון לאוטומציה עסקית</Link> — כולל אוטומציית לידים ופולו-אפ.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על פולו-אפ אוטומטי</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה לבנות רצף פולו-אפ לעסק שלך?</h3>

@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'כמה עולה אוטומציה לעסק קטן?', answer: 'תהליך בסיסי (מענה ללידים, פולו-אפ, תזכורות פגישה) עולה בדרך כלל ₪1,500-5,000 להקמה. לאחר מכן עלות שוטפת של ₪200-500 לחודש עבור הכלים. ה-ROI מגיע תוך חודש-חודשיים ברוב המקרים.' },
+  { question: 'האם צריך ידע טכני כדי לבנות אוטומציות?', answer: 'לא. כלים כמו Make.com מאפשרים לבנות אוטומציות מורכבות בלי שורת קוד. רוב הפתרונות שאנחנו בונים מנוהלים על ידי בעל העסק בעצמו אחרי שבוע-שבועיים של הכרות.' },
+  { question: 'מה התהליך שכדאי לאטמט ראשון?', answer: 'מענה ללידים נכנסים — זהו התהליך שמייצר את ה-ROI המהיר ביותר. ליד שמקבל תגובה תוך דקות לעומת תגובה אחרי שעה — שיעור ההמרה שלו גבוה ב-78% (לפי מחקר HubSpot).' },
+  { question: 'כמה זמן לוקח להקים אוטומציה?', answer: 'תהליך בסיסי: 3-5 ימי עבודה. פתרון מלא עם כמה תהליכים מקושרים: 2-4 שבועות. לאחר ההקמה — האוטומציה רצה לבד ללא תחזוקה שוטפת.' },
+  { question: 'האם אוטומציה מתאימה לעסק של אדם אחד?', answer: 'בהחלט — ואולי אפילו יותר. כשאתה מנהל הכל לבד, כל שעה שמתפנה שווה זהב. אוטומציה מאפשרת לעסק קטן לתת רמת שירות שמתחרה עם עסקים גדולים יותר.' },
+];
 
 const AutomationProcesses = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const AutomationProcesses = () => {
         path="/blog/5-automation-processes"
         datePublished="2026-04-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -120,6 +129,16 @@ const AutomationProcesses = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות מה כוללת אוטומציה עסקית בפועל? <Link to="/solutions/business-automation" className="text-primary hover:underline font-medium">ראה את הפתרון לאוטומציה עסקית</Link> — תהליכים, כלים ותוצאות.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על אוטומציה לעסקים</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה לדעת מה אפשר לאטמט אצלך?</h3>

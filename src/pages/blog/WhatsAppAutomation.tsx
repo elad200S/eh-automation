@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'האם צריך WhatsApp Business API לאוטומציה?', answer: 'תלוי בסוג. תגובות אוטומטיות להודעות נכנסות — אפשר גם עם חשבון Business רגיל. שליחת הודעות יזומות (תזכורות, פולו-אפ) — דורש WhatsApp Business API. ה-API מצריך אישור Meta שלוקח 3-7 ימים.' },
+  { question: 'כמה עולה WhatsApp Business API?', answer: 'עלות לפי שיחה: ₪0.15-0.50 לשיחה (24 שעות). מי שמאשר שיחה — ישלם פחות. עלות חודשית ממוצעת לעסק עם 200 שיחות: ₪100-300. פלטפורמות השליחה (כמו WATI) עולות ₪150-500 לחודש.' },
+  { question: 'האם מותר לשלוח הודעות שיווקיות בוואטסאפ?', answer: 'כן, עם תבניות מאושרות בלבד. הודעות שיווקיות דורשות אישור מ-Meta מראש. לקוחות שסגרו שיחה או לא יזמו — ניתן לפנות אליהם רק עם תבניות. הפרת הכללים עלולה לחסום את המספר.' },
+  { question: 'כמה זמן לוקח להקים אוטומציית WhatsApp?', answer: 'אוטומציה בסיסית (מענה לשאלות נפוצות + פולו-אפ): 3-5 ימי עבודה. מערכת מלאה עם CRM, תזכורות ומסעות לקוח: 2-4 שבועות. ההקמה הטכנית מהירה — האתגר הוא בניית התכנים.' },
+  { question: 'האם אוטומציית WhatsApp מרגישה ללקוח כמו בוט?', answer: 'תלוי באיכות הכתיבה. אוטומציה טובה כתובה בשפה טבעית, כוללת שם הלקוח, ומגיבה בצורה הגיונית להקשר. לקוחות שמקבלים תגובה רלוונטית תוך שניות — לעתים קרובות לא מחשידים שמדובר באוטומציה.' },
+];
 
 const WhatsAppAutomation = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const WhatsAppAutomation = () => {
         path="/blog/whatsapp-automation"
         datePublished="2026-05-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -96,6 +105,16 @@ const WhatsAppAutomation = () => {
             <p className="text-sm text-muted-foreground">
               לפרטים על השירות: <Link to="/solutions/whatsapp-automation" className="text-primary hover:underline font-medium">אוטומציית WhatsApp לעסקים</Link> — כולל דוגמאות, תהליך ועלויות.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על אוטומציית WhatsApp</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה לראות איך זה עובד לעסק שלך?</h3>

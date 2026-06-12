@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'מה ה-CRM הכי טוב לעסק קטן?', answer: 'תלוי בצרכים. לעסקים שמחפשים חינמי ואיכותי — HubSpot CRM. לעסקים ישראלים שרוצים ממשק עברי ותמיכה מקומית — Base44. לעסקים עם מכירות מורכבות — Pipedrive. אל תבחרו לפי שם — בחרו לפי הפשטות.' },
+  { question: 'כמה עולה CRM לעסק?', answer: 'יש CRM חינמיים (HubSpot Free, Base44 Starter) שמתאימים לעסקים קטנים. פתרונות בתשלום נעים בין ₪100 ל-₪500 לחודש לעסק קטן-בינוני. המחיר לא קובע את ההצלחה — ההטמעה קובעת.' },
+  { question: 'כמה זמן לוקח להטמיע CRM בצוות?', answer: '2-6 שבועות לשימוש שוטף. השבוע הראשון — הגדרה טכנית. השבועיים הבאים — הכשרה ובנייה של הרגלים. אחרי חודש — הצוות כבר לא חושב על זה, פשוט משתמש.' },
+  { question: 'האם אפשר לעבור CRM בלי לאבד נתונים?', answer: 'כן. כל CRM רציני מאפשר ייצוא נתונים לקובץ CSV ויבוא לתוכנה חדשה. תהליך המעבר לוקח בדרך כלל יום עד שלושה ימי עבודה.' },
+  { question: 'מה ההבדל בין CRM לגיליון אקסל?', answer: 'אקסל מאחסן מידע. CRM מנהל פעולות: שולח תזכורות, מתריע על לידים שתקועים, שולח הודעות אוטומטיות, ועוקב אחרי כל נגיעה עם לקוח. כשהצוות גדול מ-2 אנשים — אקסל הופך לבעיה.' },
+];
 
 const HowToChooseCRM = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const HowToChooseCRM = () => {
         path="/blog/how-to-choose-crm"
         datePublished="2026-04-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -110,6 +119,16 @@ const HowToChooseCRM = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות איך אנחנו מטמיעים CRM? <Link to="/solutions/crm-automation" className="text-primary hover:underline font-medium">ראה את הפתרון לאוטומציית CRM</Link> — תהליך, כלים ותוצאות.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על בחירת CRM</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה עזרה לבחור CRM לעסק שלך?</h3>
