@@ -41,6 +41,7 @@ const BlogCRMWhatsAppIntegration = lazy(() => import("./pages/blog/CRMWhatsAppIn
 const BlogMarketingAutomation = lazy(() => import("./pages/blog/MarketingAutomation"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
 
 // Solutions sub-pages
 const SolutionAIAgents = lazy(() => import("./pages/solutions/AIAgentsSolution"));
@@ -115,6 +116,7 @@ const RoutesWithTransition = () => {
           <Route path="/services/ai-agents" element={<AIAgents />} />
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/cookies" element={<CookiePolicy />} />
+          <Route path="/dashboard" element={<Dashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
