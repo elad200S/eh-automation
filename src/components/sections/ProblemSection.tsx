@@ -44,18 +44,13 @@ const StatsRow = () => {
       {STATS.map((stat, i) => (
         <div
           key={i}
-          className="relative text-center rounded-2xl py-6 px-3 overflow-hidden"
+          className="text-center py-6 px-3"
           style={{
             opacity: triggered ? 1 : 0,
             transform: triggered ? 'translateY(0)' : 'translateY(28px)',
             transition: `opacity 0.6s ease ${i * 150}ms, transform 0.6s ease ${i * 150}ms`,
-            background: 'hsl(var(--card))',
           }}
         >
-          <div
-            className="absolute inset-0 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse at top, hsl(160,84%,39%,0.07), transparent 70%)' }}
-          />
           <div
             className="text-5xl md:text-6xl font-bold tabular-nums leading-none mb-3 relative"
             style={{

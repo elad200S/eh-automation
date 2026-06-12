@@ -77,9 +77,14 @@
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    scrollbar-width: none;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+  }
+
+  html::-webkit-scrollbar {
+    display: none;
   }
 
   body {

@@ -68,12 +68,9 @@ const ToolsSection = () => {
         </p>
       </div>
 
-      {/* Dark marquee strip — lusion.co style */}
+      {/* Marquee strip */}
       <div
         className="w-full overflow-hidden"
-        style={{
-          background: 'hsl(220,15%,11%)',
-        }}
         onMouseEnter={() => { isPaused.current = true; }}
         onMouseLeave={() => { isPaused.current = false; }}
       >
