@@ -102,7 +102,7 @@ const DemoVideoSection = () => {
               className="flex-1 mx-3 px-3 py-1 rounded-md text-xs text-center font-mono"
               style={{ background: 'hsl(220,15%,8%)', color: 'hsl(215,20%,50%)' }}
             >
-              eh-automation.com
+              eh-automation.co.il
             </div>
           </div>
 
