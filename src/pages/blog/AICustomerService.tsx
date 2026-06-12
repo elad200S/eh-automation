@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'האם סוכן AI יכול לטפל בתלונות לקוחות?', answer: 'סוכן AI מטפל היטב בתלונות סטנדרטיות — בקשות החזר, שגיאות בהזמנה, שאלות על מדיניות. מקרים מורכבים שדורשים שיקול דעת או אמפתיה גבוהה מועברים אוטומטית לנציג אנושי.' },
+  { question: 'כמה עולה סוכן AI לשירות לקוחות?', answer: 'עלות ממוצעת בישראל ב-2026: ₪5,000-15,000 להקמה + ₪500-1,500 לחודש לתחזוקה ושיפור. התמחור תלוי בנפח השיחות ומורכבות הלוגיקה.' },
+  { question: 'באילו ערוצים סוכן AI יכול לעבוד?', answer: 'WhatsApp, צ\'אט באתר, מייל, אינסטגרם ופייסבוק מסנג\'ר — הכל מאותה מערכת ניהול מרכזית. ב-2026 רוב הסוכנים תומכים ב-Omnichannel מהקופסה.' },
+  { question: 'כמה זמן לוקח ל"לאמן" את הסוכן על העסק שלי?', answer: 'שלב האימון הראשוני לוקח 1-2 שבועות. הסוכן לומד את מדיניות השירות, שאלות נפוצות ותהליכים. לאחר מכן הוא משתפר בהדרגה מכל שיחה.' },
+  { question: 'האם הסוכן יכול לגשת למידע אמיתי על הלקוח?', answer: 'כן, כשהסוכן מחובר ל-CRM. הוא רואה היסטוריית הזמנות, סטטוס, העדפות — ומשלב זאת בתשובות. זה יוצר חוויה אישית שמרגישה אנושית.' },
+];
 
 const AICustomerService = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const AICustomerService = () => {
         path="/blog/ai-customer-service"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -104,6 +113,16 @@ const AICustomerService = () => {
             <p className="text-sm text-muted-foreground">
               רוצה להבין איך סוכן AI עובד לפרקטיקה? <Link to="/solutions/ai-agents" className="text-primary hover:underline font-medium">ראו את פתרון סוכני ה-AI שלנו</Link>.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על סוכן AI לשירות לקוחות</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה שסוכן AI יטפל בשירות הלקוחות שלך?</h3>

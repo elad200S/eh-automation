@@ -2,12 +2,6 @@ import Section from '@/components/Section';
 import eladHeadshot from '@/assets/elad-headshot.png';
 import RevealText from '@/components/RevealText';
 
-const STATS = [
-  { value: '50+',  label: 'לקוחות מרוצים' },
-  { value: '200+', label: 'אוטומציות שנבנו' },
-  { value: '24/7', label: 'המערכות עובדות' },
-];
-
 const AboutSection = () => {
   return (
     <Section id="about" className="py-20 md:py-28">
@@ -22,7 +16,7 @@ const AboutSection = () => {
               מומחה אוטומציה לעסקים ישראליים
             </RevealText>
 
-            <div className="space-y-4 text-muted-foreground leading-relaxed mb-10">
+            <div className="space-y-4 text-muted-foreground leading-relaxed">
               <p>
                 מתמקד בבניית אוטומציות פרקטיות לעסקים שרוצים סדר, מעקב ושליטה אמיתית על התהליכים שלהם.
               </p>
@@ -32,34 +26,6 @@ const AboutSection = () => {
               <p>
                 המטרה היא להפוך תהליכים מורכבים לפשוטים, כך שהעסק יעבוד בצורה חלקה ויעילה יותר.
               </p>
-            </div>
-
-            {/* Stats row */}
-            <div className="grid grid-cols-3 gap-3">
-              {STATS.map((stat, i) => (
-                <div
-                  key={i}
-                  className="text-center rounded-xl py-5 px-3 relative overflow-hidden"
-                  style={{
-                    background: 'hsl(var(--card))',
-                    border: '1px solid hsl(160,84%,39%,0.18)',
-                  }}
-                >
-                  <div
-                    className="absolute inset-0 pointer-events-none"
-                    style={{ background: 'radial-gradient(ellipse at top, hsl(160,84%,39%,0.07), transparent 70%)' }}
-                  />
-                  <div
-                    className="text-2xl md:text-3xl font-bold mb-1 relative"
-                    style={{ color: 'hsl(160,84%,52%)', textShadow: '0 0 20px hsl(160,84%,39%,0.4)' }}
-                  >
-                    {stat.value}
-                  </div>
-                  <div className="text-xs text-muted-foreground relative leading-tight">
-                    {stat.label}
-                  </div>
-                </div>
-              ))}
             </div>
           </div>
 

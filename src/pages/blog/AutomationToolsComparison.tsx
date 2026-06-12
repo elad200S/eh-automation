@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'מה הכלי הכי טוב לאוטומציה עסקית לעסקים קטנים?', answer: 'לרוב העסקים הקטנים-בינוניים בישראל, Make.com הוא הבחירה הטובה ביותר: ₪39 לחודש, ממשק ויזואלי, מעל 1,500 אינטגרציות — ויכולות שמספיקות ל-90% מהתהליכים.' },
+  { question: 'האם אפשר להשתמש ב-Zapier בחינם?', answer: 'כן, Zapier מציע תוכנית חינמית עם עד 100 פעולות בחודש ו-5 "Zaps". זה מספיק לניסוי אבל לא לשימוש עסקי שוטף.' },
+  { question: 'האם n8n מתאים לעסק ללא מתכנת?', answer: 'בדרך כלל לא. n8n דורש הגדרה טכנית והתקנה על שרת. העסקים שמרוויחים ממנו הכי הרבה הם אלה עם מפתח פנימי או מומחה אוטומציה שמתחזק אותו.' },
+  { question: 'מה ההבדל בין Make.com ל-Zapier מבחינת מחיר?', answer: 'Zapier עולה 3-5 פעמים יותר מ-Make.com על אותם נפחי פעולות. לעסק עם 10,000 פעולות בחודש: Zapier ~₪270+, Make.com ~₪39.' },
+  { question: 'האם אפשר לעבור בין הכלים בקלות?', answer: 'המעבר דורש בנייה מחדש של האוטומציות — אין ייצוא אוטומטי בין הכלים. לכן חשוב לבחור נכון מהתחלה, בעיקר אם יש הרבה תהליכים.' },
+];
 
 const AutomationToolsComparison = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const AutomationToolsComparison = () => {
         path="/blog/automation-tools-comparison"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -106,6 +115,16 @@ const AutomationToolsComparison = () => {
             <p className="text-sm text-muted-foreground">
               לא בטוח איזה כלי מתאים לעסק שלך? <Link to="/solutions/business-automation" className="text-primary hover:underline font-medium">ראו את פתרון האוטומציה העסקית שלנו</Link> — אנחנו עובדים עם כל שלושת הכלים ויכולים לייעץ.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על כלי אוטומציה</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה שנבחר יחד את הכלי הנכון?</h3>

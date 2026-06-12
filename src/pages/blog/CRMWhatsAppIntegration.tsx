@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'אילו CRM תומכים בחיבור ל-WhatsApp?', answer: 'HubSpot, Monday CRM, Pipedrive, Base44 ו-Salesforce תומכים כולם בחיבור ל-WhatsApp Business API. החיבור נעשה דרך שכבת אוטומציה כמו Make.com או n8n.' },
+  { question: 'האם שיחות WhatsApp נשמרות אוטומטית ב-CRM?', answer: 'כן, כשהאינטגרציה פעילה. כל הודעה נכנסת ויוצאת מתועדת בכרטיס הלקוח ב-CRM — כולל תאריך, שעה ותוכן ההודעה.' },
+  { question: 'כמה זמן לוקח לחבר CRM ל-WhatsApp?', answer: 'אינטגרציה בסיסית: 3-5 ימי עבודה. אינטגרציה מלאה עם לוגיקה מורכבת, אוטומציות וסגמנטציה: 2-4 שבועות.' },
+  { question: 'האם צריך לשנות את ה-CRM הקיים?', answer: 'לא. האינטגרציה מתחברת ל-CRM הקיים שלך — לא מחליפה אותו. ה-CRM ממשיך לעבוד כרגיל, רק מקבל שכבת WhatsApp מעליו.' },
+  { question: 'מה קורה כש-WhatsApp API לא זמין?', answer: 'מערכות אוטומציה תקינות כוללות fallback — אם הודעה לא עברת, היא מנסה שוב אוטומטית ומתריעה לסוכן. כשל מוחלט ב-WhatsApp API נדיר מאוד (זמינות של 99.9%).' },
+];
 
 const CRMWhatsAppIntegration = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const CRMWhatsAppIntegration = () => {
         path="/blog/crm-whatsapp-integration"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -98,6 +107,16 @@ const CRMWhatsAppIntegration = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות כיצד CRM + WhatsApp נראה בפועל? <Link to="/solutions/crm-automation" className="text-primary hover:underline font-medium">ראו את פתרון אוטומציית ה-CRM שלנו</Link>.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על חיבור CRM ל-WhatsApp</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה לחבר את ה-CRM שלך לWhatsApp?</h3>

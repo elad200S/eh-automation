@@ -8,7 +8,7 @@ import CookieConsent from "@/components/CookieConsent";
 import Navbar from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useEffect, useState, useRef, lazy, Suspense } from "react";
+import { useState, lazy, Suspense } from "react";
 // Note: gsap + ScrollTrigger kept for Lenis sync only
 import Lenis from "lenis";
 import { AnimatePresence, motion } from "framer-motion";
@@ -16,9 +16,8 @@ import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
 import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
-import { EngagementProvider, useEngagement } from "@/contexts/EngagementContext";
+import { EngagementProvider } from "@/contexts/EngagementContext";
 import ContactPopup from "@/components/ContactPopup";
-import TimedCTAPopup from "@/components/TimedCTAPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
 import Index from "./pages/Index";
@@ -75,10 +74,6 @@ gsap.ticker.add((time) => lenis.raf(time * 1000));
 gsap.ticker.lagSmoothing(0);
 lenis.on('scroll', ScrollTrigger.update);
 
-const LEAD_POPUP_DELAY_MS = 40_000; // 40s
-const LEAD_POPUP_STORAGE_KEY = "timed_cta_dismissed";
-const POPUP_ID_LEAD = "lead-form-popup";
-
 const pageVariants: import('framer-motion').Variants = {
   initial: { opacity: 0 },
   animate: { opacity: 1, transition: { duration: 0.4, ease: [0.22, 1, 0.36, 1] } },
@@ -131,46 +126,6 @@ const RoutesWithTransition = () => {
 
 /** Inner component that can use EngagementContext */
 const AppInner = () => {
-  const [isTimedPopupOpen, setIsTimedPopupOpen] = useState(false);
-  const { isAnyPopupOpen, hasInteracted, registerPopup, unregisterPopup, wasShown, markShown } = useEngagement();
-  const shownRef = useRef(false);
-
-  // Popup 2: Lead form at 40s
-  useEffect(() => {
-    if (sessionStorage.getItem(LEAD_POPUP_STORAGE_KEY)) return;
-
-    const timer = window.setTimeout(() => {
-      if (shownRef.current) return;
-      // If user already interacted or another popup is open, skip
-      if (hasInteracted || isAnyPopupOpen) {
-        // Retry once after 5s gap
-        const retry = window.setTimeout(() => {
-          if (!shownRef.current && !hasInteracted && !isAnyPopupOpen) {
-            shownRef.current = true;
-            setIsTimedPopupOpen(true);
-            markShown(POPUP_ID_LEAD);
-            registerPopup(POPUP_ID_LEAD);
-          }
-        }, 5000);
-        return () => window.clearTimeout(retry);
-      }
-
-      shownRef.current = true;
-      setIsTimedPopupOpen(true);
-      markShown(POPUP_ID_LEAD);
-      registerPopup(POPUP_ID_LEAD);
-    }, LEAD_POPUP_DELAY_MS);
-
-    return () => window.clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const handleTimedPopupClose = () => {
-    setIsTimedPopupOpen(false);
-    unregisterPopup(POPUP_ID_LEAD);
-    sessionStorage.setItem(LEAD_POPUP_STORAGE_KEY, "true");
-  };
-
   return (
     <BrowserRouter future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
       <ScrollToTop />
@@ -215,7 +170,6 @@ const AppInner = () => {
       <AccessibilityButton />
       <CookieConsent />
       <ContactPopup />
-      <TimedCTAPopup isOpen={isTimedPopupOpen} onClose={handleTimedPopupClose} />
     </BrowserRouter>
   );
 };

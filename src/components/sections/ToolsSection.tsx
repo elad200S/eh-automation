@@ -73,8 +73,6 @@ const ToolsSection = () => {
         className="w-full overflow-hidden"
         style={{
           background: 'hsl(220,15%,11%)',
-          borderTop: '1px solid hsl(220,15%,18%)',
-          borderBottom: '1px solid hsl(220,15%,18%)',
         }}
         onMouseEnter={() => { isPaused.current = true; }}
         onMouseLeave={() => { isPaused.current = false; }}

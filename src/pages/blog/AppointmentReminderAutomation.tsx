@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'כמה אחוז מהביטולים אפשר למנוע עם תזכורות אוטומטיות?', answer: 'מחקרים רפואיים ועסקיים עקביים מראים ירידה של 40-60% בשיעור ה-no-show עם תזכורות אוטומטיות. ההפחתה הגבוהה ביותר נרשמת כשמשלבים תזכורת 48 שעות + 24 שעות + 2 שעות לפני הפגישה.' },
+  { question: 'באיזה ערוץ הכי טוב לשלוח תזכורת פגישה?', answer: 'WhatsApp הוא הערוץ הכי אפקטיבי בישראל — שיעורי פתיחה של 95-98% לעומת מייל שנע בין 20-30%. תזכורת WhatsApp 24 שעות לפני הפגישה היא הצעד הבודד שמוריד הכי הרבה no-show.' },
+  { question: 'האם צריך WhatsApp Business API לתזכורות אוטומטיות?', answer: 'כן. תזכורות פרואקטיביות (שיוצאות מהעסק ללקוח בלי שהלקוח שאל) דורשות WhatsApp Business API. אישור API לוקח 3-7 ימי עבודה.' },
+  { question: 'האם אפשר לתת ללקוח לבטל פגישה דרך WhatsApp?', answer: 'כן, וזה אחד היתרונות הגדולים. הלקוח מקבל בתזכורת לינק לביטול או שינוי מועד. אם הוא מבטל — החריץ נפתח אוטומטית לשאר הלקוחות.' },
+  { question: 'האם המערכת מתחברת ליומן Google?', answer: 'כן. רוב מערכות התזכורת האוטומטית מתחברות ל-Google Calendar, Outlook ו-Calendly. הפגישה נרשמת ביומן ומשם המערכת יודעת מתי לשלוח.' },
+];
 
 const AppointmentReminderAutomation = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const AppointmentReminderAutomation = () => {
         path="/blog/appointment-reminder-automation"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -108,6 +117,16 @@ const AppointmentReminderAutomation = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות איך בונים מערכת כזו? <Link to="/solutions/whatsapp-automation" className="text-primary hover:underline font-medium">ראו את פתרון אוטומציית WhatsApp שלנו</Link>.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על תזכורות פגישה אוטומטיות</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">כמה no-show אתה מפסיד בחודש?</h3>

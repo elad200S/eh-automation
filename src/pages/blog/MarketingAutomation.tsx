@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'מה זה אוטומציה שיווקית ולמה היא חשובה?', answer: 'אוטומציה שיווקית היא מערכת שמטפלת בתקשורת עם לקוחות פוטנציאליים — שליחת הודעות, מיון לידים ופולו-אפ — בצורה אוטומטית. היא חשובה כי מגדילה את מספר הלידים שמגיעים לסגירה בלי להגדיל את עלויות כוח האדם.' },
+  { question: 'מה זה Lead Scoring?', answer: 'Lead Scoring הוא מדד שמשייך ניקוד ללידים לפי פעולותיהם. ביקור באתר, פתיחת מייל, לחיצה על קישור — כל אחד מוסיף נקודות. כשליד מגיע לסף מסוים, הוא מסומן כ"חם" ומועבר לטיפול אנושי.' },
+  { question: 'כמה זמן לוקח לבנות מסע לקוח אוטומטי?', answer: 'מסע בסיסי (ליד → מענה → פולו-אפ → פגישה) אפשר לבנות תוך שבוע-שבועיים. מסע מלא עם סגמנטציה, Lead Scoring ומסעות מרובים — חודש-חודשיים.' },
+  { question: 'האם אוטומציה שיווקית מתאימה לעסק קטן?', answer: 'בהחלט. עסק עם 10-50 לידים בחודש יכול להרוויח מאוד מאוטומציה: פחות שכחה, יותר מענה מהיר, ופולו-אפ שיטתי. אין סף כניסה — אפילו תהליך אחד אוטומטי מייצר ערך מיידי.' },
+  { question: 'מה ההבדל בין אוטומציה שיווקית ל-CRM?', answer: 'CRM מנהל את המידע על הלקוחות (כרטיסים, היסטוריה, עסקאות). אוטומציה שיווקית היא השכבה שפועלת — שולחת הודעות, עוקבת אחרי פעולות ומחליטה מה לעשות הלאה. בפועל, השניים עובדים יחד.' },
+];
 
 const MarketingAutomation = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const MarketingAutomation = () => {
         path="/blog/marketing-automation"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -107,6 +116,16 @@ const MarketingAutomation = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לבנות מסע לקוח אוטומטי לעסק שלך? <Link to="/solutions/business-automation" className="text-primary hover:underline font-medium">ראו את פתרון האוטומציה העסקית שלנו</Link>.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על אוטומציה שיווקית</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה שנמפה לך את המסע כולו?</h3>

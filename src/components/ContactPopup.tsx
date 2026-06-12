@@ -97,17 +97,17 @@ const ContactPopup = () => {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={closePopup} />
 
       {/* Modal */}
-      <div className="relative bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in z-10">
+      <div className="relative bg-card rounded-2xl border border-border shadow-2xl w-full max-w-md max-h-[90vh] overflow-y-auto animate-fade-in z-10" style={{ direction: 'ltr' }}>
         {/* Close button */}
         <button
           onClick={closePopup}
-          className="absolute top-4 left-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors z-10"
+          className="absolute top-4 right-4 p-2 rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors z-10"
           aria-label="סגירה"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="p-6 pt-8">
+        <div className="p-6 pt-8" dir="rtl">
           <h2 className="text-2xl font-semibold text-foreground mb-2 text-center">
             שיחת אפיון לאוטומציה עסקית
           </h2>

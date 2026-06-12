@@ -1,10 +1,18 @@
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
-import { SEOHead, BreadcrumbSchema, ArticleSchema } from '@/lib/seo';
+import { SEOHead, BreadcrumbSchema, ArticleSchema, FAQSchema } from '@/lib/seo';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/sections/Footer';
 import Section from '@/components/Section';
+
+const faqItems = [
+  { question: 'כמה עולה בוט WhatsApp לעסק?', answer: 'בשוק הישראלי ב-2026, בוט WhatsApp בסיסי עולה ₪3,500-5,000 חד-פעמי. בוט AI מתקדם עם אינטגרציית CRM עולה ₪8,000-12,000. יש גם מודלים של תשלום חודשי שמתחילים מ-₪400-500 לחודש.' },
+  { question: 'מה ההבדל בין WhatsApp Business רגיל ל-WhatsApp Business API?', answer: 'WhatsApp Business רגיל (חינמי) מאפשר לענות להודעות נכנסות בלבד. WhatsApp Business API מאפשר לשלוח הודעות פרואקטיביות — תזכורות, עדכונים, קמפיינים — וזה מה שצריך לבנות בוט אמיתי.' },
+  { question: 'האם בוט WhatsApp עובד בעברית?', answer: 'כן. בוטי AI ב-2026 מבינים עברית היטב, כולל עברית לא רשמית וקיצורים שנפוצים בהודעות ישראליות.' },
+  { question: 'כמה זמן לוקח לבנות בוט WhatsApp?', answer: 'בוט בסיסי אפשר להקים תוך 3-7 ימי עבודה. בוט AI מתקדם עם אינטגרציות CRM דורש 2-4 שבועות.' },
+  { question: 'האם הבוט פועל 24 שעות ביממה?', answer: 'כן. הבוט מגיב אוטומטית בכל שעה, כולל לילות וסופי שבוע — בלי עלות נוספת על שעות לא סטנדרטיות.' },
+];
 
 const WhatsAppBotGuide = () => {
   const { openPopup } = useContactPopup();
@@ -27,6 +35,7 @@ const WhatsAppBotGuide = () => {
         path="/blog/whatsapp-bot-guide"
         datePublished="2026-06-08"
       />
+      <FAQSchema items={faqItems} />
 
       <Navbar />
 
@@ -110,6 +119,16 @@ const WhatsAppBotGuide = () => {
             <p className="text-sm text-muted-foreground">
               רוצה לראות איך בוט WhatsApp נראה בפועל? <Link to="/solutions/whatsapp-automation" className="text-primary hover:underline font-medium">ראו את פתרון אוטומציית WhatsApp שלנו</Link>.
             </p>
+
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-foreground">שאלות נפוצות על בוט WhatsApp</h2>
+              {faqItems.map((item, i) => (
+                <div key={i} className="border border-border rounded-xl p-5">
+                  <h3 className="font-semibold text-foreground mb-2">{item.question}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{item.answer}</p>
+                </div>
+              ))}
+            </div>
 
             <div className="p-8 bg-muted/30 rounded-xl border border-border text-center">
               <h3 className="text-lg font-semibold text-foreground mb-3">רוצה בוט WhatsApp לעסק שלך?</h3>

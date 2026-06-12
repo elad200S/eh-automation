@@ -49,7 +49,6 @@ const StatsRow = () => {
             opacity: triggered ? 1 : 0,
             transform: triggered ? 'translateY(0)' : 'translateY(28px)',
             transition: `opacity 0.6s ease ${i * 150}ms, transform 0.6s ease ${i * 150}ms`,
-            border: '1px solid hsl(160,84%,39%,0.15)',
             background: 'hsl(var(--card))',
           }}
         >

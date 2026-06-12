@@ -289,17 +289,6 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Right edge glowing track */}
-      <div
-        className="absolute right-0 w-px"
-        style={{
-          top: '15%',
-          height: '70%',
-          background: 'linear-gradient(to bottom, transparent, hsl(160,84%,39%) 40%, hsl(160,84%,39%) 60%, transparent)',
-          boxShadow: '0 0 12px hsl(160,84%,39%), 0 0 28px hsl(160,84%,39%,0.4)',
-        }}
-      />
-
     </section>
   );
 };

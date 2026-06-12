@@ -8,6 +8,11 @@
   to { transform: rotate(360deg); }
 }
 
+@keyframes subtitle-reveal {
+  from { transform: translateY(110%); opacity: 0; }
+  to   { transform: translateY(0%);   opacity: 1; }
+}
+
 @layer base {
   :root {
     /* Dark theme palette */
@@ -68,7 +73,7 @@
   }
 
   html {
-    direction: rtl;
+    direction: ltr;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
@@ -79,6 +84,7 @@
 
   body {
     @apply bg-background text-foreground font-primary antialiased;
+    direction: rtl;
     font-family: var(--font-primary);
     font-feature-settings: "kern" 1, "ss01" 1, "cv11" 1;
     font-weight: 400;
@@ -369,6 +375,11 @@
   position: relative;
   transform-style: preserve-3d;
   animation: heroSpin3D 12s linear infinite;
+  animation-play-state: paused;
+}
+
+.hero-3d-card.is-spinning {
+  animation-play-state: running;
 }
 
 .hero-3d-front {

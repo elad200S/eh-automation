@@ -104,46 +104,6 @@ const Footer = () => {
   return (
     <footer className="border-t border-border" style={{ background: 'hsl(220,15%,8%)' }}>
 
-      {/* ── Big CTA block ── */}
-      <div className="relative overflow-hidden" dir="rtl"
-        style={{ borderBottom: '1px solid hsl(215,20%,16%)' }}>
-        {/* Ambient glow */}
-        <div className="absolute inset-0 pointer-events-none">
-          <div style={{
-            position: 'absolute', top: '50%', left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: 700, height: 350, borderRadius: '50%',
-            background: 'radial-gradient(ellipse, hsl(160,84%,39%,0.13), transparent 65%)',
-            filter: 'blur(50px)',
-          }} />
-        </div>
-        {/* Grid pattern */}
-        <div className="absolute inset-0 grid-pattern opacity-10 pointer-events-none" />
-
-        <div className="container relative py-20 md:py-24">
-          <div className="max-w-2xl mx-auto text-center">
-            <p className="font-mono text-xs uppercase tracking-[0.14em] mb-5"
-              style={{ color: 'hsl(160,84%,50%)' }}>
-              מוכנים להתחיל?
-            </p>
-            <h2
-              className="font-bold text-foreground mb-5 leading-tight"
-              style={{ fontSize: 'clamp(2rem, 5vw, 3.6rem)', letterSpacing: '-0.03em' }}
-            >
-              בנו מערכת שעובדת<br />
-              <span style={{ color: 'hsl(160,84%,52%)' }}>בשבילכם 24/7</span>
-            </h2>
-            <p className="text-muted-foreground text-lg mb-10 max-w-lg mx-auto">
-              שיחת אפיון קצרה ובחינם — נבין יחד מה הכי נכון לעסק שלך
-            </p>
-            <button onClick={openPopup} className="cta-gradient group text-lg px-10 py-5">
-              בדיקת התאמה לעסק
-              <ArrowLeft className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-            </button>
-          </div>
-        </div>
-      </div>
-
       <div ref={ref} style={style} className="container py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 md:gap-8">
           {/* Brand */}
