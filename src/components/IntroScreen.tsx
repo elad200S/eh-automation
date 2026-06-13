@@ -173,10 +173,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
   // Sprite sheet animation — 8 frames at 10fps
   useEffect(() => {
-    if (!inFire) { setFireFrame(0); return; }
+    const active = phase === 'fire' || phase === 'polish' || phase === 'exit';
+    if (!active) { setFireFrame(0); return; }
     const id = setInterval(() => setFireFrame(f => (f + 1) % 8), 100);
     return () => clearInterval(id);
-  }, [inFire]);
+  }, [phase]);
 
   // Phase chain
   useEffect(() => {
