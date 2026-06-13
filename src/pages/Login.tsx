@@ -18,7 +18,7 @@ const Login = () => {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
 
     if (error) {
-      setError('אימייל או סיסמה שגויים. נסה שוב.');
+      setError(error.message);
       setLoading(false);
     } else {
       navigate('/portal');
