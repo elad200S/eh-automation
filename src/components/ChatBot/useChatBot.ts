@@ -1,4 +1,42 @@
-import { useState, useCallback, useRef, useEffect } from 'react';
+import { useState, useCallback, useRef, useEffect, type MutableRefObject } from 'react';
+
+const SUPABASE_CHAT_URL = 'https://wotfxbniypocfsgpawak.supabase.co/functions/v1/chat';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6IndvdGZ4Ym5peXBvY2ZzZ3Bhd2FrIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEzNjUyNzQsImV4cCI6MjA5Njk0MTI3NH0._fL3RSiTsq6XoOPIAKw-FnMRFVYskCNxolefjEUelec';
+
+async function fetchAIResponse(history: { role: string; content: string }[]): Promise<string> {
+  try {
+    const res = await fetch(SUPABASE_CHAT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_ANON_KEY,
+        'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+      },
+      body: JSON.stringify({ messages: history }),
+    });
+
+    if (!res.ok || !res.body) return 'משהו השתבש. נסה שוב.';
+
+    const reader = res.body.getReader();
+    const decoder = new TextDecoder();
+    let result = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      for (const line of decoder.decode(value, { stream: true }).split('\n')) {
+        if (!line.startsWith('data: ') || line.includes('[DONE]')) continue;
+        try {
+          const json = JSON.parse(line.slice(6));
+          result += json.choices?.[0]?.delta?.content ?? '';
+        } catch { /* skip */ }
+      }
+    }
+    return result.trim() || 'אלעד יחזור אליך בהקדם.';
+  } catch {
+    return 'משהו השתבש. נסה שוב.';
+  }
+}
 
 export interface Message {
   id: string;
@@ -123,7 +161,8 @@ const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', '
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
 export function useChatBot(currentPath: string = '/') {
-  const [messages, setMessages] = useState<Message[]>([makeInitialMessage(currentPath)]);
+  const initialMsg = makeInitialMessage(currentPath);
+  const [messages, setMessages] = useState<Message[]>([initialMsg]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
@@ -131,6 +170,11 @@ export function useChatBot(currentPath: string = '/') {
 
   // Track where we are in the script per topic
   const scriptStateRef = useRef<{ topic: string; stepIndex: number } | null>(null);
+
+  // Full conversation history for AI
+  const aiHistoryRef = useRef<{ role: string; content: string }[]>([
+    { role: 'assistant', content: initialMsg.content },
+  ]);
   const nudgeTimerRef = useRef<number | null>(null);
 
   // Nudge timer
@@ -155,9 +199,11 @@ export function useChatBot(currentPath: string = '/') {
   }, [hasBeenOpened, showNudge]);
 
   const resetChat = useCallback(() => {
-    setMessages([makeInitialMessage(currentPath)]);
+    const msg = makeInitialMessage(currentPath);
+    setMessages([msg]);
     setIsLoading(false);
     scriptStateRef.current = null;
+    aiHistoryRef.current = [{ role: 'assistant', content: msg.content }];
   }, [currentPath]);
 
   const isResetCommand = useCallback((text: string): boolean => {
@@ -185,7 +231,15 @@ export function useChatBot(currentPath: string = '/') {
     });
   }, []);
 
-  const sendMessage = useCallback((text: string) => {
+  const deliverAI = useCallback(async () => {
+    setIsLoading(true);
+    const reply = await fetchAIResponse(aiHistoryRef.current);
+    aiHistoryRef.current.push({ role: 'assistant', content: reply });
+    setMessages(prev => [...prev, { id: `ai-${Date.now()}`, role: 'assistant', content: reply }]);
+    setIsLoading(false);
+  }, []);
+
+  const sendMessage = useCallback(async (text: string) => {
     const trimmedText = text.trim();
     if (!trimmedText || isLoading) return;
 
@@ -195,44 +249,34 @@ export function useChatBot(currentPath: string = '/') {
     }
 
     // Add user message
-    const userMessage: Message = {
-      id: `user-${Date.now()}`,
-      role: 'user',
-      content: trimmedText,
-    };
+    const userMessage: Message = { id: `user-${Date.now()}`, role: 'user', content: trimmedText };
     setMessages(prev => [...prev, userMessage]);
+    aiHistoryRef.current.push({ role: 'user', content: trimmedText });
 
-    // Determine next script step
     const state = scriptStateRef.current;
 
     if (!state) {
-      // First message — look up topic in script
       const topic = Object.keys(SCRIPT).find(k => k === trimmedText);
       if (topic) {
         const step = SCRIPT[topic][0];
         scriptStateRef.current = { topic, stepIndex: 0 };
+        step.botMessages.forEach(m => aiHistoryRef.current.push({ role: 'assistant', content: m }));
         deliverBotMessages(step.botMessages, {
           quickReplies: step.quickReplies,
           showLeadForm: step.showLeadForm,
           showWhatsApp: step.showWhatsApp,
         });
       } else {
-        // Free-text input on first message — use fallback
-        scriptStateRef.current = { topic: '__fallback__', stepIndex: 0 };
-        deliverBotMessages(FALLBACK_STEP.botMessages, {
-          showLeadForm: FALLBACK_STEP.showLeadForm,
-          showWhatsApp: FALLBACK_STEP.showWhatsApp,
-        });
+        scriptStateRef.current = { topic: '__ai__', stepIndex: 0 };
+        await deliverAI();
       }
       return;
     }
 
-    // Subsequent messages — advance script
     const { topic, stepIndex } = state;
 
-    if (topic === '__fallback__') {
-      // Already showed fallback — just show closing message
-      deliverBotMessages(['מעולה! אלעד יחזור אליך בהקדם 👍']);
+    if (topic === '__ai__' || topic === '__fallback__') {
+      await deliverAI();
       return;
     }
 
@@ -242,16 +286,18 @@ export function useChatBot(currentPath: string = '/') {
     if (nextIndex < steps.length) {
       scriptStateRef.current = { topic, stepIndex: nextIndex };
       const step = steps[nextIndex];
+      step.botMessages.forEach(m => aiHistoryRef.current.push({ role: 'assistant', content: m }));
       deliverBotMessages(step.botMessages, {
         quickReplies: step.quickReplies,
         showLeadForm: step.showLeadForm,
         showWhatsApp: step.showWhatsApp,
       });
     } else {
-      // End of script
-      deliverBotMessages(['תודה! אלעד יחזור אליך בהקדם 👍']);
+      // Script done — switch to AI
+      scriptStateRef.current = { topic: '__ai__', stepIndex: 0 };
+      await deliverAI();
     }
-  }, [isLoading, isResetCommand, resetChat, deliverBotMessages]);
+  }, [isLoading, isResetCommand, resetChat, deliverBotMessages, deliverAI]);
 
   const toggleOpen = useCallback(() => {
     setIsOpen(prev => {
