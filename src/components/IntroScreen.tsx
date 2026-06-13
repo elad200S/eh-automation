@@ -20,19 +20,6 @@ const FORMATION = [
 const SQ  = 44; // square px
 const GAP = 5;
 
-// Draw a bezier-curve flame shape (organic, not a circle)
-function drawFlame(
-  ctx: CanvasRenderingContext2D,
-  bx: number, by: number,
-  w: number, h: number, lean: number,
-) {
-  const hw = w * 0.5;
-  ctx.beginPath();
-  ctx.moveTo(bx - hw, by);
-  ctx.bezierCurveTo(bx - hw, by - h * 0.3, bx - hw * 0.3 + lean * 0.6, by - h * 0.75, bx + lean, by - h);
-  ctx.bezierCurveTo(bx + hw * 0.3 + lean * 0.6, by - h * 0.75, bx + hw, by - h * 0.3, bx + hw, by);
-  ctx.closePath();
-}
 
 interface IntroScreenProps { onComplete: () => void; }
 
@@ -59,9 +46,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     const ctx = c.getContext('2d')!;
     const CX = W / 2, CY = H / 2;
 
-    // Fire ring radius (encircles the 3×3 logo grid)
-    const RING_R = Math.min(W, H) * 0.20;
-
     // Ambient particles (always visible)
     const pts = Array.from({ length: 38 }, () => ({
       x: Math.random() * W, y: Math.random() * H,
@@ -73,21 +57,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     type Sp = { x: number; y: number; vx: number; vy: number; life: number };
     const sparks: Sp[] = [];
 
-    // Bezier flames (fire ring phase)
-    type Fl = {
-      x: number; y: number; vx: number; vy: number;
-      life: number; w: number; h: number; lean: number; hue: number;
-      angle: number;
-    };
-    const fls: Fl[] = [];
-    let ff = 0; // flame frame counter
-
     let t0 = 0, raf = 0;
 
     const tick = (ts: number) => {
       if (!t0) t0 = ts;
       const t = (ts - t0) / 1000;
-      ff++;
 
       ctx.clearRect(0, 0, W, H);
 
@@ -179,106 +153,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       }
       ctx.globalAlpha = 1;
 
-      // ── Scenes 3-4 — Green fire RING around logo ───────────────
-      const ph = phaseRef.current;
-      if (ph === 'fire' || ph === 'polish') {
-        const fireAge  = Math.max(0, t - 0.9);
-        const hueShift = Math.min(fireAge / 1.6, 1);
-        const intensity = ph === 'polish'
-          ? Math.max(0, 1 - (t - 2.5) / 0.85)
-          : Math.min(fireAge / 0.55, 1);
-
-        // ── Ring core: outer glow → mid → white-hot edge ──────────
-        ctx.save();
-        // Outermost soft halo
-        ctx.shadowColor = '#0BB870';
-        ctx.shadowBlur  = 55 * intensity;
-        ctx.strokeStyle = `rgba(11,184,112,${0.12 * intensity})`;
-        ctx.lineWidth   = 38;
-        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
-
-        // Mid glow
-        ctx.shadowBlur  = 28 * intensity;
-        ctx.strokeStyle = `rgba(34,201,160,${0.42 * intensity})`;
-        ctx.lineWidth   = 16;
-        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
-
-        // Bright inner band
-        ctx.shadowBlur  = 14 * intensity;
-        ctx.strokeStyle = `rgba(79,224,196,${0.75 * intensity})`;
-        ctx.lineWidth   = 6;
-        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
-
-        // White-hot core line
-        ctx.shadowBlur  = 8 * intensity;
-        ctx.strokeStyle = `rgba(220,255,245,${0.92 * intensity})`;
-        ctx.lineWidth   = 2;
-        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
-        ctx.restore();
-
-        // ── Spawn organic flames along the ring ────────────────────
-        if (ff % 2 === 0 && intensity > 0.04) {
-          const density = Math.round(11 * intensity);
-          for (let k = 0; k < density; k++) {
-            const ang   = Math.random() * Math.PI * 2;
-            const sx    = CX + Math.cos(ang) * RING_R;
-            const sy    = CY + Math.sin(ang) * RING_R;
-            const baseH = 100 + hueShift * 35;           // 100(yellow-green) → 135(green)
-            const spd   = Math.random() * 2.4 + 1.4;
-            fls.push({
-              x: sx, y: sy,
-              vx: Math.cos(ang) * spd,
-              vy: Math.sin(ang) * spd,
-              life: 1,
-              w:    Math.random() * 18 + 8,
-              h:    Math.random() * 62 + 34,
-              lean: (Math.random() - 0.5) * 8,
-              hue:  baseH + (Math.random() - 0.5) * 24,
-              angle: ang,
-            });
-          }
-        }
-
-        // ── Update + draw flames (rotated radially outward) ────────
-        for (let k = fls.length - 1; k >= 0; k--) {
-          const f = fls[k];
-          f.x += f.vx; f.y += f.vy;
-          f.vx *= 0.975; f.vy *= 0.975;
-          f.vx += (Math.random() - 0.5) * 0.20;
-          f.h  *= 0.992; f.w *= 0.997;
-          f.life -= 1 / (0.48 * 60);
-          if (f.life <= 0) { fls.splice(k, 1); continue; }
-
-          const pct = f.life;
-          const lit = 55;
-
-          ctx.save();
-          ctx.translate(f.x, f.y);
-          ctx.rotate(f.angle + Math.PI / 2); // align flame tip to radial direction
-          ctx.globalAlpha = pct * 0.78 * intensity;
-          drawFlame(ctx, 0, 0, f.w, f.h * pct, f.lean);
-          const fg = ctx.createLinearGradient(0, 0, f.lean * 0.3, -f.h);
-          fg.addColorStop(0,    `hsla(${f.hue},100%,${lit + 18}%,1)`);
-          fg.addColorStop(0.3,  `hsla(${f.hue},100%,${lit}%,0.88)`);
-          fg.addColorStop(0.68, `hsla(${f.hue},90%,${lit - 12}%,0.42)`);
-          fg.addColorStop(1,    `hsla(${f.hue},80%,${lit - 22}%,0)`);
-          ctx.fillStyle = fg; ctx.fill();
-          ctx.restore();
-        }
-
-        // ── Floor reflection beneath the ring ─────────────────────
-        const reflY  = CY + RING_R;
-        const reflH  = RING_R * 0.35;
-        const reflGr = ctx.createLinearGradient(CX, reflY, CX, reflY + reflH);
-        reflGr.addColorStop(0, `rgba(11,184,112,${0.28 * intensity})`);
-        reflGr.addColorStop(1, 'rgba(11,184,112,0)');
-        ctx.fillStyle = reflGr;
-        ctx.beginPath();
-        ctx.ellipse(CX, reflY, RING_R * 0.9, reflH * 0.5, 0, 0, Math.PI * 2);
-        ctx.fill();
-      }
-
       // Persistent center glow (fades after fire)
+      const ph = phaseRef.current;
       if (ph !== 'ball') {
         const ga = ph === 'impact' ? 0.14 : ph === 'fire' ? 0.09 : 0.05;
         const cg = ctx.createRadialGradient(CX, CY, 0, CX, CY, 165);
@@ -334,8 +210,22 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         opacity: 0.042,
       }} />
 
-      {/* Canvas — energy ball, shockwave, bezier flames */}
+      {/* Canvas — energy ball, shockwave */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
+
+      {/* Fire ring image — appears when ball lands */}
+      <motion.div
+        className="absolute inset-0 z-[15] flex items-center justify-center pointer-events-none"
+        initial={{ opacity: 0, scale: 0.7 }}
+        animate={inFire ? { opacity: phase === 'exit' ? 0 : 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
+        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      >
+        <img
+          src="/ChatGPT Image Jun 13, 2026, 02_28_07 PM.png"
+          alt=""
+          style={{ width: 'min(520px, 82vw)', height: 'min(520px, 82vw)', objectFit: 'contain' }}
+        />
+      </motion.div>
 
       {/* Logo container — centered, GSAP moves it in scene 6 */}
       <div
