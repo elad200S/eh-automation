@@ -36,6 +36,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   };
 
   const [removed, setRemoved] = useState(false);
+  const [fireFrame, setFireFrame] = useState(0);
 
   // ── Canvas: energy ball → shockwave → green fire (frames 1/2/3) ──
   useEffect(() => {
@@ -170,6 +171,13 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     return () => cancelAnimationFrame(raf);
   }, []);
 
+  // Sprite sheet animation — 8 frames at 10fps
+  useEffect(() => {
+    if (!inFire) { setFireFrame(0); return; }
+    const id = setInterval(() => setFireFrame(f => (f + 1) % 8), 100);
+    return () => clearInterval(id);
+  }, [inFire]);
+
   // Phase chain
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
@@ -213,18 +221,21 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       {/* Canvas — energy ball, shockwave */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
 
-      {/* Fire ring image — appears when ball lands */}
+      {/* Fire ring sprite animation — 4×2 grid, 8 frames at 10fps */}
       <motion.div
         className="absolute inset-0 z-[15] flex items-center justify-center pointer-events-none"
         initial={{ opacity: 0, scale: 0.7 }}
         animate={inFire ? { opacity: phase === 'exit' ? 0 : 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
-        <img
-          src="/fire-ring.png"
-          alt=""
-          style={{ width: 'min(520px, 82vw)', height: 'min(520px, 82vw)', objectFit: 'contain' }}
-        />
+        <div style={{
+          width:               'min(520px, 82vw)',
+          height:              'min(520px, 82vw)',
+          backgroundImage:     'url(/fire-ring-sprite.png)',
+          backgroundSize:      '400% 200%',
+          backgroundPosition:  `${(fireFrame % 4) * (100 / 3)}% ${Math.floor(fireFrame / 4) * 100}%`,
+          backgroundRepeat:    'no-repeat',
+        }} />
       </motion.div>
 
       {/* Logo container — centered, GSAP moves it in scene 6 */}
