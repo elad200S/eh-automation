@@ -17,6 +17,7 @@ import { HelmetProvider } from "react-helmet-async";
 import ScrollToTop from "@/components/ScrollToTop";
 import { ContactPopupProvider } from "@/contexts/ContactPopupContext";
 import { EngagementProvider } from "@/contexts/EngagementContext";
+import { AuthProvider } from "@/contexts/AuthContext";
 import ContactPopup from "@/components/ContactPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
@@ -42,6 +43,8 @@ const BlogMarketingAutomation = lazy(() => import("./pages/blog/MarketingAutomat
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Login = lazy(() => import("./pages/Login"));
+const Portal = lazy(() => import("./pages/Portal"));
 
 // Solutions sub-pages
 const SolutionAIAgents = lazy(() => import("./pages/solutions/AIAgentsSolution"));
@@ -117,6 +120,8 @@ const RoutesWithTransition = () => {
           <Route path="/privacy" element={<PrivacyPolicy />} />
           <Route path="/cookies" element={<CookiePolicy />} />
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/portal" element={<Portal />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
@@ -204,6 +209,7 @@ const App = () => {
   return (
     <HelmetProvider>
       <QueryClientProvider client={queryClient}>
+        <AuthProvider>
         <ContactPopupProvider>
           <EngagementProvider>
             <TooltipProvider>
@@ -216,6 +222,7 @@ const App = () => {
             </TooltipProvider>
           </EngagementProvider>
         </ContactPopupProvider>
+        </AuthProvider>
       </QueryClientProvider>
     </HelmetProvider>
   );
