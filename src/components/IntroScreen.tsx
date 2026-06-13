@@ -236,6 +236,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           backgroundSize:      '400% 200%',
           backgroundPosition:  `${(fireFrame % 4) * (100 / 3)}% ${Math.floor(fireFrame / 4) * 100}%`,
           backgroundRepeat:    'no-repeat',
+          mixBlendMode:        'screen',
         }} />
       </motion.div>
 
