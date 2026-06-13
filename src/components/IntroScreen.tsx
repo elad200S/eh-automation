@@ -59,9 +59,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     const ctx = c.getContext('2d')!;
     const CX = W / 2, CY = H / 2;
 
-    // Logo area bottom (flames spawn here, rise upward)
-    const FIRE_Y = CY + 95;
-    const FIRE_W = 260;
+    // Fire ring radius (encircles the 3×3 logo grid)
+    const RING_R = Math.min(W, H) * 0.20;
 
     // Ambient particles (always visible)
     const pts = Array.from({ length: 38 }, () => ({
@@ -74,10 +73,11 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
     type Sp = { x: number; y: number; vx: number; vy: number; life: number };
     const sparks: Sp[] = [];
 
-    // Bezier flames (fire phase — frame 3 style)
+    // Bezier flames (fire ring phase)
     type Fl = {
       x: number; y: number; vx: number; vy: number;
       life: number; w: number; h: number; lean: number; hue: number;
+      angle: number;
     };
     const fls: Fl[] = [];
     let ff = 0; // flame frame counter
@@ -179,53 +179,86 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       }
       ctx.globalAlpha = 1;
 
-      // ── Scenes 3-4 — Green fire around logo (frames 3 → 5) ─────
+      // ── Scenes 3-4 — Green fire RING around logo ───────────────
       const ph = phaseRef.current;
       if (ph === 'fire' || ph === 'polish') {
-        const fireAge   = Math.max(0, t - 0.9);
-        // Amber → green colour shift over 1.6s
-        const hueShift  = Math.min(fireAge / 1.6, 1);
-        // Intensity: ramp up → full → die down in polish
+        const fireAge  = Math.max(0, t - 0.9);
+        const hueShift = Math.min(fireAge / 1.6, 1);
         const intensity = ph === 'polish'
           ? Math.max(0, 1 - (t - 2.5) / 0.85)
           : Math.min(fireAge / 0.55, 1);
 
-        // Spawn bezier flames (frame 3 style organic fire)
+        // ── Ring core: outer glow → mid → white-hot edge ──────────
+        ctx.save();
+        // Outermost soft halo
+        ctx.shadowColor = '#0BB870';
+        ctx.shadowBlur  = 55 * intensity;
+        ctx.strokeStyle = `rgba(11,184,112,${0.12 * intensity})`;
+        ctx.lineWidth   = 38;
+        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
+
+        // Mid glow
+        ctx.shadowBlur  = 28 * intensity;
+        ctx.strokeStyle = `rgba(34,201,160,${0.42 * intensity})`;
+        ctx.lineWidth   = 16;
+        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
+
+        // Bright inner band
+        ctx.shadowBlur  = 14 * intensity;
+        ctx.strokeStyle = `rgba(79,224,196,${0.75 * intensity})`;
+        ctx.lineWidth   = 6;
+        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
+
+        // White-hot core line
+        ctx.shadowBlur  = 8 * intensity;
+        ctx.strokeStyle = `rgba(220,255,245,${0.92 * intensity})`;
+        ctx.lineWidth   = 2;
+        ctx.beginPath(); ctx.arc(CX, CY, RING_R, 0, Math.PI * 2); ctx.stroke();
+        ctx.restore();
+
+        // ── Spawn organic flames along the ring ────────────────────
         if (ff % 2 === 0 && intensity > 0.04) {
-          const density = Math.round(9 * intensity);
+          const density = Math.round(11 * intensity);
           for (let k = 0; k < density; k++) {
-            const sx    = CX - FIRE_W / 2 + Math.random() * FIRE_W;
-            const baseH = 30 + hueShift * 125;           // 30(amber) → 155(green)
+            const ang   = Math.random() * Math.PI * 2;
+            const sx    = CX + Math.cos(ang) * RING_R;
+            const sy    = CY + Math.sin(ang) * RING_R;
+            const baseH = 100 + hueShift * 35;           // 100(yellow-green) → 135(green)
+            const spd   = Math.random() * 2.4 + 1.4;
             fls.push({
-              x: sx, y: FIRE_Y,
-              vx: (Math.random() - 0.5) * 0.9,
-              vy: -(Math.random() * 3.0 + 2.2),
+              x: sx, y: sy,
+              vx: Math.cos(ang) * spd,
+              vy: Math.sin(ang) * spd,
               life: 1,
-              w:    Math.random() * 20 + 9,
-              h:    Math.random() * 60 + 38,
-              lean: (Math.random() - 0.5) * 9,
-              hue:  baseH + (Math.random() - 0.5) * 28,
+              w:    Math.random() * 18 + 8,
+              h:    Math.random() * 62 + 34,
+              lean: (Math.random() - 0.5) * 8,
+              hue:  baseH + (Math.random() - 0.5) * 24,
+              angle: ang,
             });
           }
         }
 
-        // Update + draw flames
+        // ── Update + draw flames (rotated radially outward) ────────
         for (let k = fls.length - 1; k >= 0; k--) {
           const f = fls[k];
           f.x += f.vx; f.y += f.vy;
-          f.vy -= 0.045; f.vx += (Math.random() - 0.5) * 0.22;
-          f.h  *= 0.993; f.w *= 0.997;
-          f.life -= 1 / (0.5 * 60);
+          f.vx *= 0.975; f.vy *= 0.975;
+          f.vx += (Math.random() - 0.5) * 0.20;
+          f.h  *= 0.992; f.w *= 0.997;
+          f.life -= 1 / (0.48 * 60);
           if (f.life <= 0) { fls.splice(k, 1); continue; }
 
           const pct = f.life;
-          const lit = f.hue > 100 ? 55 : 62;
+          const lit = 55;
 
           ctx.save();
-          ctx.globalAlpha = pct * 0.75 * intensity;
-          drawFlame(ctx, f.x, f.y, f.w, f.h * pct, f.lean);
-          const fg = ctx.createLinearGradient(f.x, f.y, f.x + f.lean * 0.3, f.y - f.h);
-          fg.addColorStop(0,    `hsla(${f.hue},100%,${lit + 15}%,1)`);
+          ctx.translate(f.x, f.y);
+          ctx.rotate(f.angle + Math.PI / 2); // align flame tip to radial direction
+          ctx.globalAlpha = pct * 0.78 * intensity;
+          drawFlame(ctx, 0, 0, f.w, f.h * pct, f.lean);
+          const fg = ctx.createLinearGradient(0, 0, f.lean * 0.3, -f.h);
+          fg.addColorStop(0,    `hsla(${f.hue},100%,${lit + 18}%,1)`);
           fg.addColorStop(0.3,  `hsla(${f.hue},100%,${lit}%,0.88)`);
           fg.addColorStop(0.68, `hsla(${f.hue},90%,${lit - 12}%,0.42)`);
           fg.addColorStop(1,    `hsla(${f.hue},80%,${lit - 22}%,0)`);
@@ -233,13 +266,16 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
           ctx.restore();
         }
 
-        // Ground embers glow
-        const eHue = 30 + hueShift * 125;
-        const eg   = ctx.createRadialGradient(CX, FIRE_Y, 0, CX, FIRE_Y, FIRE_W * 0.75);
-        eg.addColorStop(0, `hsla(${eHue},90%,52%,${0.28 * intensity})`);
-        eg.addColorStop(1, 'rgba(11,184,112,0)');
-        ctx.fillStyle = eg;
-        ctx.beginPath(); ctx.arc(CX, FIRE_Y, FIRE_W * 0.75, 0, Math.PI * 2); ctx.fill();
+        // ── Floor reflection beneath the ring ─────────────────────
+        const reflY  = CY + RING_R;
+        const reflH  = RING_R * 0.35;
+        const reflGr = ctx.createLinearGradient(CX, reflY, CX, reflY + reflH);
+        reflGr.addColorStop(0, `rgba(11,184,112,${0.28 * intensity})`);
+        reflGr.addColorStop(1, 'rgba(11,184,112,0)');
+        ctx.fillStyle = reflGr;
+        ctx.beginPath();
+        ctx.ellipse(CX, reflY, RING_R * 0.9, reflH * 0.5, 0, 0, Math.PI * 2);
+        ctx.fill();
       }
 
       // Persistent center glow (fades after fire)
