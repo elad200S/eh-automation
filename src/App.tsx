@@ -158,15 +158,20 @@ const AppInner = () => {
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
+              background: '#050B0D',
             }}>
-              <div style={{
-                width: 36,
-                height: 36,
-                borderRadius: '50%',
-                border: '3px solid rgba(16,185,129,0.2)',
-                borderTopColor: 'hsl(160,84%,39%)',
-                animation: 'spin 0.7s linear infinite',
-              }} />
+              <span style={{
+                fontFamily:    '"IBM Plex Mono", monospace',
+                fontWeight:    400,
+                fontSize:      'clamp(13px, 2vw, 22px)',
+                letterSpacing: '0.28em',
+                textTransform: 'uppercase',
+                color:         '#4FE0C4',
+                textShadow:    '0 0 14px rgba(11,184,112,0.9), 0 0 30px rgba(11,184,112,0.4)',
+                animation:     'eh-pulse 1.4s ease-in-out infinite',
+              }}>
+                loading
+              </span>
             </div>
           }>
             <RoutesWithTransition />
