@@ -45,6 +45,7 @@ const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
 const Login = lazy(() => import("./pages/Login"));
 const Portal = lazy(() => import("./pages/Portal"));
+const AuthCallback = lazy(() => import("./pages/AuthCallback"));
 
 // Solutions sub-pages
 const SolutionAIAgents = lazy(() => import("./pages/solutions/AIAgentsSolution"));
@@ -122,6 +123,7 @@ const RoutesWithTransition = () => {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
           <Route path="/portal" element={<Portal />} />
+          <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </motion.div>
@@ -203,11 +205,11 @@ const DelayedLoading = () => {
 
 const App = () => {
   const [showIntro, setShowIntro] = useState(() => {
-    const skip = ['/login', '/portal', '/dashboard'];
+    const skip = ['/login', '/portal', '/dashboard', '/auth'];
     return !skip.some(r => window.location.pathname.startsWith(r));
   });
   const [introDone, setIntroDone] = useState(() => {
-    const skip = ['/login', '/portal', '/dashboard'];
+    const skip = ['/login', '/portal', '/dashboard', '/auth'];
     return skip.some(r => window.location.pathname.startsWith(r));
   });
 
