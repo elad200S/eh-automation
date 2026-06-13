@@ -8,7 +8,7 @@ import CookieConsent from "@/components/CookieConsent";
 import Navbar from "@/components/Navbar";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useState, lazy, Suspense } from "react";
+import { useState, useEffect, lazy, Suspense } from "react";
 // Note: gsap + ScrollTrigger kept for Lenis sync only
 import Lenis from "lenis";
 import { AnimatePresence, motion } from "framer-motion";
@@ -152,28 +152,7 @@ const AppInner = () => {
       >
         <Navbar />
         <div>
-          <Suspense fallback={
-            <div style={{
-              minHeight: '100vh',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              background: '#050B0D',
-            }}>
-              <span style={{
-                fontFamily:    '"IBM Plex Mono", monospace',
-                fontWeight:    400,
-                fontSize:      'clamp(13px, 2vw, 22px)',
-                letterSpacing: '0.28em',
-                textTransform: 'uppercase',
-                color:         '#4FE0C4',
-                textShadow:    '0 0 14px rgba(11,184,112,0.9), 0 0 30px rgba(11,184,112,0.4)',
-                animation:     'eh-pulse 1.4s ease-in-out infinite',
-              }}>
-                loading
-              </span>
-            </div>
-          }>
+          <Suspense fallback={<DelayedLoading />}>
             <RoutesWithTransition />
           </Suspense>
         </div>
@@ -195,6 +174,31 @@ const detectReload = (): boolean => {
     }
   } catch { /* ignore */ }
   return false;
+};
+
+const DelayedLoading = () => {
+  const [show, setShow] = useState(false);
+  useEffect(() => {
+    const t = setTimeout(() => setShow(true), 4000);
+    return () => clearTimeout(t);
+  }, []);
+  if (!show) return null;
+  return (
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#050B0D' }}>
+      <span style={{
+        fontFamily: '"IBM Plex Mono", monospace',
+        fontWeight: 400,
+        fontSize: 'clamp(13px, 2vw, 22px)',
+        letterSpacing: '0.28em',
+        textTransform: 'uppercase',
+        color: '#4FE0C4',
+        textShadow: '0 0 14px rgba(11,184,112,0.9), 0 0 30px rgba(11,184,112,0.4)',
+        animation: 'eh-pulse 1.4s ease-in-out infinite',
+      }}>
+        loading
+      </span>
+    </div>
+  );
 };
 
 const App = () => {
