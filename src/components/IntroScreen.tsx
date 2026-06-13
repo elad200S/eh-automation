@@ -221,7 +221,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       >
         <img
-          src="/ChatGPT Image Jun 13, 2026, 02_28_07 PM.png"
+          src="/fire-ring.png"
           alt=""
           style={{ width: 'min(520px, 82vw)', height: 'min(520px, 82vw)', objectFit: 'contain' }}
         />
