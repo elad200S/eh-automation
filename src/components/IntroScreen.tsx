@@ -175,7 +175,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   useEffect(() => {
     const active = phase === 'fire' || phase === 'polish' || phase === 'exit';
     if (!active) { setFireFrame(0); return; }
-    const id = setInterval(() => setFireFrame(f => (f + 1) % 8), 100);
+    const id = setInterval(() => setFireFrame(f => (f + 1) % 8), 150);
     return () => clearInterval(id);
   }, [phase]);
 
