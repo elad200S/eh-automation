@@ -202,8 +202,14 @@ const DelayedLoading = () => {
 };
 
 const App = () => {
-  const [showIntro, setShowIntro] = useState(true);
-  const [introDone, setIntroDone] = useState(false);
+  const [showIntro, setShowIntro] = useState(() => {
+    const skip = ['/login', '/portal', '/dashboard'];
+    return !skip.some(r => window.location.pathname.startsWith(r));
+  });
+  const [introDone, setIntroDone] = useState(() => {
+    const skip = ['/login', '/portal', '/dashboard'];
+    return skip.some(r => window.location.pathname.startsWith(r));
+  });
 
   const handleIntroComplete = () => {
     setShowIntro(false);
