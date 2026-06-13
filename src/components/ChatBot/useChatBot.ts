@@ -10,14 +10,42 @@ export interface Message {
   showWhatsApp?: boolean;
 }
 
+// ─── Page context ─────────────────────────────────────────────────────────────
+
+const PAGE_GREETINGS: { prefix: string; greeting: string }[] = [
+  { prefix: '/blog/5-automation-processes',   greeting: 'קראת על תהליכי אוטומציה — יש לך תהליך שרוצה לאוטמט?' },
+  { prefix: '/blog/ai-agent-for-business',    greeting: 'קראת על סוכני AI — רוצה להבין מה מתאים לעסק שלך ספציפית?' },
+  { prefix: '/blog/how-to-choose-crm',        greeting: 'קראת על בחירת CRM — אני יכול לעזור לך לבחור את המתאים לך.' },
+  { prefix: '/blog/whatsapp-automation',      greeting: 'קראת על WhatsApp אוטומציה — יש שאלה על ההגדרה?' },
+  { prefix: '/blog/lead-follow-up',           greeting: 'קראת על מעקב לידים — רוצה לראות איך זה עובד בפועל?' },
+  { prefix: '/blog/',                         greeting: 'קראת מאמרים שלנו? יש שאלה על משהו ספציפי?' },
+  { prefix: '/solutions/ai-agents',           greeting: 'מתעניין בסוכני AI? אספר לך מה מתאים לעסק שלך ספציפית.' },
+  { prefix: '/solutions/whatsapp-automation', greeting: 'רוצה להפוך את WhatsApp לכלי מכירות אוטומטי? ספר לי על העסק.' },
+  { prefix: '/solutions/crm-automation',      greeting: 'CRM זה לב העסק — אני אעזור לך להבין איזה מערכת מתאימה לך.' },
+  { prefix: '/solutions/',                    greeting: 'אוטומציה עסקית יכולה לחסוך שעות בשבוע — על מה אתה רוצה לדעת?' },
+  { prefix: '/about',                         greeting: 'יש לך שאלות עלינו? אשמח לעזור.' },
+  { prefix: '/contact',                       greeting: 'יצרת קשר? אני כאן אם יש שאלות בינתיים.' },
+];
+
+function getGreeting(path: string): string {
+  for (const { prefix, greeting } of PAGE_GREETINGS) {
+    if (path.startsWith(prefix)) return greeting;
+  }
+  return 'היי! ספר לי על העסק שלך — ואני אגיד לך מה אפשר לאוטמט ולחסוך.';
+}
+
+function makeInitialMessage(path: string): Message {
+  return {
+    id: 'welcome',
+    role: 'assistant',
+    content: getGreeting(path),
+    showQuickReplies: true,
+  };
+}
+
 // ─── Script ───────────────────────────────────────────────────────────────────
 
-const INITIAL_MESSAGE: Message = {
-  id: 'welcome',
-  role: 'assistant',
-  content: 'היי! ספר לי על העסק שלך — ואני אגיד לך מה אפשר לאוטמט ולחסוך.',
-  showQuickReplies: true,
-};
+const INITIAL_MESSAGE: Message = makeInitialMessage('/');
 
 type Step = {
   botMessages: string[];
@@ -94,8 +122,8 @@ const RESET_PHRASES = ['שיחה חדשה', 'התחל מחדש', 'איפוס', '
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
-export function useChatBot() {
-  const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
+export function useChatBot(currentPath: string = '/') {
+  const [messages, setMessages] = useState<Message[]>([makeInitialMessage(currentPath)]);
   const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [hasBeenOpened, setHasBeenOpened] = useState(false);
@@ -127,10 +155,10 @@ export function useChatBot() {
   }, [hasBeenOpened, showNudge]);
 
   const resetChat = useCallback(() => {
-    setMessages([INITIAL_MESSAGE]);
+    setMessages([makeInitialMessage(currentPath)]);
     setIsLoading(false);
     scriptStateRef.current = null;
-  }, []);
+  }, [currentPath]);
 
   const isResetCommand = useCallback((text: string): boolean => {
     const normalized = text.trim().toLowerCase();

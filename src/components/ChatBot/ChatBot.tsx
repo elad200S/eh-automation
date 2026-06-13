@@ -1,10 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { X } from 'lucide-react';
+import { useLocation } from 'react-router-dom';
 import { useChatBot } from './useChatBot';
 import ChatWindow from './ChatWindow';
 import ChatChoiceModal from './ChatChoiceModal';
 import ProactiveBubble from './ProactiveBubble';
 import { useEngagement } from '@/contexts/EngagementContext';
+
+const HIDDEN_ROUTES = ['/login', '/portal', '/dashboard', '/auth'];
 
 const PROACTIVE_MSG = 'היי 👋\nרוצה לראות איזה אוטומציות יכולות לעבוד בעסק שלך?';
 const QUICK_REPLIES = ['כן, תראה לי', 'יש לי שאלה'];
@@ -17,7 +20,10 @@ const POPUP_ID_PROACTIVE = 'proactive-bubble';
 const POPUP_ID_CHOICE = 'choice-modal';
 
 const ChatBot = () => {
-  const { messages, isLoading, isOpen, hasBeenOpened, sendMessage, toggleOpen, openChat, maxInputLength } = useChatBot();
+  const { pathname } = useLocation();
+  if (HIDDEN_ROUTES.some(r => pathname.startsWith(r))) return null;
+
+  const { messages, isLoading, isOpen, hasBeenOpened, sendMessage, toggleOpen, openChat, maxInputLength } = useChatBot(pathname);
   const { isAnyPopupOpen, hasInteracted, registerPopup, unregisterPopup, markInteracted, wasShown, markShown } = useEngagement();
 
   const [showAnimation, setShowAnimation] = useState(false);
