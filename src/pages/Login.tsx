@@ -23,7 +23,7 @@ const Login = () => {
     const normalizedEmail = email.trim().toLowerCase();
     const expectedCode    = ACCESS_CODES[normalizedEmail];
 
-    if (!expectedCode || code.trim() !== expectedCode) {
+    if (!expectedCode || code.trim().toUpperCase() !== expectedCode.toUpperCase()) {
       setError('אימייל או קוד גישה שגויים.');
       setLoading(false);
       return;
@@ -61,13 +61,13 @@ const Login = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-foreground mb-2">קוד גישה</label>
+              <label className="block text-sm font-medium text-foreground mb-2">סיסמה</label>
               <input
                 type="password"
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
-                placeholder="הקוד שקיבלת"
+                placeholder="הסיסמה שלך"
                 className="w-full px-4 py-3 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all"
               />
             </div>
