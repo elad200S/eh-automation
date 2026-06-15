@@ -85,6 +85,14 @@ const pageVariants: import('framer-motion').Variants = {
   exit:    { opacity: 0, transition: { duration: 0.22, ease: 'easeIn' } },
 };
 
+const ADMIN_ROUTES = ['/login', '/portal', '/dashboard', '/auth'];
+
+const NavbarWrapper = () => {
+  const { pathname } = useLocation();
+  if (ADMIN_ROUTES.some(r => pathname.startsWith(r))) return null;
+  return <Navbar />;
+};
+
 const RoutesWithTransition = () => {
   const location = useLocation();
 
@@ -152,7 +160,7 @@ const AppInner = () => {
           </div>
         }
       >
-        <Navbar />
+        <NavbarWrapper />
         <div>
           <Suspense fallback={<DelayedLoading />}>
             <RoutesWithTransition />
