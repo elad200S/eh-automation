@@ -4,9 +4,9 @@ import ParticleField from '@/components/ParticleField';
 import ScrollOrb from '@/components/ScrollOrb';
 import HeroSection from '@/components/sections/HeroSection';
 import ProblemSection from '@/components/sections/ProblemSection';
+import CinematicReveal from '@/components/CinematicReveal';
 
 const ProcessSection = lazy(() => import('@/components/sections/ProcessSection'));
-
 const DemoVideoSection = lazy(() => import('@/components/sections/DemoVideoSection'));
 const AutomationShowcaseSection = lazy(() => import('@/components/sections/AutomationShowcaseSection'));
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
@@ -26,25 +26,29 @@ const Index = () => {
         path="/"
       />
       <OrganizationSchema />
-      
+
       <ParticleField />
       <ScrollOrb />
       <main className="relative z-10 bg-transparent min-h-screen">
+
+        {/* Hero — has its own entrance animation */}
         <HeroSection />
-        <ProblemSection />
+
+        <CinematicReveal index={1}><ProblemSection /></CinematicReveal>
+
         <Suspense fallback={null}>
-          <ProcessSection />
-          
-          <DemoVideoSection />
-          <AutomationShowcaseSection />
-          <ToolsSection />
-          <AutomationAnimation />
-          <SolutionsOverviewSection />
-          <AboutSection />
-          <FAQSection />
-          <ContactSection />
+          <CinematicReveal index={2}><ProcessSection /></CinematicReveal>
+          <CinematicReveal index={3}><DemoVideoSection /></CinematicReveal>
+          <CinematicReveal index={4}><AutomationShowcaseSection /></CinematicReveal>
+          <CinematicReveal index={5}><ToolsSection /></CinematicReveal>
+          <CinematicReveal index={6}><AutomationAnimation /></CinematicReveal>
+          <CinematicReveal index={7}><SolutionsOverviewSection /></CinematicReveal>
+          <CinematicReveal index={8}><AboutSection /></CinematicReveal>
+          <CinematicReveal index={9}><FAQSection /></CinematicReveal>
+          <CinematicReveal index={10}><ContactSection /></CinematicReveal>
           <Footer />
         </Suspense>
+
       </main>
     </>
   );
