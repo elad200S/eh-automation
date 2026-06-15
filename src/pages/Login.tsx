@@ -6,6 +6,7 @@ import { saveSession } from '@/contexts/AuthContext';
 const ACCESS_CODES: Record<string, string> = {
   'elad200226@gmail.com': 'EH2026',
   'eladauto66@gmail.com':  'EH2026',
+  'test@client.com':       'TEST123',
 };
 
 const Login = () => {
