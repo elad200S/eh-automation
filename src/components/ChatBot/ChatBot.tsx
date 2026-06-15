@@ -135,6 +135,8 @@ const ChatBot = () => {
     setTimeout(() => sendMessage(text), 300);
   }, [openChat, sendMessage, unregisterPopup, markInteracted]);
 
+  if (isHidden) return null;
+
   return (
     <>
       {isOpen && (
