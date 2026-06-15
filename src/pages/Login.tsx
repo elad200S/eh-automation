@@ -16,7 +16,7 @@ const Login = () => {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: 'https://eh-automation.lovable.app/auth/callback',
+        emailRedirectTo: 'https://eh-automation-4t6izxeg3-elad200s-projects.vercel.app/auth/callback',
       },
     });
 
