@@ -21,6 +21,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 import ContactPopup from "@/components/ContactPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
+import CinematicLayer from "@/components/CinematicLayer";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
@@ -160,6 +161,7 @@ const AppInner = () => {
           </div>
         }
       >
+        <CinematicLayer />
         <NavbarWrapper />
         <div>
           <Suspense fallback={<DelayedLoading />}>
