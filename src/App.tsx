@@ -22,6 +22,7 @@ import ContactPopup from "@/components/ContactPopup";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import IntroScreen, { INTRO_STORAGE_KEY } from "@/components/IntroScreen";
 import CinematicLayer from "@/components/CinematicLayer";
+import AmbientBackground from "@/components/AmbientBackground";
 import Index from "./pages/Index";
 
 // Lazy-loaded pages
@@ -161,6 +162,7 @@ const AppInner = () => {
           </div>
         }
       >
+        <AmbientBackground />
         <CinematicLayer />
         <NavbarWrapper />
         <div>
