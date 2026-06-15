@@ -1,30 +1,31 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
-import { LogOut, FileText, Bot, TrendingUp, Calendar, Users, PhoneCall, CheckCircle, Clock, XCircle, Plus } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
+import { LogOut, FileText, Bot, Calendar, Users, PhoneCall, CheckCircle, Clock } from 'lucide-react';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
 type LeadStatus = 'חדש' | 'נוצר קשר' | 'סגור' | 'לא רלוונטי';
-type Lead = { id: number; name: string; phone: string; source: string; date: string; status: LeadStatus };
+type Lead = {
+  id: string;
+  name: string;
+  phone: string;
+  source: string;
+  status: LeadStatus;
+  created_at: string;
+};
 
 type ClientStatus = 'בביצוע' | 'ממתין ללקוח' | 'הושלם';
-type Client = { id: number; name: string; project: string; status: ClientStatus; nextDelivery: string; paid: boolean };
-
-// ── Mock data (replace with Supabase queries later) ───────────────────────────
-
-const MOCK_LEADS: Lead[] = [
-  { id: 1, name: 'דוד לוי', phone: '054-1234567', source: 'בוט', date: '13/06/2026', status: 'חדש' },
-  { id: 2, name: 'מיכל כהן', phone: '050-9876543', source: 'טופס יצירת קשר', date: '11/06/2026', status: 'נוצר קשר' },
-  { id: 3, name: 'יוסי אברהם', phone: '052-5551234', source: 'בוט', date: '08/06/2026', status: 'סגור' },
-  { id: 4, name: 'רחל גולן', phone: '053-7778899', source: 'טופס יצירת קשר', date: '05/06/2026', status: 'לא רלוונטי' },
-];
-
-const MOCK_CLIENTS: Client[] = [
-  { id: 1, name: 'עסק א׳ — קליניקת שיניים', project: 'אוטומציית WhatsApp + CRM', status: 'בביצוע', nextDelivery: '20/06/2026', paid: true },
-  { id: 2, name: 'עסק ב׳ — סוכנות נדל"ן', project: 'מעקב לידים אוטומטי', status: 'ממתין ללקוח', nextDelivery: '25/06/2026', paid: false },
-  { id: 3, name: 'עסק ג׳ — יועץ עסקי', project: 'דשבורד + דוחות', status: 'הושלם', nextDelivery: '—', paid: true },
-];
+type Client = {
+  id: string;
+  name: string;
+  email: string | null;
+  project: string;
+  status: ClientStatus;
+  next_delivery: string | null;
+  paid: boolean;
+};
 
 // ── Status badges ──────────────────────────────────────────────────────────────
 
@@ -39,6 +40,12 @@ const CLIENT_STATUS_STYLE: Record<ClientStatus, string> = {
   'בביצוע':          'bg-primary/10 text-primary border-primary/20',
   'ממתין ללקוח':    'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
   'הושלם':           'bg-muted/50 text-muted-foreground border-border',
+};
+
+const formatDate = (iso: string | null) => {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  return `${String(d.getDate()).padStart(2,'0')}/${String(d.getMonth()+1).padStart(2,'0')}/${d.getFullYear()}`;
 };
 
 // ── Portal ─────────────────────────────────────────────────────────────────────
@@ -66,7 +73,7 @@ const Portal = () => {
 
   if (!user) return null;
 
-  const isEHAutomation = user.email === 'eladauto66@gmail.com' || user.email === 'elad200226@gmail.com';
+  const isAdmin = user.email === 'eladauto66@gmail.com' || user.email === 'elad200226@gmail.com';
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
@@ -75,7 +82,7 @@ const Portal = () => {
           <div className="flex items-center gap-3">
             <img src="/logo-eh.png" alt="EH Automation" className="h-8" />
             <div>
-              <div className="text-sm font-semibold text-foreground">פאנל {isEHAutomation ? 'ניהול' : 'לקוח'}</div>
+              <div className="text-sm font-semibold text-foreground">פאנל {isAdmin ? 'ניהול' : 'לקוח'}</div>
               <div className="text-xs text-muted-foreground">{user.email}</div>
             </div>
           </div>
@@ -92,26 +99,24 @@ const Portal = () => {
       <main className="max-w-6xl mx-auto px-6 py-10">
         <div className="mb-10">
           <h1 className="text-3xl font-bold text-foreground mb-2">
-            שלום{isEHAutomation ? ', אלעד' : ''} 👋
+            שלום{isAdmin ? ', אלעד' : ''} 👋
           </h1>
           <p className="text-muted-foreground">הפאנל האישי שלך — כל המידע במקום אחד.</p>
         </div>
 
-        {isEHAutomation ? <EHAutomationPortal /> : <DefaultPortal />}
+        {isAdmin ? <AdminPortal /> : <ClientPortal email={user.email} />}
       </main>
     </div>
   );
 };
 
-// ── EH Automation full portal ──────────────────────────────────────────────────
+// ── Admin portal ───────────────────────────────────────────────────────────────
 
-const EHAutomationPortal = () => {
+const AdminPortal = () => {
   const [activeTab, setActiveTab] = useState<'overview' | 'leads' | 'clients'>('overview');
 
   return (
     <div className="space-y-6">
-
-      {/* Tab nav */}
       <div className="flex gap-2 border-b border-border pb-0">
         {([
           { key: 'overview', label: 'סקירה כללית' },
@@ -141,77 +146,98 @@ const EHAutomationPortal = () => {
 
 // ── Overview tab ───────────────────────────────────────────────────────────────
 
-const OverviewTab = () => (
-  <div className="space-y-8">
+const OverviewTab = () => {
+  const [counts, setCounts] = useState({ leads: 0, clients: 0 });
 
-    {/* Stats */}
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {[
-        { label: 'מאמרים פעילים',    value: '11',     icon: FileText,   color: 'text-primary' },
-        { label: 'סוכנים פעילים',    value: '4',      icon: Bot,        color: 'text-primary' },
-        { label: 'לידים החודש',       value: '4',      icon: PhoneCall,  color: 'text-blue-400' },
-        { label: 'לקוחות פעילים',    value: '2',      icon: Users,      color: 'text-yellow-400' },
-      ].map(s => (
-        <div key={s.label} className="bg-muted/30 border border-border rounded-xl p-5">
-          <s.icon className={`w-5 h-5 ${s.color} mb-3`} />
-          <div className={`text-2xl font-bold ${s.color} mb-1`}>{s.value}</div>
-          <div className="text-xs text-muted-foreground">{s.label}</div>
-        </div>
-      ))}
-    </div>
+  useEffect(() => {
+    Promise.all([
+      supabase.from('eh_leads').select('id', { count: 'exact', head: true }),
+      supabase.from('eh_clients').select('id', { count: 'exact', head: true }).neq('status', 'הושלם'),
+    ]).then(([l, c]) => {
+      setCounts({ leads: l.count ?? 0, clients: c.count ?? 0 });
+    });
+  }, []);
 
-    {/* Quick links */}
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <Link to="/dashboard" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
-        <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">פאנל ניהול תוכן</div>
-        <div className="text-sm text-muted-foreground">תוכנית עבודה, מאמרים וסוכנים</div>
-        <div className="text-primary text-sm mt-4">פתח ←</div>
-      </Link>
-      <a href="https://claude.ai/code/routines" target="_blank" rel="noopener noreferrer" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
-        <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">סוכני פרסום</div>
-        <div className="text-sm text-muted-foreground">ניהול 4 הסוכנים האוטומטיים</div>
-        <div className="text-primary text-sm mt-4">פתח ←</div>
-      </a>
-      <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
-        <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">Google Search Console</div>
-        <div className="text-sm text-muted-foreground">מעקב חיפושים וביצועי SEO</div>
-        <div className="text-primary text-sm mt-4">פתח ←</div>
-      </a>
-    </div>
-
-    {/* Next articles */}
-    <div className="bg-muted/30 border border-border rounded-xl p-6">
-      <h2 className="text-lg font-bold text-foreground mb-4">מאמרים הבאים בתור</h2>
-      <div className="space-y-2">
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
         {[
-          { date: '16/06', title: 'אוטומציה לנדל"ן' },
-          { date: '25/06', title: 'AI לעסק קטן' },
-          { date: '01/07', title: 'אוטומציה לקליניקות' },
-          { date: '08/07', title: 'Chatbot לאתר עסקי' },
-        ].map(a => (
-          <div key={a.date} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
-            <div className="flex items-center gap-3">
-              <span className="text-xs text-muted-foreground w-12">{a.date}</span>
-              <span className="text-sm text-foreground">{a.title}</span>
-            </div>
-            <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">🤖 סוכן</span>
+          { label: 'מאמרים פעילים',  value: '11',              icon: FileText,  color: 'text-primary' },
+          { label: 'סוכנים פעילים',  value: '4',               icon: Bot,       color: 'text-primary' },
+          { label: 'לידים החודש',     value: String(counts.leads),   icon: PhoneCall, color: 'text-blue-400' },
+          { label: 'לקוחות פעילים',  value: String(counts.clients), icon: Users,     color: 'text-yellow-400' },
+        ].map(s => (
+          <div key={s.label} className="bg-muted/30 border border-border rounded-xl p-5">
+            <s.icon className={`w-5 h-5 ${s.color} mb-3`} />
+            <div className={`text-2xl font-bold ${s.color} mb-1`}>{s.value}</div>
+            <div className="text-xs text-muted-foreground">{s.label}</div>
           </div>
         ))}
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Link to="/dashboard" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
+          <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">פאנל ניהול תוכן</div>
+          <div className="text-sm text-muted-foreground">תוכנית עבודה, מאמרים וסוכנים</div>
+          <div className="text-primary text-sm mt-4">פתח ←</div>
+        </Link>
+        <a href="https://claude.ai/code/routines" target="_blank" rel="noopener noreferrer" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
+          <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">סוכני פרסום</div>
+          <div className="text-sm text-muted-foreground">ניהול 4 הסוכנים האוטומטיים</div>
+          <div className="text-primary text-sm mt-4">פתח ←</div>
+        </a>
+        <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" className="group bg-muted/20 border border-border hover:border-primary/50 rounded-xl p-6 transition-all">
+          <div className="text-lg font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">Google Search Console</div>
+          <div className="text-sm text-muted-foreground">מעקב חיפושים וביצועי SEO</div>
+          <div className="text-primary text-sm mt-4">פתח ←</div>
+        </a>
+      </div>
+
+      <div className="bg-muted/30 border border-border rounded-xl p-6">
+        <h2 className="text-lg font-bold text-foreground mb-4">מאמרים הבאים בתור</h2>
+        <div className="space-y-2">
+          {[
+            { date: '16/06', title: 'אוטומציה לנדל"ן' },
+            { date: '25/06', title: 'AI לעסק קטן' },
+            { date: '01/07', title: 'אוטומציה לקליניקות' },
+            { date: '08/07', title: 'Chatbot לאתר עסקי' },
+          ].map(a => (
+            <div key={a.date} className="flex items-center justify-between py-2 border-b border-border/50 last:border-0">
+              <div className="flex items-center gap-3">
+                <span className="text-xs text-muted-foreground w-12">{a.date}</span>
+                <span className="text-sm text-foreground">{a.title}</span>
+              </div>
+              <span className="text-xs text-primary bg-primary/10 px-2 py-1 rounded-full">🤖 סוכן</span>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
-  </div>
-);
+  );
+};
 
 // ── Leads tab ──────────────────────────────────────────────────────────────────
 
 const LeadsTab = () => {
-  const [leads, setLeads] = useState<Lead[]>(MOCK_LEADS);
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const updateStatus = (id: number, status: LeadStatus) => {
+  useEffect(() => {
+    supabase.from('eh_leads').select('*').order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setLeads(data as Lead[]);
+        setLoading(false);
+      });
+  }, []);
+
+  const updateStatus = async (id: string, status: LeadStatus) => {
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+    await supabase.from('eh_leads').update({ status }).eq('id', id);
   };
 
   const newCount = leads.filter(l => l.status === 'חדש').length;
+
+  if (loading) return <div className="text-muted-foreground text-sm">טוען לידים...</div>;
 
   return (
     <div className="space-y-4">
@@ -224,38 +250,42 @@ const LeadsTab = () => {
         </div>
       </div>
 
-      <div className="space-y-3">
-        {leads.map(lead => (
-          <div key={lead.id} className="bg-muted/20 border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4">
-            <div className="flex-1 space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground text-sm">{lead.name}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full border ${LEAD_STATUS_STYLE[lead.status]}`}>{lead.status}</span>
+      {leads.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground text-sm">אין לידים עדיין</div>
+      ) : (
+        <div className="space-y-3">
+          {leads.map(lead => (
+            <div key={lead.id} className="bg-muted/20 border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-foreground text-sm">{lead.name}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full border ${LEAD_STATUS_STYLE[lead.status]}`}>{lead.status}</span>
+                </div>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>{lead.phone}</span>
+                  <span>מקור: {lead.source}</span>
+                  <span>{formatDate(lead.created_at)}</span>
+                </div>
               </div>
-              <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                <span>{lead.phone}</span>
-                <span>מקור: {lead.source}</span>
-                <span>{lead.date}</span>
+              <div className="flex gap-2 flex-wrap">
+                {(['חדש', 'נוצר קשר', 'סגור', 'לא רלוונטי'] as LeadStatus[]).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => updateStatus(lead.id, s)}
+                    className={`text-xs px-3 py-1 rounded-full border transition-all ${
+                      lead.status === s
+                        ? LEAD_STATUS_STYLE[s]
+                        : 'border-border text-muted-foreground hover:border-primary/50'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
               </div>
             </div>
-            <div className="flex gap-2 flex-wrap">
-              {(['חדש', 'נוצר קשר', 'סגור', 'לא רלוונטי'] as LeadStatus[]).map(s => (
-                <button
-                  key={s}
-                  onClick={() => updateStatus(lead.id, s)}
-                  className={`text-xs px-3 py-1 rounded-full border transition-all ${
-                    lead.status === s
-                      ? LEAD_STATUS_STYLE[s]
-                      : 'border-border text-muted-foreground hover:border-primary/50'
-                  }`}
-                >
-                  {s}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
@@ -263,7 +293,26 @@ const LeadsTab = () => {
 // ── Clients tab ────────────────────────────────────────────────────────────────
 
 const ClientsTab = () => {
-  const [clients] = useState<Client[]>(MOCK_CLIENTS);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('eh_clients').select('*').order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setClients(data as Client[]);
+        setLoading(false);
+      });
+  }, []);
+
+  const updateStatus = async (id: string, status: ClientStatus) => {
+    setClients(prev => prev.map(c => c.id === id ? { ...c, status } : c));
+    await supabase.from('eh_clients').update({ status }).eq('id', id);
+  };
+
+  const togglePaid = async (id: string, paid: boolean) => {
+    setClients(prev => prev.map(c => c.id === id ? { ...c, paid } : c));
+    await supabase.from('eh_clients').update({ paid }).eq('id', id);
+  };
 
   const statusIcon = (s: ClientStatus) => {
     if (s === 'בביצוע') return <Clock className="w-4 h-4 text-primary" />;
@@ -271,54 +320,135 @@ const ClientsTab = () => {
     return <CheckCircle className="w-4 h-4 text-muted-foreground" />;
   };
 
+  if (loading) return <div className="text-muted-foreground text-sm">טוען לקוחות...</div>;
+
   return (
     <div className="space-y-4">
       <h2 className="text-lg font-bold text-foreground">לקוחות פעילים</h2>
 
-      <div className="space-y-3">
-        {clients.map(client => (
-          <div key={client.id} className="bg-muted/20 border border-border rounded-xl p-5">
-            <div className="flex items-start justify-between gap-4">
-              <div className="space-y-1 flex-1">
-                <div className="flex items-center gap-2">
-                  {statusIcon(client.status)}
-                  <span className="font-semibold text-foreground text-sm">{client.name}</span>
+      {clients.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground text-sm">אין לקוחות עדיין</div>
+      ) : (
+        <div className="space-y-3">
+          {clients.map(client => (
+            <div key={client.id} className="bg-muted/20 border border-border rounded-xl p-5">
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-1 flex-1">
+                  <div className="flex items-center gap-2">
+                    {statusIcon(client.status)}
+                    <span className="font-semibold text-foreground text-sm">{client.name}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground pr-6">{client.project}</p>
+                  {client.email && (
+                    <p className="text-xs text-muted-foreground pr-6">{client.email}</p>
+                  )}
                 </div>
-                <p className="text-xs text-muted-foreground pr-6">{client.project}</p>
+                <div className="flex flex-col items-end gap-2">
+                  <div className="flex gap-1">
+                    {(['בביצוע', 'ממתין ללקוח', 'הושלם'] as ClientStatus[]).map(s => (
+                      <button
+                        key={s}
+                        onClick={() => updateStatus(client.id, s)}
+                        className={`text-xs px-2 py-0.5 rounded-full border transition-all ${
+                          client.status === s
+                            ? CLIENT_STATUS_STYLE[s]
+                            : 'border-border text-muted-foreground hover:border-primary/50'
+                        }`}
+                      >
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => togglePaid(client.id, !client.paid)}
+                    className={`text-xs px-2 py-0.5 rounded-full border transition-all ${
+                      client.paid
+                        ? 'bg-primary/10 text-primary border-primary/20'
+                        : 'bg-red-500/10 text-red-400 border-red-500/20'
+                    }`}
+                  >
+                    {client.paid ? '✓ שולם' : '⏳ ממתין לתשלום'}
+                  </button>
+                </div>
               </div>
-              <div className="flex flex-col items-end gap-2">
-                <span className={`text-xs px-2 py-0.5 rounded-full border ${CLIENT_STATUS_STYLE[client.status]}`}>
-                  {client.status}
-                </span>
-                <span className={`text-xs px-2 py-0.5 rounded-full border ${client.paid ? 'bg-primary/10 text-primary border-primary/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
-                  {client.paid ? '✓ שולם' : '⏳ ממתין לתשלום'}
-                </span>
-              </div>
+              {client.next_delivery && (
+                <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2 text-xs text-muted-foreground">
+                  <Calendar className="w-3 h-3" />
+                  <span>אספקה הבאה: <strong className="text-foreground">{formatDate(client.next_delivery)}</strong></span>
+                </div>
+              )}
             </div>
-            {client.nextDelivery !== '—' && (
-              <div className="mt-3 pt-3 border-t border-border/50 flex items-center gap-2 text-xs text-muted-foreground">
-                <Calendar className="w-3 h-3" />
-                <span>אספקה הבאה: <strong className="text-foreground">{client.nextDelivery}</strong></span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 };
 
-// ── Default client portal ──────────────────────────────────────────────────────
+// ── Client portal (for non-admin users) ───────────────────────────────────────
 
-const DefaultPortal = () => (
-  <div className="bg-muted/20 border border-border rounded-2xl p-10 text-center">
-    <div className="text-4xl mb-4">🚀</div>
-    <h2 className="text-xl font-bold text-foreground mb-3">הפאנל שלך מוכן</h2>
-    <p className="text-muted-foreground mb-6">אנחנו מגדירים את הפאנל האישי שלך. נחזור אליך בקרוב.</p>
-    <a href="mailto:eladauto66@gmail.com" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors text-sm">
-      צור קשר עם EH Automation
-    </a>
-  </div>
-);
+const ClientPortal = ({ email }: { email: string }) => {
+  const [client, setClient] = useState<Client | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('eh_clients').select('*').eq('email', email).single()
+      .then(({ data }) => {
+        if (data) setClient(data as Client);
+        setLoading(false);
+      });
+  }, [email]);
+
+  if (loading) return <div className="text-muted-foreground text-sm">טוען...</div>;
+
+  if (!client) {
+    return (
+      <div className="bg-muted/20 border border-border rounded-2xl p-10 text-center">
+        <div className="text-4xl mb-4">🚀</div>
+        <h2 className="text-xl font-bold text-foreground mb-3">הפאנל שלך מוכן</h2>
+        <p className="text-muted-foreground mb-6">אנחנו מגדירים את הפאנל האישי שלך. נחזור אליך בקרוב.</p>
+        <a href="mailto:eladauto66@gmail.com" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors text-sm">
+          צור קשר עם EH Automation
+        </a>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="bg-muted/20 border border-border rounded-xl p-6">
+        <h2 className="text-lg font-bold text-foreground mb-4">הפרויקט שלך</h2>
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">שם הפרויקט</span>
+            <span className="text-sm font-medium text-foreground">{client.project}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">סטטוס</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full border ${CLIENT_STATUS_STYLE[client.status]}`}>{client.status}</span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-sm text-muted-foreground">תשלום</span>
+            <span className={`text-xs px-2 py-0.5 rounded-full border ${client.paid ? 'bg-primary/10 text-primary border-primary/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+              {client.paid ? '✓ שולם' : '⏳ ממתין לתשלום'}
+            </span>
+          </div>
+          {client.next_delivery && (
+            <div className="flex items-center justify-between">
+              <span className="text-sm text-muted-foreground">אספקה הבאה</span>
+              <span className="text-sm font-medium text-foreground">{formatDate(client.next_delivery)}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="text-center">
+        <a href="mailto:eladauto66@gmail.com" className="text-sm text-primary hover:underline">
+          צור קשר עם EH Automation
+        </a>
+      </div>
+    </div>
+  );
+};
 
 export default Portal;
