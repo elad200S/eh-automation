@@ -77,35 +77,6 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       });
       ctx.globalAlpha = 1;
 
-      // ── Scene 1 — Energy core falls (frame 1) ──────────────────
-      if (t < 0.7) {
-        const ease = 1 - Math.pow(1 - Math.min(t / 0.7, 1), 2.2);
-        const by   = -90 + (CY + 90) * ease;
-
-        // Plasma trail (4 ghost layers — motion blur)
-        for (let k = 4; k >= 1; k--) {
-          const ty = by + k * 22;
-          const tg = ctx.createRadialGradient(CX, ty, 0, CX, ty, 32);
-          tg.addColorStop(0, `rgba(11,184,112,${0.16 / k})`);
-          tg.addColorStop(1, 'rgba(11,184,112,0)');
-          ctx.fillStyle = tg;
-          ctx.beginPath(); ctx.arc(CX, ty, 32, 0, Math.PI * 2); ctx.fill();
-        }
-        // Soft bloom
-        const gA = ctx.createRadialGradient(CX, by, 0, CX, by, 100);
-        gA.addColorStop(0,   'rgba(11,184,112,0.32)');
-        gA.addColorStop(0.5, 'rgba(34,201,160,0.10)');
-        gA.addColorStop(1,   'rgba(11,184,112,0)');
-        ctx.fillStyle = gA; ctx.beginPath(); ctx.arc(CX, by, 100, 0, Math.PI * 2); ctx.fill();
-        // White-hot core
-        const gC = ctx.createRadialGradient(CX, by, 0, CX, by, 22);
-        gC.addColorStop(0,    'rgba(255,255,255,0.98)');
-        gC.addColorStop(0.18, 'rgba(210,255,240,0.95)');
-        gC.addColorStop(0.55, 'rgba(11,184,112,0.90)');
-        gC.addColorStop(1,    'rgba(7,125,115,0)');
-        ctx.fillStyle = gC; ctx.beginPath(); ctx.arc(CX, by, 22, 0, Math.PI * 2); ctx.fill();
-      }
-
       // Trigger impact
       if (t >= 0.7 && phaseRef.current === 'ball') {
         setPhase('impact');
@@ -221,6 +192,28 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
 
       {/* Canvas — energy ball, shockwave */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
+
+      {/* Fire ball — falls from top to center, disappears on impact */}
+      <motion.div
+        className="absolute inset-0 z-[12] flex items-center justify-center pointer-events-none"
+        initial={{ y: '-55vh', opacity: 0, scale: 0.5 }}
+        animate={{
+          y:       0,
+          opacity: inFire ? 0 : 1,
+          scale:   phase === 'impact' ? 1.5 : 1,
+        }}
+        transition={{
+          y:       { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
+          opacity: { duration: 0.25 },
+          scale:   { duration: 0.2 },
+        }}
+      >
+        <img
+          src="/fire-ball.png"
+          alt=""
+          style={{ width: 'clamp(80px, 10vw, 120px)', height: 'clamp(80px, 10vw, 120px)', mixBlendMode: 'screen' }}
+        />
+      </motion.div>
 
       {/* Fire ring sprite animation — 4×2 grid, 8 frames at 10fps */}
       <motion.div
