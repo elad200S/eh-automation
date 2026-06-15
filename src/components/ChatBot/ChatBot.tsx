@@ -21,7 +21,7 @@ const POPUP_ID_CHOICE = 'choice-modal';
 
 const ChatBot = () => {
   const { pathname } = useLocation();
-  if (HIDDEN_ROUTES.some(r => pathname.startsWith(r))) return null;
+  const isHidden = HIDDEN_ROUTES.some(r => pathname.startsWith(r));
 
   const { messages, isLoading, isOpen, hasBeenOpened, sendMessage, toggleOpen, openChat, maxInputLength } = useChatBot(pathname);
   const { isAnyPopupOpen, hasInteracted, registerPopup, unregisterPopup, markInteracted, wasShown, markShown } = useEngagement();
@@ -134,6 +134,8 @@ const ChatBot = () => {
     openChat();
     setTimeout(() => sendMessage(text), 300);
   }, [openChat, sendMessage, unregisterPopup, markInteracted]);
+
+  if (isHidden) return null;
 
   return (
     <>
