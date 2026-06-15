@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { X, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabase';
 const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
 const RATE_LIMIT_KEY = 'eh_contact_last_submit';
@@ -76,6 +77,13 @@ const ContactPopup = () => {
         body: JSON.stringify(payload),
       });
       if (!res.ok) throw new Error(`status ${res.status}`);
+
+      supabase.from('eh_leads').insert({
+        name: formData.name.trim(),
+        phone: normalizePhone(formData.phone),
+        source: 'טופס יצירת קשר',
+        status: 'חדש',
+      }).then(() => {});
 
       localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });

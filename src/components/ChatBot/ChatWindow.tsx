@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import ChatMessage from './ChatMessage';
 import TypingIndicator from './TypingIndicator';
 import type { Message } from './useChatBot';
+import { supabase } from '@/lib/supabase';
 
 const WHATSAPP_NUMBER = '972547108219';
 
@@ -108,6 +109,9 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ full_name: name, phone, form_type: 'chatbot' }),
     }).catch(() => {});
+
+    // Save to Supabase
+    supabase.from('eh_leads').insert({ name, phone, source: 'בוט', status: 'חדש' }).then(() => {});
 
     // Also open WhatsApp with pre-filled message
     const text = encodeURIComponent(`שלום אלעד, שמי ${name}. מספרי ${phone}. דיברתי עם הבוט שלך ואשמח לשמוע עוד!`);
