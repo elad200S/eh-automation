@@ -223,7 +223,7 @@ const LeadsTab = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('eh_leads').select('*').order('created_at', { ascending: false })
+    supabase.from('eh_leads').select('*').is('owner_email', null).order('created_at', { ascending: false })
       .then(({ data }) => {
         if (data) setLeads(data as Lead[]);
         setLoading(false);
@@ -387,9 +387,77 @@ const ClientsTab = () => {
 
 // ── Client portal (for non-admin users) ───────────────────────────────────────
 
+const ClientLeadsTab = ({ email }: { email: string }) => {
+  const [leads, setLeads] = useState<Lead[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.from('eh_leads').select('*').eq('owner_email', email).order('created_at', { ascending: false })
+      .then(({ data }) => {
+        if (data) setLeads(data as Lead[]);
+        setLoading(false);
+      });
+  }, [email]);
+
+  const updateStatus = async (id: string, status: LeadStatus) => {
+    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
+    await supabase.from('eh_leads').update({ status }).eq('id', id);
+  };
+
+  const newCount = leads.filter(l => l.status === 'חדש').length;
+
+  if (loading) return <div className="text-muted-foreground text-sm">טוען לידים...</div>;
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h2 className="text-lg font-bold text-foreground">לידים נכנסים</h2>
+        {newCount > 0 && (
+          <p className="text-xs text-blue-400 mt-0.5">{newCount} לידים חדשים ממתינים לטיפול</p>
+        )}
+      </div>
+      {leads.length === 0 ? (
+        <div className="text-center py-16 text-muted-foreground text-sm">אין לידים עדיין</div>
+      ) : (
+        <div className="space-y-3">
+          {leads.map(lead => (
+            <div key={lead.id} className="bg-muted/20 border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex-1 space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-semibold text-foreground text-sm">{lead.name}</span>
+                  <span className={`text-xs px-2 py-0.5 rounded-full border ${LEAD_STATUS_STYLE[lead.status]}`}>{lead.status}</span>
+                </div>
+                <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                  <span>{lead.phone}</span>
+                  <span>מקור: {lead.source}</span>
+                  <span>{formatDate(lead.created_at)}</span>
+                </div>
+              </div>
+              <div className="flex gap-2 flex-wrap">
+                {(['חדש', 'נוצר קשר', 'סגור', 'לא רלוונטי'] as LeadStatus[]).map(s => (
+                  <button
+                    key={s}
+                    onClick={() => updateStatus(lead.id, s)}
+                    className={`text-xs px-3 py-1 rounded-full border transition-all ${
+                      lead.status === s ? LEAD_STATUS_STYLE[s] : 'border-border text-muted-foreground hover:border-primary/50'
+                    }`}
+                  >
+                    {s}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ClientPortal = ({ email }: { email: string }) => {
   const [client, setClient] = useState<Client | null>(null);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'project' | 'leads'>('project');
 
   useEffect(() => {
     supabase.from('eh_clients').select('*').eq('email', email).single()
@@ -416,37 +484,61 @@ const ClientPortal = ({ email }: { email: string }) => {
 
   return (
     <div className="space-y-6">
-      <div className="bg-muted/20 border border-border rounded-xl p-6">
-        <h2 className="text-lg font-bold text-foreground mb-4">הפרויקט שלך</h2>
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">שם הפרויקט</span>
-            <span className="text-sm font-medium text-foreground">{client.project}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">סטטוס</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full border ${CLIENT_STATUS_STYLE[client.status]}`}>{client.status}</span>
-          </div>
-          <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">תשלום</span>
-            <span className={`text-xs px-2 py-0.5 rounded-full border ${client.paid ? 'bg-primary/10 text-primary border-primary/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
-              {client.paid ? '✓ שולם' : '⏳ ממתין לתשלום'}
-            </span>
-          </div>
-          {client.next_delivery && (
-            <div className="flex items-center justify-between">
-              <span className="text-sm text-muted-foreground">אספקה הבאה</span>
-              <span className="text-sm font-medium text-foreground">{formatDate(client.next_delivery)}</span>
-            </div>
-          )}
-        </div>
+      <div className="flex gap-2 border-b border-border pb-0">
+        {([
+          { key: 'project', label: 'הפרויקט שלי' },
+          { key: 'leads',   label: 'לידים נכנסים' },
+        ] as const).map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => setActiveTab(tab.key)}
+            className={`px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors ${
+              activeTab === tab.key
+                ? 'border-primary text-primary'
+                : 'border-transparent text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      <div className="text-center">
-        <a href="mailto:eladauto66@gmail.com" className="text-sm text-primary hover:underline">
-          צור קשר עם EH Automation
-        </a>
-      </div>
+      {activeTab === 'project' && (
+        <div className="space-y-6">
+          <div className="bg-muted/20 border border-border rounded-xl p-6">
+            <h2 className="text-lg font-bold text-foreground mb-4">הפרויקט שלך</h2>
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">שם הפרויקט</span>
+                <span className="text-sm font-medium text-foreground">{client.project}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">סטטוס</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${CLIENT_STATUS_STYLE[client.status]}`}>{client.status}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-sm text-muted-foreground">תשלום</span>
+                <span className={`text-xs px-2 py-0.5 rounded-full border ${client.paid ? 'bg-primary/10 text-primary border-primary/20' : 'bg-red-500/10 text-red-400 border-red-500/20'}`}>
+                  {client.paid ? '✓ שולם' : '⏳ ממתין לתשלום'}
+                </span>
+              </div>
+              {client.next_delivery && (
+                <div className="flex items-center justify-between">
+                  <span className="text-sm text-muted-foreground">אספקה הבאה</span>
+                  <span className="text-sm font-medium text-foreground">{formatDate(client.next_delivery)}</span>
+                </div>
+              )}
+            </div>
+          </div>
+          <div className="text-center">
+            <a href="mailto:eladauto66@gmail.com" className="text-sm text-primary hover:underline">
+              צור קשר עם EH Automation
+            </a>
+          </div>
+        </div>
+      )}
+
+      {activeTab === 'leads' && <ClientLeadsTab email={email} />}
     </div>
   );
 };
