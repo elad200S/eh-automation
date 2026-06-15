@@ -7,12 +7,14 @@ export interface SimpleUser {
 interface AuthContextType {
   user: SimpleUser | null;
   loading: boolean;
+  login: (user: SimpleUser) => void;
   signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
+  login: () => {},
   signOut: () => {},
 });
 
@@ -30,20 +32,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setLoading(false);
   }, []);
 
+  const login = (newUser: SimpleUser) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(newUser));
+    setUser(newUser);
+  };
+
   const signOut = () => {
     localStorage.removeItem(STORAGE_KEY);
     setUser(null);
   };
 
   return (
-    <AuthContext.Provider value={{ user, loading, signOut }}>
+    <AuthContext.Provider value={{ user, loading, login, signOut }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
-
-export function saveSession(user: SimpleUser) {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(user));
-}

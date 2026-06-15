@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { saveSession } from '@/contexts/AuthContext';
+import { useAuth } from '@/contexts/AuthContext';
 
 // להוסיף לקוח חדש: הוסף שורה עם האימייל וקוד הגישה שלו
 const ACCESS_CODES: Record<string, string> = {
@@ -15,6 +15,7 @@ const Login = () => {
   const [error, setError]       = useState('');
   const [loading, setLoading]   = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +31,7 @@ const Login = () => {
       return;
     }
 
-    saveSession({ email: normalizedEmail });
+    login({ email: normalizedEmail });
     navigate('/portal');
   };
 
@@ -92,6 +93,14 @@ const Login = () => {
 
         <p className="text-center text-xs text-muted-foreground mt-6">
           אין לך קוד גישה? <a href="mailto:eladauto66@gmail.com" className="text-primary hover:underline">צור קשר</a>
+        </p>
+        <p className="text-center text-xs text-muted-foreground mt-2">
+          <a
+            href="mailto:eladauto66@gmail.com?subject=שכחתי סיסמה&body=שלום, שכחתי את סיסמת הכניסה לפאנל. האימייל שלי: "
+            className="text-muted-foreground hover:text-primary transition-colors"
+          >
+            שכחתי סיסמה
+          </a>
         </p>
         <div className="text-center mt-4">
           <Link to="/" className="text-xs text-muted-foreground hover:text-primary transition-colors">
