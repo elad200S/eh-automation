@@ -24,16 +24,16 @@ const AmbientBackground = () => {
     resize();
     window.addEventListener('resize', resize);
 
-    // 5 slow-drifting light orbs
-    const orbs: Orb[] = Array.from({ length: 5 }, (_, i) => ({
+    // 7 slow-drifting light orbs — more visible
+    const orbs: Orb[] = Array.from({ length: 7 }, (_, i) => ({
       x:        W * (0.1 + Math.random() * 0.8),
       y:        H * (0.1 + Math.random() * 0.8),
-      vx:       (Math.random() - 0.5) * 0.28,
-      vy:       (Math.random() - 0.5) * 0.28,
-      r:        Math.min(W, H) * (0.32 + Math.random() * 0.28),
+      vx:       (Math.random() - 0.5) * 0.18,
+      vy:       (Math.random() - 0.5) * 0.18,
+      r:        Math.min(W, H) * (0.40 + Math.random() * 0.30),
       hue:      i % 2 === 0 ? 160 : 185,   // green ↔ teal
       hueSpeed: (Math.random() - 0.5) * 0.04,
-      alpha:    0.055 + Math.random() * 0.04,
+      alpha:    0.14 + Math.random() * 0.09,
     }));
 
     const draw = () => {
