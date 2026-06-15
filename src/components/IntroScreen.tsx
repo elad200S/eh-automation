@@ -7,23 +7,23 @@ export const INTRO_STORAGE_KEY = 'intro_played';
 // 3×3 grid — formation order per brief
 const FORMATION = [
   { row: 0, col: 0, delay: 0.00 },
-  { row: 0, col: 1, delay: 0.10 },
-  { row: 0, col: 2, delay: 0.20 },
-  { row: 1, col: 0, delay: 0.36 },
-  { row: 1, col: 1, delay: 0.50 },
-  { row: 1, col: 2, delay: 0.63 },
-  { row: 2, col: 0, delay: 0.76 },
-  { row: 2, col: 1, delay: 0.87 },
-  { row: 2, col: 2, delay: 0.97 },
+  { row: 0, col: 1, delay: 0.05 },
+  { row: 0, col: 2, delay: 0.10 },
+  { row: 1, col: 0, delay: 0.18 },
+  { row: 1, col: 1, delay: 0.25 },
+  { row: 1, col: 2, delay: 0.32 },
+  { row: 2, col: 0, delay: 0.38 },
+  { row: 2, col: 1, delay: 0.44 },
+  { row: 2, col: 2, delay: 0.49 },
 ];
 
 const SQ  = 44; // square px
 const GAP = 5;
 
 
-interface IntroScreenProps { onComplete: () => void; }
+interface IntroScreenProps { onComplete: () => void; onVisible?: () => void; }
 
-const IntroScreen = ({ onComplete }: IntroScreenProps) => {
+const IntroScreen = ({ onComplete, onVisible }: IntroScreenProps) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const logoRef   = useRef<HTMLDivElement>(null);
 
@@ -153,24 +153,26 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
   // Phase chain
   useEffect(() => {
     let t: ReturnType<typeof setTimeout>;
-    if (phase === 'fire')   t = setTimeout(() => setPhase('polish'), 1600);
-    if (phase === 'polish') t = setTimeout(() => setPhase('exit'),   850);
+    if (phase === 'fire')   t = setTimeout(() => setPhase('polish'), 850);
+    if (phase === 'polish') t = setTimeout(() => setPhase('exit'),   380);
     return () => clearTimeout(t);
   }, [phase]);
 
   // Scene 6 — logo → navbar top-right
   useEffect(() => {
     if (phase !== 'exit') return;
+    onVisible?.(); // show main content immediately as intro exits
     const el = logoRef.current;
     if (!el) return;
     const W = window.innerWidth, H = window.innerHeight;
     gsap.to(el, {
       x: W / 2 - 52, y: -(H / 2 - 24),
       scale: 0.18, opacity: 0,
-      duration: 0.75, ease: 'power2.inOut',
+      duration: 0.45, ease: 'power2.inOut',
       onComplete: () => { setRemoved(true); onComplete(); },
     });
-  }, [phase, onComplete]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [phase]);
 
   if (removed) return null;
 
@@ -262,8 +264,8 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
                   : '0 0 10px rgba(255,140,30,0.55), 0 0 20px rgba(11,184,112,0.35)',
               } : {}}
               transition={{
-                duration: 0.34,
-                delay:    0.9 + delay,
+                duration: 0.32,
+                delay:    0.4 + delay,
                 ease:     [0.22, 1, 0.36, 1],
               }}
               style={{
@@ -283,7 +285,7 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         <motion.div
           initial={{ opacity: 0, y: 8, filter: 'blur(8px)' }}
           animate={inFire ? { opacity: 1, y: 0, filter: 'blur(0px)' } : {}}
-          transition={{ duration: 0.45, delay: 2.05, ease: 'easeOut' }}
+          transition={{ duration: 0.4, delay: 0.65, ease: 'easeOut' }}
           style={{
             marginTop: 18,
             fontFamily:    '"IBM Plex Mono", monospace',

@@ -73,7 +73,7 @@ const ContactSection = () => {
   };
 
   return (
-    <Section id="contact" withSeparator={false} className="bg-background-secondary">
+    <Section id="contact" withSeparator={false}>
       <div className="max-w-2xl mx-auto">
         <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">צור קשר</p>
         <h2 ref={titleRef} style={titleStyle} className="text-4xl md:text-5xl font-bold text-foreground mb-4 text-center">

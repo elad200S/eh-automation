@@ -99,7 +99,7 @@ const HeroSection = () => {
     }
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 1.9 });
+      const tl = gsap.timeline({ delay: 0.15 });
 
       tl.to(orbRef.current,      { opacity: 1, x: 0, duration: 1.4, ease: 'power3.out' }, 0)
         .to(eyebrowRef.current,  { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.4)
@@ -254,7 +254,8 @@ const HeroSection = () => {
       <div
         style={{
           borderTop: '1px solid hsl(220,15%,16%)',
-          background: 'hsl(220,15%,10%)',
+          background: 'hsla(220,15%,10%,0.55)',
+          backdropFilter: 'blur(8px)',
           padding: '11px 0',
           position: 'relative',
           zIndex: 10,

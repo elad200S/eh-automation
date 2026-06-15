@@ -72,7 +72,7 @@ const DemoVideoSection = () => {
   const cursorPos = CURSOR_POS[phase] ?? CURSOR_POS[0];
 
   return (
-    <Section id="demo" className="bg-background">
+    <Section id="demo">
       <div className="max-w-3xl mx-auto" dir="rtl">
         {/* Title */}
         <div className="text-center mb-10">

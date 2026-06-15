@@ -39,7 +39,7 @@ const Index = () => {
         <Suspense fallback={null}>
           <CinematicReveal index={2}><ProcessSection /></CinematicReveal>
           <CinematicReveal index={3}><DemoVideoSection /></CinematicReveal>
-          <CinematicReveal index={4}><AutomationShowcaseSection /></CinematicReveal>
+          <AutomationShowcaseSection />
           <CinematicReveal index={5}><ToolsSection /></CinematicReveal>
           <CinematicReveal index={6}><AutomationAnimation /></CinematicReveal>
           <CinematicReveal index={7}><SolutionsOverviewSection /></CinematicReveal>

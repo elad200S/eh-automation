@@ -104,7 +104,7 @@ const SolutionsOverviewSection = () => {
   }, []);
 
   return (
-    <Section id="solutions-overview" className="bg-background-secondary">
+    <Section id="solutions-overview">
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">

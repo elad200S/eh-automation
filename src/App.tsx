@@ -225,10 +225,8 @@ const App = () => {
     return skip.some(r => window.location.pathname.startsWith(r));
   });
 
-  const handleIntroComplete = () => {
-    setShowIntro(false);
-    setIntroDone(true);
-  };
+  const handleIntroVisible  = () => setIntroDone(true);
+  const handleIntroComplete = () => setShowIntro(false);
 
   return (
     <HelmetProvider>
@@ -237,8 +235,8 @@ const App = () => {
         <ContactPopupProvider>
           <EngagementProvider>
             <TooltipProvider>
-              {showIntro && <IntroScreen onComplete={handleIntroComplete} />}
-              <div style={{ opacity: introDone ? 1 : 0, transition: 'opacity 0.6s ease-out' }}>
+              {showIntro && <IntroScreen onVisible={handleIntroVisible} onComplete={handleIntroComplete} />}
+              <div style={{ opacity: introDone ? 1 : 0, transition: 'opacity 0.3s ease-out' }}>
                 <Toaster />
                 <Sonner />
                 <AppInner />
