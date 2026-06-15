@@ -193,19 +193,19 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
       {/* Canvas — energy ball, shockwave */}
       <canvas ref={canvasRef} className="absolute inset-0 z-10 pointer-events-none" />
 
-      {/* Fire ball — falls from top to center, disappears on impact */}
+      {/* Fire ball — falls to center, then expands into the ring */}
       <motion.div
         className="absolute inset-0 z-[12] flex items-center justify-center pointer-events-none"
         initial={{ y: '-55vh', opacity: 0, scale: 0.5 }}
         animate={{
           y:       0,
-          opacity: inFire ? 0 : 1,
-          scale:   phase === 'impact' ? 1.5 : 1,
+          opacity: phase === 'ball' ? 1 : 0,
+          scale:   phase === 'impact' || inFire ? 6 : 1,
         }}
         transition={{
           y:       { duration: 0.7, ease: [0.22, 1, 0.36, 1] },
-          opacity: { duration: 0.25 },
-          scale:   { duration: 0.2 },
+          opacity: { duration: 0.3 },
+          scale:   { duration: 0.38, ease: [0.2, 0, 0.3, 1] },
         }}
       >
         <img
@@ -215,12 +215,12 @@ const IntroScreen = ({ onComplete }: IntroScreenProps) => {
         />
       </motion.div>
 
-      {/* Fire ring sprite animation — 4×2 grid, 8 frames at 10fps */}
+      {/* Fire ring — fades in as ball expands into it */}
       <motion.div
         className="absolute inset-0 z-[15] flex items-center justify-center pointer-events-none"
-        initial={{ opacity: 0, scale: 0.7 }}
-        animate={inFire ? { opacity: phase === 'exit' ? 0 : 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
-        transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+        initial={{ opacity: 0, scale: 0.85 }}
+        animate={phase !== 'ball' ? { opacity: phase === 'exit' ? 0 : 1, scale: 1 } : { opacity: 0, scale: 0.85 }}
+        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       >
         <div style={{
           width:               'min(520px, 82vw)',
