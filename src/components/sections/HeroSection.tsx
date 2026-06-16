@@ -82,8 +82,7 @@ const HeroSection = () => {
   useLayoutEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lines = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
-    gsap.set(lines, { y: '110%' });
-    gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current], { opacity: 0, y: 32 });
+    gsap.set([...lines, eyebrowRef.current, subtitleRef.current, ctaRef.current], { opacity: 0, y: 32 });
     gsap.set(orbRef.current, { opacity: 0, x: -40 });
   }, []);
 
@@ -93,8 +92,7 @@ const HeroSection = () => {
     const lines   = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
 
     if (reduced) {
-      gsap.set(lines, { y: '0%' });
-      gsap.set([eyebrowRef.current, subtitleRef.current, ctaRef.current, orbRef.current], { opacity: 1, y: 0, x: 0 });
+      gsap.set([...lines, eyebrowRef.current, subtitleRef.current, ctaRef.current, orbRef.current], { opacity: 1, y: 0, x: 0 });
       return;
     }
 
@@ -103,9 +101,9 @@ const HeroSection = () => {
 
       tl.to(orbRef.current,      { opacity: 1, x: 0, duration: 1.4, ease: 'power3.out' }, 0)
         .to(eyebrowRef.current,  { opacity: 1, y: 0, duration: 0.7, ease: 'power2.out' }, 0.4)
-        .to(lines,               { y: '0%', duration: 0.9, stagger: 0.1, ease: 'power3.out' }, 0.6)
+        .to(lines,               { opacity: 1, y: 0, duration: 0.9, stagger: 0.1, ease: 'power3.out' }, 0.6)
         .to(subtitleRef.current, { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.1)
-        .to(ctaRef.current,      { opacity: 1, y: 0, duration: 0.7, ease: 'back.out(1.3)' }, 1.3);
+        .to(ctaRef.current,      { opacity: 1, y: 0, duration: 0.7, ease: 'power3.out' }, 1.3);
 
       // Orb parallax
       gsap.to(orbRef.current, {
@@ -181,7 +179,7 @@ const HeroSection = () => {
               {LINES.map((line, i) => (
                 <span
                   key={i}
-                  className="block overflow-hidden"
+                  className="block"
                   style={{ lineHeight: 1.08, paddingBottom: '0.04em' }}
                 >
                   <span

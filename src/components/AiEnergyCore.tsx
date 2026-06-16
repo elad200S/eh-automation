@@ -63,7 +63,7 @@ const AiEnergyCore = forwardRef<HTMLDivElement>((_, ref) => {
       <div
         ref={mouseRef}
         className="relative w-full h-full"
-        style={{ transformStyle: 'preserve-3d' }}
+        style={{ transformStyle: 'preserve-3d', willChange: 'transform' }}
       >
 
         {/* ── Outer ring — slow CW, dashed ────────── */}
@@ -163,21 +163,21 @@ const AiEnergyCore = forwardRef<HTMLDivElement>((_, ref) => {
         <div
           className="absolute rounded-full flex items-center justify-center"
           style={{
-            width: 140,
-            height: 140,
-            left: CORE_SIZE / 2 - 70,
-            top:  CORE_SIZE / 2 - 70,
-            background: 'radial-gradient(circle at 42% 38%, rgba(6,182,212,0.22), rgba(16,185,129,0.1) 45%, transparent 70%)',
-            boxShadow: '0 0 50px rgba(16,185,129,0.25), 0 0 100px rgba(16,185,129,0.1)',
+            width: 160,
+            height: 160,
+            left: CORE_SIZE / 2 - 80,
+            top:  CORE_SIZE / 2 - 80,
+            background: 'radial-gradient(circle at 42% 38%, rgba(6,182,212,0.28), rgba(16,185,129,0.14) 45%, transparent 70%)',
+            boxShadow: '0 0 70px rgba(16,185,129,0.35), 0 0 140px rgba(16,185,129,0.15), 0 0 200px rgba(6,182,212,0.08)',
             animation: 'corePulse 3.5s ease-in-out infinite',
           }}
         >
           <div style={{
-            width: 48,
-            height: 48,
+            width: 56,
+            height: 56,
             borderRadius: '50%',
-            background: 'radial-gradient(circle, rgba(6,182,212,0.75), rgba(16,185,129,0.55) 50%, transparent)',
-            boxShadow: '0 0 22px rgba(6,182,212,0.55), 0 0 44px rgba(16,185,129,0.3)',
+            background: 'radial-gradient(circle, rgba(6,182,212,0.85), rgba(16,185,129,0.65) 50%, transparent)',
+            boxShadow: '0 0 28px rgba(6,182,212,0.65), 0 0 56px rgba(16,185,129,0.4), 0 0 90px rgba(16,185,129,0.2)',
           }} />
         </div>
 

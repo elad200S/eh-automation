@@ -6,16 +6,14 @@ const corsHeaders = {
 };
 
 // Simple in-memory rate limiter (per IP address)
-// In production, consider using Upstash Redis for distributed rate limiting
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>();
-const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
-const RATE_LIMIT_MAX_REQUESTS = 15; // 15 requests per minute per IP
+const RATE_LIMIT_WINDOW_MS = 60000;
+const RATE_LIMIT_MAX_REQUESTS = 15;
 
 function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
   const now = Date.now();
   const record = rateLimitMap.get(ip);
-  
-  // Clean up old entries periodically (every 100th check)
+
   if (Math.random() < 0.01) {
     for (const [key, value] of rateLimitMap.entries()) {
       if (now > value.resetTime) {
@@ -23,18 +21,17 @@ function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
       }
     }
   }
-  
+
   if (!record || now > record.resetTime) {
-    // New window
     rateLimitMap.set(ip, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
     return { allowed: true };
   }
-  
+
   if (record.count >= RATE_LIMIT_MAX_REQUESTS) {
     const retryAfter = Math.ceil((record.resetTime - now) / 1000);
     return { allowed: false, retryAfter };
   }
-  
+
   record.count++;
   return { allowed: true };
 }
@@ -93,17 +90,15 @@ const ISRAELI_PHONE_REGEX = /0[5-9][0-9]{7,8}/;
 function extractContactDetails(messages: Array<{ role: string; content: string }>): Record<string, string> | null {
   const userMessages = messages.filter(m => m.role === 'user');
   const allUserText = userMessages.map(m => m.content).join(' ');
-  
-  // Extract phone number
+
   const phoneMatch = allUserText.match(ISRAELI_PHONE_REGEX);
-  if (!phoneMatch) return null; // Only send to webhook if we have a phone number
-  
+  if (!phoneMatch) return null;
+
   const payload: Record<string, string> = {
     phone: phoneMatch[0],
     form_type: 'chatbot',
   };
 
-  // Try to extract name - look for common Hebrew patterns like "שמי X" or "קוראים לי X"
   const namePatterns = [
     /(?:שמי|קוראים לי|אני)\s+([א-ת]+(?:\s+[א-ת]+)?)/,
     /(?:my name is|i'm|i am)\s+(\w+(?:\s+\w+)?)/i,
@@ -116,7 +111,6 @@ function extractContactDetails(messages: Array<{ role: string; content: string }
     }
   }
 
-  // Try to extract business type
   const bizPatterns = [
     /(?:עסק של|בתחום|עוסק ב|יש לי|מנהל)\s+([א-ת\w\s]{2,30})/,
   ];
@@ -143,34 +137,88 @@ async function sendToWebhook(payload: Record<string, string>): Promise<void> {
   }
 }
 
+// Transform Anthropic SSE events to OpenAI-compatible SSE format
+function createAnthropicToOpenAITransform(): TransformStream<Uint8Array, Uint8Array> {
+  const encoder = new TextEncoder();
+  const decoder = new TextDecoder();
+  let buffer = '';
+
+  return new TransformStream<Uint8Array, Uint8Array>({
+    transform(chunk, controller) {
+      buffer += decoder.decode(chunk, { stream: true });
+
+      let newlineIndex: number;
+      while ((newlineIndex = buffer.indexOf('\n')) !== -1) {
+        const line = buffer.slice(0, newlineIndex).replace(/\r$/, '');
+        buffer = buffer.slice(newlineIndex + 1);
+
+        if (!line.startsWith('data: ')) continue;
+        const jsonStr = line.slice(6).trim();
+        if (!jsonStr) continue;
+
+        try {
+          const event = JSON.parse(jsonStr);
+          if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+            const text = event.delta.text || '';
+            const openaiChunk = JSON.stringify({ choices: [{ delta: { content: text } }] });
+            controller.enqueue(encoder.encode(`data: ${openaiChunk}\n\n`));
+          } else if (event.type === 'message_stop') {
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+          }
+        } catch {
+          // ignore parse errors on incomplete lines
+        }
+      }
+    },
+    flush(controller) {
+      if (!buffer.trim()) return;
+      for (const raw of buffer.split('\n')) {
+        const line = raw.replace(/\r$/, '');
+        if (!line.startsWith('data: ')) continue;
+        const jsonStr = line.slice(6).trim();
+        if (!jsonStr) continue;
+        try {
+          const event = JSON.parse(jsonStr);
+          if (event.type === 'content_block_delta' && event.delta?.type === 'text_delta') {
+            const text = event.delta.text || '';
+            const openaiChunk = JSON.stringify({ choices: [{ delta: { content: text } }] });
+            controller.enqueue(encoder.encode(`data: ${openaiChunk}\n\n`));
+          } else if (event.type === 'message_stop') {
+            controller.enqueue(encoder.encode('data: [DONE]\n\n'));
+          }
+        } catch { /* ignore */ }
+      }
+    },
+  });
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    // Server-side rate limiting by IP
-    const clientIp = req.headers.get("x-real-ip") || 
-                     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || 
+    const clientIp = req.headers.get("x-real-ip") ||
+                     req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
                      "anonymous";
-    
+
     const rateCheck = checkRateLimit(clientIp);
     if (!rateCheck.allowed) {
       return new Response(
         JSON.stringify({ error: "Rate limit exceeded. Please try again later." }),
-        { 
-          status: 429, 
-          headers: { 
-            ...corsHeaders, 
+        {
+          status: 429,
+          headers: {
+            ...corsHeaders,
             "Content-Type": "application/json",
-            "Retry-After": String(rateCheck.retryAfter || 60)
-          } 
+            "Retry-After": String(rateCheck.retryAfter || 60),
+          },
         }
       );
     }
 
     const { messages } = await req.json();
-    
+
     if (!Array.isArray(messages) || messages.length === 0) {
       return new Response(
         JSON.stringify({ error: "Invalid messages format" }),
@@ -178,48 +226,49 @@ serve(async (req) => {
       );
     }
 
-    // Validate and limit input
     const lastMessage = messages[messages.length - 1];
     if (lastMessage?.content?.length > 1500) {
       lastMessage.content = lastMessage.content.slice(0, 1500);
     }
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) {
-      console.error("LOVABLE_API_KEY is not configured");
+    const ANTHROPIC_API_KEY = Deno.env.get("ANTHROPIC_API_KEY");
+    if (!ANTHROPIC_API_KEY) {
+      console.error("ANTHROPIC_API_KEY is not configured");
       return new Response(
         JSON.stringify({ error: "Service not configured" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Check for buying intent in the last message
     const hasBuyingIntent = lastMessage?.role === 'user' && detectBuyingIntent(lastMessage.content || '');
 
-    // Check if user provided contact details and send to webhook (fire-and-forget)
     const contactDetails = extractContactDetails(messages);
     if (contactDetails) {
       sendToWebhook(contactDetails);
     }
-    
-    // Enhanced system prompt if buying intent detected
+
     let systemPrompt = SYSTEM_PROMPT;
     if (hasBuyingIntent) {
       systemPrompt += "\n\nThe user expressed buying intent or interest. Move toward suggesting a realistic automation direction and encourage scheduling a 15-minute discovery call via WhatsApp: https://wa.link/kw53y2";
     }
 
-    const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    // Only user/assistant roles — system is passed separately
+    const apiMessages = messages
+      .slice(-20)
+      .filter((m: { role: string; content: string }) => m.role === 'user' || m.role === 'assistant')
+      .map((m: { role: string; content: string }) => ({ role: m.role, content: m.content }));
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${LOVABLE_API_KEY}`,
+        "x-api-key": ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-2.0-flash",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages.slice(-20),
-        ],
+        model: "claude-haiku-4-5-20251001",
+        system: systemPrompt,
+        messages: apiMessages,
         stream: true,
         max_tokens: 800,
       }),
@@ -227,7 +276,7 @@ serve(async (req) => {
 
     if (!response.ok) {
       const errorText = await response.text();
-      console.error("AI gateway error:", response.status, errorText);
+      console.error("Anthropic API error:", response.status, errorText);
 
       if (response.status === 429) {
         return new Response(
@@ -235,7 +284,7 @@ serve(async (req) => {
           { status: 429, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
-      
+
       if (response.status === 402) {
         return new Response(
           JSON.stringify({ error: "Payment required" }),
@@ -244,13 +293,15 @@ serve(async (req) => {
       }
 
       return new Response(
-        JSON.stringify({ error: "AI gateway error" }),
+        JSON.stringify({ error: "AI API error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    // Return streaming response
-    return new Response(response.body, {
+    // Pipe Anthropic SSE through transformer → OpenAI-compatible SSE
+    const transformedStream = response.body!.pipeThrough(createAnthropicToOpenAITransform());
+
+    return new Response(transformedStream, {
       headers: { ...corsHeaders, "Content-Type": "text/event-stream" },
     });
 
