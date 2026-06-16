@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState, type Dispatch, type SetStateAction } from 'react';
 import { createPortal } from 'react-dom';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { ChevronDown, Menu, X } from 'lucide-react';
+import { ChevronDown, Menu, X, User } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 import { motion } from 'framer-motion';
@@ -194,11 +194,20 @@ const MobileMenuPortal = ({
 
             <button
               type="button"
+              onClick={() => onNavigate('/login')}
+              className="mt-3 flex min-h-14 items-center justify-center gap-2 rounded-xl border border-border px-4 py-4 text-base text-foreground transition-colors active:bg-muted/50"
+            >
+              <User className="h-5 w-5" />
+              כניסת לקוחות
+            </button>
+
+            <button
+              type="button"
               onClick={() => {
                 onClose();
                 onOpenPopup();
               }}
-              className="mt-3 rounded-full bg-primary px-4 py-4 text-base font-medium text-primary-foreground transition-all active:scale-[0.97]"
+              className="mt-2 rounded-full bg-primary px-4 py-4 text-base font-medium text-primary-foreground transition-all active:scale-[0.97]"
             >
               שיחת אסטרטגיה →
             </button>
@@ -307,6 +316,14 @@ const Navbar = () => {
                 </Link>
               )
             )}
+
+            <Link
+              to="/login"
+              className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground transition-colors"
+            >
+              <User className="h-4 w-4" />
+              כניסת לקוחות
+            </Link>
 
             <motion.div
               className="relative mr-2"
