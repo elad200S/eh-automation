@@ -186,4 +186,32 @@
     <priority>0.75</priority>
   </url>
 
+  <url>
+    <loc>https://ehautomation.co.il/blog/restaurant-automation</loc>
+    <lastmod>2026-08-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://ehautomation.co.il/blog/n8n-guide-israel</loc>
+    <lastmod>2026-08-08</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://ehautomation.co.il/blog/ai-agent-replaces-employee</loc>
+    <lastmod>2026-08-16</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://ehautomation.co.il/blog/events-management-automation</loc>
+    <lastmod>2026-08-25</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
 </urlset>

@@ -46,6 +46,10 @@ const BlogRealEstateAutomation = lazy(() => import("./pages/blog/RealEstateAutom
 const BlogAiForSmallBusiness = lazy(() => import("./pages/blog/AiForSmallBusiness"));
 const BlogClinicAutomation = lazy(() => import("./pages/blog/ClinicAutomation"));
 const BlogWebsiteChatbotGuide = lazy(() => import("./pages/blog/WebsiteChatbotGuide"));
+const BlogRestaurantAutomation = lazy(() => import("./pages/blog/RestaurantAutomation"));
+const BlogN8nGuideIsrael = lazy(() => import("./pages/blog/N8nGuideIsrael"));
+const BlogAiAgentReplacesEmployee = lazy(() => import("./pages/blog/AiAgentReplacesEmployee"));
+const BlogEventsManagementAutomation = lazy(() => import("./pages/blog/EventsManagementAutomation"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -130,6 +134,10 @@ const RoutesWithTransition = () => {
           <Route path="/blog/ai-for-small-business" element={<BlogAiForSmallBusiness />} />
           <Route path="/blog/clinic-automation" element={<BlogClinicAutomation />} />
           <Route path="/blog/website-chatbot-guide" element={<BlogWebsiteChatbotGuide />} />
+          <Route path="/blog/restaurant-automation" element={<BlogRestaurantAutomation />} />
+          <Route path="/blog/n8n-guide-israel" element={<BlogN8nGuideIsrael />} />
+          <Route path="/blog/ai-agent-replaces-employee" element={<BlogAiAgentReplacesEmployee />} />
+          <Route path="/blog/events-management-automation" element={<BlogEventsManagementAutomation />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
