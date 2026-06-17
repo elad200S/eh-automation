@@ -42,6 +42,10 @@ const BlogAppointmentReminderAutomation = lazy(() => import("./pages/blog/Appoin
 const BlogAICustomerService = lazy(() => import("./pages/blog/AICustomerService"));
 const BlogCRMWhatsAppIntegration = lazy(() => import("./pages/blog/CRMWhatsAppIntegration"));
 const BlogMarketingAutomation = lazy(() => import("./pages/blog/MarketingAutomation"));
+const BlogRealEstateAutomation = lazy(() => import("./pages/blog/RealEstateAutomation"));
+const BlogAiForSmallBusiness = lazy(() => import("./pages/blog/AiForSmallBusiness"));
+const BlogClinicAutomation = lazy(() => import("./pages/blog/ClinicAutomation"));
+const BlogWebsiteChatbotGuide = lazy(() => import("./pages/blog/WebsiteChatbotGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -122,6 +126,10 @@ const RoutesWithTransition = () => {
           <Route path="/blog/ai-customer-service" element={<BlogAICustomerService />} />
           <Route path="/blog/crm-whatsapp-integration" element={<BlogCRMWhatsAppIntegration />} />
           <Route path="/blog/marketing-automation" element={<BlogMarketingAutomation />} />
+          <Route path="/blog/real-estate-automation" element={<BlogRealEstateAutomation />} />
+          <Route path="/blog/ai-for-small-business" element={<BlogAiForSmallBusiness />} />
+          <Route path="/blog/clinic-automation" element={<BlogClinicAutomation />} />
+          <Route path="/blog/website-chatbot-guide" element={<BlogWebsiteChatbotGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
