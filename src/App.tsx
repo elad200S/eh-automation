@@ -50,6 +50,10 @@ const BlogRestaurantAutomation = lazy(() => import("./pages/blog/RestaurantAutom
 const BlogN8nGuideIsrael = lazy(() => import("./pages/blog/N8nGuideIsrael"));
 const BlogAiAgentReplacesEmployee = lazy(() => import("./pages/blog/AiAgentReplacesEmployee"));
 const BlogEventsManagementAutomation = lazy(() => import("./pages/blog/EventsManagementAutomation"));
+const BlogAutomationRoiCalculator = lazy(() => import("./pages/blog/AutomationRoiCalculator"));
+const BlogCourseSalesAutomation = lazy(() => import("./pages/blog/CourseSalesAutomation"));
+const BlogWhatsappBusinessApiGuide = lazy(() => import("./pages/blog/WhatsappBusinessApiGuide"));
+const BlogZapierCompleteGuide = lazy(() => import("./pages/blog/ZapierCompleteGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -138,6 +142,10 @@ const RoutesWithTransition = () => {
           <Route path="/blog/n8n-guide-israel" element={<BlogN8nGuideIsrael />} />
           <Route path="/blog/ai-agent-replaces-employee" element={<BlogAiAgentReplacesEmployee />} />
           <Route path="/blog/events-management-automation" element={<BlogEventsManagementAutomation />} />
+          <Route path="/blog/automation-roi-calculator" element={<BlogAutomationRoiCalculator />} />
+          <Route path="/blog/course-sales-automation" element={<BlogCourseSalesAutomation />} />
+          <Route path="/blog/whatsapp-business-api-guide" element={<BlogWhatsappBusinessApiGuide />} />
+          <Route path="/blog/zapier-complete-guide" element={<BlogZapierCompleteGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
