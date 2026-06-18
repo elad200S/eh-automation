@@ -97,7 +97,7 @@ const EventsManagementAutomation = () => {
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-foreground">שלב 3: ניהול תשלומים — לא יותר לשכוח מי שילם</html2>
+              <h2 className="text-2xl font-bold text-foreground">שלב 3: ניהול תשלומים — לא יותר לשכוח מי שילם</h2>
               <p>
                 ניהול תשלומים הוא אחת הבעיות הכי נפוצות בניהול אירועים. לקוחות שמחויבים 3 תשלומים, ספקים שצריכים פריסת תשלומים, ומנהל שצריך לזכור מי שילם, מי לא, ומי צריך להגדיל ערבות — כל זה יכול להפוך לסיוט.
               </p>
