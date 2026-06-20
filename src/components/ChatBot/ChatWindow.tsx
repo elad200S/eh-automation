@@ -111,7 +111,13 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
     }).catch(() => {});
 
     // Save to Supabase
-    supabase.from('eh_leads').insert({ name, phone, source: 'בוט', status: 'חדש' }).then(() => {});
+    supabase.from('contact_submissions').insert({
+      name,
+      phone: phone.replace(/-/g, ''),
+      business: 'בוט אתר',
+      automation_type: 'custom',
+    }).then(({ error }) => { if (error) console.error('DB insert error:', error); });
+
 
     // Also open WhatsApp with pre-filled message
     const text = encodeURIComponent(`שלום אלעד, שמי ${name}. מספרי ${phone}. דיברתי עם הבוט שלך ואשמח לשמוע עוד!`);

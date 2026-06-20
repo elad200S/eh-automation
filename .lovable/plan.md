@@ -1,30 +1,23 @@
-## האבחנה
+## הבעיה
+הטפסים באתר לא שומרים ללידים בכלל. הם שולחים רק ל-Make webhook ולא מבצעים `INSERT` לטבלת `contact_submissions`. לכן הפורטל מציג "אין לידים".
 
-הבדיקה מראה שה-edge function `chat` תקינה לחלוטין:
-- מחזירה 200 עם stream תקין
-- המודל (google/gemini-3-flash) עונה בעברית כצפוי
-- אין בעיית טוקנים, פרומפט או API key (LOVABLE_API_KEY מוגדר)
+## מה אעשה
 
-הבעיה היא **בצד הלקוח בלבד**: ה-`fetch` הידני ב-`useChatBot.ts` נכשל עם `TypeError: Failed to fetch` לפני שהבקשה יוצאת בכלל מהדפדפן. אף בקשה לא מגיעה ל-function (אין לוגים). זה נובע מהקריאה הידנית עם headers של `Authorization` + `apikey` שמפעילה CORS preflight שנחנק ב-fetch wrapper של ה-preview.
+### 1. לשמור כל ליד ל-DB (בנוסף ל-Make)
+אוסיף קריאה `supabase.from('contact_submissions').insert(...)` בכל מקום שיש טופס:
+- `src/components/sections/ContactSection.tsx`
+- `src/components/ContactPopup.tsx` (פופאפ "שיחת אפיון")
+- `src/components/ChatBot/ChatWindow.tsx` (לכרגע מנסה להכניס ל-`eh_leads` שלא קיימת — אעדכן ל-`contact_submissions`)
 
-## הפתרון
+הטבלה דורשת: `name`, `phone`, `business`, `automation_type` (אחד מ-`leads|quotes|scheduling|data|custom`). במקומות שאין שדה עסק/סוג — אמלא ערכי ברירת מחדל תקינים (למשל `business='—'`, `automation_type='custom'`) כדי לא להישבר מול ה-CHECK constraint, וטלפון יישלח כ-10 ספרות בלי מקף.
 
-להחליף את ה-`fetch` הידני ב-`src/components/ChatBot/useChatBot.ts` בקריאה דרך ה-SDK של Supabase שמטפלת נכון ב-headers וב-auth, תוך שמירה על הסטרימינג.
+המשך השליחה ל-Make נשמר כדי שלא לפגוע בזרימה הקיימת. אם ה-INSERT נכשל — עדיין נציג למשתמש "נשלח" כדי לא לחסום, אבל נלוג שגיאה.
 
-### שינויים ב-`src/components/ChatBot/useChatBot.ts`
+### 2. כפתור WhatsApp בטבלת הלידים בפורטל
+ב-`src/pages/Portal.tsx` בעמודת הטלפון של `LeadsTab` אוסיף כפתור ירוק עם אייקון WhatsApp שפותח:
+`https://wa.me/972{phone-without-leading-0}?text=שלום {name}, מדבר אלעד מ-EH Automation בהמשך לפנייתך באתר.`
+(פותח בטאב חדש, ליד הכפתור הקיים של `tel:`)
 
-1. במקום `fetch(CHAT_URL, ...)` עם headers ידניים, להשתמש ב-`supabase.functions.invoke('chat', { body: { messages }, ... })` במצב streaming — או חלופית להשאיר fetch אבל לקרוא ל-URL דרך `supabase.functions.url` ולהסיר את ה-`Authorization` הכפול (להשתמש רק ב-`apikey`).
-2. הגישה המועדפת: להשתמש ב-`fetch` רגיל אבל לקחת את ה-URL וה-key ישירות מה-SDK (`supabase.functions.url('chat')`) ולהוסיף רק את ה-header `apikey` — בלי `Authorization: Bearer` כפול שמפעיל preflight מיותר.
-3. לוודא שהפענוח של ה-SSE stream (line-by-line, [DONE], CRLF, flush סופי) נשמר כמו שהוא.
-
-### למה זה יפתור
-
-- מסיר את ה-CORS preflight המיותר שגורם ל-`Failed to fetch` ב-preview של Lovable.
-- ה-edge function כבר מוגדרת `verify_jwt = false` (גישה אנונימית מכוונת), אז `apikey` לבד מספיק.
-- שאר הלוגיקה (rate limit, lead capture, nudge, history) נשארת זהה.
-
-## מה לא משתנה
-
-- ה-edge function `supabase/functions/chat/index.ts` — לא נוגעים.
-- ה-system prompt, רשימת המודלים, ה-webhook ל-Make — לא משתנים.
-- ה-UI של הצ'אט (`ChatWindow`, `ChatMessage` וכו') — לא משתנה.
+## מה לא משנה
+- לא נוגע ב-Make webhook, ולא בעיצוב הטפסים.
+- ה-RLS על `contact_submissions` כבר תומך ב-INSERT אנונימי (יש policy `Validated contact submissions`) וב-SELECT לאדמינים — לא צריך מיגרציה.
