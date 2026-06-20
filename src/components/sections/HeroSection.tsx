@@ -80,7 +80,6 @@ const HeroSection = () => {
 
   // Set hidden states before paint
   useLayoutEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     const lines = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
     gsap.set([...lines, eyebrowRef.current, subtitleRef.current, ctaRef.current], { opacity: 0, y: 32 });
     gsap.set(orbRef.current, { opacity: 0, x: -40 });
@@ -88,13 +87,7 @@ const HeroSection = () => {
 
   // Entrance + exit animations
   useEffect(() => {
-    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const lines   = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
-
-    if (reduced) {
-      gsap.set([...lines, eyebrowRef.current, subtitleRef.current, ctaRef.current, orbRef.current], { opacity: 1, y: 0, x: 0 });
-      return;
-    }
+    const lines = lineRefs.current.filter(Boolean) as HTMLSpanElement[];
 
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.15 });

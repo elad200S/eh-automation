@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/lib/supabase';
-import { LogOut, FileText, Bot, Calendar, Users, PhoneCall, CheckCircle, Clock } from 'lucide-react';
+import { FileText, Bot, Calendar, Users, PhoneCall, CheckCircle, Clock } from 'lucide-react';
+import { AdminSidebar } from '@/components/AdminSidebar';
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 
@@ -51,17 +52,12 @@ const formatDate = (iso: string | null) => {
 // ── Portal ─────────────────────────────────────────────────────────────────────
 
 const Portal = () => {
-  const { user, loading, signOut } = useAuth();
+  const { user, loading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!loading && !user) navigate('/login');
   }, [user, loading, navigate]);
-
-  const handleSignOut = async () => {
-    await signOut();
-    navigate('/login');
-  };
 
   if (loading) {
     return (
@@ -77,34 +73,19 @@ const Portal = () => {
 
   return (
     <div className="min-h-screen bg-background" dir="rtl">
-      <header className="border-b border-border bg-background/95 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <img src="/logo-eh.png" alt="EH Automation" className="h-8" />
-            <div>
-              <div className="text-sm font-semibold text-foreground">פאנל {isAdmin ? 'ניהול' : 'לקוח'}</div>
-              <div className="text-xs text-muted-foreground">{user.email}</div>
-            </div>
+      <AdminSidebar isAdmin={isAdmin} />
+
+      <main className="md:mr-52 px-6 py-10">
+        <div className="max-w-5xl">
+          <div className="mb-10">
+            <h1 className="text-3xl font-bold text-foreground mb-2">
+              שלום{isAdmin ? ', אלעד' : ''} 👋
+            </h1>
+            <p className="text-muted-foreground">הפאנל האישי שלך — כל המידע במקום אחד.</p>
           </div>
-          <button
-            onClick={handleSignOut}
-            className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="w-4 h-4" />
-            יציאה
-          </button>
-        </div>
-      </header>
 
-      <main className="max-w-6xl mx-auto px-6 py-10">
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold text-foreground mb-2">
-            שלום{isAdmin ? ', אלעד' : ''} 👋
-          </h1>
-          <p className="text-muted-foreground">הפאנל האישי שלך — כל המידע במקום אחד.</p>
+          {isAdmin ? <AdminPortal /> : <ClientPortal email={user.email} />}
         </div>
-
-        {isAdmin ? <AdminPortal /> : <ClientPortal email={user.email} />}
       </main>
     </div>
   );

@@ -1,4 +1,7 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useAuth } from '@/contexts/AuthContext';
+import { AdminSidebar } from '@/components/AdminSidebar';
 
 const publishedArticles = [
   { date: '08/06/2026', title: 'בוט WhatsApp לעסקים — המדריך המלא', keywords: 'בוט ווטסאפ, צ\'אטבוט לעסקים', category: 'WhatsApp', url: '/blog/whatsapp-bot-guide' },
@@ -77,19 +80,35 @@ const agents = [
 ];
 
 const Dashboard = () => {
+  const { user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && !user) navigate('/login');
+  }, [user, loading, navigate]);
+
+  const isAdmin = user?.email === 'eladauto66@gmail.com' || user?.email === 'elad200226@gmail.com';
+
+  if (loading) return (
+    <div className="min-h-screen bg-background flex items-center justify-center">
+      <div className="text-muted-foreground">טוען...</div>
+    </div>
+  );
+  if (!user) return null;
+
   const nextPublish = upcomingArticles[0];
   const daysToNext = Math.ceil((new Date('2026-06-16').getTime() - new Date('2026-06-12').getTime()) / (1000 * 60 * 60 * 24));
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-6 md:p-10" dir="rtl">
+    <div className="min-h-screen bg-background text-foreground" dir="rtl">
+      <AdminSidebar isAdmin={isAdmin} />
+
+      <div className="md:mr-52 p-6 md:p-10">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-10">
-        <div>
-          <h1 className="text-3xl font-bold text-foreground">פאנל ניהול תוכן</h1>
-          <p className="text-muted-foreground mt-1">EH Automation — לוח בקרה SEO/GEO</p>
-        </div>
-        <Link to="/" className="text-sm text-primary hover:underline">← חזרה לאתר</Link>
+      <div className="mb-10">
+        <h1 className="text-3xl font-bold text-foreground">פאנל ניהול תוכן</h1>
+        <p className="text-muted-foreground mt-1">EH Automation — לוח בקרה SEO/GEO</p>
       </div>
 
       {/* Stats */}
@@ -258,6 +277,7 @@ const Dashboard = () => {
         </div>
       </div>
 
+      </div>
     </div>
   );
 };
