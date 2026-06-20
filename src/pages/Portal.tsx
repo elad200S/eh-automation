@@ -199,77 +199,84 @@ const OverviewTab = () => {
 
 // ── Leads tab ──────────────────────────────────────────────────────────────────
 
+type Submission = {
+  id: string;
+  name: string;
+  phone: string;
+  business: string;
+  automation_type: string;
+  created_at: string;
+};
+
+const AUTOMATION_LABELS: Record<string, string> = {
+  leads: 'ניהול לידים',
+  quotes: 'הצעות מחיר',
+  scheduling: 'תזמון פגישות',
+  data: 'ניהול נתונים',
+  custom: 'מותאם אישית',
+};
+
 const LeadsTab = () => {
-  const [leads, setLeads] = useState<Lead[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('eh_leads').select('*').is('owner_email', null).order('created_at', { ascending: false })
+    supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
       .then(({ data }) => {
-        if (data) setLeads(data as Lead[]);
+        if (data) setSubmissions(data as Submission[]);
         setLoading(false);
       });
   }, []);
-
-  const updateStatus = async (id: string, status: LeadStatus) => {
-    setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    await supabase.from('eh_leads').update({ status }).eq('id', id);
-  };
-
-  const newCount = leads.filter(l => l.status === 'חדש').length;
 
   if (loading) return <div className="text-muted-foreground text-sm">טוען לידים...</div>;
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center justify-between">
-        <div>
-          <h2 className="text-lg font-bold text-foreground">לידים נכנסים</h2>
-          {newCount > 0 && (
-            <p className="text-xs text-blue-400 mt-0.5">{newCount} לידים חדשים ממתינים לטיפול</p>
-          )}
-        </div>
+      <div>
+        <h2 className="text-lg font-bold text-foreground">לידים נכנסים מהאתר</h2>
+        <p className="text-xs text-muted-foreground mt-0.5">סה״כ {submissions.length} פניות</p>
       </div>
 
-      {leads.length === 0 ? (
+      {submissions.length === 0 ? (
         <div className="text-center py-16 text-muted-foreground text-sm">אין לידים עדיין</div>
       ) : (
-        <div className="space-y-3">
-          {leads.map(lead => (
-            <div key={lead.id} className="bg-muted/20 border border-border rounded-xl p-4 flex flex-col md:flex-row md:items-center gap-4">
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center gap-2">
-                  <span className="font-semibold text-foreground text-sm">{lead.name}</span>
-                  <span className={`text-xs px-2 py-0.5 rounded-full border ${LEAD_STATUS_STYLE[lead.status]}`}>{lead.status}</span>
-                </div>
-                <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                  <span>{lead.phone}</span>
-                  <span>מקור: {lead.source}</span>
-                  <span>{formatDate(lead.created_at)}</span>
-                </div>
-              </div>
-              <div className="flex gap-2 flex-wrap">
-                {(['חדש', 'נוצר קשר', 'סגור', 'לא רלוונטי'] as LeadStatus[]).map(s => (
-                  <button
-                    key={s}
-                    onClick={() => updateStatus(lead.id, s)}
-                    className={`text-xs px-3 py-1 rounded-full border transition-all ${
-                      lead.status === s
-                        ? LEAD_STATUS_STYLE[s]
-                        : 'border-border text-muted-foreground hover:border-primary/50'
-                    }`}
-                  >
-                    {s}
-                  </button>
+        <div className="bg-muted/20 border border-border rounded-xl overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40 border-b border-border">
+                <tr className="text-right">
+                  <th className="px-4 py-3 font-semibold text-foreground text-xs">שם</th>
+                  <th className="px-4 py-3 font-semibold text-foreground text-xs">טלפון</th>
+                  <th className="px-4 py-3 font-semibold text-foreground text-xs">עסק</th>
+                  <th className="px-4 py-3 font-semibold text-foreground text-xs">סוג אוטומציה</th>
+                  <th className="px-4 py-3 font-semibold text-foreground text-xs">תאריך</th>
+                </tr>
+              </thead>
+              <tbody>
+                {submissions.map((s, i) => (
+                  <tr key={s.id} className={`border-b border-border/40 last:border-0 ${i % 2 === 1 ? 'bg-muted/10' : ''}`}>
+                    <td className="px-4 py-3 text-foreground font-medium">{s.name}</td>
+                    <td className="px-4 py-3 text-muted-foreground">
+                      <a href={`tel:${s.phone}`} className="hover:text-primary transition-colors">{s.phone}</a>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground">{s.business}</td>
+                    <td className="px-4 py-3">
+                      <span className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                        {AUTOMATION_LABELS[s.automation_type] ?? s.automation_type}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-muted-foreground text-xs whitespace-nowrap">{formatDate(s.created_at)}</td>
+                  </tr>
                 ))}
-              </div>
-            </div>
-          ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
     </div>
   );
 };
+
 
 // ── Clients tab ────────────────────────────────────────────────────────────────
 
