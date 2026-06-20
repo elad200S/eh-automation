@@ -46,21 +46,34 @@ const ContactSection = () => {
     setIsSubmitting(true);
     
     try {
+      const normalizedPhone = normalizePhone(formData.phone);
+      const business = formData.business.trim() || '—';
+      const automationType = formData.automationType || 'custom';
+
+      // Save to database
+      const { error: dbError } = await supabase.from('contact_submissions').insert({
+        name: formData.name.trim(),
+        phone: normalizedPhone,
+        business,
+        automation_type: automationType,
+      });
+      if (dbError) console.error('DB insert error:', dbError);
+
+      // Also send to Make
       const payload: Record<string, string> = {
         full_name: formData.name.trim(),
-        phone: normalizePhone(formData.phone),
+        phone: normalizedPhone,
         form_type: 'main_form',
+        business_type: business,
+        automation_type: automationType,
       };
-      const biz = formData.business.trim();
-      if (biz) payload.improvement_goal = biz;
 
-      const res = await fetch(MAKE_WEBHOOK_URL, {
+      fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      });
+      }).catch((err) => console.error('Make webhook error:', err));
 
-      if (!res.ok) throw new Error(`status ${res.status}`);
 
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
       setFormData({ name: '', phone: '', business: '', automationType: '' });
