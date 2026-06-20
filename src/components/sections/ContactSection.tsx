@@ -3,6 +3,8 @@ import Section from '@/components/Section';
 import { ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { useScrollReveal } from '@/hooks/useScrollReveal';
+import { supabase } from '@/lib/supabase';
+
 
 const MAKE_WEBHOOK_URL = 'https://hook.us2.make.com/mkf9676ndwn4v1s2cm6tllxyrlqxi2nj';
 
