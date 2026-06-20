@@ -61,29 +61,34 @@ const ContactPopup = () => {
     setIsSubmitting(true);
 
     try {
+      const normalizedPhone = normalizePhone(formData.phone);
+      const automationType = formData.automationType || 'custom';
+
+      // Save to database
+      const { error: dbError } = await supabase.from('contact_submissions').insert({
+        name: formData.name.trim(),
+        phone: normalizedPhone,
+        business: formData.business.trim(),
+        automation_type: automationType,
+      });
+      if (dbError) console.error('DB insert error:', dbError);
+
+      // Also send to Make webhook
       const payload: Record<string, string> = {
         full_name: formData.name.trim(),
-        phone: normalizePhone(formData.phone),
+        phone: normalizedPhone,
         form_type: 'popup_form',
         _token: 'eh-auto-2024',
+        business_type: formData.business.trim(),
+        automation_type: automationType,
       };
-      const biz = formData.business.trim();
-      if (biz) payload.business_type = biz;
-      if (formData.automationType) payload.automation_type = formData.automationType;
 
-      const res = await fetch(MAKE_WEBHOOK_URL, {
+      fetch(MAKE_WEBHOOK_URL, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
-      });
-      if (!res.ok) throw new Error(`status ${res.status}`);
+      }).catch((err) => console.error('Make webhook error:', err));
 
-      supabase.from('eh_leads').insert({
-        name: formData.name.trim(),
-        phone: normalizePhone(formData.phone),
-        source: 'טופס יצירת קשר',
-        status: 'חדש',
-      }).then(() => {});
 
       localStorage.setItem(RATE_LIMIT_KEY, Date.now().toString());
       toast({ title: 'הטופס נשלח בהצלחה', description: 'ניצור איתך קשר בהקדם.' });
