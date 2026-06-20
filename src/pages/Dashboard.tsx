@@ -18,63 +18,55 @@ const publishedArticles = [
 ];
 
 const upcomingArticles = [
-  { date: '16/06/2026', title: 'אוטומציה לנדל"ן — 5 תהליכים שחוסכים שעות', keywords: 'אוטומציה נדל"ן, תיווך אוטומטי', status: 'agent' },
-  { date: '25/06/2026', title: 'בינה מלאכותית לעסקים קטנים — מאיפה מתחילים?', keywords: 'בינה מלאכותית לעסקים, AI לעסק קטן', status: 'agent' },
-  { date: '01/07/2026', title: 'אוטומציה לקליניקות — קביעת תורים בלי מזכירה', keywords: 'אוטומציה קליניקה, קביעת תור אוטומטי', status: 'agent' },
-  { date: '08/07/2026', title: 'Chatbot לאתר עסקי — כמה זה שווה ב-2026?', keywords: 'chatbot לאתר, צ\'אטבוט עסקי', status: 'agent' },
-  { date: '01/08/2026', title: 'אוטומציה למסעדות — הזמנות, תזכורות ומשובים', keywords: 'אוטומציה מסעדה', status: 'planned' },
-  { date: '08/08/2026', title: 'n8n — המדריך המלא לעסקים בישראל 2026', keywords: 'n8n, n8n עברית', status: 'planned' },
-  { date: '16/08/2026', title: 'איך AI Agent מחליף עובד שלם — בצורה אחראית', keywords: 'סוכן AI עובד', status: 'planned' },
-  { date: '25/08/2026', title: 'אוטומציה לניהול אירועים — מA עד Z', keywords: 'אוטומציה אירועים', status: 'planned' },
-  { date: '01/09/2026', title: 'ROI של אוטומציה — איך מחשבים כמה חסכת?', keywords: 'ROI אוטומציה', status: 'planned' },
-  { date: '08/09/2026', title: 'אוטומציה לחינוך ומכירת קורסים', keywords: 'אוטומציה קורסים', status: 'planned' },
-  { date: '16/09/2026', title: 'WhatsApp Business API — מדריך התחלה מלא 2026', keywords: 'WhatsApp Business API', status: 'planned' },
-  { date: '25/09/2026', title: 'Zapier — כל מה שצריך לדעת לפני שמשתמשים', keywords: 'zapier עברית, zapier לעסק', status: 'planned' },
+  { date: '21/06/2026', title: 'אוטומציה עסקית — המדריך המלא לבעלי עסקים ב-2026', keywords: 'אוטומציה עסקית, ייעול תהליכים', status: 'agent' },
+  { date: '23/06/2026', title: 'סוכן AI לעסק — כל מה שצריך לדעת לפני שמתחילים', keywords: 'סוכן AI לעסק, AI לעסקים', status: 'agent' },
+  { date: '25/06/2026', title: 'חנות איקומרס — איך פותחים ומה חייב להיות בה ב-2026', keywords: 'חנות איקומרס, חנות אונליין', status: 'agent' },
+  { date: '28/06/2026', title: "צ'אטבוט לוואטסאפ לעסקים — מדריך שלם ומעשי", keywords: "צ'אטבוט לוואטסאפ, WhatsApp bot", status: 'agent' },
+  { date: '30/06/2026', title: 'אתר תדמית לעסק — למה זה קריטי ב-2026 ומה חייב להיות בו', keywords: 'אתר תדמית לעסק, בניית אתר עסקי', status: 'agent' },
+  { date: '02/07/2026', title: 'ייעול תהליכים בעסק — 7 צעדים פרקטיים שעובדים', keywords: 'ייעול תהליכים בעסק, שיפור תהליכים', status: 'agent' },
+  { date: '05/07/2026', title: 'אוטומציה לנדל"ן — 5 תהליכים שחוסכים 12 שעות בשבוע', keywords: 'אוטומציה נדל"ן, CRM נדל"ן', status: 'agent' },
+  { date: '07/07/2026', title: 'הטמעת AI בעסקים — מדריך מעשי לבעלי עסקים', keywords: 'הטמעת AI בעסקים, בינה מלאכותית', status: 'agent' },
+  { date: '09/07/2026', title: 'Make.com אוטומציה — המדריך המלא לעסקים ישראלים', keywords: 'Make אוטומציה, Make.com', status: 'planned' },
+  { date: '12/07/2026', title: 'אוטומציה לקליניקה — קביעת תורים ותזכורות בלי מזכירה', keywords: 'אוטומציה קליניקה, קביעת תור אוטומטי', status: 'planned' },
+  { date: '14/07/2026', title: 'אתר תדמית לעורך דין — מה לקוחות מחפשים ומה ממיר', keywords: 'אתר תדמית עורך דין, אתר לעו"ד', status: 'planned' },
+  { date: '16/07/2026', title: 'Shopify ישראל — מדריך פתיחת חנות 2026', keywords: 'Shopify ישראל, Shopify עברית', status: 'planned' },
 ];
 
 const trafficProjection = [
-  { month: 'יוני 26', visits: 60, articles: 11 },
-  { month: 'יולי 26', visits: 160, articles: 15 },
-  { month: 'אוג 26', visits: 320, articles: 19 },
-  { month: 'ספט 26', visits: 550, articles: 23 },
-  { month: 'אוק 26', visits: 850, articles: 27 },
-  { month: 'נוב 26', visits: 1200, articles: 31 },
-  { month: 'דצ 26', visits: 1600, articles: 35 },
+  { month: 'יוני 26', visits: 80, articles: 16 },
+  { month: 'יולי 26', visits: 280, articles: 29 },
+  { month: 'אוג 26', visits: 620, articles: 42 },
+  { month: 'ספט 26', visits: 1100, articles: 55 },
+  { month: 'אוק 26', visits: 1700, articles: 68 },
+  { month: 'נוב 26', visits: 2500, articles: 81 },
+  { month: 'דצ 26', visits: 3500, articles: 94 },
 ];
 
-const maxVisits = 1600;
+const maxVisits = 3500;
 
 const agents = [
   {
-    name: 'EH Blog — 16 לחודש',
-    id: 'trig_0138J2bzMqN1fKBpmebXkowQ',
-    cron: 'כל ה-16 לחודש',
-    nextRun: '16/06/2026 09:03',
-    nextArticle: 'אוטומציה לנדל"ן — 5 תהליכים שחוסכים שעות',
-    enabled: true,
-  },
-  {
-    name: 'EH Blog — 25 לחודש',
-    id: 'trig_01WgvegRBXjW2ShJb1sgoBdL',
-    cron: 'כל ה-25 לחודש',
-    nextRun: '25/06/2026 09:02',
-    nextArticle: 'בינה מלאכותית לעסקים קטנים — מאיפה מתחילים?',
-    enabled: true,
-  },
-  {
-    name: 'EH Blog — 1 לחודש',
+    name: 'EH Blog — ראשון',
     id: 'trig_01Kdih14qZ32veLgi4QJy9HE',
-    cron: 'כל ה-1 לחודש',
-    nextRun: '01/07/2026 09:03',
-    nextArticle: 'אוטומציה לקליניקות — קביעת תורים בלי מזכירה',
+    cron: 'כל יום ראשון',
+    nextRun: '21/06/2026 09:00',
+    nextArticle: 'אוטומציה עסקית — המדריך המלא לבעלי עסקים ב-2026',
     enabled: true,
   },
   {
-    name: 'EH Blog — 8 לחודש',
-    id: 'trig_01G3DebSBq6cZmkxFmPpvzem',
-    cron: 'כל ה-8 לחודש',
-    nextRun: '08/07/2026 09:01',
-    nextArticle: 'Chatbot לאתר עסקי — כמה זה שווה ב-2026?',
+    name: 'EH Blog — שלישי',
+    id: 'trig_0138J2bzMqN1fKBpmebXkowQ',
+    cron: 'כל יום שלישי',
+    nextRun: '23/06/2026 09:00',
+    nextArticle: 'סוכן AI לעסק — כל מה שצריך לדעת לפני שמתחילים',
+    enabled: true,
+  },
+  {
+    name: 'EH Blog — חמישי',
+    id: 'trig_01WgvegRBXjW2ShJb1sgoBdL',
+    cron: 'כל יום חמישי',
+    nextRun: '25/06/2026 09:00',
+    nextArticle: 'חנות איקומרס — איך פותחים ומה חייב להיות בה ב-2026',
     enabled: true,
   },
 ];
@@ -97,7 +89,7 @@ const Dashboard = () => {
   if (!user) return null;
 
   const nextPublish = upcomingArticles[0];
-  const daysToNext = Math.ceil((new Date('2026-06-16').getTime() - new Date('2026-06-12').getTime()) / (1000 * 60 * 60 * 24));
+  const daysToNext = Math.ceil((new Date('2026-06-21').getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24));
 
   return (
     <div className="min-h-screen bg-background text-foreground" dir="rtl">
@@ -118,15 +110,15 @@ const Dashboard = () => {
           <div className="text-sm text-muted-foreground">מאמרים פורסמו</div>
         </div>
         <div className="bg-muted/30 border border-border rounded-xl p-5">
-          <div className="text-3xl font-bold text-primary mb-1">12</div>
+          <div className="text-3xl font-bold text-primary mb-1">156</div>
           <div className="text-sm text-muted-foreground">מאמרים מתוכננים</div>
         </div>
         <div className="bg-muted/30 border border-border rounded-xl p-5">
-          <div className="text-3xl font-bold text-primary mb-1">4</div>
+          <div className="text-3xl font-bold text-primary mb-1">3</div>
           <div className="text-sm text-muted-foreground">סוכנים פעילים</div>
         </div>
         <div className="bg-muted/30 border border-border rounded-xl p-5">
-          <div className="text-3xl font-bold text-yellow-400 mb-1">{daysToNext}י</div>
+          <div className="text-3xl font-bold text-yellow-400 mb-1">{Math.max(0, daysToNext)}י</div>
           <div className="text-sm text-muted-foreground">לפרסום הבא</div>
         </div>
       </div>
@@ -189,7 +181,7 @@ const Dashboard = () => {
       {/* Traffic Projection */}
       <div className="bg-muted/30 border border-border rounded-xl p-6 mb-10">
         <h2 className="text-xl font-bold mb-2">צפי כניסות אורגניות חודשיות</h2>
-        <p className="text-xs text-muted-foreground mb-6">הערכה שמרנית על בסיס 4 מאמרים/חודש + FAQSchema + GEO</p>
+        <p className="text-xs text-muted-foreground mb-6">הערכה שמרנית על בסיס 3 מאמרים/שבוע (ראשון, שלישי, חמישי) + FAQSchema + GEO</p>
         <div className="flex items-end gap-3 h-40">
           {trafficProjection.map((item) => (
             <div key={item.month} className="flex-1 flex flex-col items-center gap-2">
@@ -203,14 +195,14 @@ const Dashboard = () => {
           ))}
         </div>
         <div className="mt-4 flex gap-6 text-xs text-muted-foreground">
-          <span>📈 צפי: <strong className="text-foreground">+1,600 כניסות/חודש</strong> עד דצמבר 2026</span>
-          <span>📝 <strong className="text-foreground">35 מאמרים</strong> פעילים עד סוף השנה</span>
+          <span>📈 צפי: <strong className="text-foreground">+3,500 כניסות/חודש</strong> עד דצמבר 2026</span>
+          <span>📝 <strong className="text-foreground">94 מאמרים</strong> פעילים עד סוף השנה</span>
         </div>
       </div>
 
       {/* Upcoming */}
       <div className="bg-muted/30 border border-border rounded-xl p-6 mb-10">
-        <h2 className="text-xl font-bold mb-5">תוכנית תוכן — יוני–ספטמבר 2026</h2>
+        <h2 className="text-xl font-bold mb-5">תוכנית תוכן — יוני–יולי 2026 (הבאים בתור)</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
@@ -239,12 +231,12 @@ const Dashboard = () => {
             </tbody>
           </table>
         </div>
-        <p className="text-xs text-muted-foreground mt-4">* "סוכן פעיל" = agent ענן מתוזמן שיפרסם אוטומטית ללא התערבות</p>
+        <p className="text-xs text-muted-foreground mt-4">* "סוכן פעיל" = agent ענן מתוזמן (ראשון/שלישי/חמישי) שיפרסם אוטומטית ללא התערבות</p>
       </div>
 
       {/* Published */}
       <div className="bg-muted/30 border border-border rounded-xl p-6">
-        <h2 className="text-xl font-bold mb-5">מאמרים שפורסמו (11)</h2>
+        <h2 className="text-xl font-bold mb-5">מאמרים שפורסמו ({publishedArticles.length})</h2>
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
