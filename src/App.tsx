@@ -54,6 +54,7 @@ const BlogAutomationRoiCalculator = lazy(() => import("./pages/blog/AutomationRo
 const BlogCourseSalesAutomation = lazy(() => import("./pages/blog/CourseSalesAutomation"));
 const BlogWhatsappBusinessApiGuide = lazy(() => import("./pages/blog/WhatsappBusinessApiGuide"));
 const BlogZapierCompleteGuide = lazy(() => import("./pages/blog/ZapierCompleteGuide"));
+const BlogBusinessAutomationGuide2026 = lazy(() => import("./pages/blog/BusinessAutomationGuide2026"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -146,6 +147,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/course-sales-automation" element={<BlogCourseSalesAutomation />} />
           <Route path="/blog/whatsapp-business-api-guide" element={<BlogWhatsappBusinessApiGuide />} />
           <Route path="/blog/zapier-complete-guide" element={<BlogZapierCompleteGuide />} />
+          <Route path="/blog/business-automation-guide-2026" element={<BlogBusinessAutomationGuide2026 />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
