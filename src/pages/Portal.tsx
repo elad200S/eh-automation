@@ -132,10 +132,10 @@ const OverviewTab = () => {
 
   useEffect(() => {
     Promise.all([
-      supabase.from('eh_leads').select('id', { count: 'exact', head: true }),
-      supabase.from('eh_clients').select('id', { count: 'exact', head: true }).neq('status', 'הושלם'),
-    ]).then(([l, c]) => {
-      setCounts({ leads: l.count ?? 0, clients: c.count ?? 0 });
+      supabase.from('contact_submissions').select('id', { count: 'exact', head: true }),
+      (supabase as any).from('eh_clients').select('id', { count: 'exact', head: true }).neq('status', 'הושלם'),
+    ]).then(([l, c]: any) => {
+      setCounts({ leads: l?.count ?? 0, clients: c?.count ?? 0 });
     });
   }, []);
 
@@ -335,8 +335,8 @@ const ClientsTab = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('eh_clients').select('*').order('created_at', { ascending: false })
-      .then(({ data }) => {
+    (supabase as any).from('eh_clients').select('*').order('created_at', { ascending: false })
+      .then(({ data }: any) => {
         if (data) setClients(data as Client[]);
         setLoading(false);
       });
@@ -344,12 +344,12 @@ const ClientsTab = () => {
 
   const updateStatus = async (id: string, status: ClientStatus) => {
     setClients(prev => prev.map(c => c.id === id ? { ...c, status } : c));
-    await supabase.from('eh_clients').update({ status }).eq('id', id);
+    await (supabase as any).from('eh_clients').update({ status }).eq('id', id);
   };
 
   const togglePaid = async (id: string, paid: boolean) => {
     setClients(prev => prev.map(c => c.id === id ? { ...c, paid } : c));
-    await supabase.from('eh_clients').update({ paid }).eq('id', id);
+    await (supabase as any).from('eh_clients').update({ paid }).eq('id', id);
   };
 
   const statusIcon = (s: ClientStatus) => {
@@ -430,8 +430,8 @@ const ClientLeadsTab = ({ email }: { email: string }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('eh_leads').select('*').eq('owner_email', email).order('created_at', { ascending: false })
-      .then(({ data }) => {
+    (supabase as any).from('eh_leads').select('*').eq('owner_email', email).order('created_at', { ascending: false })
+      .then(({ data }: any) => {
         if (data) setLeads(data as Lead[]);
         setLoading(false);
       });
@@ -439,7 +439,7 @@ const ClientLeadsTab = ({ email }: { email: string }) => {
 
   const updateStatus = async (id: string, status: LeadStatus) => {
     setLeads(prev => prev.map(l => l.id === id ? { ...l, status } : l));
-    await supabase.from('eh_leads').update({ status }).eq('id', id);
+    await (supabase as any).from('eh_leads').update({ status }).eq('id', id);
   };
 
   const newCount = leads.filter(l => l.status === 'חדש').length;
@@ -498,8 +498,8 @@ const ClientPortal = ({ email }: { email: string }) => {
   const [activeTab, setActiveTab] = useState<'project' | 'leads'>('project');
 
   useEffect(() => {
-    supabase.from('eh_clients').select('*').eq('email', email).single()
-      .then(({ data }) => {
+    (supabase as any).from('eh_clients').select('*').eq('email', email).single()
+      .then(({ data }: any) => {
         if (data) setClient(data as Client);
         setLoading(false);
       });
