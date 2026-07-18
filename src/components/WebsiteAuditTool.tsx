@@ -132,15 +132,33 @@ const WebsiteAuditTool = () => {
     return input;
   };
 
+  const AUDIT_FN_URL = 'https://dgsuukvywkxoecrpwddh.supabase.co/functions/v1/audit-scan';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRnc3V1a3Z5d2t4b2VjcnB3ZGRoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjY5OTQ2OTEsImV4cCI6MjA4MjU3MDY5MX0.0TTLLjD6Zp-0M4hpe9b6BZIG5wtkw1npd5sZ7EXm2cg';
+
   const runPagespeed = async (normalized: string) => {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 60000);
     try {
-      const res = await fetch(
-        `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`,
-        { signal: controller.signal }
-      );
-      clearTimeout(timeout);
+      // סריקה דרך צד השרת — המפתח נשאר מוסתר
+      const res = await fetch(AUDIT_FN_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': SUPABASE_ANON_KEY,
+          'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
+        },
+        body: JSON.stringify({ url: normalized }),
+        signal: controller.signal,
+      });
+      // אם הפונקציה עוד לא פרוסה — נופלים חזרה לקריאה ישירה לגוגל
+      if (res.status === 404) {
+        const direct = await fetch(
+          `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices`,
+          { signal: controller.signal }
+        );
+        const directData = await direct.json();
+        return { status: direct.status, ok: direct.ok, data: directData };
+      }
       const data = await res.json();
       return { status: res.status, ok: res.ok, data };
     } finally {
