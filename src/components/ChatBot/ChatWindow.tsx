@@ -116,7 +116,9 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
       phone: phone.replace(/-/g, ''),
       business: 'בוט אתר',
       automation_type: 'custom',
-    }).then(({ error }) => { if (error) console.error('DB insert error:', error); });
+    }).then(({ error }) => {
+      if (error) console.error('DB insert error (chatbot lead):', error);
+    });
 
 
     // Also open WhatsApp with pre-filled message
