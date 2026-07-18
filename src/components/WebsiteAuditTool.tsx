@@ -98,6 +98,7 @@ const ScoreCard = ({
 const WebsiteAuditTool = () => {
   const [url, setUrl] = useState('');
   const [scanState, setScanState] = useState<ScanState>('idle');
+  const [errorMsg, setErrorMsg] = useState('');
   const [categories, setCategories] = useState<CategoryResult[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [animScores, setAnimScores] = useState<Record<string, number>>({
@@ -131,12 +132,9 @@ const WebsiteAuditTool = () => {
     return input;
   };
 
-  const handleScan = async () => {
-    if (!url.trim()) return;
-    setScanState('loading');
-    const normalized = normalizeUrl(url.trim());
+  const runPagespeed = async (normalized: string) => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 60000);
     try {
       const res = await fetch(
         `https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(normalized)}&strategy=mobile&category=performance&category=seo&category=accessibility&category=best-practices&key=AIzaSyCXNa0-KUik3LdYd7xovIpR-ZAAjgRP-1I`,
@@ -144,26 +142,65 @@ const WebsiteAuditTool = () => {
       );
       clearTimeout(timeout);
       const data = await res.json();
-
-      if (!res.ok || data.error || !data.lighthouseResult) {
-        setScanState('error');
-        return;
-      }
-
-      const cats = data.lighthouseResult.categories ?? {};
-      const results: CategoryResult[] = Object.entries(cats).map(([id, cat]: [string, any]) => {
-        const score = Math.round((cat.score ?? 0) * 100);
-        const meta = CATEGORY_META[id] ?? { name: id, icon: null, businessImpact: '' };
-        return { id, name: meta.name, score, icon: meta.icon, businessImpact: meta.businessImpact };
-      });
-
-      setCategories(results);
-      setScanState('done');
-      if (results.some(c => c.score < PASS_THRESHOLD)) setShowModal(true);
-    } catch (err: any) {
+      return { status: res.status, ok: res.ok, data };
+    } finally {
       clearTimeout(timeout);
-      setScanState(err?.name === 'AbortError' ? 'timeout' : 'error');
     }
+  };
+
+  const handleScan = async () => {
+    if (!url.trim()) return;
+    setScanState('loading');
+    setErrorMsg('');
+    const normalized = normalizeUrl(url.trim());
+
+    let lastError: 'timeout' | 'error' = 'error';
+    let lastMsg = 'לא הצלחנו לסרוק — ייתכן שהאתר חסום לסריקה. נסה כתובת אחרת.';
+
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const { status, ok, data } = await runPagespeed(normalized);
+
+        if (status === 429) {
+          lastMsg = 'יש עומס רגעי על שירות הסריקה — נסה שוב בעוד דקה.';
+          lastError = 'error';
+          break; // ניסיון נוסף מיידי לא יעזור במכסה חסומה
+        }
+        if (status === 400) {
+          lastMsg = 'הכתובת לא תקינה או שהאתר לא נגיש. בדוק את הכתובת ונסה שוב.';
+          lastError = 'error';
+          break;
+        }
+        if (!ok || data.error || !data.lighthouseResult) {
+          lastMsg = 'הסריקה נכשלה בצד של גוגל — לפעמים זה קורה באופן זמני. נסה שוב.';
+          lastError = 'error';
+          continue; // כשל זמני — שווה ניסיון נוסף
+        }
+
+        const cats = data.lighthouseResult.categories ?? {};
+        const results: CategoryResult[] = Object.entries(cats).map(([id, cat]: [string, any]) => {
+          const score = Math.round((cat.score ?? 0) * 100);
+          const meta = CATEGORY_META[id] ?? { name: id, icon: null, businessImpact: '' };
+          return { id, name: meta.name, score, icon: meta.icon, businessImpact: meta.businessImpact };
+        });
+
+        setCategories(results);
+        setScanState('done');
+        if (results.some(c => c.score < PASS_THRESHOLD)) setShowModal(true);
+        return;
+      } catch (err: any) {
+        if (err?.name === 'AbortError') {
+          lastError = 'timeout';
+          lastMsg = 'הסריקה לקחה יותר מדי זמן. האתר כנראה איטי במיוחד — נסה שוב או נסה אתר אחר.';
+        } else {
+          lastError = 'error';
+          lastMsg = 'בעיית תקשורת — בדוק את החיבור לאינטרנט ונסה שוב.';
+        }
+      }
+    }
+
+    setErrorMsg(lastMsg);
+    setScanState(lastError);
   };
 
   const failingCount = categories.filter(c => c.score < PASS_THRESHOLD).length;
@@ -200,10 +237,10 @@ const WebsiteAuditTool = () => {
             </button>
           </div>
           {scanState === 'error' && (
-            <p className="mt-3 text-sm text-red-400">לא הצלחנו לסרוק — ייתכן שהאתר חסום לסריקה. נסה כתובת אחרת.</p>
+            <p className="mt-3 text-sm text-red-400">{errorMsg}</p>
           )}
           {scanState === 'timeout' && (
-            <p className="mt-3 text-sm text-yellow-400">הסריקה לקחה יותר מדי זמן — האתר גדול מדי. נסה אתר אחר.</p>
+            <p className="mt-3 text-sm text-yellow-400">{errorMsg}</p>
           )}
         </>
       )}
@@ -212,7 +249,7 @@ const WebsiteAuditTool = () => {
         <div>
           <div className="flex items-center gap-2 mb-4">
             <Loader2 className="w-4 h-4 text-primary animate-spin flex-shrink-0" />
-            <p className="text-sm text-muted-foreground">סורק את האתר... עד 30 שניות</p>
+            <p className="text-sm text-muted-foreground">סורק את האתר... זה יכול לקחת עד דקה</p>
           </div>
           <div className="grid grid-cols-2 gap-3">
             {CATEGORY_ORDER.map(id => {
