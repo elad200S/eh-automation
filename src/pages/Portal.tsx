@@ -297,7 +297,7 @@ const LeadsTab = () => {
                       <div className="flex items-center gap-2">
                         <a href={`tel:${s.phone}`} className="hover:text-primary transition-colors" dir="ltr">{s.phone}</a>
                         <a
-                          href={`https://wa.me/972${s.phone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(`שלום ${s.name}, מדבר אלעד מ-EH Automation בהמשך לפנייתך באתר.`)}`}
+                          href={`https://wa.me/972${s.phone.replace(/\D/g, '').replace(/^0/, '')}?text=${encodeURIComponent(`שלום ${s.name}, מדבר אלעד מ-HEY Digital בהמשך לפנייתך באתר.`)}`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-[#25D366] hover:bg-[#1fba59] text-white transition-colors"
@@ -514,7 +514,7 @@ const ClientPortal = ({ email }: { email: string }) => {
         <h2 className="text-xl font-bold text-foreground mb-3">הפאנל שלך מוכן</h2>
         <p className="text-muted-foreground mb-6">אנחנו מגדירים את הפאנל האישי שלך. נחזור אליך בקרוב.</p>
         <a href="mailto:eladauto66@gmail.com" className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-primary text-primary-foreground font-medium hover:bg-primary/90 transition-colors text-sm">
-          צור קשר עם EH Automation
+          צור קשר עם HEY Digital
         </a>
       </div>
     );
@@ -570,7 +570,7 @@ const ClientPortal = ({ email }: { email: string }) => {
           </div>
           <div className="text-center">
             <a href="mailto:eladauto66@gmail.com" className="text-sm text-primary hover:underline">
-              צור קשר עם EH Automation
+              צור קשר עם HEY Digital
             </a>
           </div>
         </div>

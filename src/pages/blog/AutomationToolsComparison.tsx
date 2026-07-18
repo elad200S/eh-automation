@@ -19,7 +19,7 @@ const AutomationToolsComparison = () => {
   return (
     <>
       <SEOHead
-        title="Make.com vs Zapier vs n8n — מה מתאים לעסק שלך? 2026 | EH Automation"
+        title="Make.com vs Zapier vs n8n — מה מתאים לעסק שלך? 2026 | HEY Digital"
         description="השוואה מעשית בין שלושת כלי האוטומציה הפופולריים ביותר לעסקים בישראל: מחיר, יכולות, קלות שימוש."
         path="/blog/automation-tools-comparison"
         type="article"

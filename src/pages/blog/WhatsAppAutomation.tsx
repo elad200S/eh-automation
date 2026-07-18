@@ -19,7 +19,7 @@ const WhatsAppAutomation = () => {
   return (
     <>
       <SEOHead
-        title="WhatsApp לעסק: מה לאטמט ומה להשאיר אנושי | EH Automation"
+        title="WhatsApp לעסק: מה לאטמט ומה להשאיר אנושי | HEY Digital"
         description="מדריך מעשי לאוטומציית WhatsApp לעסקים — אילו הודעות אפשר לאטמט ואילו חייבות להישאר אנושיות."
         path="/blog/whatsapp-automation"
         type="article"

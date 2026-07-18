@@ -131,7 +131,7 @@ const DemoVideoSection = () => {
               }}
             >
               {/* Logo */}
-              <img src="/logo-eh.png" alt="EH" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
+              <img src="/logo-eh.png" alt="HEY Digital" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
 
               {/* Nav links */}
               <div className="flex gap-4 text-[10px]" style={{ color: 'hsl(215,20%,50%)' }}>
@@ -172,7 +172,7 @@ const DemoVideoSection = () => {
             <div className="absolute inset-0 flex flex-col items-center justify-center px-8 select-none" style={{ paddingTop: 42 }}>
               <div className="text-center" style={{ opacity: showPopup ? 0.15 : 0.55, transition: 'opacity 0.5s' }}>
                 <div className="text-xs font-mono mb-2 tracking-widest" style={{ color: 'hsl(160,84%,39%)' }}>
-                  EH AUTOMATION
+                  HEY DIGITAL
                 </div>
                 <div className="text-2xl font-bold mb-1" style={{ color: 'hsl(210,20%,98%)' }}>
                   אוטומציות חכמות לעסקים

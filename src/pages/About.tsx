@@ -39,8 +39,8 @@ const About = () => {
   return (
     <>
       <SEOHead
-        title="אודות EH Automation | סטודיו לאוטומציה עסקית"
-        description="הכירו את EH Automation – סטודיו לאוטומציה עסקית ובינה מלאכותית. בונים מערכות שחוסכות זמן, מטפלות בלידים ומגדילות הכנסות לעסקים ישראלים."
+        title="אודות HEY Digital | סטודיו לאוטומציה עסקית"
+        description="הכירו את HEY Digital – סטודיו לאוטומציה עסקית ובינה מלאכותית. בונים מערכות שחוסכות זמן, מטפלות בלידים ומגדילות הכנסות לעסקים ישראלים."
         path="/about"
       />
       <BreadcrumbSchema items={[
@@ -60,7 +60,7 @@ const About = () => {
                 סטודיו לאוטומציה עסקית ובינה מלאכותית
               </h1>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                עסק לא אמור להישען על משימות ידניות. EH Automation מחליפה את הניהול הסיזיפי במערכות אוטומטיות חכמות שמפנות לכם זמן למה שבאמת מביא כסף
+                עסק לא אמור להישען על משימות ידניות. HEY Digital מחליפה את הניהול הסיזיפי במערכות אוטומטיות חכמות שמפנות לכם זמן למה שבאמת מביא כסף
               </p>
             </div>
           </div>
@@ -89,7 +89,7 @@ const About = () => {
               <div className="order-2">
                 <div className="relative">
                   <div className="aspect-square max-w-[320px] mx-auto rounded-2xl bg-muted border border-border overflow-hidden shadow-lg">
-                    <img src={eladHeadshot} alt="אלעד חנינה - מייסד EH Automation, סטודיו לאוטומציה עסקית" className="w-full h-full object-cover object-top" loading="lazy" />
+                    <img src={eladHeadshot} alt="אלעד חנינה - מייסד HEY Digital, סטודיו לאוטומציה עסקית" className="w-full h-full object-cover object-top" loading="lazy" />
                   </div>
                   <div className="absolute -bottom-3 -left-3 w-full h-full rounded-2xl border border-primary/20 -z-10" />
                 </div>

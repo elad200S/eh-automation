@@ -12,8 +12,8 @@ const NotFound = () => {
   return (
     <>
       <Helmet>
-        <title>עמוד לא נמצא (404) | EH Automation</title>
-        <meta name="description" content="העמוד שחיפשת לא קיים. חזרו לעמוד הבית של EH Automation ומצאו את המידע שאתם מחפשים." />
+        <title>עמוד לא נמצא (404) | HEY Digital</title>
+        <meta name="description" content="העמוד שחיפשת לא קיים. חזרו לעמוד הבית של HEY Digital ומצאו את המידע שאתם מחפשים." />
         <meta name="robots" content="noindex,nofollow" />
         <html lang="he" dir="rtl" />
       </Helmet>

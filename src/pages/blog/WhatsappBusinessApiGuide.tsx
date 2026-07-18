@@ -19,7 +19,7 @@ const WhatsappBusinessApiGuide = () => {
   return (
     <>
       <SEOHead
-        title="WhatsApp Business API — מדריך התחלה מלא 2026 | EH Automation"
+        title="WhatsApp Business API — מדריך התחלה מלא 2026 | HEY Digital"
         description="מדריך מלא ל-WhatsApp Business API בישראל: מחירים, הגדרה, BSP, שיחות שיווק לעומת שירות, ואיך מתחילים. עדכני ל-2026."
         path="/blog/whatsapp-business-api-guide"
         type="article"

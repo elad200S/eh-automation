@@ -2,7 +2,7 @@ import IndustryPageLayout, { IndustryPageData } from '@/components/IndustryPageL
 
 const data: IndustryPageData = {
   slug: 'industries/ecommerce',
-  metaTitle: 'אוטומציה למסחר אלקטרוני | EH Automation',
+  metaTitle: 'אוטומציה למסחר אלקטרוני | HEY Digital',
   metaDescription: 'אוטומציה לחנויות אונליין – ניהול הזמנות, מעקב מלאי, שיווק אוטומטי ושירות לקוחות.',
   hero: {
     label: 'תעשיות / מסחר אלקטרוני',

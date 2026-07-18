@@ -19,7 +19,7 @@ const ClinicAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה לקליניקות — קביעת תורים בלי מזכירה | EH Automation"
+        title="אוטומציה לקליניקות — קביעת תורים בלי מזכירה | HEY Digital"
         description="גלו איך אוטומציה לקליניקה חוסכת עשרות שעות בשבוע: קביעת תורים אוטומטית, תזכורות WhatsApp, ירידה של 40% ב-no-show."
         path="/blog/clinic-automation"
         type="article"

@@ -2,7 +2,7 @@ import IndustryPageLayout, { IndustryPageData } from '@/components/IndustryPageL
 
 const data: IndustryPageData = {
   slug: 'industries/consultants',
-  metaTitle: 'אוטומציה ליועצים | EH Automation',
+  metaTitle: 'אוטומציה ליועצים | HEY Digital',
   metaDescription: 'פתרונות אוטומציה ליועצים עסקיים – ניהול לידים, תיאום פגישות, הצעות מחיר ומעקב לקוחות אוטומטי.',
   hero: {
     label: 'תעשיות / יועצים',

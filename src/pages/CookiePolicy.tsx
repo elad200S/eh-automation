@@ -6,8 +6,8 @@ const CookiePolicy = () => {
   return (
     <>
       <SEOHead
-        title="מדיניות Cookies | EH Automation"
-        description="מדיניות ה-Cookies של EH Automation – סוגי העוגיות שבהן אנו משתמשים, כיצד לנהל אותן והזכות שלכם לשלוט בהעדפות."
+        title="מדיניות Cookies | HEY Digital"
+        description="מדיניות ה-Cookies של HEY Digital – סוגי העוגיות שבהן אנו משתמשים, כיצד לנהל אותן והזכות שלכם לשלוט בהעדפות."
         path="/cookies"
         noindex
       />

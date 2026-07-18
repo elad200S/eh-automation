@@ -19,7 +19,7 @@ const ZapierCompleteGuide = () => {
   return (
     <>
       <SEOHead
-        title="Zapier — כל מה שצריך לדעת לפני שמשתמשים | EH Automation"
+        title="Zapier — כל מה שצריך לדעת לפני שמשתמשים | HEY Digital"
         description="המדריך המלא ל-Zapier בעברית: מה זה, כמה עולה, מה ניתן לאטמט, מתי כדאי ומתי עדיף n8n. כולל 10 Zaps שכל עסק צריך."
         path="/blog/zapier-complete-guide"
         type="article"

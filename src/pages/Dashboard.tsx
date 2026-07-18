@@ -46,7 +46,7 @@ const maxVisits = 3500;
 
 const agents = [
   {
-    name: 'EH Blog — ראשון',
+    name: 'HEY Blog — ראשון',
     id: 'trig_01Kdih14qZ32veLgi4QJy9HE',
     cron: 'כל יום ראשון',
     nextRun: '21/06/2026 09:00',
@@ -54,7 +54,7 @@ const agents = [
     enabled: true,
   },
   {
-    name: 'EH Blog — שלישי',
+    name: 'HEY Blog — שלישי',
     id: 'trig_0138J2bzMqN1fKBpmebXkowQ',
     cron: 'כל יום שלישי',
     nextRun: '23/06/2026 09:00',
@@ -62,7 +62,7 @@ const agents = [
     enabled: true,
   },
   {
-    name: 'EH Blog — חמישי',
+    name: 'HEY Blog — חמישי',
     id: 'trig_01WgvegRBXjW2ShJb1sgoBdL',
     cron: 'כל יום חמישי',
     nextRun: '25/06/2026 09:00',
@@ -100,7 +100,7 @@ const Dashboard = () => {
       {/* Header */}
       <div className="mb-10">
         <h1 className="text-3xl font-bold text-foreground">פאנל ניהול תוכן</h1>
-        <p className="text-muted-foreground mt-1">EH Automation — לוח בקרה SEO/GEO</p>
+        <p className="text-muted-foreground mt-1">HEY Digital — לוח בקרה SEO/GEO</p>
       </div>
 
       {/* Stats */}

@@ -19,7 +19,7 @@ const AiForSmallBusiness = () => {
   return (
     <>
       <SEOHead
-        title="בינה מלאכותית לעסקים קטנים — מאיפה מתחילים? | EH Automation"
+        title="בינה מלאכותית לעסקים קטנים — מאיפה מתחילים? | HEY Digital"
         description="מדריך מעשי לבעלי עסקים קטנים שרוצים להתחיל עם בינה מלאכותית: מה AI יכול לעשות, כמה זה עולה, ואיפה להתחיל."
         path="/blog/ai-for-small-business"
         type="article"
@@ -126,7 +126,7 @@ const AiForSmallBusiness = () => {
                 הטיפ הכי חשוב: התחילו עם תהליך אחד. לא ניסו לאטמט הכל בו-זמנית. בחרו את התהליך שגוזל הכי הרבה זמן ויש לו את ה-ROI הברור ביותר — ואחרי שזה עובד, הוסיפו תהליכים נוספים.
               </p>
               <p>
-                לראות איך סוכני AI עובדים בפועל, בקרו בעמוד <Link to="/solutions/ai-agents" className="text-primary hover:underline">סוכני AI של EH Automation</Link>.
+                לראות איך סוכני AI עובדים בפועל, בקרו בעמוד <Link to="/solutions/ai-agents" className="text-primary hover:underline">סוכני AI של HEY Digital</Link>.
               </p>
             </div>
 

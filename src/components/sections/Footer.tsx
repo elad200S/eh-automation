@@ -109,7 +109,7 @@ const Footer = () => {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link to="/" className="text-xl font-bold text-foreground">
-              EH <span className="gradient-text">Automation</span>
+              HEY <span className="gradient-text">Digital</span>
             </Link>
             <p className="text-sm text-muted-foreground mt-3 max-w-sm leading-relaxed">
               סטודיו לאוטומציה עסקית ובינה מלאכותית. אנחנו עוזרים לעסקים קטנים, סוכנויות ויועצים לבנות מערכות חכמות שעובדות בשבילם 24/7.
@@ -240,7 +240,7 @@ const Footer = () => {
         {/* Bottom bar */}
         <div className="mt-6 pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-sm text-muted-foreground">
-            © {new Date().getFullYear()} EH Automation. כל הזכויות שמורות.
+            © {new Date().getFullYear()} HEY Digital. כל הזכויות שמורות.
           </p>
           <div className="flex items-center gap-4 text-sm text-muted-foreground">
             <Link to="/privacy" className="hover:text-primary transition-colors">מדיניות פרטיות</Link>

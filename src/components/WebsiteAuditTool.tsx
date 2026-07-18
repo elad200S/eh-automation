@@ -290,7 +290,7 @@ const WebsiteAuditTool = () => {
               </button>
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <div className="font-extrabold text-lg">EH <span style={{ color: '#3ddc97' }}>Automation</span></div>
+                  <div className="font-extrabold text-lg">HEY <span style={{ color: '#3ddc97' }}>Digital</span></div>
                   <div className="text-xs opacity-75 mt-0.5">דוח אבחון מהיר</div>
                   <div className="text-xs mt-2 opacity-90 truncate" dir="ltr" style={{ textAlign: 'right' }}>
                     {normalizeUrl(url.trim())}

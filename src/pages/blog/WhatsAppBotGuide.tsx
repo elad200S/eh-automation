@@ -19,7 +19,7 @@ const WhatsAppBotGuide = () => {
   return (
     <>
       <SEOHead
-        title="בוט WhatsApp לעסקים — המדריך המלא 2026 | EH Automation"
+        title="בוט WhatsApp לעסקים — המדריך המלא 2026 | HEY Digital"
         description="כל מה שצריך לדעת על בוט WhatsApp לעסקים: איך עובד, מה עולה, מה אפשר לאטמט — ומה לא."
         path="/blog/whatsapp-bot-guide"
         type="article"

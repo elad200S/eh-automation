@@ -2,7 +2,7 @@ import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageL
 
 const data: SolutionPageData = {
   slug: 'solutions/business-automation',
-  metaTitle: 'אוטומציה עסקית | EH Automation',
+  metaTitle: 'אוטומציה עסקית | HEY Digital',
   metaDescription: 'מערכות אוטומציה עסקיות שמחברות בין כלים, מבטלות משימות ידניות ומייעלות תהליכים – לעסקים קטנים וסטארטאפים.',
   hero: {
     label: 'פתרונות / אוטומציה עסקית',

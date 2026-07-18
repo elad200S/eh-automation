@@ -19,7 +19,7 @@ const CourseSalesAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה לחינוך ומכירת קורסים — מהרשמה עד מכירה | EH Automation"
+        title="אוטומציה לחינוך ומכירת קורסים — מהרשמה עד מכירה | HEY Digital"
         description="כיצד לבנות מערכת אוטומציה שמוכרת קורסים אונליין 24/7: funnel מלא, סדרת מיילים, בוט WhatsApp, ועלייה של 40-60% בהמרות."
         path="/blog/course-sales-automation"
         type="article"

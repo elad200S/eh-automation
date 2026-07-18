@@ -19,7 +19,7 @@ const AutomationRoiCalculator = () => {
   return (
     <>
       <SEOHead
-        title="ROI של אוטומציה — איך מחשבים כמה חסכת? | EH Automation"
+        title="ROI של אוטומציה — איך מחשבים כמה חסכת? | HEY Digital"
         description="מדריך מעשי לחישוב ROI של אוטומציה עסקית: נוסחאות, דוגמאות מספריות, ומסגרת לקבלת החלטה. 60% מהעסקים מגיעים ל-ROI תוך 12 חודשים."
         path="/blog/automation-roi-calculator"
         type="article"

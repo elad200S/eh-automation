@@ -49,7 +49,7 @@ const Solutions = () => {
   return (
     <>
       <SEOHead
-        title="פתרונות אוטומציה עסקית | EH Automation"
+        title="פתרונות אוטומציה עסקית | HEY Digital"
         description="פתרונות אוטומציה עסקית ובינה מלאכותית: סוכני AI, אוטומציית WhatsApp, CRM, תהליכי עבודה ומערכות עסקיות מותאמות."
         path="/solutions"
       />

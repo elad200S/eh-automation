@@ -2,7 +2,7 @@ import ServicePageLayout, { ServicePageData } from '@/components/ServicePageLayo
 
 const data: ServicePageData = {
   slug: 'services/crm',
-  metaTitle: 'בניית וארכיטקטורת CRM | EH Automation',
+  metaTitle: 'בניית וארכיטקטורת CRM | HEY Digital',
   metaDescription: 'תכנון ובניית מערכת CRM מותאמת אישית שמארגנת לידים, עסקאות ותקשורת עם לקוחות – בלי בלאגן.',
   hero: {
     headline: 'CRM שבנוי בדיוק סביב התהליכים שלכם',

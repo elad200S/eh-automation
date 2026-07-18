@@ -301,7 +301,7 @@ const IntroScreen = ({ onComplete, onVisible }: IntroScreenProps) => {
             ].join(', '),
           }}
         >
-          EH automation
+          HEY Digital
         </motion.div>
       </div>
     </div>

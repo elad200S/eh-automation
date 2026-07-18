@@ -3,7 +3,7 @@ import webDevHero from '@/assets/web-development-hero.webp';
 
 const data: SolutionPageData = {
   slug: 'solutions/web-development',
-  metaTitle: 'בניית אתרים לעסקים | EH Automation',
+  metaTitle: 'בניית אתרים לעסקים | HEY Digital',
   metaDescription: 'אתרים מודרניים, מהירים ומותאמים לעסק שלך — מהתכנון ועד ההשקה. עיצוב נקי, ביצועים גבוהים, ואינטגרציה מלאה עם מערכות האוטומציה.',
   hero: {
     label: 'פתרונות / בניית אתרים',

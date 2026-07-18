@@ -19,7 +19,7 @@ const AppointmentReminderAutomation = () => {
   return (
     <>
       <SEOHead
-        title="תזכורות פגישות אוטומטיות — איך מורידים no-show ב-60% | EH Automation"
+        title="תזכורות פגישות אוטומטיות — איך מורידים no-show ב-60% | HEY Digital"
         description="תזכורת פגישה אוטומטית דרך WhatsApp מורידה ביטולי פגישות ב-40-60%. הנה איך עסקים בונים את זה."
         path="/blog/appointment-reminder-automation"
         type="article"

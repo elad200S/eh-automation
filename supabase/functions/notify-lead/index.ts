@@ -45,7 +45,7 @@ serve(async (req) => {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          from: "EH Automation <onboarding@resend.dev>",
+          from: "HEY Digital <onboarding@resend.dev>",
           to: notifyEmail,
           subject: `ליד חדש: ${name}`,
           html: `

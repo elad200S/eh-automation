@@ -19,7 +19,7 @@ const N8nGuideIsrael = () => {
   return (
     <>
       <SEOHead
-        title="n8n — המדריך המלא לעסקים בישראל 2026 | EH Automation"
+        title="n8n — המדריך המלא לעסקים בישראל 2026 | HEY Digital"
         description="כל מה שצריך לדעת על n8n בישראל: מה זה, כמה עולה, איך מתחילים, ולמה חוסך עשרות אחוזים לעומת Zapier. מדריך מעשי לעסקים."
         path="/blog/n8n-guide-israel"
         type="article"

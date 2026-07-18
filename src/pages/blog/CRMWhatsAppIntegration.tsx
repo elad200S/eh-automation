@@ -19,7 +19,7 @@ const CRMWhatsAppIntegration = () => {
   return (
     <>
       <SEOHead
-        title="CRM + WhatsApp — האינטגרציה שכל עסק ישראלי צריך ב-2026 | EH Automation"
+        title="CRM + WhatsApp — האינטגרציה שכל עסק ישראלי צריך ב-2026 | HEY Digital"
         description="חיבור CRM ל-WhatsApp מייצר תמונה אחת על כל לקוח: שיחות, סטטוסים, עסקאות — הכל במקום אחד."
         path="/blog/crm-whatsapp-integration"
         type="article"

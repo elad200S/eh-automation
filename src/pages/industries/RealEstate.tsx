@@ -2,7 +2,7 @@ import IndustryPageLayout, { IndustryPageData } from '@/components/IndustryPageL
 
 const data: IndustryPageData = {
   slug: 'industries/real-estate',
-  metaTitle: 'אוטומציה לנדל"ן | EH Automation',
+  metaTitle: 'אוטומציה לנדל"ן | HEY Digital',
   metaDescription: 'פתרונות אוטומציה לסוכני נדל"ן – ניהול לידים, מעקב נכסים, תיאום סיורים ותקשורת לקוחות אוטומטית.',
   hero: {
     label: 'תעשיות / נדל"ן',

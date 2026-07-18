@@ -19,7 +19,7 @@ const RestaurantAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה למסעדות — הזמנות, תזכורות ומשובים | EH Automation"
+        title="אוטומציה למסעדות — הזמנות, תזכורות ומשובים | HEY Digital"
         description="אוטומציה למסעדה: בוט הזמנות שולחן WhatsApp, תזכורות שמורידות no-show ב-40%, ופולו-אפ שמחזיר לקוחות חוזרים. מדריך מלא 2026."
         path="/blog/restaurant-automation"
         type="article"

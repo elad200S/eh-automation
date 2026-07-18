@@ -2,7 +2,7 @@ import IndustryPageLayout, { IndustryPageData } from '@/components/IndustryPageL
 
 const data: IndustryPageData = {
   slug: 'industries/agencies',
-  metaTitle: 'אוטומציה לסוכנויות | EH Automation',
+  metaTitle: 'אוטומציה לסוכנויות | HEY Digital',
   metaDescription: 'פתרונות אוטומציה מותאמים לסוכנויות דיגיטל ושיווק – ניהול לקוחות, דוחות אוטומטיים ותהליכי אונבורדינג.',
   hero: {
     label: 'תעשיות / סוכנויות',

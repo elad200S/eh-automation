@@ -2,7 +2,7 @@ import IndustryPageLayout, { IndustryPageData } from '@/components/IndustryPageL
 
 const data: IndustryPageData = {
   slug: 'industries/coaches',
-  metaTitle: 'אוטומציה למאמנים | EH Automation',
+  metaTitle: 'אוטומציה למאמנים | HEY Digital',
   metaDescription: 'פתרונות אוטומציה למאמנים עסקיים ואישיים – ניהול מתאמנים, תזכורות, תשלומים ומערכות שירות.',
   hero: {
     label: 'תעשיות / מאמנים',

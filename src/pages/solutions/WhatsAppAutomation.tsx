@@ -2,7 +2,7 @@ import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageL
 
 const data: SolutionPageData = {
   slug: 'solutions/whatsapp-automation',
-  metaTitle: 'אוטומציית WhatsApp לעסקים | EH Automation',
+  metaTitle: 'אוטומציית WhatsApp לעסקים | HEY Digital',
   metaDescription: 'אוטומציית WhatsApp עסקית – מענה אוטומטי, ניהול לידים, שליחת תזכורות והודעות מותאמות ללקוחות.',
   hero: {
     label: 'פתרונות / אוטומציית WhatsApp',

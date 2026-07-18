@@ -19,7 +19,7 @@ const HowToChooseCRM = () => {
   return (
     <>
       <SEOHead
-        title="איך לבחור CRM שבאמת ישתמשו בו | EH Automation"
+        title="איך לבחור CRM שבאמת ישתמשו בו | HEY Digital"
         description="הבעיה לא הכלי – הבעיה היא ההטמעה. טיפים מעשיים לבחירת CRM שהצוות שלך באמת ישתמש בו."
         path="/blog/how-to-choose-crm"
         type="article"

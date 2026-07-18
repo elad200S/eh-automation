@@ -19,7 +19,7 @@ const WebsiteChatbotGuide = () => {
   return (
     <>
       <SEOHead
-        title="Chatbot לאתר עסקי — כמה זה שווה ב-2026? | EH Automation"
+        title="Chatbot לאתר עסקי — כמה זה שווה ב-2026? | HEY Digital"
         description="המדריך המלא ל-chatbot לאתר עסקי: עלויות, ROI, מה לחפש ומה להימנע. עסקים מדווחים על ROI תוך 3-6 חודשים."
         path="/blog/website-chatbot-guide"
         type="article"

@@ -19,7 +19,7 @@ const AutomationProcesses = () => {
   return (
     <>
       <SEOHead
-        title="5 תהליכים שכל עסק קטן צריך לאטמט היום | EH Automation"
+        title="5 תהליכים שכל עסק קטן צריך לאטמט היום | HEY Digital"
         description="סקירה של התהליכים העסקיים הנפוצים ביותר שבהם אוטומציה יכולה לחסוך עשרות שעות בשבוע."
         path="/blog/5-automation-processes"
         type="article"

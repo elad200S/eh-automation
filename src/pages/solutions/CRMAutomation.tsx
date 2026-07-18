@@ -2,7 +2,7 @@ import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageL
 
 const data: SolutionPageData = {
   slug: 'solutions/crm-automation',
-  metaTitle: 'אוטומציית CRM | EH Automation',
+  metaTitle: 'אוטומציית CRM | HEY Digital',
   metaDescription: 'אוטומציית CRM שמסדרת ניהול לקוחות, מעקב לידים ותהליכי מכירה – הכל אוטומטי ומותאם לעסק שלכם.',
   hero: {
     label: 'פתרונות / אוטומציית CRM',

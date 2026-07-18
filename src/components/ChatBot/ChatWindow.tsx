@@ -139,7 +139,7 @@ const ChatWindow = ({ messages, isLoading, onSendMessage, onClose, maxInputLengt
               <img src="/bot-icon.png" alt="Bot" className="w-full h-full object-cover" />
             </div>
             <div>
-              <p className="font-medium text-sm leading-tight">EH Automation</p>
+              <p className="font-medium text-sm leading-tight">HEY Digital</p>
               <p className="text-xs text-primary-foreground/70 leading-tight">בוט חכם • עונה מיד</p>
             </div>
           </div>

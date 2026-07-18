@@ -2,7 +2,7 @@ import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageL
 
 const data: SolutionPageData = {
   slug: 'solutions/ai-agents',
-  metaTitle: 'סוכני AI חכמים לעסקים | EH Automation',
+  metaTitle: 'סוכני AI חכמים לעסקים | HEY Digital',
   metaDescription: 'סוכני AI חכמים שעובדים 24/7 – מענה ללקוחות, ניהול לידים ואוטומציה של תהליכים עסקיים מבוססי בינה מלאכותית.',
   hero: {
     label: 'פתרונות / סוכני AI',

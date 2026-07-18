@@ -6,8 +6,8 @@ const PrivacyPolicy = () => {
   return (
     <>
       <SEOHead
-        title="מדיניות פרטיות | EH Automation"
-        description="מדיניות הפרטיות של EH Automation – מידע על איסוף, שימוש ואבטחת המידע האישי שלכם. השימוש באתר מהווה הסכמה למדיניות זו."
+        title="מדיניות פרטיות | HEY Digital"
+        description="מדיניות הפרטיות של HEY Digital – מידע על איסוף, שימוש ואבטחת המידע האישי שלכם. השימוש באתר מהווה הסכמה למדיניות זו."
         path="/privacy"
         noindex
       />
@@ -32,7 +32,7 @@ const PrivacyPolicy = () => {
             <section>
               <h2 className="text-xl font-semibold text-foreground mb-3">1. כללי</h2>
               <p className="text-muted-foreground leading-relaxed">
-                אתר זה מופעל על ידי EH Automation (להלן: "אנחנו" או "החברה"). אנו מכבדים את פרטיות המבקרים באתר ומחויבים להגן על המידע האישי שלהם. מדיניות פרטיות זו מסבירה אילו פרטים אנו אוספים, כיצד אנו משתמשים בהם, ומה הזכויות שלך בנוגע למידע זה.
+                אתר זה מופעל על ידי HEY Digital (להלן: "אנחנו" או "החברה"). אנו מכבדים את פרטיות המבקרים באתר ומחויבים להגן על המידע האישי שלהם. מדיניות פרטיות זו מסבירה אילו פרטים אנו אוספים, כיצד אנו משתמשים בהם, ומה הזכויות שלך בנוגע למידע זה.
               </p>
               <p className="text-muted-foreground leading-relaxed">
                 השימוש באתר מהווה הסכמה לתנאים המפורטים במדיניות זו. אנו ממליצים לקרוא מדיניות זו בעיון.
@@ -130,7 +130,7 @@ const PrivacyPolicy = () => {
               </p>
               <div className="bg-muted/50 p-4 rounded-lg mt-3">
                 <p className="text-foreground">
-                  <strong>EH Automation</strong>
+                  <strong>HEY Digital</strong>
                 </p>
                 <p className="text-muted-foreground mt-1">
                   דוא"ל: <a href="mailto:eladauto66@gmail.com" className="text-primary hover:underline">eladauto66@gmail.com</a>

@@ -2,7 +2,7 @@ import ServicePageLayout, { ServicePageData } from '@/components/ServicePageLayo
 
 const data: ServicePageData = {
   slug: 'services/automation',
-  metaTitle: 'מערכות אוטומציה עסקיות | EH Automation',
+  metaTitle: 'מערכות אוטומציה עסקיות | HEY Digital',
   metaDescription: 'בניית מערכות אוטומציה מתקדמות שמחליפות עבודה ידנית בתהליכים חכמים – חיסכון בזמן, כסף וטעויות.',
   hero: {
     headline: 'אוטומציות שעובדות בשבילכם – גם כשאתם לא',

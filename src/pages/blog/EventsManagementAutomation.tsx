@@ -19,7 +19,7 @@ const EventsManagementAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה לעסק ניהול אירועים — מA עד Z | EH Automation"
+        title="אוטומציה לעסק ניהול אירועים — מA עד Z | HEY Digital"
         description="מדריך מלא לאוטומציה בניהול אירועים: תיאום ספקים, תקשורת לקוחות, הצעות מחיר, ותזכורות — כולם אוטומטית. חסכו 3 שעות ביום."
         path="/blog/events-management-automation"
         type="article"

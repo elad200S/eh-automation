@@ -87,7 +87,7 @@ const Contact = () => {
   return (
     <>
       <SEOHead
-        title="צור קשר | EH Automation"
+        title="צור קשר | HEY Digital"
         description="רוצים לדבר על אוטומציה לעסק? השאירו פרטים ונחזור אליכם תוך 24 שעות. שיחת אפיון ראשונית ללא עלות."
         path="/contact"
       />

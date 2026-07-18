@@ -67,7 +67,7 @@ const AboutSection = () => {
             >
               <img
                 src={eladHeadshot}
-                alt="אלעד חנינה - EH Automation"
+                alt="אלעד חנינה - HEY Digital"
                 className="w-full h-full object-cover object-top"
               />
 
@@ -90,7 +90,7 @@ const AboutSection = () => {
                 >
                   <p className="text-sm font-semibold text-foreground">אלעד חנינה</p>
                   <p className="text-xs font-mono" style={{ color: 'hsl(160,84%,50%)' }}>
-                    Founder · EH Automation
+                    Founder · HEY Digital
                   </p>
                 </div>
               </div>

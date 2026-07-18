@@ -1,7 +1,7 @@
 import { Helmet } from 'react-helmet-async';
 
 const SITE_URL = 'https://ehautomation.co.il';
-const SITE_NAME = 'EH Automation';
+const SITE_NAME = 'HEY Digital';
 const OG_IMAGE = 'https://ehautomation.co.il/og-image.png';
 
 interface SEOProps {

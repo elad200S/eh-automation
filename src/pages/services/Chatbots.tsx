@@ -2,7 +2,7 @@ import ServicePageLayout, { ServicePageData } from '@/components/ServicePageLayo
 
 const data: ServicePageData = {
   slug: 'services/chatbots',
-  metaTitle: 'צ׳אט בוטים חכמים לעסקים | EH Automation',
+  metaTitle: 'צ׳אט בוטים חכמים לעסקים | HEY Digital',
   metaDescription: 'צ׳אט בוטים מבוססי AI שעובדים 24/7 – מענה אוטומטי ללקוחות, תיאום פגישות, וטיפול בפניות ללא צורך בכוח אדם.',
   hero: {
     headline: 'צ׳אט בוטים חכמים שמטפלים בלקוחות שלכם 24/7',

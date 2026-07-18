@@ -19,7 +19,7 @@ const AiAgentReplacesEmployee = () => {
   return (
     <>
       <SEOHead
-        title="איך AI Agent מחליף עובד שלם — בצורה אחראית | EH Automation"
+        title="איך AI Agent מחליף עובד שלם — בצורה אחראית | HEY Digital"
         description="AI Agent עולה ₪650 לחודש לעומת עובד ב-₪7,000-10,000. גלו אילו תפקידים AI Agent יכול לבצע, מה הגבולות, וכיצד עושים זאת אחראית."
         path="/blog/ai-agent-replaces-employee"
         type="article"

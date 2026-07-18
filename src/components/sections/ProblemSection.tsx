@@ -88,14 +88,14 @@ const ERROR_DONE     = ERROR_DELAY + ERROR_MSG.length * CHAR_DELAY;
 const SOLUTION_DELAY = ERROR_DONE + 1400;
 
 const SOLUTION_LINES = [
-  { text: '$ loading EH-Automation...',        dir: 'ltr', color: '#8b949e' },
+  { text: '$ loading HEY Digital...',        dir: 'ltr', color: '#8b949e' },
   { text: '__progress__',                       dir: 'ltr', color: '#3fb950' },
   { text: '',                                   dir: 'ltr', color: '' },
   { text: 'כל ליד מטופל אוטומטית ✓',          dir: 'rtl', color: '#3fb950' },
   { text: 'מעקב מלא ב-CRM ✓',                 dir: 'rtl', color: '#3fb950' },
   { text: 'הסוכן מקבל התראה מיידית ✓',        dir: 'rtl', color: '#3fb950' },
   { text: '',                                   dir: 'ltr', color: '' },
-  { text: '⚡ EH Automation — הכל תחת שליטה', dir: 'rtl', color: '#10b981' },
+  { text: '⚡ HEY Digital — הכל תחת שליטה', dir: 'rtl', color: '#10b981' },
 ];
 
 const SOL_LINE_DELAY = 260;

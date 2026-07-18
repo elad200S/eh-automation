@@ -2,7 +2,7 @@ import ServicePageLayout, { ServicePageData } from '@/components/ServicePageLayo
 
 const data: ServicePageData = {
   slug: 'services/ai-agents',
-  metaTitle: 'סוכני AI חכמים | EH Automation',
+  metaTitle: 'סוכני AI חכמים | HEY Digital',
   metaDescription: 'סוכני AI שמבצעים משימות מורכבות בצורה עצמאית – ניתוח מידע, קבלת החלטות וביצוע פעולות בלי התערבות אנושית.',
   hero: {
     headline: 'סוכני AI שעושים את העבודה – לא רק עונים על שאלות',

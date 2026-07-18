@@ -19,7 +19,7 @@ const MarketingAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה שיווקית — מהליד הראשון ועד לסגירה | EH Automation"
+        title="אוטומציה שיווקית — מהליד הראשון ועד לסגירה | HEY Digital"
         description="אוטומציה שיווקית לעסקים: איך לבנות מסע לקוח אוטומטי שמסנן, מחמם וסוגר לידים — בלי לעסוק בכל אחד ידנית."
         path="/blog/marketing-automation"
         type="article"

@@ -19,7 +19,7 @@ const AICustomerService = () => {
   return (
     <>
       <SEOHead
-        title="סוכן AI לשירות לקוחות — עונה 24/7 בלי לשכור עובד | EH Automation"
+        title="סוכן AI לשירות לקוחות — עונה 24/7 בלי לשכור עובד | HEY Digital"
         description="סוכן AI לשירות לקוחות מטפל בפניות, מחזיר תשובות ומסלים מקרים מורכבים — אוטומטית, כל הזמן."
         path="/blog/ai-customer-service"
         type="article"

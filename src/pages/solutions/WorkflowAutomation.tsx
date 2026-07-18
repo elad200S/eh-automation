@@ -2,7 +2,7 @@ import SolutionPageLayout, { SolutionPageData } from '@/components/SolutionPageL
 
 const data: SolutionPageData = {
   slug: 'solutions/workflow-automation',
-  metaTitle: 'אוטומציית תהליכי עבודה | EH Automation',
+  metaTitle: 'אוטומציית תהליכי עבודה | HEY Digital',
   metaDescription: 'אוטומציה של תהליכי עבודה פנימיים – דוחות, אישורים, הקצאת משימות ועדכונים אוטומטיים לצוותים.',
   hero: {
     label: 'פתרונות / תהליכי עבודה',

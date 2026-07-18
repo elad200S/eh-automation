@@ -19,7 +19,7 @@ const RealEstateAutomation = () => {
   return (
     <>
       <SEOHead
-        title="אוטומציה לנדל&quot;ן — 5 תהליכים שחוסכים שעות בשבוע | EH Automation"
+        title="אוטומציה לנדל&quot;ן — 5 תהליכים שחוסכים שעות בשבוע | HEY Digital"
         description="גלו איך אוטומציה לנדל&quot;ן חוסכת למתווכים ולחברות נדל&quot;ן שעות עבודה מדי שבוע: ניהול לידים, פולו-אפ, קביעת פגישות ועוד."
         path="/blog/real-estate-automation"
         type="article"
