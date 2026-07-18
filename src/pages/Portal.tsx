@@ -221,11 +221,48 @@ const LeadsTab = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
-      .then(({ data }) => {
-        if (data) setSubmissions(data as Submission[]);
-        setLoading(false);
-      });
+    let mounted = true;
+
+    const load = () =>
+      supabase.from('contact_submissions').select('*').order('created_at', { ascending: false })
+        .then(({ data }) => {
+          if (!mounted) return;
+          if (data) setSubmissions(data as Submission[]);
+          setLoading(false);
+        });
+
+    load();
+
+    const channel = supabase
+      .channel('contact_submissions-portal')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'contact_submissions' },
+        (payload) => {
+          setSubmissions(prev => {
+            if (payload.eventType === 'INSERT') {
+              const row = payload.new as Submission;
+              if (prev.some(s => s.id === row.id)) return prev;
+              return [row, ...prev];
+            }
+            if (payload.eventType === 'UPDATE') {
+              const row = payload.new as Submission;
+              return prev.map(s => s.id === row.id ? row : s);
+            }
+            if (payload.eventType === 'DELETE') {
+              const row = payload.old as Submission;
+              return prev.filter(s => s.id !== row.id);
+            }
+            return prev;
+          });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      mounted = false;
+      supabase.removeChannel(channel);
+    };
   }, []);
 
   if (loading) return <div className="text-muted-foreground text-sm">טוען לידים...</div>;
