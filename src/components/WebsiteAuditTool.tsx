@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, X, AlertTriangle, CheckCircle2, Loader2, Smartphone, Globe, Eye, Zap } from 'lucide-react';
+import { Search, X, CheckCircle2, Loader2, Smartphone, Globe, Eye, Zap } from 'lucide-react';
 import { useContactPopup } from '@/contexts/ContactPopupContext';
 
 type ScanState = 'idle' | 'loading' | 'done' | 'error' | 'timeout';
@@ -55,6 +55,19 @@ const scoreBorder = (score: number) => {
   if (score >= PASS_THRESHOLD) return 'border-green-400/25 bg-green-400/5';
   if (score >= 50) return 'border-yellow-400/25 bg-yellow-400/5';
   return 'border-red-400/25 bg-red-400/5';
+};
+
+// צבעים לגרסה הבהירה של הדוח בפופ-אפ
+const lightScoreColor = (score: number) => {
+  if (score >= PASS_THRESHOLD) return 'text-emerald-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+};
+
+const lightBarColor = (score: number) => {
+  if (score >= PASS_THRESHOLD) return 'bg-emerald-500';
+  if (score >= 50) return 'bg-amber-400';
+  return 'bg-red-500';
 };
 
 const ScoreCard = ({
@@ -228,46 +241,83 @@ const WebsiteAuditTool = () => {
 
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm" dir="rtl">
-          <div className="bg-card border border-border rounded-2xl w-full max-w-lg relative shadow-2xl">
-            <button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 left-4 text-muted-foreground hover:text-foreground transition-colors z-10"
-            >
-              <X className="w-5 h-5" />
-            </button>
+          <div className="w-full max-w-lg relative rounded-2xl overflow-hidden shadow-2xl bg-white max-h-[90vh] overflow-y-auto">
 
-            <div className="p-5 pb-4 text-center border-b border-border">
-              <div className="w-12 h-12 rounded-full bg-red-500/10 flex items-center justify-center mb-2 mx-auto">
-                <AlertTriangle className="w-6 h-6 text-red-400" />
+            {/* כותרת הדוח — פס ירוק ממותג */}
+            <div className="relative px-6 py-5 text-white" style={{ background: 'linear-gradient(135deg,#0e7a4e,#06462c)' }}>
+              <button
+                onClick={() => setShowModal(false)}
+                className="absolute top-4 left-4 text-white/70 hover:text-white transition-colors z-10"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              <div className="flex items-center justify-between gap-4">
+                <div className="min-w-0">
+                  <div className="font-extrabold text-lg">EH <span style={{ color: '#3ddc97' }}>Automation</span></div>
+                  <div className="text-xs opacity-75 mt-0.5">דוח אבחון מהיר</div>
+                  <div className="text-xs mt-2 opacity-90 truncate" dir="ltr" style={{ textAlign: 'right' }}>
+                    {normalizeUrl(url.trim())}
+                  </div>
+                </div>
+                <div
+                  className="w-24 h-24 rounded-full grid place-items-center flex-shrink-0"
+                  style={{ background: `conic-gradient(#3ddc97 ${avgScore}%, rgba(255,255,255,.15) 0)` }}
+                >
+                  <div className="w-[76px] h-[76px] rounded-full grid place-items-center text-center" style={{ background: '#06462c' }}>
+                    <div>
+                      <div className="text-2xl font-extrabold leading-none tabular-nums">{avgScore}</div>
+                      <div className="text-[10px] opacity-70 mt-0.5">מתוך 100</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h3 className="text-lg font-bold text-foreground">
-                האתר מפסיד {missedPotential}% מהפוטנציאל שלו
-              </h3>
-              <p className="text-xs text-muted-foreground mt-0.5">הנה מה שגורם לך להפסיד לקוחות:</p>
             </div>
 
-            <div className="p-5 grid grid-cols-2 gap-3">
+            <div className="px-6 pt-4">
+              <h3 className="text-base font-extrabold" style={{ color: '#0e1b14' }}>
+                האתר מפסיד {missedPotential}% מהפוטנציאל שלו
+              </h3>
+              <p className="text-xs mt-0.5" style={{ color: '#5f7a6c' }}>הנה מה שגורם לך להפסיד לקוחות:</p>
+            </div>
+
+            <div className="p-6 pt-4 grid grid-cols-2 gap-3">
               {categories.map((cat) => (
-                <ScoreCard
+                <div
                   key={cat.id}
-                  icon={cat.icon}
-                  name={cat.name}
-                  score={cat.score}
-                  detail={cat.businessImpact}
-                />
+                  className="rounded-xl border p-3.5 flex flex-col gap-2"
+                  style={{ borderColor: '#dfe9e3', background: '#f4faf7' }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className={lightScoreColor(cat.score)}>{cat.icon}</span>
+                      <span className="font-semibold text-sm" style={{ color: '#0e1b14' }}>{cat.name}</span>
+                    </div>
+                    <span className={`text-2xl font-bold tabular-nums ${lightScoreColor(cat.score)}`}>{cat.score}</span>
+                  </div>
+                  <div className="w-full h-1.5 rounded-full overflow-hidden" style={{ background: '#dfe9e3' }}>
+                    <div className={`h-full rounded-full ${lightBarColor(cat.score)}`} style={{ width: `${cat.score}%` }} />
+                  </div>
+                  <p className="text-xs leading-snug" style={{ color: '#5f7a6c' }}>
+                    {cat.score >= PASS_THRESHOLD ? '✓ תקין' : cat.businessImpact}
+                  </p>
+                </div>
               ))}
             </div>
 
-            <div className="px-5 pb-5 flex flex-col gap-2">
+            {/* CTA — הצעדים הבאים */}
+            <div className="mx-6 mb-6 rounded-xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0e7a4e,#06462c)' }}>
+              <p className="font-bold text-sm mb-1">רוצים שנתקן את זה בשבילכם?</p>
+              <p className="text-xs opacity-80 mb-4">נשמח להראות לכם בדיוק מה אפשר לשפר ובכמה זמן.</p>
               <button
                 onClick={() => { setShowModal(false); openPopup(); }}
-                className="w-full bg-primary text-primary-foreground font-bold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity text-sm"
+                className="w-full bg-white font-bold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity text-sm"
+                style={{ color: '#06462c' }}
               >
                 דבר עם מומחה עכשיו
               </button>
               <button
                 onClick={() => setShowModal(false)}
-                className="w-full text-sm text-muted-foreground hover:text-foreground transition-colors py-2"
+                className="w-full text-xs text-white/70 hover:text-white transition-colors pt-3"
               >
                 סגור
               </button>
