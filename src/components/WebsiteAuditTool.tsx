@@ -345,12 +345,36 @@ const WebsiteAuditTool = () => {
             <div className="mx-6 mb-6 rounded-xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0e7a4e,#06462c)' }}>
               <p className="font-bold text-sm mb-1">רוצים שנתקן את זה בשבילכם?</p>
               <p className="text-xs opacity-80 mb-4">נשמח להראות לכם בדיוק מה אפשר לשפר ובכמה זמן.</p>
+
+              {/* דוח מפורט בתשלום — מבצע */}
+              <div className="rounded-xl bg-white/10 border border-white/15 p-4 mb-3">
+                <div className="flex items-center justify-between gap-2 mb-2">
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: '#3ddc97', color: '#06462c' }}>
+                    מחיר מיוחד לשבוע הקרוב
+                  </span>
+                  <div className="flex items-baseline gap-2">
+                    <span className="text-xs line-through opacity-60">₪299</span>
+                    <span className="text-xl font-extrabold" style={{ color: '#3ddc97' }}>₪50</span>
+                  </div>
+                </div>
+                <p className="font-bold text-sm">דוח אבחון מפורט מלא</p>
+                <p className="text-xs opacity-80 mt-0.5 leading-snug">
+                  ניתוח מעמיק של כל האתר + מומחה שעובר איתכם על כל ממצא עם תוכנית פעולה מסודרת
+                </p>
+                <button
+                  onClick={() => { setShowModal(false); openPopup(); }}
+                  className="w-full mt-3 font-bold rounded-xl px-6 py-2.5 hover:opacity-90 transition-opacity text-sm"
+                  style={{ background: '#3ddc97', color: '#06462c' }}
+                >
+                  הזמן דוח מפורט — ₪50
+                </button>
+              </div>
+
               <button
                 onClick={() => { setShowModal(false); openPopup(); }}
-                className="w-full bg-white font-bold rounded-xl px-6 py-3 hover:opacity-90 transition-opacity text-sm"
-                style={{ color: '#06462c' }}
+                className="w-full border border-white/30 text-white font-bold rounded-xl px-6 py-3 hover:bg-white/10 transition-colors text-sm"
               >
-                דבר עם מומחה עכשיו
+                דבר עם מומחה עכשיו — חינם
               </button>
               <button
                 onClick={() => setShowModal(false)}
