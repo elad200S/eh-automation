@@ -71,7 +71,12 @@ const ContactPopup = () => {
         business: formData.business.trim(),
         automation_type: automationType,
       });
-      if (dbError) console.error('DB insert error:', dbError);
+      if (dbError) {
+        console.error('DB insert error:', dbError);
+        toast({ title: 'שגיאה בשמירת הפנייה', description: 'אנא נסה שוב או צור קשר בוואטסאפ.', variant: 'destructive' });
+        setIsSubmitting(false);
+        return;
+      }
 
       // Also send to Make webhook
       const payload: Record<string, string> = {

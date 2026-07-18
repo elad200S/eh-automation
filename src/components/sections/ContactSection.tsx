@@ -49,7 +49,7 @@ const ContactSection = () => {
     
     try {
       const normalizedPhone = normalizePhone(formData.phone);
-      const business = formData.business.trim() || '—';
+      const business = formData.business.trim() || 'לא צוין';
       const automationType = formData.automationType || 'custom';
 
       // Save to database
@@ -59,7 +59,12 @@ const ContactSection = () => {
         business,
         automation_type: automationType,
       });
-      if (dbError) console.error('DB insert error:', dbError);
+      if (dbError) {
+        console.error('DB insert error:', dbError);
+        toast({ title: 'שגיאה בשמירת הפנייה', description: 'אנא נסה שוב או צור קשר בוואטסאפ.', variant: 'destructive' });
+        setIsSubmitting(false);
+        return;
+      }
 
       // Also send to Make
       const payload: Record<string, string> = {
