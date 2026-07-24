@@ -300,7 +300,7 @@ const WebsiteAuditTool = () => {
           <div className="w-full max-w-lg relative rounded-2xl overflow-hidden shadow-2xl bg-white max-h-[90vh] overflow-y-auto">
 
             {/* כותרת הדוח — פס ירוק ממותג */}
-            <div className="relative px-6 py-5 text-white" style={{ background: 'linear-gradient(135deg,#0e7a4e,#06462c)' }}>
+            <div className="relative px-6 py-5 text-white" style={{ background: 'linear-gradient(135deg,#0A8E7F,#0B1B1A)' }}>
               <button
                 onClick={() => setShowModal(false)}
                 className="absolute top-4 left-4 text-white/70 hover:text-white transition-colors z-10"
@@ -309,7 +309,7 @@ const WebsiteAuditTool = () => {
               </button>
               <div className="flex items-center justify-between gap-4">
                 <div className="min-w-0">
-                  <div className="font-extrabold text-lg">HEY <span style={{ color: '#3ddc97' }}>Digital</span></div>
+                  <div className="font-extrabold text-lg">HEY <span style={{ color: '#12CBB0' }}>Digital</span></div>
                   <div className="text-xs opacity-75 mt-0.5">דוח אבחון מהיר</div>
                   <div className="text-xs mt-2 opacity-90 truncate" dir="ltr" style={{ textAlign: 'right' }}>
                     {normalizeUrl(url.trim())}
@@ -317,9 +317,9 @@ const WebsiteAuditTool = () => {
                 </div>
                 <div
                   className="w-24 h-24 rounded-full grid place-items-center flex-shrink-0"
-                  style={{ background: `conic-gradient(#3ddc97 ${avgScore}%, rgba(255,255,255,.15) 0)` }}
+                  style={{ background: `conic-gradient(#12CBB0 ${avgScore}%, rgba(255,255,255,.15) 0)` }}
                 >
-                  <div className="w-[76px] h-[76px] rounded-full grid place-items-center text-center" style={{ background: '#06462c' }}>
+                  <div className="w-[76px] h-[76px] rounded-full grid place-items-center text-center" style={{ background: '#0B1B1A' }}>
                     <div>
                       <div className="text-2xl font-extrabold leading-none tabular-nums">{avgScore}</div>
                       <div className="text-[10px] opacity-70 mt-0.5">מתוך 100</div>
@@ -361,19 +361,19 @@ const WebsiteAuditTool = () => {
             </div>
 
             {/* CTA — הצעדים הבאים */}
-            <div className="mx-6 mb-6 rounded-xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0e7a4e,#06462c)' }}>
+            <div className="mx-6 mb-6 rounded-xl p-5 text-white" style={{ background: 'linear-gradient(135deg,#0A8E7F,#0B1B1A)' }}>
               <p className="font-bold text-sm mb-1">רוצים שנתקן את זה בשבילכם?</p>
               <p className="text-xs opacity-80 mb-4">נשמח להראות לכם בדיוק מה אפשר לשפר ובכמה זמן.</p>
 
               {/* דוח מפורט בתשלום — מבצע */}
               <div className="rounded-xl bg-white/10 border border-white/15 p-4 mb-3">
                 <div className="flex items-center justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: '#3ddc97', color: '#06462c' }}>
+                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap" style={{ background: '#12CBB0', color: '#0B1B1A' }}>
                     מחיר מיוחד לשבוע הקרוב
                   </span>
                   <div className="flex items-baseline gap-2">
                     <span className="text-xs line-through opacity-60">₪299</span>
-                    <span className="text-xl font-extrabold" style={{ color: '#3ddc97' }}>₪50</span>
+                    <span className="text-xl font-extrabold" style={{ color: '#12CBB0' }}>₪50</span>
                   </div>
                 </div>
                 <p className="font-bold text-sm">דוח אבחון מפורט מלא</p>
@@ -383,7 +383,7 @@ const WebsiteAuditTool = () => {
                 <button
                   onClick={() => { setShowModal(false); openPopup(); }}
                   className="w-full mt-3 font-bold rounded-xl px-6 py-2.5 hover:opacity-90 transition-opacity text-sm"
-                  style={{ background: '#3ddc97', color: '#06462c' }}
+                  style={{ background: '#12CBB0', color: '#0B1B1A' }}
                 >
                   הזמן דוח מפורט — ₪50
                 </button>

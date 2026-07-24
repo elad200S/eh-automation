@@ -33,49 +33,49 @@
 
 @layer base {
   :root {
-    /* Dark theme palette */
-    --background: 220 15% 9%;
-    --background-secondary: 220 15% 12%;
+    /* Dark theme palette — HEY Digital brand (2026-07-19) */
+    --background: 176 42% 7%;
+    --background-secondary: 176 35% 10%;
     --foreground: 0 0% 95%;
-    --foreground-muted: 220 10% 65%;
+    --foreground-muted: 175 10% 65%;
 
-    /* Primary - Emerald green (for headings + buttons) */
-    --primary: 160 84% 39%;
+    /* Primary - Teal (#12CBB0, for headings + buttons) */
+    --primary: 171 84% 43%;
     --primary-foreground: 0 0% 100%;
-    --primary-glow: 160 84% 39% / 0.18;
-    --primary-light: 160 60% 12%;
+    --primary-glow: 171 84% 43% / 0.18;
+    --primary-light: 171 60% 12%;
 
-    /* Secondary - Teal green */
-    --secondary: 168 70% 45%;
+    /* Secondary - Deep teal (#0A8E7F) */
+    --secondary: 173 87% 30%;
     --secondary-foreground: 0 0% 100%;
-    --secondary-light: 168 60% 12%;
+    --secondary-light: 173 60% 12%;
 
-    /* Accent - Green */
-    --accent: 160 60% 48%;
-    --accent-foreground: 0 0% 100%;
-    --accent-light: 160 50% 12%;
+    /* Accent - Light mint (#5DF5D1) */
+    --accent: 166 88% 66%;
+    --accent-foreground: 176 42% 7%;
+    --accent-light: 166 50% 14%;
 
     /* Surface colors */
-    --card: 220 15% 13%;
+    --card: 176 30% 11%;
     --card-foreground: 0 0% 95%;
-    --popover: 220 15% 13%;
+    --popover: 176 30% 11%;
     --popover-foreground: 0 0% 95%;
 
     /* Muted */
-    --muted: 220 15% 17%;
-    --muted-foreground: 220 10% 60%;
+    --muted: 176 20% 16%;
+    --muted-foreground: 175 10% 60%;
 
     /* States */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --success: 160 60% 48%;
-    --success-light: 160 50% 12%;
+    --success: 166 88% 66%;
+    --success-light: 166 50% 14%;
 
     /* Borders and inputs */
-    --border: 220 15% 20%;
-    --border-subtle: 220 15% 16%;
-    --input: 220 15% 15%;
-    --ring: 160 84% 39%;
+    --border: 176 20% 20%;
+    --border-subtle: 176 20% 16%;
+    --input: 176 20% 15%;
+    --ring: 171 84% 43%;
 
     --radius: 0.5rem;
     
