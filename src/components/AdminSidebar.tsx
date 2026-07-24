@@ -25,7 +25,7 @@ export const AdminSidebar = ({ isAdmin }: { isAdmin: boolean }) => {
       {/* Desktop sidebar */}
       <aside className="hidden md:flex fixed top-0 right-0 h-full w-52 bg-card border-l border-border z-20 flex-col" dir="rtl">
         <div className="p-4 border-b border-border">
-          <img src="/logo-eh.png" alt="HEY Digital" className="h-7" />
+          <img src="/logo-hey.png" alt="HEY Digital" className="h-7" />
           <p className="text-xs text-muted-foreground mt-1.5">{isAdmin ? 'פאנל ניהול' : 'פאנל לקוח'}</p>
         </div>
 
@@ -76,7 +76,7 @@ export const AdminSidebar = ({ isAdmin }: { isAdmin: boolean }) => {
 
       {/* Mobile top bar */}
       <header className="md:hidden sticky top-0 z-20 border-b border-border bg-background/95 backdrop-blur px-4 py-3 flex items-center justify-between" dir="rtl">
-        <img src="/logo-eh.png" alt="HEY Digital" className="h-6" />
+        <img src="/logo-hey.png" alt="HEY Digital" className="h-6" />
         <div className="flex items-center gap-3">
           {items.map(item => (
             <Link

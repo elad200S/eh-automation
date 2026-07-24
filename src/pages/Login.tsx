@@ -41,7 +41,7 @@ const Login = () => {
 
         <div className="text-center mb-10">
           <Link to="/">
-            <img src="/logo-eh.png" alt="HEY Digital" className="h-12 mx-auto mb-4" />
+            <img src="/logo-hey.png" alt="HEY Digital" className="h-12 mx-auto mb-4" />
           </Link>
           <h1 className="text-2xl font-bold text-foreground">כניסת לקוחות</h1>
           <p className="text-muted-foreground text-sm mt-2">הכנס לפאנל הניהול האישי שלך</p>

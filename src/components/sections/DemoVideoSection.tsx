@@ -131,7 +131,7 @@ const DemoVideoSection = () => {
               }}
             >
               {/* Logo */}
-              <img src="/logo-eh.png" alt="HEY Digital" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
+              <img src="/logo-hey.png" alt="HEY Digital" style={{ height: 26, width: 'auto', objectFit: 'contain' }} />
 
               {/* Nav links */}
               <div className="flex gap-4 text-[10px]" style={{ color: 'hsl(215,20%,50%)' }}>

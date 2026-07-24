@@ -126,7 +126,7 @@ const MobileMenuPortal = ({
             </button>
 
             <Link to="/" onClick={onClose} className="flex items-center">
-              <img src="/logo-eh.png" alt="HEY Digital" className="h-10 w-auto" fetchPriority="high" />
+              <img src="/logo-hey.png" alt="HEY Digital" className="h-10 w-auto" fetchPriority="high" />
             </Link>
           </div>
         </div>
@@ -296,7 +296,7 @@ const Navbar = () => {
       >
         <div className="container flex h-12 lg:h-16 items-center justify-between px-6">
           <Link to="/" className="flex items-center">
-            <img src="/logo-eh.png" alt="HEY Digital" className="h-10 w-auto block" fetchPriority="high" />
+            <img src="/logo-hey.png" alt="HEY Digital" className="h-10 w-auto block" fetchPriority="high" />
           </Link>
 
           <div className="hidden items-center gap-7 lg:flex">

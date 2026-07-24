@@ -98,6 +98,19 @@ const About = () => {
           </div>
         </Section>
 
+        <Section id="brand">
+          <div className="max-w-4xl mx-auto">
+            <div className="rounded-2xl overflow-hidden border border-primary/20 shadow-lg">
+              <img
+                src="/hey-cover.png"
+                alt="HEY Digital — Automate. Grow. Succeed. פתרונות דיגיטליים שמביאים תוצאות"
+                className="w-full h-auto"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        </Section>
+
         <Section id="values" className="bg-muted/30">
           <div className="max-w-4xl">
             <p className="text-sm font-medium text-primary mb-2">הגישה שלנו</p>
