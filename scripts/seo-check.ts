@@ -9,7 +9,7 @@
  * Exits with code 1 if any finding is broken (CI-friendly).
  */
 
-const BASE = (process.argv[2] || 'https://eh-automation.lovable.app').replace(/\/$/, '');
+const BASE = (process.argv[2] || 'https://heydigital.co.il').replace(/\/$/, '');
 
 type Finding = { area: string; url: string; severity: 'error' | 'warn'; message: string };
 const findings: Finding[] = [];
