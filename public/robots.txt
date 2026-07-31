@@ -3,4 +3,4 @@ Allow: /
 Disallow: /privacy
 Disallow: /cookies
 
-Sitemap: https://heydigital.co.il/sitemap.xml
+Sitemap: https://www.heydigital.co.il/sitemap.xml
