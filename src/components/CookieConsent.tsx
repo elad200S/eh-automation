@@ -14,6 +14,24 @@ interface ConsentState {
   marketing: boolean;
 }
 
+declare global {
+  interface Window {
+    gtag?: (...args: unknown[]) => void;
+  }
+}
+
+// Tells Google Consent Mode (GTM) what the visitor actually chose. Without this call,
+// the consent banner only affects our own localStorage — GTM never finds out, and every
+// tag keeps running under its "denied" default regardless of what the user clicked.
+const applyConsentToGtm = (state: ConsentState) => {
+  window.gtag?.('consent', 'update', {
+    analytics_storage: state.analytics ? 'granted' : 'denied',
+    ad_storage: state.marketing ? 'granted' : 'denied',
+    ad_user_data: state.marketing ? 'granted' : 'denied',
+    ad_personalization: state.marketing ? 'granted' : 'denied',
+  });
+};
+
 const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
@@ -32,6 +50,9 @@ const CookieConsent = () => {
       try {
         const stored = JSON.parse(consent);
         setPreferences(stored);
+        // Consent Mode defaults to "denied" on every fresh pageload (set in index.html) —
+        // a returning visitor's earlier choice has to be re-applied every time, not just once.
+        applyConsentToGtm(stored);
       } catch {
         setIsVisible(true);
       }
@@ -40,6 +61,7 @@ const CookieConsent = () => {
 
   const saveConsent = (state: ConsentState) => {
     localStorage.setItem('cookie-consent', JSON.stringify(state));
+    applyConsentToGtm(state);
     setIsVisible(false);
     setShowPreferences(false);
   };
