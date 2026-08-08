@@ -2,7 +2,7 @@
 
 ## דומיין האתר
 
-**הדומיין הפעיל הוא: `https://heydigital.co.il`**
+**הדומיין הפעיל הוא: `https://www.heydigital.co.il`**
 
 כל הסוכנים האוטומטיים (SEO tracker, blog publisher, ועוד) חייבים לחפש ולמדוד **`heydigital.co.il`** בלבד.
 
@@ -14,7 +14,7 @@
 ## SEO Keyword Tracker
 
 כשהסוכן רץ לבדיקת מיקומים בגוגל:
-- אתר יעד: `https://heydigital.co.il`
+- אתר יעד: `https://www.heydigital.co.il`
 - לחפש האם `heydigital.co.il` מופיע בתוצאות — לא `ehautomation.co.il`
 - לשמור תוצאות ב-`keyword-rankings.md`
 
@@ -23,6 +23,6 @@
 ## Blog Publisher
 
 כשהסוכן מפרסם מאמר:
-- URL בסיס: `https://heydigital.co.il`
+- URL בסיס: `https://www.heydigital.co.il`
 - Sitemap: `/public/sitemap.xml` (כבר מכיל `heydigital.co.il`)
 - SEO metadata: `src/lib/seo.tsx` (כבר מוגדר ל-`heydigital.co.il`)

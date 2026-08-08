@@ -1,8 +1,11 @@
 import { Helmet } from 'react-helmet-async';
 
-const SITE_URL = 'https://heydigital.co.il';
+// www is the canonical live host — heydigital.co.il (apex) 308-redirects here.
+// Pointing canonical/OG/schema URLs at the redirect source instead of the final
+// destination is exactly the kind of thing that makes crawlers waste a hop for no reason.
+const SITE_URL = 'https://www.heydigital.co.il';
 const SITE_NAME = 'HEY Digital';
-const OG_IMAGE = 'https://heydigital.co.il/og-image.png';
+const OG_IMAGE = 'https://www.heydigital.co.il/og-image.png';
 
 interface SEOProps {
   title: string;
