@@ -57,6 +57,7 @@ const BlogZapierCompleteGuide = lazy(() => import("./pages/blog/ZapierCompleteGu
 const BlogBusinessAutomationGuide2026 = lazy(() => import("./pages/blog/BusinessAutomationGuide2026"));
 const BlogBase44IsraeliStartupGuide = lazy(() => import("./pages/blog/Base44IsraeliStartupGuide"));
 const BlogAiAgentBusinessGuide = lazy(() => import("./pages/blog/AiAgentBusinessGuide"));
+const BlogLovableAiWebsiteBuilderGuide = lazy(() => import("./pages/blog/LovableAiWebsiteBuilderGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -152,6 +153,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/business-automation-guide-2026" element={<BlogBusinessAutomationGuide2026 />} />
           <Route path="/blog/base44-israeli-startup-guide" element={<BlogBase44IsraeliStartupGuide />} />
           <Route path="/blog/ai-agent-business-guide" element={<BlogAiAgentBusinessGuide />} />
+          <Route path="/blog/lovable-ai-website-builder-guide" element={<BlogLovableAiWebsiteBuilderGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
