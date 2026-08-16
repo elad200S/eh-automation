@@ -12,6 +12,7 @@ const AutomationShowcaseSection = lazy(() => import('@/components/sections/Autom
 const ToolsSection = lazy(() => import('@/components/sections/ToolsSection'));
 const AutomationAnimation = lazy(() => import('@/components/sections/AutomationAnimation'));
 const SolutionsOverviewSection = lazy(() => import('@/components/sections/SolutionsOverviewSection'));
+const StickyStackingCardsSection = lazy(() => import('@/components/sections/StickyStackingCardsSection'));
 const AboutSection = lazy(() => import('@/components/sections/AboutSection'));
 const FAQSection = lazy(() => import('@/components/sections/FAQSection'));
 const ContactSection = lazy(() => import('@/components/sections/ContactSection'));
@@ -43,6 +44,10 @@ const Index = () => {
           <CinematicReveal index={5}><ToolsSection /></CinematicReveal>
           <CinematicReveal index={6}><AutomationAnimation /></CinematicReveal>
           <CinematicReveal index={7}><SolutionsOverviewSection /></CinematicReveal>
+
+          {/* Not wrapped in CinematicReveal on purpose — its transform would break the sticky/fixed positioning below */}
+          <StickyStackingCardsSection />
+
           <CinematicReveal index={8}><AboutSection /></CinematicReveal>
           <CinematicReveal index={9}><FAQSection /></CinematicReveal>
           <CinematicReveal index={10}><ContactSection /></CinematicReveal>
