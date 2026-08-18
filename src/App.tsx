@@ -61,6 +61,7 @@ const BlogLovableAiWebsiteBuilderGuide = lazy(() => import("./pages/blog/Lovable
 const BlogWhatIsVibeCodingGuide = lazy(() => import("./pages/blog/WhatIsVibeCodingGuide"));
 const BlogLovableVsBase44VsCustomDev = lazy(() => import("./pages/blog/LovableVsBase44VsCustomDev"));
 const BlogBusinessProcessOptimization = lazy(() => import("./pages/blog/BusinessProcessOptimization"));
+const BlogBlogContentAutomationGuide = lazy(() => import("./pages/blog/BlogContentAutomationGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -160,6 +161,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/what-is-vibe-coding-guide" element={<BlogWhatIsVibeCodingGuide />} />
           <Route path="/blog/lovable-vs-base44-vs-custom-dev" element={<BlogLovableVsBase44VsCustomDev />} />
           <Route path="/blog/business-process-optimization" element={<BlogBusinessProcessOptimization />} />
+          <Route path="/blog/blog-content-automation-guide" element={<BlogBlogContentAutomationGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
