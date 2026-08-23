@@ -63,6 +63,7 @@ const BlogLovableVsBase44VsCustomDev = lazy(() => import("./pages/blog/LovableVs
 const BlogBusinessProcessOptimization = lazy(() => import("./pages/blog/BusinessProcessOptimization"));
 const BlogBlogContentAutomationGuide = lazy(() => import("./pages/blog/BlogContentAutomationGuide"));
 const BlogAutomationSystemsComparison = lazy(() => import("./pages/blog/AutomationSystemsComparison"));
+const BlogGeoGenerativeEngineOptimizationGuide = lazy(() => import("./pages/blog/GeoGenerativeEngineOptimizationGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -164,6 +165,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/business-process-optimization" element={<BlogBusinessProcessOptimization />} />
           <Route path="/blog/blog-content-automation-guide" element={<BlogBlogContentAutomationGuide />} />
           <Route path="/blog/automation-systems-comparison" element={<BlogAutomationSystemsComparison />} />
+          <Route path="/blog/geo-generative-engine-optimization-guide" element={<BlogGeoGenerativeEngineOptimizationGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />

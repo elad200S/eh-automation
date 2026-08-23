@@ -304,4 +304,11 @@
     <priority>0.75</priority>
   </url>
 
+  <url>
+    <loc>https://heydigital.co.il/blog/geo-generative-engine-optimization-guide</loc>
+    <lastmod>2026-08-23</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
 </urlset>
