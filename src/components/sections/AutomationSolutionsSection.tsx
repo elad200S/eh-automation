@@ -174,7 +174,7 @@ const AutomationSolutionsSection = () => {
               ))}
             </div>
 
-            <div className="relative" style={{ minHeight: 220 }}>
+            <div className="relative" style={{ minHeight: 270 }}>
               <div className="absolute rounded-2xl border border-border/20 bg-card/25 pointer-events-none"
                 style={{ inset: 0, transform: 'translateY(10px) scale(0.94)', zIndex: 1 }} />
               <div className="absolute rounded-2xl border border-border/35 bg-card/40 pointer-events-none"
@@ -186,16 +186,16 @@ const AutomationSolutionsSection = () => {
                   <div
                     key={index}
                     ref={el => { mobileCardRefs.current[index] = el; }}
-                    className="absolute inset-0 rounded-2xl border border-border/60 p-6 overflow-hidden"
+                    className="absolute inset-0 rounded-2xl border border-border/60 p-7 overflow-hidden"
                     style={{ background: 'hsl(var(--card))', boxShadow: '0 8px 32px rgba(0,0,0,0.28), 0 2px 8px rgba(0,0,0,0.18)' }}
                   >
                     <div className="absolute top-0 left-6 right-6 h-px"
                       style={{ background: `linear-gradient(to right, transparent, ${sol.color}80, transparent)` }} />
                     <div className="absolute top-1 right-3 font-mono font-black pointer-events-none select-none"
-                      style={{ fontSize: 80, color: `${sol.color}10`, lineHeight: 1 }}>{sol.tag}</div>
+                      style={{ fontSize: 56, color: `${sol.color}10`, lineHeight: 1 }}>{sol.tag}</div>
 
                     <div className="relative pt-2" dir="rtl">
-                      <div className="flex items-center gap-3 mb-4">
+                      <div className="flex items-center gap-3 mb-5">
                         <div className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
                           style={{ background: `${sol.color}18` }}>
                           <SolIcon className="w-5 h-5" style={{ color: sol.color }} />
@@ -204,7 +204,7 @@ const AutomationSolutionsSection = () => {
                           {sol.tag}
                         </span>
                       </div>
-                      <h3 className="text-base font-semibold text-foreground mb-2">{sol.title}</h3>
+                      <h3 className="text-lg font-semibold text-foreground mb-3">{sol.title}</h3>
                       <p className="text-sm text-muted-foreground leading-relaxed">{sol.description}</p>
                     </div>
                   </div>

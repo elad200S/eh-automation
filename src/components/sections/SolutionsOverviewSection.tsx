@@ -1,8 +1,14 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3, Globe } from 'lucide-react';
-import { useRef } from 'react';
-import { motion, useScroll, useTransform, useReducedMotion } from 'framer-motion';
-import Section from '@/components/Section';
+import { useRef, useState, useEffect, type RefObject } from 'react';
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+  useReducedMotion,
+  type MotionValue,
+} from 'framer-motion';
 import { cn } from '@/lib/utils';
 import RevealText from '@/components/RevealText';
 import ScrambleText from '@/components/ScrambleText';
@@ -70,115 +76,145 @@ const solutions = [
     iconColor: 'text-blue-400',
     iconBg: 'bg-blue-400/15',
     accent: '#60a5fa',
-    featured: true,
   },
 ];
 
 type Solution = typeof solutions[number];
 
-/** Ambient glow orb(s), scoped to this section, that shift position as the user scrolls past it. */
-const StickyBackground = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const prefersReducedMotion = useReducedMotion();
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ['start end', 'end start'],
-  });
+/**
+ * Manually computed "pin" state, in place of native CSS `position: sticky`.
+ *
+ * This site's global CSS sets `overflow-x: hidden` on both <html> and <body>
+ * without a matching `overflow-y`, which (per the CSS spec) makes the browser
+ * implicitly treat their overflow-y as `auto` — turning <body> into its own
+ * independent scroll container, nested inside <html>. Native `position: sticky`
+ * resolves against that nearest scrolling ancestor (<body>), which barely moves
+ * relative to the real scroll — so sticky elements never pin correctly anywhere
+ * on this site. That's a pre-existing, site-wide quirk; fixing it globally is
+ * out of scope here, so this computes the equivalent of sticky manually from
+ * `getBoundingClientRect()` (always viewport-relative, unaffected by which
+ * ancestor "owns" the scroll) and pins via `position: fixed` instead.
+ *
+ * Important: this only works correctly if no ANCESTOR of the pinned element has
+ * a CSS `transform` applied (that would change `position: fixed`'s containing
+ * block). That's why this section no longer uses the shared `Section` wrapper
+ * or `CinematicReveal` — both apply scroll-driven transforms to their contents.
+ */
+const usePinState = <T extends HTMLElement>(ref: RefObject<T>) => {
+  const [state, setState] = useState<'before' | 'pinned' | 'after'>('before');
 
-  const y1 = useTransform(scrollYProgress, [0, 1], [-60, 60]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [50, -70]);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
 
-  return (
-    <div ref={ref} className="absolute inset-0 pointer-events-none" aria-hidden="true">
-      <motion.div
-        style={prefersReducedMotion ? undefined : { y: y1 }}
-        className="absolute -top-32 -right-24 w-[420px] h-[420px] rounded-full blur-[110px] opacity-25 bg-[radial-gradient(circle,hsl(var(--primary))_0%,transparent_70%)]"
-      />
-      <motion.div
-        style={prefersReducedMotion ? undefined : { y: y2 }}
-        className="absolute bottom-0 -left-24 w-[360px] h-[360px] rounded-full blur-[100px] opacity-20 bg-[radial-gradient(circle,hsl(var(--accent))_0%,transparent_70%)]"
-      />
-    </div>
-  );
+    const update = () => {
+      const rect = el.getBoundingClientRect();
+      if (rect.top > 0) setState('before');
+      else if (rect.bottom <= window.innerHeight) setState('after');
+      else setState('pinned');
+    };
+
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      window.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, [ref]);
+
+  return state;
 };
 
-/** A single glassmorphism solution card with a staggered scroll-triggered entrance. */
-const GlassCard = ({ solution: s, index }: { solution: Solution; index: number }) => {
+/** Fixed ambient backdrop behind the stacking cards — faded in only while this area is in view. */
+const PinnedBackdrop = ({ areaRef }: { areaRef: RefObject<HTMLElement> }) => {
+  const isInView = useInView(areaRef, { margin: '0px 0px -10% 0px' });
   const prefersReducedMotion = useReducedMotion();
 
   return (
     <motion.div
-      initial={prefersReducedMotion ? false : { opacity: 0, y: 24 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.2 }}
-      transition={{
-        duration: 0.5,
-        delay: prefersReducedMotion ? 0 : Math.min(index, 6) * 0.08,
-        ease: [0.22, 1, 0.36, 1],
-      }}
-      className={cn(s.featured && 'sm:col-span-2')}
+      className="fixed inset-0 pointer-events-none z-0"
+      aria-hidden="true"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: isInView ? 1 : 0 }}
+      transition={{ duration: prefersReducedMotion ? 0 : 0.6 }}
+    >
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full border border-white/10" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full blur-[140px] opacity-25 bg-[radial-gradient(circle,hsl(var(--primary))_0%,transparent_70%)]" />
+    </motion.div>
+  );
+};
+
+/**
+ * One stacking solution card. Every card is absolutely stacked in the same
+ * spot; card i slides up into place during card (i-1)'s segment, then itself
+ * shrinks + darkens during its own segment as card (i+1) arrives on top of it.
+ */
+const StackCard = ({
+  solution: s,
+  index,
+  total,
+  scrollYProgress,
+}: {
+  solution: Solution;
+  index: number;
+  total: number;
+  scrollYProgress: MotionValue<number>;
+}) => {
+  const prefersReducedMotion = useReducedMotion();
+  const seg = 1 / total;
+  const segStart = index * seg;
+  const segEnd = (index + 1) * seg;
+  const isFirst = index === 0;
+  const isLast = index === total - 1;
+
+  const y = useTransform(
+    scrollYProgress,
+    isFirst ? [0, seg] : [segStart - seg, segStart],
+    isFirst ? ['0dvh', '0dvh'] : ['100dvh', '0dvh']
+  );
+  const scale = useTransform(scrollYProgress, [segStart, segEnd], isLast ? [1, 1] : [1, 0.92]);
+  const scrimOpacity = useTransform(scrollYProgress, [segStart, segEnd], isLast ? [0, 0] : [0, 0.45]);
+
+  return (
+    <motion.div
+      style={prefersReducedMotion ? { zIndex: index } : { y, scale, zIndex: index }}
+      className="absolute inset-0 flex items-center justify-center px-4 sm:px-6"
     >
       <Link
         to={s.href}
-        className={cn(
-          'group relative block rounded-2xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden',
-          s.featured ? 'p-8' : 'p-6'
-        )}
+        className="group relative w-full max-w-2xl rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
       >
-        {/* Per-solution accent glow — stronger on featured */}
+        {/* Accent glow */}
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-500"
-          style={{
-            background: `radial-gradient(ellipse at top right, ${s.accent}${s.featured ? '14' : '0d'}, transparent 60%)`,
-          }}
+          className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+          style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
         />
+        {/* Thin glowing border */}
         <div
-          className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-400"
-          style={{
-            background: `radial-gradient(ellipse at top right, ${s.accent}22, transparent 60%)`,
-          }}
+          className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+          style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
         />
-
-        {/* Glowing 1px border — subtle always-on, intensifies on hover */}
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none transition-opacity duration-300"
-          style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40`, opacity: 0.35 }}
-        />
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-          style={{ boxShadow: `inset 0 0 0 1px ${s.accent}90` }}
-        />
-
-        <div className={cn('relative flex items-start gap-4', s.featured ? 'flex-row' : '')} dir="rtl">
-          {/* Icon */}
-          <div className={cn(
-            'rounded-xl flex items-center justify-center flex-shrink-0 transition-transform duration-300 group-hover:scale-110',
-            s.iconBg,
-            s.featured ? 'w-16 h-16' : 'w-12 h-12'
-          )}>
-            <s.icon className={cn(s.featured ? 'w-8 h-8' : 'w-6 h-6', s.iconColor)} />
-          </div>
-
-          {/* Text */}
-          <div className="flex-1 min-w-0">
-            <h3 className={cn(
-              'font-semibold text-foreground mb-1.5 group-hover:text-white transition-colors',
-              s.featured ? 'text-lg' : 'text-base'
-            )}>
-              {s.title}
-            </h3>
-            <p className={cn(
-              'text-muted-foreground leading-relaxed',
-              s.featured ? 'text-sm max-w-xl' : 'text-sm'
-            )}>
-              {s.description}
-            </p>
-          </div>
-
-          {/* Arrow */}
-          <ArrowLeft
-            className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1"
+        {/* Soft darkening scrim as the next card is about to cover this one */}
+        {!isLast && !prefersReducedMotion && (
+          <motion.div
+            className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none bg-black"
+            style={{ opacity: scrimOpacity }}
           />
+        )}
+
+        <div className="relative flex items-start gap-4" dir="rtl">
+          <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
+            <s.icon className={cn('w-7 h-7', s.iconColor)} />
+          </div>
+          <div className="flex-1 min-w-0">
+            <span className="font-mono text-xs text-muted-foreground/50">
+              {String(index + 1).padStart(2, '0')}
+            </span>
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
+            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
+          </div>
+          <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
         </div>
       </Link>
     </motion.div>
@@ -186,40 +222,63 @@ const GlassCard = ({ solution: s, index }: { solution: Solution; index: number }
 };
 
 const SolutionsOverviewSection = () => {
+  const stackRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: stackRef,
+    offset: ['start start', 'end end'],
+  });
+  const pinState = usePinState(stackRef);
+
   return (
-    <Section id="solutions-overview">
-      <div className="relative overflow-hidden max-w-5xl mx-auto">
-        <StickyBackground />
-
-        <div className="relative z-10">
-          {/* Header */}
-          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-            <div className="text-center md:text-right flex-1">
-              <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">
-                <ScrambleText text="מה אנחנו בונים" />
-              </p>
-              <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
-                פתרונות אוטומציה לעסקים
-              </RevealText>
-            </div>
-            <Link
-              to="/solutions"
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors mx-auto md:mx-0 flex-shrink-0"
-            >
-              לכל הפתרונות
-              <ArrowLeft className="w-4 h-4" />
-            </Link>
+    // Deliberately not using the shared `Section` wrapper or `CinematicReveal` here —
+    // both apply scroll-driven transforms to their contents, which would break the
+    // `position: fixed` pin below (see usePinState's comment).
+    <section id="solutions-overview" className="relative py-10 md:py-14">
+      <div className="container">
+        <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
+          <div className="text-center md:text-right flex-1">
+            <p className="font-mono text-xs uppercase tracking-[0.14em] text-primary mb-3 text-center">
+              <ScrambleText text="מה אנחנו בונים" />
+            </p>
+            <RevealText className="text-4xl md:text-5xl font-bold text-foreground">
+              פתרונות אוטומציה לעסקים
+            </RevealText>
           </div>
-
-          {/* Cards grid */}
-          <div className="grid sm:grid-cols-2 gap-4">
-            {solutions.map((s, i) => (
-              <GlassCard key={i} solution={s} index={i} />
-            ))}
-          </div>
+          <Link
+            to="/solutions"
+            className="inline-flex items-center gap-2 text-sm font-medium text-primary hover:text-primary/80 transition-colors mx-auto md:mx-0 flex-shrink-0"
+          >
+            לכל הפתרונות
+            <ArrowLeft className="w-4 h-4" />
+          </Link>
         </div>
       </div>
-    </Section>
+
+      {/* Stacking cards — each sticks below the header, then the next one covers it.
+          60dvh per card (not 100dvh) keeps the pinned viewport at a full screen while
+          shortening how much scrolling each card-to-card transition takes. */}
+      <div ref={stackRef} className="relative" style={{ height: `${solutions.length * 60}dvh` }}>
+        <PinnedBackdrop areaRef={stackRef} />
+        <div
+          className="overflow-hidden"
+          style={
+            pinState === 'pinned'
+              ? { position: 'fixed', top: 0, left: 0, right: 0, height: '100dvh' }
+              : {
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  height: '100dvh',
+                  [pinState === 'before' ? 'top' : 'bottom']: 0,
+                }
+          }
+        >
+          {solutions.map((s, i) => (
+            <StackCard key={i} solution={s} index={i} total={solutions.length} scrollYProgress={scrollYProgress} />
+          ))}
+        </div>
+      </div>
+    </section>
   );
 };
 
