@@ -65,6 +65,7 @@ const BlogBlogContentAutomationGuide = lazy(() => import("./pages/blog/BlogConte
 const BlogAutomationSystemsComparison = lazy(() => import("./pages/blog/AutomationSystemsComparison"));
 const BlogGeoGenerativeEngineOptimizationGuide = lazy(() => import("./pages/blog/GeoGenerativeEngineOptimizationGuide"));
 const BlogBeautySalonAutomation = lazy(() => import("./pages/blog/BeautySalonAutomation"));
+const BlogSystemsIntegrationGuide = lazy(() => import("./pages/blog/SystemsIntegrationGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -168,6 +169,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/automation-systems-comparison" element={<BlogAutomationSystemsComparison />} />
           <Route path="/blog/geo-generative-engine-optimization-guide" element={<BlogGeoGenerativeEngineOptimizationGuide />} />
           <Route path="/blog/beauty-salon-automation" element={<BlogBeautySalonAutomation />} />
+          <Route path="/blog/systems-integration-guide" element={<BlogSystemsIntegrationGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
