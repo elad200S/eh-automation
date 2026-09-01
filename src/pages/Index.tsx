@@ -42,7 +42,9 @@ const Index = () => {
           <AutomationShowcaseSection />
           <CinematicReveal index={5}><ToolsSection /></CinematicReveal>
           <CinematicReveal index={6}><AutomationAnimation /></CinematicReveal>
-          {/* Not wrapped in CinematicReveal on purpose — its transform would break the fixed/pinned stacking-cards effect inside */}
+          {/* Not wrapped in CinematicReveal on purpose — a transform on an ancestor
+              redefines the containing block that position:sticky offsets resolve
+              against, which breaks the stacking-cards effect inside. */}
           <SolutionsOverviewSection />
 
           <CinematicReveal index={8}><AboutSection /></CinematicReveal>

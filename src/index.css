@@ -94,7 +94,12 @@
     direction: ltr;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    /* `clip` (not `hidden`/`auto`) — any non-`visible` overflow-x paired with a
+       `visible` overflow-y forces the y-axis to `auto` too, per spec, which
+       turns html/body into their own scroll container and breaks every
+       position:sticky element on the site (they'd stick to that container
+       instead of the real viewport). `clip` is exempt from that pairing rule. */
+    overflow-x: clip;
     scrollbar-width: none;
     -ms-overflow-style: none;
     -webkit-font-smoothing: antialiased;
@@ -126,7 +131,7 @@
     letter-spacing: -0.005em;
     width: 100%;
     max-width: 100%;
-    overflow-x: hidden;
+    overflow-x: clip;
     overflow-wrap: break-word;
     word-break: break-word;
     background-image: radial-gradient(ellipse 100% 55% at 50% -5%, hsl(var(--primary) / 0.07), transparent);

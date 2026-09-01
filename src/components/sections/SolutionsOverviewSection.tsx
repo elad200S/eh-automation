@@ -1,14 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3, Globe } from 'lucide-react';
-import { useRef, useState, useEffect, type RefObject } from 'react';
-import {
-  motion,
-  useScroll,
-  useTransform,
-  useInView,
-  useReducedMotion,
-  type MotionValue,
-} from 'framer-motion';
+import { useRef } from 'react';
+import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import RevealText from '@/components/RevealText';
 import ScrambleText from '@/components/ScrambleText';
@@ -81,53 +74,8 @@ const solutions = [
 
 type Solution = typeof solutions[number];
 
-/**
- * Manually computed "pin" state, in place of native CSS `position: sticky`.
- *
- * This site's global CSS sets `overflow-x: hidden` on both <html> and <body>
- * without a matching `overflow-y`, which (per the CSS spec) makes the browser
- * implicitly treat their overflow-y as `auto` — turning <body> into its own
- * independent scroll container, nested inside <html>. Native `position: sticky`
- * resolves against that nearest scrolling ancestor (<body>), which barely moves
- * relative to the real scroll — so sticky elements never pin correctly anywhere
- * on this site. That's a pre-existing, site-wide quirk; fixing it globally is
- * out of scope here, so this computes the equivalent of sticky manually from
- * `getBoundingClientRect()` (always viewport-relative, unaffected by which
- * ancestor "owns" the scroll) and pins via `position: fixed` instead.
- *
- * Important: this only works correctly if no ANCESTOR of the pinned element has
- * a CSS `transform` applied (that would change `position: fixed`'s containing
- * block). That's why this section no longer uses the shared `Section` wrapper
- * or `CinematicReveal` — both apply scroll-driven transforms to their contents.
- */
-const usePinState = <T extends HTMLElement>(ref: RefObject<T>) => {
-  const [state, setState] = useState<'before' | 'pinned' | 'after'>('before');
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const update = () => {
-      const rect = el.getBoundingClientRect();
-      if (rect.top > 0) setState('before');
-      else if (rect.bottom <= window.innerHeight) setState('after');
-      else setState('pinned');
-    };
-
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, [ref]);
-
-  return state;
-};
-
-/** Fixed ambient backdrop behind the stacking cards — faded in only while this area is in view. */
-const PinnedBackdrop = ({ areaRef }: { areaRef: RefObject<HTMLElement> }) => {
+/** Fixed ambient backdrop behind the stacking cards — faded in only while the stack is in view. */
+const PinnedBackdrop = ({ areaRef }: { areaRef: React.RefObject<HTMLElement> }) => {
   const isInView = useInView(areaRef, { margin: '0px 0px -10% 0px' });
   const prefersReducedMotion = useReducedMotion();
 
@@ -145,94 +93,143 @@ const PinnedBackdrop = ({ areaRef }: { areaRef: RefObject<HTMLElement> }) => {
   );
 };
 
+/** Static card used for the prefers-reduced-motion fallback — plain list, no scroll effects. */
+const StaticCard = ({ solution: s, index }: { solution: Solution; index: number }) => (
+  <Link
+    to={s.href}
+    className="group relative block w-full max-w-2xl mx-auto rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
+  >
+    <div
+      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+      style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
+    />
+    <div
+      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+      style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
+    />
+    <div className="relative flex items-start gap-4" dir="rtl">
+      <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
+        <s.icon className={cn('w-7 h-7', s.iconColor)} />
+      </div>
+      <div className="flex-1 min-w-0">
+        <span className="font-mono text-xs text-muted-foreground/50">{String(index + 1).padStart(2, '0')}</span>
+        <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
+        <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
+      </div>
+      <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
+    </div>
+  </Link>
+);
+
 /**
- * One stacking solution card. Every card is absolutely stacked in the same
- * spot; card i slides up into place during card (i-1)'s segment, then itself
- * shrinks + darkens during its own segment as card (i+1) arrives on top of it.
+ * One stacking solution card, built on native `position: sticky` (not a manual
+ * scroll-position → fixed/absolute toggle).
+ *
+ * The sticky element is pinned near the top (`top: 10dvh`) at its own natural
+ * height — deliberately NOT a `h-[100dvh]` box with flex-centering (or a
+ * `translateY(-50%)` transform trick) inside it. Both of those add invisible
+ * space around the actual card that isn't part of its real layout box, and
+ * releasing a sticky element always costs exactly "its offset + its own
+ * height" worth of scroll — so any invisible space you add gets scrolled
+ * through as a real gap where nothing is on screen (a plain `100dvh` box costs
+ * a full screen height of that; the transform trick still costs about half
+ * the card's height, since the transform shifts what's painted without
+ * shifting when the release itself is computed). Sizing the sticky element to
+ * exactly the card's own box, with no transform involved, makes the layout
+ * box and the painted card the same thing, so the release travel is just the
+ * card's real footprint — nothing left to scroll through blank.
+ *
+ * That gap is invisible for every card except the last one anyway, because
+ * the next card's wrapper starts exactly where this one's ends, so it's
+ * already sliding up to fill the screen during this card's release. The last
+ * card has no successor to do that, which is why its tail is where the gap
+ * used to show up.
+ *
+ * The wrapper block being taller than the viewport (in `dvh`, so mobile
+ * browser chrome show/hide doesn't shift it) is what creates the entrance
+ * slide + dwell + release in the first place — the card is ordinary document
+ * content until it reaches its sticky offset, then it's released once the
+ * wrapper's end approaches, both purely driven by layout/scroll position, so
+ * both directions (and touch scroll) are handled natively, not by JS state.
+ *
+ * z-index is explicit (not relied on via source order) because the inner
+ * `motion.div`'s `transform` creates its own stacking context.
  */
-const StackCard = ({
-  solution: s,
-  index,
-  total,
-  scrollYProgress,
-}: {
-  solution: Solution;
-  index: number;
-  total: number;
-  scrollYProgress: MotionValue<number>;
-}) => {
-  const prefersReducedMotion = useReducedMotion();
-  const seg = 1 / total;
-  const segStart = index * seg;
-  const segEnd = (index + 1) * seg;
-  const isFirst = index === 0;
+const StackCard = ({ solution: s, index, total }: { solution: Solution; index: number; total: number }) => {
+  const wrapRef = useRef<HTMLDivElement>(null);
   const isLast = index === total - 1;
 
-  const y = useTransform(
-    scrollYProgress,
-    isFirst ? [0, seg] : [segStart - seg, segStart],
-    isFirst ? ['0dvh', '0dvh'] : ['100dvh', '0dvh']
-  );
-  const scale = useTransform(scrollYProgress, [segStart, segEnd], isLast ? [1, 1] : [1, 0.92]);
-  const scrimOpacity = useTransform(scrollYProgress, [segStart, segEnd], isLast ? [0, 0] : [0, 0.45]);
+  const { scrollYProgress } = useScroll({
+    target: wrapRef,
+    offset: ['start start', 'end start'],
+  });
+  const scale = useTransform(scrollYProgress, [0.72, 1], [1, 0.92]);
+  const scrimOpacity = useTransform(scrollYProgress, [0.72, 1], [0, 0.45]);
+  // Defensive fade for the last card only, in case a sliver of empty sticky
+  // space is still left over after the height fix above (content that ends up
+  // shorter than usual, etc.) — fully faded before release ends.
+  const lastFadeOpacity = useTransform(scrollYProgress, [0.6, 0.95], [1, 0]);
 
   return (
-    <motion.div
-      style={prefersReducedMotion ? { zIndex: index } : { y, scale, zIndex: index }}
-      className="absolute inset-0 flex items-center justify-center px-4 sm:px-6"
-    >
-      <Link
-        to={s.href}
-        className="group relative w-full max-w-2xl rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
+    <div ref={wrapRef} className="relative" style={{ height: isLast ? '130dvh' : '170dvh' }}>
+      <div
+        className="sticky px-4 sm:px-6"
+        style={{ top: '10dvh', zIndex: index + 1 }}
       >
-        {/* Accent glow */}
-        <div
-          className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
-          style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
-        />
-        {/* Thin glowing border */}
-        <div
-          className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
-          style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
-        />
-        {/* Soft darkening scrim as the next card is about to cover this one */}
-        {!isLast && !prefersReducedMotion && (
-          <motion.div
-            className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none bg-black"
-            style={{ opacity: scrimOpacity }}
-          />
-        )}
+        <motion.div
+          style={{ scale, opacity: isLast ? lastFadeOpacity : 1 }}
+          className="relative w-full max-w-2xl mx-auto"
+        >
+          <Link
+            to={s.href}
+            className="group relative block w-full rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
+          >
+            {/* Accent glow */}
+            <div
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+              style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
+            />
+            {/* Thin glowing border */}
+            <div
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+              style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
+            />
+            {/* Soft darkening scrim as the next card is about to cover this one */}
+            {!isLast && (
+              <motion.div
+                className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none bg-black"
+                style={{ opacity: scrimOpacity }}
+              />
+            )}
 
-        <div className="relative flex items-start gap-4" dir="rtl">
-          <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
-            <s.icon className={cn('w-7 h-7', s.iconColor)} />
-          </div>
-          <div className="flex-1 min-w-0">
-            <span className="font-mono text-xs text-muted-foreground/50">
-              {String(index + 1).padStart(2, '0')}
-            </span>
-            <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
-            <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
-          </div>
-          <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
-        </div>
-      </Link>
-    </motion.div>
+            <div className="relative flex items-start gap-4" dir="rtl">
+              <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
+                <s.icon className={cn('w-7 h-7', s.iconColor)} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="font-mono text-xs text-muted-foreground/50">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
+              </div>
+              <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
+            </div>
+          </Link>
+        </motion.div>
+      </div>
+    </div>
   );
 };
 
 const SolutionsOverviewSection = () => {
   const stackRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: stackRef,
-    offset: ['start start', 'end end'],
-  });
-  const pinState = usePinState(stackRef);
+  const prefersReducedMotion = useReducedMotion();
 
   return (
     // Deliberately not using the shared `Section` wrapper or `CinematicReveal` here —
-    // both apply scroll-driven transforms to their contents, which would break the
-    // `position: fixed` pin below (see usePinState's comment).
+    // both apply scroll-driven transforms to their contents, and a transform on any
+    // ancestor redefines the containing block that position:sticky resolves against.
     <section id="solutions-overview" className="relative py-10 md:py-14">
       <div className="container">
         <div className="max-w-5xl mx-auto flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
@@ -254,30 +251,22 @@ const SolutionsOverviewSection = () => {
         </div>
       </div>
 
-      {/* Stacking cards — each sticks below the header, then the next one covers it.
-          60dvh per card (not 100dvh) keeps the pinned viewport at a full screen while
-          shortening how much scrolling each card-to-card transition takes. */}
-      <div ref={stackRef} className="relative" style={{ height: `${solutions.length * 60}dvh` }}>
-        <PinnedBackdrop areaRef={stackRef} />
-        <div
-          className="overflow-hidden"
-          style={
-            pinState === 'pinned'
-              ? { position: 'fixed', top: 0, left: 0, right: 0, height: '100dvh' }
-              : {
-                  position: 'absolute',
-                  left: 0,
-                  right: 0,
-                  height: '100dvh',
-                  [pinState === 'before' ? 'top' : 'bottom']: 0,
-                }
-          }
-        >
+      {prefersReducedMotion ? (
+        <div className="container">
+          <div className="max-w-5xl mx-auto space-y-4">
+            {solutions.map((s, i) => (
+              <StaticCard key={i} solution={s} index={i} />
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div ref={stackRef} className="relative">
+          <PinnedBackdrop areaRef={stackRef} />
           {solutions.map((s, i) => (
-            <StackCard key={i} solution={s} index={i} total={solutions.length} scrollYProgress={scrollYProgress} />
+            <StackCard key={i} solution={s} index={i} total={solutions.length} />
           ))}
         </div>
-      </div>
+      )}
     </section>
   );
 };
