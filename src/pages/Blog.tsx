@@ -15,6 +15,13 @@ const categories = [
 
 const articles = [
   {
+    title: 'Supabase מול Base44 — איזה Backend מתאים לעסק שלך',
+    category: 'כלי No-Code',
+    excerpt: 'Supabase מול Base44: השוואת מחירים, בעלות על נתונים ורמת שליטה טכנית. מדריך מעשי לבחירת ה-Backend הנכון לעסק שלכם ב-2026.',
+    readTime: '12 דקות קריאה',
+    href: '/blog/supabase-vs-base44-backend-guide',
+  },
+  {
     title: 'איך AI כותב תוכן שגוגל אוהב בלי להיראות מזויף — 7 כללים',
     category: 'אוטומציה לתוכן',
     excerpt: 'תוכן AI לגוגל ב-2026: מה גוגל באמת מעניש, כמה מאמרי AI אפשר לפרסם בשבוע בלי לפגוע ב-SEO, וכמה עולה לעסק ישראלי להטמיע כתיבת תוכן עם AI נכון.',
