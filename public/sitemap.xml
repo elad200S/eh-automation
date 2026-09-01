@@ -318,4 +318,25 @@
     <priority>0.75</priority>
   </url>
 
+  <url>
+    <loc>https://heydigital.co.il/blog/systems-integration-guide</loc>
+    <lastmod>2026-08-27</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://heydigital.co.il/blog/ai-content-writing-google-rules</loc>
+    <lastmod>2026-08-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
+  <url>
+    <loc>https://heydigital.co.il/blog/supabase-vs-base44-backend-guide</loc>
+    <lastmod>2026-09-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.75</priority>
+  </url>
+
 </urlset>
