@@ -15,6 +15,13 @@ const categories = [
 
 const articles = [
   {
+    title: 'בניית אתר עם AI (Lovable) מול שכירת פרילנסר — עלות וזמן אמיתיים 2026',
+    category: 'כלי No-Code',
+    excerpt: 'Lovable מול פרילנסר: השוואת מחירים אמיתית לבניית אתר עם AI מול פרילנסר בישראל ב-2026, כולל זמני בנייה ומתי דווקא כדאי ליווי מקצועי.',
+    readTime: '13 דקות קריאה',
+    href: '/blog/lovable-vs-freelancer-cost-comparison',
+  },
+  {
     title: 'Supabase מול Base44 — איזה Backend מתאים לעסק שלך',
     category: 'כלי No-Code',
     excerpt: 'Supabase מול Base44: השוואת מחירים, בעלות על נתונים ורמת שליטה טכנית. מדריך מעשי לבחירת ה-Backend הנכון לעסק שלכם ב-2026.',
