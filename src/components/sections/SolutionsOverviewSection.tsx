@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Bot, Zap, MessageCircle, GitBranch, Workflow, BarChart3, Globe } from 'lucide-react';
 import { useRef } from 'react';
-import { motion, useScroll, useTransform, useInView, useReducedMotion } from 'framer-motion';
+import { motion, useInView, useReducedMotion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import RevealText from '@/components/RevealText';
 import ScrambleText from '@/components/ScrambleText';
@@ -120,111 +120,96 @@ const StaticCard = ({ solution: s }: { solution: Solution }) => (
   </Link>
 );
 
+// Top offset (px) of the oldest card once every card has arrived. Small on
+// purpose, so the whole accumulated deck of peeking edges fits near the top
+// of the screen instead of pushing the active card down too far — but not
+// so small that it sits under the fixed navbar (top-3 + h-12/h-16, i.e. it
+// occupies roughly the first ~75px of the viewport when visible), which
+// would both visually clip the oldest card's sliver and block taps on it.
+const STACK_TOP_BASE_PX = 88;
+// How much further down (px) each next card sticks, relative to the one
+// before it. This is also exactly how much of a covered card stays exposed —
+// sized to roughly the icon+title row's height, so only that "header" strip
+// peeks out and the description underneath it stays hidden, per the brief.
+const STACK_STEP_PX = 60;
+// Scroll distance consumed before each card (after the first) arrives —
+// this is what paces the stacking; the deck no longer needs per-card
+// dwell/release runway since cards don't release individually anymore
+// (see the comment on StackCard).
+const ENTRY_GAP_DVH = 240;
+const FIRST_APPROACH_DVH = 50;
+const TAIL_RUNWAY_DVH = 130;
+
 /**
- * One stacking solution card, built on native `position: sticky` (not a manual
- * scroll-position → fixed/absolute toggle).
+ * One card in the deck. Unlike a "one card fully replaces the next" stack,
+ * every card here keeps its `position: sticky` for the rest of the section
+ * once it arrives — it is never explicitly released. Concretely: each card
+ * is a plain flow sibling (no per-card wrapper), preceded by an invisible
+ * spacer (see SolutionsOverviewSection) that delays when it reaches its own
+ * `top` offset. Once stuck there, it just stays — there's nothing after it
+ * in its own little box that would make it un-stick early. Card `index`
+ * sticks `STACK_STEP_PX` further down than card `index - 1`, so as later
+ * cards arrive and physically sit lower on screen (with a higher z-index,
+ * so they paint over what's above them), each earlier card keeps showing
+ * only the sliver above the next one's top edge — the classic fanned deck /
+ * accordion look, entirely from layout, no scroll-driven size/opacity math
+ * needed to fake "being covered."
  *
- * The sticky element is pinned near the top (`top: 10dvh`) at its own natural
- * height — deliberately NOT a `h-[100dvh]` box with flex-centering (or a
- * `translateY(-50%)` transform trick) inside it. Both of those add invisible
- * space around the actual card that isn't part of its real layout box, and
- * releasing a sticky element always costs exactly "its offset + its own
- * height" worth of scroll — so any invisible space you add gets scrolled
- * through as a real gap where nothing is on screen (a plain `100dvh` box costs
- * a full screen height of that; the transform trick still costs about half
- * the card's height, since the transform shifts what's painted without
- * shifting when the release itself is computed). Sizing the sticky element to
- * exactly the card's own box, with no transform involved, makes the layout
- * box and the painted card the same thing, so the release travel is just the
- * card's real footprint — nothing left to scroll through blank.
- *
- * That gap is invisible for every card except the last one anyway, because
- * the next card's wrapper starts exactly where this one's ends, so it's
- * already sliding up to fill the screen during this card's release. The last
- * card has no successor to do that, which is why its tail is where the gap
- * used to show up.
- *
- * The wrapper block being taller than the viewport (in `dvh`, so mobile
- * browser chrome show/hide doesn't shift it) is what creates the entrance
- * slide + dwell + release in the first place — the card is ordinary document
- * content until it reaches its sticky offset, then it's released once the
- * wrapper's end approaches, both purely driven by layout/scroll position, so
- * both directions (and touch scroll) are handled natively, not by JS state.
- *
- * z-index is explicit (not relied on via source order) because the inner
- * `motion.div`'s `transform` creates its own stacking context.
+ * The peek interaction (`whileHover` / `whileTap`) needs to bump z-index on
+ * the *sticky* element itself, not a descendant — z-index stacking order is
+ * decided between the positioned siblings, so a transform on a child alone
+ * can't paint it above a higher z-index sibling. That's why this component
+ * IS the sticky element (a single `motion.div`), instead of wrapping an
+ * inner motion.div the way a scroll-driven version would.
  */
 const StackCard = ({ solution: s, index, total }: { solution: Solution; index: number; total: number }) => {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const isLast = index === total - 1;
-
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ['start start', 'end start'],
-  });
-  const scale = useTransform(scrollYProgress, [0.72, 1], [1, 0.92]);
-  const scrimOpacity = useTransform(scrollYProgress, [0.72, 1], [0, 0.45]);
-  // Defensive fade for the last card only, in case a sliver of empty sticky
-  // space is still left over after the height fix above (content that ends up
-  // shorter than usual, etc.) — fully faded before release ends.
-  const lastFadeOpacity = useTransform(scrollYProgress, [0.6, 0.95], [1, 0]);
+  const top = STACK_TOP_BASE_PX + index * STACK_STEP_PX;
 
   return (
-    // Taller wrapper = more scroll distance per card = slower stacking transition.
-    <div ref={wrapRef} className="relative" style={{ height: isLast ? '220dvh' : '320dvh' }}>
-      <div
-        className="sticky px-4 sm:px-6"
-        style={{ top: '10dvh', zIndex: index + 1 }}
-      >
-        <motion.div
-          // will-change hints the browser to promote this to its own compositor
-          // layer up front, instead of on first animation frame — combined with
-          // dropping backdrop-blur on mobile below, this is what stops the
-          // scroll-blocking jank (backdrop-filter is a full re-sample of
-          // whatever's behind it, on every frame, for every stacked card that
-          // has it — expensive on its own, worse layered under a moving transform).
-          style={{ scale, opacity: isLast ? lastFadeOpacity : 1, willChange: 'transform, opacity' }}
-          className="relative w-full max-w-2xl mx-auto"
+    <motion.div
+      className="sticky px-4 sm:px-6"
+      style={{ top: `${top}px`, zIndex: index + 1, willChange: 'transform' }}
+      // Desktop: hover lifts a covered card so more of it peeks out.
+      // Mobile: whileTap fires on touch press for the same effect — no
+      // hover state exists on touch, so this is the mobile equivalent asked
+      // for, without a separate click handler needed.
+      whileHover={{ y: -15, zIndex: total + 20 }}
+      whileTap={{ y: -15, zIndex: total + 20 }}
+      transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+    >
+      <div className="relative w-full max-w-2xl mx-auto">
+        <Link
+          to={s.href}
+          // Solid flat fill on mobile — no blur, no border, no glow, so it
+          // still reads as "clean," but opaque enough that a covered card's
+          // title actually hides the one behind it (fully transparent here
+          // would let a covered card's text bleed straight through the one
+          // stacked in front of it). Desktop keeps the glass-card look.
+          className="group relative block w-full rounded-2xl sm:rounded-3xl overflow-hidden p-6 sm:p-10 bg-card sm:bg-black/40 sm:backdrop-blur-xl sm:border sm:border-white/10 shadow-[0_10px_24px_-8px_rgba(0,0,0,0.45)] sm:shadow-none"
         >
-          <Link
-            to={s.href}
-            // Transparent, no blur, no border on mobile (default classes); the
-            // glass-card look only kicks in from `sm:` up.
-            className="group relative block w-full rounded-2xl sm:rounded-3xl overflow-hidden p-6 sm:p-10 bg-transparent sm:bg-black/40 sm:backdrop-blur-xl sm:border sm:border-white/10"
-          >
-            {/* Accent glow + border glow — desktop only, part of the glass look */}
-            <div
-              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
-              style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
-            />
-            <div
-              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
-              style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
-            />
-            {/* Soft darkening scrim as the next card is about to cover this one —
-                plain opacity over a solid color, kept on mobile too: cheap to
-                paint (no filter), and it's what sells the stacking depth. */}
-            {!isLast && (
-              <motion.div
-                className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none bg-black"
-                style={{ opacity: scrimOpacity, willChange: 'opacity' }}
-              />
-            )}
+          {/* Accent glow + border glow — desktop only, part of the glass look */}
+          <div
+            className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
+            style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
+          />
+          <div
+            className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
+            style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
+          />
 
-            <div className="relative flex items-start gap-4" dir="rtl">
-              <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
-                <s.icon className={cn('w-7 h-7', s.iconColor)} />
-              </div>
-              <div className="flex-1 min-w-0">
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{s.title}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
-              </div>
-              <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
+          <div className="relative flex items-start gap-4" dir="rtl">
+            <div className={cn('rounded-xl flex items-center justify-center flex-shrink-0 w-14 h-14', s.iconBg)}>
+              <s.icon className={cn('w-7 h-7', s.iconColor)} />
             </div>
-          </Link>
-        </motion.div>
+            <div className="flex-1 min-w-0">
+              <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{s.title}</h3>
+              <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
+            </div>
+            <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
+          </div>
+        </Link>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
@@ -266,11 +251,26 @@ const SolutionsOverviewSection = () => {
           </div>
         </div>
       ) : (
+        // No explicit height here — it's just normal document flow (spacers +
+        // sticky cards, each sized to its own natural content), so the total
+        // scroll distance is whatever the spacers below add up to.
         <div ref={stackRef} className="relative">
           <PinnedBackdrop areaRef={stackRef} />
-          {solutions.map((s, i) => (
-            <StackCard key={i} solution={s} index={i} total={solutions.length} />
-          ))}
+          <div style={{ height: `${FIRST_APPROACH_DVH}dvh` }} aria-hidden="true" />
+          {/*
+            StackCard and its trailing spacer must be direct children here, not
+            wrapped in a per-card div — position:sticky's containing block is
+            its immediate parent, so a wrapper div would recreate the "releases
+            after its own small block" bug this component's comment describes.
+            flatMap keeps them flat while still giving each a stable key.
+          */}
+          {solutions.flatMap((s, i) => [
+            <StackCard key={`card-${i}`} solution={s} index={i} total={solutions.length} />,
+            i < solutions.length - 1 ? (
+              <div key={`gap-${i}`} style={{ height: `${ENTRY_GAP_DVH}dvh` }} aria-hidden="true" />
+            ) : null,
+          ])}
+          <div style={{ height: `${TAIL_RUNWAY_DVH}dvh` }} aria-hidden="true" />
         </div>
       )}
     </section>
