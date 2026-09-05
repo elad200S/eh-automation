@@ -286,9 +286,16 @@ const Navbar = () => {
         ref={navRef}
         style={{ transform: 'none' }}
         className={cn(
-          'fixed top-3 right-4 left-4 rounded-2xl border transition-all duration-500',
+          // Fixed + backdrop-blur behind it means the blur re-samples whatever's
+          // scrolling underneath on every frame — this runs on every page, so a
+          // heavy blur here is a sitewide scroll cost, not a one-section one.
+          // Lighter blur (and a more opaque background to compensate) on mobile;
+          // the heavier blur is desktop-only. `transition-all` is also replaced
+          // with only the properties that actually change, so the browser isn't
+          // watching every property for a transition on each scroll-triggered update.
+          'fixed top-3 right-4 left-4 rounded-2xl border transition-[background-color,border-color,box-shadow,transform,opacity] duration-500',
           scrolled
-            ? 'bg-background/75 backdrop-blur-2xl border-white/[0.08] shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.22),0_1px_0_0_rgba(255,255,255,0.05)_inset]'
+            ? 'bg-background/90 backdrop-blur-md sm:bg-background/75 sm:backdrop-blur-2xl border-white/[0.08] shadow-[0_8px_40px_-8px_hsl(var(--primary)/0.22),0_1px_0_0_rgba(255,255,255,0.05)_inset]'
             : 'bg-transparent border-transparent',
           hidden && !mobileOpen ? '-translate-y-[calc(100%+1rem)] opacity-0' : 'translate-y-0 opacity-100',
           mobileOpen ? 'z-[10040]' : 'z-50'

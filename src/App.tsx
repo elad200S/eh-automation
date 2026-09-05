@@ -94,11 +94,19 @@ const AIAgents = lazy(() => import("./pages/services/AIAgents"));
 
 const queryClient = new QueryClient();
 
-// Initialize Lenis smooth scroll — heavier duration for cinematic feel
+// Initialize Lenis smooth scroll — applies to the whole site (this instance
+// isn't scoped to any one section/page). Higher duration = slower, more
+// relaxed glide on every scroll everywhere, not just the stacking-cards section.
+//
+// `syncTouch` is deliberately left off (Lenis' default): that's what makes
+// Lenis take over touch scrolling on mobile and replay it through JS, which
+// fights the OS's native momentum scroll and is a common cause of scroll
+// "freezing" on phones. Leaving it off means mobile keeps native scrolling —
+// still just as smooth, without that risk — while this smoothing applies to
+// mouse-wheel/trackpad scrolling everywhere on desktop.
 const lenis = new Lenis({
-  duration: 1.2,
+  duration: 1.6,
   easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-  touchMultiplier: 1.5,
 });
 
 gsap.registerPlugin(ScrollTrigger);

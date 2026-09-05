@@ -171,7 +171,7 @@ const StackCard = ({ solution: s, index, total }: { solution: Solution; index: n
 
   return (
     // Taller wrapper = more scroll distance per card = slower stacking transition.
-    <div ref={wrapRef} className="relative" style={{ height: isLast ? '170dvh' : '250dvh' }}>
+    <div ref={wrapRef} className="relative" style={{ height: isLast ? '220dvh' : '320dvh' }}>
       <div
         className="sticky px-4 sm:px-6"
         style={{ top: '10dvh', zIndex: index + 1 }}
