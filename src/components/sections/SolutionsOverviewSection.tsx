@@ -94,17 +94,17 @@ const PinnedBackdrop = ({ areaRef }: { areaRef: React.RefObject<HTMLElement> }) 
 };
 
 /** Static card used for the prefers-reduced-motion fallback — plain list, no scroll effects. */
-const StaticCard = ({ solution: s, index }: { solution: Solution; index: number }) => (
+const StaticCard = ({ solution: s }: { solution: Solution }) => (
   <Link
     to={s.href}
-    className="group relative block w-full max-w-2xl mx-auto rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
+    className="group relative block w-full max-w-2xl mx-auto rounded-2xl sm:rounded-3xl overflow-hidden p-6 sm:p-10 bg-transparent sm:bg-black/40 sm:backdrop-blur-xl sm:border sm:border-white/10"
   >
     <div
-      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
       style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
     />
     <div
-      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+      className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
       style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
     />
     <div className="relative flex items-start gap-4" dir="rtl">
@@ -112,8 +112,7 @@ const StaticCard = ({ solution: s, index }: { solution: Solution; index: number 
         <s.icon className={cn('w-7 h-7', s.iconColor)} />
       </div>
       <div className="flex-1 min-w-0">
-        <span className="font-mono text-xs text-muted-foreground/50">{String(index + 1).padStart(2, '0')}</span>
-        <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
+        <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{s.title}</h3>
         <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
       </div>
       <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
@@ -171,34 +170,44 @@ const StackCard = ({ solution: s, index, total }: { solution: Solution; index: n
   const lastFadeOpacity = useTransform(scrollYProgress, [0.6, 0.95], [1, 0]);
 
   return (
-    <div ref={wrapRef} className="relative" style={{ height: isLast ? '130dvh' : '170dvh' }}>
+    // Taller wrapper = more scroll distance per card = slower stacking transition.
+    <div ref={wrapRef} className="relative" style={{ height: isLast ? '170dvh' : '250dvh' }}>
       <div
         className="sticky px-4 sm:px-6"
         style={{ top: '10dvh', zIndex: index + 1 }}
       >
         <motion.div
-          style={{ scale, opacity: isLast ? lastFadeOpacity : 1 }}
+          // will-change hints the browser to promote this to its own compositor
+          // layer up front, instead of on first animation frame — combined with
+          // dropping backdrop-blur on mobile below, this is what stops the
+          // scroll-blocking jank (backdrop-filter is a full re-sample of
+          // whatever's behind it, on every frame, for every stacked card that
+          // has it — expensive on its own, worse layered under a moving transform).
+          style={{ scale, opacity: isLast ? lastFadeOpacity : 1, willChange: 'transform, opacity' }}
           className="relative w-full max-w-2xl mx-auto"
         >
           <Link
             to={s.href}
-            className="group relative block w-full rounded-2xl sm:rounded-3xl border border-white/10 bg-black/40 backdrop-blur-xl overflow-hidden p-6 sm:p-10"
+            // Transparent, no blur, no border on mobile (default classes); the
+            // glass-card look only kicks in from `sm:` up.
+            className="group relative block w-full rounded-2xl sm:rounded-3xl overflow-hidden p-6 sm:p-10 bg-transparent sm:bg-black/40 sm:backdrop-blur-xl sm:border sm:border-white/10"
           >
-            {/* Accent glow */}
+            {/* Accent glow + border glow — desktop only, part of the glass look */}
             <div
-              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
               style={{ background: `radial-gradient(ellipse at top right, ${s.accent}18, transparent 60%)` }}
             />
-            {/* Thin glowing border */}
             <div
-              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none"
+              className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none hidden sm:block"
               style={{ boxShadow: `inset 0 0 0 1px ${s.accent}40` }}
             />
-            {/* Soft darkening scrim as the next card is about to cover this one */}
+            {/* Soft darkening scrim as the next card is about to cover this one —
+                plain opacity over a solid color, kept on mobile too: cheap to
+                paint (no filter), and it's what sells the stacking depth. */}
             {!isLast && (
               <motion.div
                 className="absolute inset-0 rounded-2xl sm:rounded-3xl pointer-events-none bg-black"
-                style={{ opacity: scrimOpacity }}
+                style={{ opacity: scrimOpacity, willChange: 'opacity' }}
               />
             )}
 
@@ -207,10 +216,7 @@ const StackCard = ({ solution: s, index, total }: { solution: Solution; index: n
                 <s.icon className={cn('w-7 h-7', s.iconColor)} />
               </div>
               <div className="flex-1 min-w-0">
-                <span className="font-mono text-xs text-muted-foreground/50">
-                  {String(index + 1).padStart(2, '0')}
-                </span>
-                <h3 className="text-xl sm:text-2xl font-bold text-foreground mt-1 mb-2">{s.title}</h3>
+                <h3 className="text-xl sm:text-2xl font-bold text-foreground mb-2">{s.title}</h3>
                 <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">{s.description}</p>
               </div>
               <ArrowLeft className="w-4 h-4 text-muted-foreground/30 group-hover:text-primary group-hover:-translate-x-1 transition-all duration-300 flex-shrink-0 mt-1" />
@@ -255,7 +261,7 @@ const SolutionsOverviewSection = () => {
         <div className="container">
           <div className="max-w-5xl mx-auto space-y-4">
             {solutions.map((s, i) => (
-              <StaticCard key={i} solution={s} index={i} />
+              <StaticCard key={i} solution={s} />
             ))}
           </div>
         </div>
