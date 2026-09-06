@@ -69,6 +69,7 @@ const BlogSystemsIntegrationGuide = lazy(() => import("./pages/blog/SystemsInteg
 const BlogAiContentWritingGoogleRules = lazy(() => import("./pages/blog/AiContentWritingGoogleRules"));
 const BlogSupabaseVsBase44BackendGuide = lazy(() => import("./pages/blog/SupabaseVsBase44BackendGuide"));
 const BlogLovableVsFreelancerCostComparison = lazy(() => import("./pages/blog/LovableVsFreelancerCostComparison"));
+const BlogAutomationImplementerGuide = lazy(() => import("./pages/blog/AutomationImplementerGuide"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Dashboard = lazy(() => import("./pages/Dashboard"));
@@ -184,6 +185,7 @@ const RoutesWithTransition = () => {
           <Route path="/blog/ai-content-writing-google-rules" element={<BlogAiContentWritingGoogleRules />} />
           <Route path="/blog/supabase-vs-base44-backend-guide" element={<BlogSupabaseVsBase44BackendGuide />} />
           <Route path="/blog/lovable-vs-freelancer-cost-comparison" element={<BlogLovableVsFreelancerCostComparison />} />
+          <Route path="/blog/automation-implementer-guide" element={<BlogAutomationImplementerGuide />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/services/chatbots" element={<Chatbots />} />
